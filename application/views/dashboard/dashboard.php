@@ -362,6 +362,17 @@
                   'US': '#2b303a',
                   'CA': '#2b303a',
                   'MX': '#2b303a',
+
+                  //Compassion Implementing Countries
+                  "KE": '#56w5e7',
+                  "UG": '#56w5e7',
+                  "TZ": '#56w5e7',
+                  "RW": '#56w5e7',
+                  "ET": '#56w5e7',
+                  "BF": '#56w5e7',
+                  "GH": '#56w5e7',
+                  "TG": '#56w5e7'
+
                 };
 
                 map = new jvm.WorldMap({
@@ -403,6 +414,10 @@
         <tr>
           <td><a href="#"> <span class="badge badge-success">AL</span></a></td>
           <td>Arab League</td>
+        </tr>
+        <tr>
+          <td><a href="#"><span class="badge badge-danger">CI</span></a></td>
+          <td>Compassion Implementing Countries</td>
         </tr>
       </tbody>
     </table>

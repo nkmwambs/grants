@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Budget_detail_model extends MY_Model
+class Budget_detail_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'budget_detail'; // you MUST mention the table name
 

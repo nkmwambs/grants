@@ -58,8 +58,15 @@ class Grants_model extends CI_Model
       }
     }
 
-
     $this->db->select($table_columns);
+  }
+
+  function edit(){
+
+  }
+
+  function add(){
+
   }
 
   function view($detail_tables = array()){
@@ -68,8 +75,6 @@ class Grants_model extends CI_Model
     $table = strtolower($this->controller);
 
     $model = $this->current_model;
-
-    $data = array();
 
     $this->select_columns($table);
 
@@ -93,15 +98,17 @@ class Grants_model extends CI_Model
       $this->db->select($lookup_table_ids);
     }
 
+    $data = array();
+
     $data['master'] = (array)$this->db->get_where($table,array($table.'_id'=> hash_id($this->uri->segment(3,0),'decode') ))->row();
     $data['master_table_name'] = $table;
     // Get the name of the record creator
-    $data['created_by'] = $data['master'][$table.'_created_by']>1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
-    array('user_id'=>$data['master'][$table.'_created_by']))->row()->user_name:get_phrase('creator_user_not_set');
+    $data['created_by'] = 1;//$data['master'][$table.'_created_by']>1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
+    //array('user_id'=>$data['master'][$table.'_created_by']))->row()->user_name:get_phrase('creator_user_not_set');
 
     //Get the name of the last record modifier
-    $data['last_modified_by'] = $data['master'][$table.'_last_modified_by'] > 1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
-    array('user_id'=>$data['master'][$table.'_last_modified_by']))->row()->user_name:get_phrase('modifier_user_not_set');
+    $data['last_modified_by'] = 1;//$data['master'][$table.'_last_modified_by'] > 1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
+    //array('user_id'=>$data['master'][$table.'_last_modified_by']))->row()->user_name:get_phrase('modifier_user_not_set');
 
     if(is_array($detail_tables) && count($detail_tables) > 0 ){
       foreach ($detail_tables as $detail_table) {

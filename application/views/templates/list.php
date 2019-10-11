@@ -24,30 +24,14 @@ extract($result);
 
 <div class="row" style="margin-bottom:25px;">
   <div class="col-xs-12" style="text-align:center;">
-    <button class="btn btn-default">Add <?=ucfirst($this->controller);?></button>
+    <?=add_record_button($this->controller);?>
   </div>
 </div>
 
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-striped datatable">
-      <thead>
-        <tr>
-          <th><?=get_phrase('action');?></th>
-        <?php
-        foreach ($keys as $th_value) {
-          if(strpos($th_value,'Key') == true || $th_value == $table_name."_id"  ) {
-            continue;
-          }
-
-        ?>
-          <th><?=ucwords(str_replace("_"," ",$th_value));?></th>
-        <?php
-
-        }
-        ?>
-      </tr>
-      </thead>
+      <thead><?=render_list_table_header($table_name,$keys);?></thead>
       <tbody>
         <?php
           $primary_key = 0;
@@ -60,9 +44,9 @@ extract($result);
             $primary_key = $row[$primary_key_column];
         ?>
           <tr>
-              <td>
-                <a href="<?=base_url().strtolower($this->controller).'/edit/'.hash_id($primary_key);?>"><?=get_phrase('edit');?></a> &nbsp;
-                <a href="<?=base_url().strtolower($this->controller).'/delete/'.hash_id($primary_key);?>"><?=get_phrase('delete');?></a>
+              <td nowrap="nowrap">
+                <?=list_table_edit_action($this->controller,$primary_key);?> &nbsp;
+                <?=list_table_delete_action($this->controller,$primary_key);?>
               </td>
               <?php
 

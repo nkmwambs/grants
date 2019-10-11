@@ -9,7 +9,7 @@
  */
 
 
-class Message extends MY_Controller implements CrudModelInterface
+class Budget_detail extends MY_Controller
 {
 
   function __construct(){
@@ -19,8 +19,5 @@ class Message extends MY_Controller implements CrudModelInterface
 
   function index(){}
 
-  static function get_menu_list(){
-
-  }
 
 }

@@ -12,7 +12,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
   <div class="col-xs-12">
     <table class="table table-striped">
       <thead>
-        <tr><th colspan="3" style="text-align:center;"><?=ucfirst($this->uri->segment(1));?> Master Record</th></tr>
+        <tr><th colspan="3" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?> Master Record</th></tr>
       </thead>
       <tbody>
         <?php
@@ -67,47 +67,26 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
     </table>
     <?php
 
-      foreach ($result['detail'] as $detail_name => $details) {
-        $detail_columns = $details['keys'];
-        $primary_key_column = array_shift($detail_columns);
-
+      foreach ($result['detail'] as $detail_table_name => $details) {
+        extract($details);
+        $primary_key_column = array_shift($keys);
         ?>
 
         <hr/>
 
         <div class="row" style="margin-bottom:25px;">
           <div class="col-xs-12" style="text-align:center;">
-            <button class="btn btn-default">Add <?=ucwords(str_replace("_"," ",$detail_name));?></button>
+            <?=add_record_button($detail_table_name);?>
           </div>
         </div>
 
           <table class="table table-striped datatable_details">
             <thead>
-              <tr><th colspan="<?=count($details['keys']);?>"><?=ucwords(str_replace("_"," ",$detail_name));?></th></tr>
-              <?php
-
-              ?>
-              <tr>
-                  <th><?=get_phrase('action');?></th>
-                  <?php
-
-                    foreach ($detail_columns as $th_value) {
-                      if(strpos($th_value,'Key') == true) {
-                        continue;
-                      }
-                  ?>
-                        <th><?=ucwords(str_replace("_"," ",$th_value));?></th>
-                      <?php
-                    }
-                  ?>
-              </tr>
+              <tr><th colspan="<?=count($keys);?>"><?=ucwords(str_replace("_"," ",$detail_table_name));?></th></tr>
+              <?=render_list_table_header($detail_table_name,$keys);?>
             </thead>
             <tbody>
-              <?php
-
-
-              foreach ($details['table_body'] as $row) {
-              ?>
+              <?php foreach ($details['table_body'] as $row) { ?>
                 <tr>
                   <td>
                     <span><a href="#"><?=get_phrase('edit');?></a></span> &nbsp;
@@ -115,7 +94,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
                   </td>
                   <?php
                       $primary_key = 0;
-                      foreach ($detail_columns as $column){
+                      foreach ($keys as $column){
                         $primary_key = $row[$primary_key_column]
                   ?>
                         <td>
@@ -123,7 +102,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
                           <?php
                           if(isset($row[$column])){
                             if(strpos($column,'track_number') == true && $details['has_details'] == 1 ){
-                              echo '<a href="'.base_url().strtolower($detail_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
+                              echo '<a href="'.base_url().strtolower($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'is_active') == true){
                                 echo $td_value == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){

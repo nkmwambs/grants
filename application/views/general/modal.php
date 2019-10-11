@@ -217,6 +217,33 @@
         "pagingType": "full_numbers"
       });
   } );
+
+  $(".list_delete_link").click(function(ev){
+    var cnf = confirm('Are you sure you want to delete this record');
+    var delete_link = $(this);
+
+    if(!cnf){
+        alert('Delete action aborted!');
+    }else{
+
+      $.ajax({
+        url:delete_link.attr('href'),
+        type:"GET",
+        beforeSend:function(){
+
+        },
+        success:function(response){
+          alert(response);
+          delete_link.closest('tr').remove();
+        },
+        error:function(){
+
+        }
+      });
+
+    }
+    ev.preventDefault();
+  });
   </script>
 
 <style>

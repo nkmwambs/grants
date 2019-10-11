@@ -39,7 +39,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   }
 
   function page_title(){
-    return ucfirst($this->action);
+    $make_plural = $this->action == 'list'?"s":"";
+    return get_phrase($this->action.'_'.$this->controller.$make_plural);
   }
 
   function views_dir(){
@@ -81,4 +82,17 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function view(){
     $this->crud_views();
   }
+
+  function edit(){
+    $this->crud_views();
+  }
+
+  function add(){
+    $this->crud_views();
+  }
+
+  function delete($id){
+    echo "Record deleted successful";
+  }
+
 }

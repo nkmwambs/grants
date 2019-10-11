@@ -19,15 +19,6 @@ class User extends MY_Controller implements CrudModelInterface
 
   function index(){}
 
-  function create(){}
-
-  function view(){}
-
-  function update(){}
-
-  function delete(){}
-
-  function list(){}  
 
   static function get_menu_list(){
 

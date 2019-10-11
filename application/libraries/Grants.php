@@ -1,32 +1,75 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Grants{
+
+// This is a variable carrying the instance for Codeigniter singleton class
 private $CI;
+
+// This is the library for the current running master controller
 private $current_library;
+
+// This is the model for the current running master controller
 private $current_model;
+
+// This the current/ master detail table name which is equivalent to the running master controller
 private $controller;
+
+// This is the action that has been called by the running controllers. It can either be list, view, edit, add or delete
 private $action;
 
+private $table;
+
 function __construct(){
+
+  // Instantiate Codeigniter Singleton class
   $this->CI =& get_instance();
 
+  // Instantiate the name of the current running object/ main controller
   $this->controller = $this->CI->uri->segment(1, 'approval');
 
+  // Instantiate the name of the current running object library/ main controller library
   $current_library = $this->controller.'_library';
+
+  // Instantiate the name of the current running model/ main controller model
   $this->current_model = $this->controller.'_model';
+
+  // Get the default running actions
   $this->action = $this->CI->uri->segment(2,'list');
 
+  // Load the main/ feature controller model
   $this->CI->load->model($this->current_model);
 
-  //The autoloaded grants model does work in library context and has to loaded here
+  //Loading system model (Grants_model). The autoloaded grants model does work in library context and has to loaded here
   $this->CI->load->model('grants_model');
 }
+
+// This method switches loading between the main controller model and a specified detail model. It switches to a detail model if
+// the detail table is passed as an argument
+
+function load_detail_model($table_name = ""){
+  $model =  $this->current_model;
+
+  if($table_name !== ""){
+    $model = $table_name.'_model';
+    $this->CI->load->model($model);
+  }
+
+  return $model;
+}
+
+// This method is a wrapper to the lookup_tables method of the specific feature model
+// The lookup_tables method holds the lookup referencing tables as array elements
+// Passing an argument to this method wrapper switches between the lookup tables of the main feature model to a certain details model
 
 function lookup_tables($table_name = ""){
   $model = $this->load_detail_model($table_name);
 
   return $this->CI->$model->lookup_tables();
 }
+
+// This is wrapper method to the detail_tables of the specific feature model
+// The detail_tables method holds the details referencing tables as array elements
+// Passing an argument to this wrapper switches between the main feature model detail_tables to a certain details models
 
 function detail_tables($table_name = ""){
   $model = $this->load_detail_model($table_name);
@@ -42,7 +85,7 @@ function detail_tables($table_name = ""){
 
 function unset_default_hidden_columns($default_hidden_columns,$columns_to_unset){
   foreach ($columns_to_unset as $column_to_unset) {
-    $unset_default_hidden_column = in_array('funder_created_date',$default_hidden_columns);
+    $unset_default_hidden_column = in_array($column_to_unset,$default_hidden_columns);
     unset($default_hidden_columns[$unset_default_hidden_column]);
   }
 
@@ -60,6 +103,11 @@ function add_default_hidden_columns($default_hidden_columns,$columns_to_hide){
 
   return $default_hidden_columns;
 }
+
+// This method is a wrapper to 2 methods in the feature model i.e. table_hidden_columns and master_table_hidden_columns
+// When the $table_as_master argument is passed as true this method becomes a wrapper to master_table_hidden_columns whereas by
+// default it's a wrapper to table_hidden_columns
+// Supplying the $table_name argument switches between master feature model to detail model
 
 function table_hidden_columns($table_name = "", $table_as_master = false){
   $model = $this->load_detail_model($table_name);
@@ -108,27 +156,6 @@ function get_all_table_fields($table_name = ""){
   return $this->CI->grants_model->get_all_table_fields($table_name);
 }
 
-function camel_case_header($table,$hidden_columns = array()){
-
-  $headers = $this->table_columns($table,$hidden_columns);
-
-
-  $sanitized_headers = array();
-
-  foreach ($headers as $header) {
-
-      //check if _id is part of the last part of the string and remove the _id
-      if(substr($header,-3) == '_id'){
-          $header = substr($header, 0, -3);
-      }
-
-      $sanitized_headers[] = ucwords(str_replace('_',' ',$header));
-  }
-
-  return $sanitized_headers;
-
-}
-
 function table_columns($table,$hidden_columns = array()){
 
   $all_columns = $this->CI->grants_model->get_all_table_fields($table);
@@ -164,16 +191,6 @@ function table_columns($table,$hidden_columns = array()){
   return $columns_to_display;
 }
 
-function load_detail_model($table_name = ""){
-  $model =  $this->current_model;
-
-  if($table_name !== ""){
-    $model = $table_name.'_model';
-    $this->CI->load->model($model);
-  }
-
-  return $model;
-}
 
 function switch_query_result_source($table_name = "",$force_action_to = ""){
   //$model = $table_name == ""?$this->current_model:$table_name.'_model';
@@ -231,5 +248,13 @@ function list_result($table_name = "",$force_action_to = ""){
 
 function view_result(){
     return $this->switch_query_result_source();
+  }
+
+  function edit_result(){
+
+  }
+
+  function add_result(){
+
   }
 }

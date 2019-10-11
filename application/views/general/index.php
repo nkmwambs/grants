@@ -29,13 +29,13 @@
 		<div class="main-content">
 
 			<?php include 'header.php';?>
-				
+
 					<div class="row">
 						<div class="col-xs-6">
-							<h3 style="" class="pull-left">
+							<h5 style="" class="pull-left">
 						       <i class="entypo-right-circled"></i>
-									<?php echo $page_title;?>
-						    </h3>
+									<?php include 'breadcrumb.php'?>
+						    </h5>
 						  </div>
 
 						  <div class="col-xs-6 pull-right;">

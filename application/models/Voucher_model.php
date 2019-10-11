@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Voucher_model extends MY_Model
+class Voucher_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'voucher'; // you MUST mention the table name
   public $primary_key = 'voucher_id'; // you MUST mention the primary key
@@ -21,12 +21,22 @@ class Voucher_model extends MY_Model
 
   }
 
-  function index(){
+  function index(){}
 
-  }
+  public function lookup_tables(){}
 
-  function list(){
-    
-  }
+  public function detail_tables(){}
+
+  public function table_visible_columns(){}
+
+  public function table_hidden_columns(){}
+
+  public function master_table_visible_columns(){}
+
+  public function master_table_hidden_columns(){}
+
+  public function list(){}
+
+  public function view(){}
 
 }

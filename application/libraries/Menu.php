@@ -220,4 +220,22 @@ class Menu {
 
       return $nav;
     }
+
+    function create_breadcrumb(){
+
+        $breadcrumb_list = $this->CI->session->breadcrumb_list;
+
+        if( $this->CI->uri->segment(2,'list') == 'list' ){
+          $this->CI->session->set_userdata('breadcrumb_list',array($this->CI->uri->segment(1,'')));
+        }
+
+        if(array_pop($breadcrumb_list) !== $this->CI->uri->segment(1,'') ){
+          $breadcrumb_list = $this->CI->session->breadcrumb_list;
+          $new = array($this->CI->uri->segment(1,'') );
+          $breadcrumb_list = array_merge($breadcrumb_list,$new);
+
+          $this->CI->session->set_userdata('breadcrumb_list', $breadcrumb_list );
+        }
+
+    }
 }

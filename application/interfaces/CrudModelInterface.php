@@ -6,11 +6,9 @@ interface CrudModelInterface {
 
   //public function create();
 
-  //public function view();
-
   //public function update();
 
-  //public function delete();
+  public function delete($id);
 
   public function list();
 

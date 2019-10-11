@@ -32,11 +32,11 @@ public $auth;
     }
 
 
-    function list_page_name(){
+    function page_name(){
       return 'dashboard';
     }
 
-    function list_page_title(){
+    function page_title(){
       return "Dashboard";
     }
 
