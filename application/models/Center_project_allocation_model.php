@@ -8,9 +8,9 @@
  *	NKarisa@ke.ci.org
  */
 
-class Center_bank_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Center_project_allocation_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'center_bank'; // you MUST mention the table name
+  public $table = 'center_project_allocation_model'; // you MUST mention the table name
 
 
   function __construct(){
@@ -19,9 +19,7 @@ class Center_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
   function index(){}
 
-  public function lookup_tables(){
-    return array('center','bank_branch');
-  }
+  public function lookup_tables(){}
 
   public function detail_tables(){}
 

@@ -69,6 +69,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
 
       foreach ($result['detail'] as $detail_table_name => $details) {
         extract($details);
+
         $primary_key_column = array_shift($keys);
         ?>
 
@@ -79,10 +80,10 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
             <?=add_record_button($detail_table_name);?>
           </div>
         </div>
-
           <table class="table table-striped datatable_details">
             <thead>
-              <tr><th colspan="<?=count($keys);?>"><?=ucwords(str_replace("_"," ",$detail_table_name));?></th></tr>
+              <!--Add one to count of keys because of the action column that has been added in this view s-->
+              <tr><th colspan="<?=count($keys) + 1;?>"><?=ucwords(str_replace("_"," ",$detail_table_name));?></th></tr>
               <?=render_list_table_header($detail_table_name,$keys);?>
             </thead>
             <tbody>

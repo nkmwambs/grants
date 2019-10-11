@@ -9,20 +9,33 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approval_status_model extends MY_Model
+class Approval_status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'approval_status'; // you MUST mention the table name
-  public $primary_key = 'approval_status_id'; // you MUST mention the primary key
-  public $fillable = array(); // If you want, you can set an array with the fields that can be filled by insert/update
-  public $protected = array(); // ...Or you can set an array with the fields that cannot be filled by insert/update
-
 
   function __construct(){
     parent::__construct();
-    $this->load->database();
 
   }
 
   function index(){}
 
 }
+
+public function lookup_tables(){}
+
+public function detail_tables(){
+
+}
+
+public function table_visible_columns(){}
+
+public function table_hidden_columns(){}
+
+public function master_table_visible_columns(){}
+
+public function master_table_hidden_columns(){}
+
+public function list(){}
+
+public function view(){}
