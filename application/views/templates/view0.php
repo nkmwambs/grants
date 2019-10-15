@@ -1,16 +1,11 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-print_r($result);
-
-extract($result['master']);
 
 //Remove the primary key field from the master table
-$master_primary_key = $table_body[$this->controller.'_id'];
-unset($table_body[$this->controller.'_id']);
-unset($keys[array_search($this->controller.'_id',$keys)]);
+unset($result['master'][$this->controller.'_id']);
 
 // Make the master detail table have columns as per the config
-$columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
-
+$columns = array_chunk($result['master'],$this->config->item('master_table_columns'),true);
+//print_r($result);
 ?>
 
 <div class="row">
@@ -27,35 +22,33 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
             <tr>
           <?php
               //$primary_table_name = "";
-              foreach ($row as $column) {
-                $column_value = $table_body[$column];
-                //$lookup_table_primary_key = "";
+              foreach ($row as $column_label => $column_value) {
                 // Do not show deleted at column
-                if( strpos($column,'_deleted_at') == true) continue;
+                if( strpos($column_label,'_deleted_at') == true) continue;
 
-                if(strpos($column,'_created_by') == true){
-                    $column_value = $table_body['created_by'];
+                if(strpos($column_label,'_created_by') == true){
+                    $column_value = $result['created_by'];
                 }
 
-                if(strpos($column,'_last_modified_by') == true ){
-                    $column_value = $table_body['last_modified_by'];
+                if(strpos($column_label,'_last_modified_by') == true ){
+                    $column_value = $result['last_modified_by'];
                 }
 
-                if(strpos($column,'_id') == true ){
+                if(strpos($column_label,'_id') == true ){
                     continue;
                 }
 
           ?>
                 <td>
-                  <span style="font-weight:bold;"><?=ucwords(str_replace("_"," ",$column));?>:</span> &nbsp;
+                  <span style="font-weight:bold;"><?=ucwords(str_replace("_"," ",$column_label));?>:</span> &nbsp;
                   <?php
-                    if(strpos($column,'is_active')){
+                    if(strpos($column_label,'is_active')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');
 
-                    }elseif(strpos($column,'_name') && substr($column,0,-5) !== $table_name ){
-                        $primary_table_name = substr($column,0,-5);
+                    }elseif(strpos($column_label,'_name') && substr($column_label,0,-5) !== $result['master_table_name'] ){
+                        $primary_table_name = substr($column_label,0,-5);
                         //echo $primary_table_name;
-                        $lookup_table_id = $table_body[$primary_table_name.'_id'];
+                        $lookup_table_id = $result['master'][$primary_table_name.'_id'];
                         echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.$column_value.'</a>';
                     }else{
                       echo $column_value;
@@ -86,7 +79,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <div class="row" style="margin-bottom:25px;">
           <div class="col-xs-12" style="text-align:center;">
-            <?=add_record_button($detail_table_name,$has_details_table);?>
+            <?=add_record_button($detail_table_name,$has_details);?>
           </div>
         </div>
           <table class="table table-striped datatable_details">
@@ -96,7 +89,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               <?=render_list_table_header($detail_table_name,$keys);?>
             </thead>
             <tbody>
-              <?php foreach ($table_body as $row) { ?>
+              <?php foreach ($details['table_body'] as $row) { ?>
                 <tr>
                   <td nowrap="nowrap">
                     <?=list_table_edit_action($detail_table_name,$row[$detail_table_name.'_id']);?> &nbsp;
@@ -111,7 +104,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
                           <?php
                           if(isset($row[$column])){
-                            if(strpos($column,'track_number') == true && $has_details_table == 1 ){
+                            if(strpos($column,'track_number') == true && $details['has_details'] == 1 ){
                               echo '<a href="'.base_url().strtolower($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";

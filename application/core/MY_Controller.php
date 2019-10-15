@@ -118,7 +118,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $this->load->library($lib);
 
-    echo json_encode($this->$lib->detail_row_fields());
+    echo json_encode($this->$lib->detail_row_fields($fields));
   }
 
 }

@@ -7,36 +7,21 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 DROP TABLE IF EXISTS `approval`;
 CREATE TABLE `approval` (
-  `approval_id` int(100) NOT NULL AUTO_INCREMENT,
-  `approval_track_number` varchar(50) DEFAULT NULL,
-  `fk_approveable_item_id` int(100) DEFAULT NULL,
-  `approval_approveable_table_primary_key` varchar(45) DEFAULT NULL COMMENT 'This is a special foreign key in this table but a primary key in either voucher, request, or budget etc',
-  `fk_approval_status_id` int(100) DEFAULT NULL,
-  `approval_approved_by` varchar(45) DEFAULT NULL,
-  `approval_created_date` varchar(45) DEFAULT NULL,
-  `approval_created_by` int(100) DEFAULT NULL,
-  `approval_last_modified_date` date DEFAULT NULL,
-  `approval_last_modified_by` int(100) DEFAULT NULL,
+  `approval_id` int(11) NOT NULL AUTO_INCREMENT,
+  `approval_track_number` varchar(100) NOT NULL,
+  `approval_name` varchar(100) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  `approval_created_by` int(100) NOT NULL,
+  `approval_created_date` date NOT NULL,
+  `approval_last_modified_date` date NOT NULL,
+  `approval_last_modified_by` int(100) NOT NULL,
   PRIMARY KEY (`approval_id`),
-  UNIQUE KEY `track_number_UNIQUE` (`approval_track_number`),
-  KEY `fk_approval_approveable_item1_idx` (`fk_approveable_item_id`),
-  KEY `fk_approval_approval_status1_idx` (`fk_approval_status_id`),
-  CONSTRAINT `fk_approval_approval_status1` FOREIGN KEY (`fk_approval_status_id`) REFERENCES `approval_status` (`approval_status_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_approval_approveable_item1` FOREIGN KEY (`fk_approveable_item_id`) REFERENCES `approveable_item` (`approveable_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_status_id` (`fk_status_id`),
+  CONSTRAINT `approval_ibfk_2` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `approval` (`approval_id`, `approval_track_number`, `fk_approveable_item_id`, `approval_approveable_table_primary_key`, `fk_approval_status_id`, `approval_approved_by`, `approval_created_date`, `approval_created_by`, `approval_last_modified_date`, `approval_last_modified_by`) VALUES
-(1,	'APR-7856',	1,	'2',	2,	NULL,	NULL,	NULL,	NULL,	NULL),
-(2,	'APR-7494',	2,	'1',	1,	NULL,	NULL,	NULL,	NULL,	NULL);
-
-DELIMITER ;;
-
-CREATE TRIGGER `approval_AFTER_UPDATE` AFTER UPDATE ON `approval` FOR EACH ROW
-BEGIN
-
-END;;
-
-DELIMITER ;
+INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`, `fk_status_id`, `approval_created_by`, `approval_created_date`, `approval_last_modified_date`, `approval_last_modified_by`) VALUES
+(2,	'APR-86383',	'Approval 1',	1,	1,	'2019-10-13',	'2019-10-13',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -60,40 +45,56 @@ DROP TABLE IF EXISTS `approval_status`;
 CREATE TABLE `approval_status` (
   `approval_status_id` int(100) NOT NULL AUTO_INCREMENT,
   `approval_status_name` varchar(45) DEFAULT NULL,
-  `is_active` int(5) DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `approveable_item_id` int(100) DEFAULT NULL,
-  `approval_sequence` int(5) DEFAULT NULL,
-  `approver_role_id` int(100) DEFAULT NULL,
+  `fk_approveable_item_id` int(100) DEFAULT NULL,
+  `approval_status_approval_sequence` int(5) DEFAULT NULL,
+  `fk_role_id` int(100) DEFAULT NULL,
+  `approval_status_is_active` int(5) DEFAULT NULL,
+  `approval_status_last_modified_date` date DEFAULT NULL,
+  `approval_status_created_by` int(100) DEFAULT NULL,
+  `approval_status_created_date` date DEFAULT NULL,
   PRIMARY KEY (`approval_status_id`),
-  KEY `fk_approval_status_role1_idx` (`approver_role_id`),
-  KEY `fk_approval_status_approveable_item1_idx` (`approveable_item_id`),
-  CONSTRAINT `fk_approval_status_approveable_item1` FOREIGN KEY (`approveable_item_id`) REFERENCES `approveable_item` (`approveable_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_approval_status_role1` FOREIGN KEY (`approver_role_id`) REFERENCES `role` (`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_approval_status_role1_idx` (`fk_role_id`),
+  KEY `fk_approval_status_approveable_item1_idx` (`fk_approveable_item_id`),
+  CONSTRAINT `fk_approval_status_approveable_item1` FOREIGN KEY (`fk_approveable_item_id`) REFERENCES `approveable_item` (`approveable_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_approval_status_role1` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `approval_status` (`approval_status_id`, `approval_status_name`, `is_active`, `last_modified_date`, `created_by`, `created_date`, `approveable_item_id`, `approval_sequence`, `approver_role_id`) VALUES
-(1,	'New',	1,	NULL,	NULL,	NULL,	1,	1,	1),
-(2,	'Submitted',	1,	NULL,	NULL,	NULL,	1,	2,	1),
-(3,	'Approved',	1,	NULL,	NULL,	NULL,	1,	3,	1);
+INSERT INTO `approval_status` (`approval_status_id`, `approval_status_name`, `fk_approveable_item_id`, `approval_status_approval_sequence`, `fk_role_id`, `approval_status_is_active`, `approval_status_last_modified_date`, `approval_status_created_by`, `approval_status_created_date`) VALUES
+(1,	'New',	1,	1,	1,	1,	'2019-10-13',	1,	'2019-10-13'),
+(2,	'Submitted',	1,	2,	1,	1,	'2019-10-13',	1,	'2019-10-13'),
+(3,	'Approved',	1,	3,	1,	1,	'2019-10-13',	1,	'2019-10-13');
 
 DROP TABLE IF EXISTS `approveable_item`;
 CREATE TABLE `approveable_item` (
   `approveable_item_id` int(100) NOT NULL AUTO_INCREMENT,
   `approveable_item_name` varchar(45) DEFAULT NULL,
-  `is_active` varchar(45) DEFAULT NULL,
-  `created_by` varchar(45) DEFAULT NULL,
-  `created_date` varchar(45) DEFAULT NULL,
-  `last_modified_date` varchar(45) DEFAULT NULL,
-  `last_modified_by` varchar(45) DEFAULT NULL,
+  `approveable_item_is_active` int(5) DEFAULT NULL,
+  `approveable_item_created_by` int(100) DEFAULT NULL,
+  `approveable_item_created_date` date DEFAULT NULL,
+  `approveable_item_last_modified_date` date DEFAULT NULL,
+  `approveable_item_last_modified_by` int(100) DEFAULT NULL,
   PRIMARY KEY (`approveable_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `approveable_item` (`approveable_item_id`, `approveable_item_name`, `is_active`, `created_by`, `created_date`, `last_modified_date`, `last_modified_by`) VALUES
-(1,	'request',	'1',	NULL,	NULL,	NULL,	NULL),
-(2,	'voucher',	'1',	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `approveable_item` (`approveable_item_id`, `approveable_item_name`, `approveable_item_is_active`, `approveable_item_created_by`, `approveable_item_created_date`, `approveable_item_last_modified_date`, `approveable_item_last_modified_by`) VALUES
+(1,	'request',	1,	NULL,	NULL,	NULL,	NULL),
+(2,	'voucher',	1,	NULL,	NULL,	NULL,	NULL);
+
+DROP TABLE IF EXISTS `approve_item`;
+CREATE TABLE `approve_item` (
+  `approve_item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `approve_item_name` varchar(100) NOT NULL,
+  `approve_item_is_active` int(5) NOT NULL,
+  `approve_item_created_date` date NOT NULL,
+  `approve_item_created_by` int(100) NOT NULL,
+  `approve_item_last_modified_date` date NOT NULL,
+  `approve_item_last_modified_by` int(100) NOT NULL,
+  PRIMARY KEY (`approve_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `approve_item` (`approve_item_id`, `approve_item_name`, `approve_item_is_active`, `approve_item_created_date`, `approve_item_created_by`, `approve_item_last_modified_date`, `approve_item_last_modified_by`) VALUES
+(1,	'request',	1,	'0000-00-00',	0,	'0000-00-00',	0),
+(2,	'voucher',	1,	'0000-00-00',	0,	'0000-00-00',	0);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -148,52 +149,52 @@ CREATE TABLE `budget` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the budget items by activity';
 
 INSERT INTO `budget` (`budget_id`, `budget_track_number`, `budget_name`, `fk_center_id`, `budget_year`, `budget_created_by`, `budget_created_date`, `budget_last_modified_by`, `budget_last_modified_date`) VALUES
-(1,	'BGT-74846',	'FY 19/20 Budget',	1,	2019,	NULL,	NULL,	NULL,	NULL);
+(1,	'BGT-74846',	'FY 19/20 Budget',	1,	2019,	1,	'2019-10-09',	1,	'2019-10-09');
 
-DROP TABLE IF EXISTS `budget_detail`;
-CREATE TABLE `budget_detail` (
-  `budget_detail_id` int(100) NOT NULL AUTO_INCREMENT,
-  `budget_detail_track_number` varchar(100) DEFAULT NULL,
+DROP TABLE IF EXISTS `budget_item`;
+CREATE TABLE `budget_item` (
+  `budget_item_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_item_track_number` varchar(100) DEFAULT NULL,
   `fk_budget_id` int(100) DEFAULT NULL,
   `fk_expense_account_id` int(100) DEFAULT NULL,
-  `budget_detail_description` varchar(45) DEFAULT NULL,
+  `budget_item_description` varchar(45) DEFAULT NULL,
   `fk_approval_status_id` int(100) DEFAULT NULL,
-  `fk_center_project_allocation` int(100) DEFAULT NULL,
-  `budget_detail_note` longtext,
-  `budget_detail_created_by` int(100) DEFAULT NULL,
-  `budget_detail_last_modified_by` int(100) DEFAULT NULL,
-  `budget_detail_created_date` date DEFAULT NULL,
-  `budget_detail_last_modified_date` date DEFAULT NULL,
-  PRIMARY KEY (`budget_detail_id`),
+  `fk_project_allocation_id` int(100) DEFAULT NULL,
+  `budget_item_note` longtext,
+  `budget_item_created_by` int(100) DEFAULT NULL,
+  `budget_item_last_modified_by` int(100) DEFAULT NULL,
+  `budget_item_created_date` date DEFAULT NULL,
+  `budget_item_last_modified_date` date DEFAULT NULL,
+  PRIMARY KEY (`budget_item_id`),
   KEY `fk_budget_detail_id_expense_account_id_idx` (`fk_expense_account_id`),
   KEY `fk_budget_detail_budget_id_idx` (`fk_budget_id`),
-  KEY `fk_budget_detail_center_project_allocation1_idx` (`fk_center_project_allocation`),
+  KEY `fk_project_allocation_id` (`fk_project_allocation_id`),
+  CONSTRAINT `budget_item_ibfk_1` FOREIGN KEY (`fk_project_allocation_id`) REFERENCES `project_allocation` (`project_allocation_id`),
   CONSTRAINT `fk_budget_detail_budget_id` FOREIGN KEY (`fk_budget_id`) REFERENCES `budget` (`budget_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  CONSTRAINT `fk_budget_detail_center_project_allocation1` FOREIGN KEY (`fk_center_project_allocation`) REFERENCES `center_project_allocation` (`center_project_allocation_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_budget_detail_id_expense_account_id` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This hold activties and their budgeted cost';
 
-INSERT INTO `budget_detail` (`budget_detail_id`, `budget_detail_track_number`, `fk_budget_id`, `fk_expense_account_id`, `budget_detail_description`, `fk_approval_status_id`, `fk_center_project_allocation`, `budget_detail_note`, `budget_detail_created_by`, `budget_detail_last_modified_by`, `budget_detail_created_date`, `budget_detail_last_modified_date`) VALUES
-(1,	'BGD-87688',	1,	1,	'Executive Salaries',	1,	2,	'These are executive salaries',	1,	1,	'2019-10-09',	'2019-10-09');
+INSERT INTO `budget_item` (`budget_item_id`, `budget_item_track_number`, `fk_budget_id`, `fk_expense_account_id`, `budget_item_description`, `fk_approval_status_id`, `fk_project_allocation_id`, `budget_item_note`, `budget_item_created_by`, `budget_item_last_modified_by`, `budget_item_created_date`, `budget_item_last_modified_date`) VALUES
+(1,	'BGD-87688',	1,	1,	'Executive Salaries',	1,	1,	'These are executive salaries',	1,	1,	'2019-10-09',	'2019-10-09');
 
-DROP TABLE IF EXISTS `budget_month_spread`;
-CREATE TABLE `budget_month_spread` (
-  `budget_month_spread_id` int(100) NOT NULL AUTO_INCREMENT,
-  `budget_month_spread_track_number` varchar(100) DEFAULT NULL,
-  `budget_month_spread_name` varchar(100) DEFAULT NULL,
-  `fk_budget_detail_id` int(100) DEFAULT NULL,
-  `budget_month_spread_month` int(5) DEFAULT NULL,
-  `budget_month_spread_amount` decimal(10,2) DEFAULT NULL,
-  `budget_month_spread_created_date` date DEFAULT NULL,
-  `budget_month_spread_created_by` int(100) DEFAULT NULL,
-  `budget_month_spread_last_modified_by` int(100) DEFAULT NULL,
-  `budget_month_spread_last_modified_date` date DEFAULT NULL,
-  PRIMARY KEY (`budget_month_spread_id`),
-  KEY `fk_budget_month_spread_budget_detail1_idx` (`fk_budget_detail_id`),
-  CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_detail_id`) REFERENCES `budget_detail` (`budget_detail_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+DROP TABLE IF EXISTS `budget_item_detail`;
+CREATE TABLE `budget_item_detail` (
+  `budget_item_detail_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_item_detail_track_number` varchar(100) DEFAULT NULL,
+  `budget_item_detail_name` varchar(100) DEFAULT NULL,
+  `fk_budget_item_id` int(100) DEFAULT NULL,
+  `fk_month_id` int(5) DEFAULT NULL,
+  `budget_item_detail_amount` decimal(10,2) DEFAULT NULL,
+  `budget_item_detail_created_date` date DEFAULT NULL,
+  `budget_item_detail_created_by` int(100) DEFAULT NULL,
+  `budget_item_detail_last_modified_by` int(100) DEFAULT NULL,
+  `budget_item_detail_last_modified_date` date DEFAULT NULL,
+  PRIMARY KEY (`budget_item_detail_id`),
+  KEY `fk_budget_month_spread_budget_detail1_idx` (`fk_budget_item_id`),
+  CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
-INSERT INTO `budget_month_spread` (`budget_month_spread_id`, `budget_month_spread_track_number`, `budget_month_spread_name`, `fk_budget_detail_id`, `budget_month_spread_month`, `budget_month_spread_amount`, `budget_month_spread_created_date`, `budget_month_spread_created_by`, `budget_month_spread_last_modified_by`, `budget_month_spread_last_modified_date`) VALUES
+INSERT INTO `budget_item_detail` (`budget_item_detail_id`, `budget_item_detail_track_number`, `budget_item_detail_name`, `fk_budget_item_id`, `fk_month_id`, `budget_item_detail_amount`, `budget_item_detail_created_date`, `budget_item_detail_created_by`, `budget_item_detail_last_modified_by`, `budget_item_detail_last_modified_date`) VALUES
 (1,	'BTS-89382',	'Month 1',	1,	1,	24000.00,	'2019-10-09',	1,	1,	'2019-10-09'),
 (2,	'BTS-89383',	'Month 2',	1,	2,	45000.00,	'2019-10-09',	1,	1,	'2019-10-09'),
 (3,	'BTS-89383',	'Month 3',	1,	3,	17400.00,	'2019-10-09',	1,	1,	'2019-10-09');
@@ -285,30 +286,6 @@ CREATE TABLE `center_group_link` (
 
 INSERT INTO `center_group_link` (`center_group_link_id`, `center_id`, `center_group_id`, `user_id`, `created_date`, `last_modified_date`, `deleted_date`, `created_by`, `last_modified_by`, `center_group_link_name`) VALUES
 (1,	1,	1,	1,	'2019-09-27',	'2019-09-27',	NULL,	1,	1,	'Central Cluster');
-
-DROP TABLE IF EXISTS `center_project_allocation`;
-CREATE TABLE `center_project_allocation` (
-  `center_project_allocation_id` int(11) NOT NULL AUTO_INCREMENT,
-  `center_project_allocation_track_number` varchar(100) DEFAULT NULL,
-  `fk_project_id` int(100) DEFAULT NULL,
-  `center_project_allocation_name` varchar(100) DEFAULT NULL,
-  `center_project_allocation_amount` decimal(10,2) DEFAULT NULL,
-  `center_project_allocation_is_active` int(5) NOT NULL DEFAULT '1',
-  `fk_center_id` int(100) DEFAULT NULL,
-  `center_project_allocation_extended_end_date` date DEFAULT NULL,
-  `center_project_allocation_created_date` date DEFAULT NULL,
-  `center_project_allocation_created_by` int(100) DEFAULT NULL,
-  `center_project_allocation_last_modified_by` int(100) DEFAULT NULL,
-  `center_project_allocation_last_modified_date` date DEFAULT NULL,
-  PRIMARY KEY (`center_project_allocation_id`),
-  KEY `fk_center_project_allocation_project1_idx` (`fk_project_id`),
-  KEY `fk_center_project_allocation_center1_idx` (`fk_center_id`),
-  CONSTRAINT `fk_center_project_allocation_center1` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_center_project_allocation_project1` FOREIGN KEY (`fk_project_id`) REFERENCES `project` (`project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table shows how each center has apportioned funds for a give project\n';
-
-INSERT INTO `center_project_allocation` (`center_project_allocation_id`, `center_project_allocation_track_number`, `fk_project_id`, `center_project_allocation_name`, `center_project_allocation_amount`, `center_project_allocation_is_active`, `fk_center_id`, `center_project_allocation_extended_end_date`, `center_project_allocation_created_date`, `center_project_allocation_created_by`, `center_project_allocation_last_modified_by`, `center_project_allocation_last_modified_date`) VALUES
-(2,	'CPA-76278',	4,	'Center Allocation for Project 4',	345000.00,	1,	1,	NULL,	'2019-10-09',	1,	1,	'2019-10-09');
 
 DROP TABLE IF EXISTS `chatable_table`;
 CREATE TABLE `chatable_table` (
@@ -417,6 +394,14 @@ CREATE TABLE `custom_field_type_option` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `dashboard`;
+CREATE TABLE `dashboard` (
+  `dashboard_id` int(100) NOT NULL AUTO_INCREMENT,
+  `dashboard_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`dashboard_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `expense_account`;
 CREATE TABLE `expense_account` (
   `expense_account_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -504,6 +489,14 @@ CREATE TABLE `income_account` (
 INSERT INTO `income_account` (`income_account_id`, `description`, `code`, `is_active`, `is_budgeted`, `is_donor_funded`, `created_date`, `last_modified_date`, `created_by`, `last_modified_by`) VALUES
 (1,	'Project Cost',	'PC',	1,	1,	1,	NULL,	NULL,	NULL,	NULL);
 
+DROP TABLE IF EXISTS `journal`;
+CREATE TABLE `journal` (
+  `journal_id` int(11) NOT NULL AUTO_INCREMENT,
+  `journal_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`journal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
   `language_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -576,21 +569,21 @@ CREATE TABLE `menu_user_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`, `menu_user_order_is_active`, `menu_user_order_level`, `menu_user_order_priority_item`, `menu_user_order_created_date`, `menu_user_order_last_modified_date`, `menu_user_order_created_by`, `menu_user_order_last_modified_by`) VALUES
-(16,	1,	1,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
-(17,	1,	2,	1,	7,	0,	NULL,	NULL,	NULL,	NULL),
-(18,	1,	3,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
-(19,	1,	4,	1,	4,	0,	NULL,	NULL,	NULL,	NULL),
-(20,	1,	5,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
-(21,	1,	6,	1,	6,	0,	NULL,	NULL,	NULL,	NULL),
-(22,	1,	7,	1,	5,	1,	NULL,	NULL,	NULL,	NULL),
-(23,	1,	8,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
-(24,	1,	9,	1,	9,	0,	NULL,	NULL,	NULL,	NULL),
-(25,	1,	10,	1,	10,	10,	NULL,	NULL,	NULL,	NULL),
-(26,	1,	11,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
-(27,	1,	12,	1,	12,	0,	NULL,	NULL,	NULL,	NULL),
-(28,	1,	13,	1,	13,	1,	NULL,	NULL,	NULL,	NULL),
-(29,	1,	14,	1,	14,	1,	NULL,	NULL,	NULL,	NULL),
-(30,	1,	15,	1,	15,	0,	NULL,	NULL,	NULL,	NULL),
+(16,	1,	1,	1,	16,	1,	NULL,	NULL,	NULL,	NULL),
+(17,	1,	2,	1,	17,	0,	NULL,	NULL,	NULL,	NULL),
+(18,	1,	3,	1,	18,	1,	NULL,	NULL,	NULL,	NULL),
+(19,	1,	4,	1,	19,	0,	NULL,	NULL,	NULL,	NULL),
+(20,	1,	5,	1,	20,	1,	NULL,	NULL,	NULL,	NULL),
+(21,	1,	6,	1,	21,	0,	NULL,	NULL,	NULL,	NULL),
+(22,	1,	7,	1,	22,	1,	NULL,	NULL,	NULL,	NULL),
+(23,	1,	8,	1,	23,	1,	NULL,	NULL,	NULL,	NULL),
+(24,	1,	9,	1,	24,	0,	NULL,	NULL,	NULL,	NULL),
+(25,	1,	10,	1,	25,	10,	NULL,	NULL,	NULL,	NULL),
+(26,	1,	11,	1,	26,	1,	NULL,	NULL,	NULL,	NULL),
+(27,	1,	12,	1,	27,	0,	NULL,	NULL,	NULL,	NULL),
+(28,	1,	13,	1,	28,	1,	NULL,	NULL,	NULL,	NULL),
+(29,	1,	14,	1,	29,	1,	NULL,	NULL,	NULL,	NULL),
+(30,	1,	15,	1,	30,	0,	NULL,	NULL,	NULL,	NULL),
 (31,	NULL,	1,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
 (32,	NULL,	2,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
 (33,	NULL,	3,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
@@ -643,10 +636,27 @@ CREATE TABLE `message_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `month`;
+CREATE TABLE `month` (
+  `month_id` int(11) NOT NULL AUTO_INCREMENT,
+  `month_number` int(5) NOT NULL,
+  `month_name` varchar(50) NOT NULL,
+  `month_created_by` int(100) NOT NULL,
+  `month_last_modified_by` int(100) NOT NULL,
+  `month_created_date` date NOT NULL,
+  `month_last_modified_date` date NOT NULL,
+  PRIMARY KEY (`month_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `month` (`month_id`, `month_number`, `month_name`, `month_created_by`, `month_last_modified_by`, `month_created_date`, `month_last_modified_date`) VALUES
+(1,	1,	'January',	0,	0,	'0000-00-00',	'0000-00-00'),
+(2,	2,	'February',	0,	0,	'0000-00-00',	'0000-00-00');
+
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `project_id` int(100) NOT NULL AUTO_INCREMENT,
   `project_track_number` varchar(100) DEFAULT NULL,
+  `project_name` varchar(100) DEFAULT NULL,
   `project_code` varchar(10) NOT NULL,
   `project_description` varchar(100) DEFAULT NULL,
   `project_start_date` date NOT NULL,
@@ -665,10 +675,30 @@ CREATE TABLE `project` (
   CONSTRAINT `fk_project_id_funder_id` FOREIGN KEY (`fk_funder_id`) REFERENCES `funder` (`funder_id`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A project is a single funded proposal that need to be implemented and reported as a unit. It''s related to single funder\n ';
 
-INSERT INTO `project` (`project_id`, `project_track_number`, `project_code`, `project_description`, `project_start_date`, `project_end_date`, `fk_funder_id`, `project_cost`, `fk_funding_status_id`, `project_created_by`, `project_last_modified_by`, `project_created_date`, `project_last_modified_date`) VALUES
-(4,	'PRJ-376374',	'WASH-01',	'WASH in Urban Homes',	'2019-10-07',	'2019-10-07',	1,	1563800.00,	1,	0,	0,	'0000-00-00',	'0000-00-00'),
-(5,	'PRJ-376374',	'LEGAL-56',	'Human Rights Cases Funding',	'2019-10-07',	'2019-10-07',	1,	3200340.00,	1,	0,	0,	'0000-00-00',	'0000-00-00'),
-(6,	'PRJ-767755',	'EDU-56',	'High School Scholarships',	'2019-10-07',	'2019-10-07',	2,	5600320.00,	1,	0,	0,	'0000-00-00',	'0000-00-00');
+INSERT INTO `project` (`project_id`, `project_track_number`, `project_name`, `project_code`, `project_description`, `project_start_date`, `project_end_date`, `fk_funder_id`, `project_cost`, `fk_funding_status_id`, `project_created_by`, `project_last_modified_by`, `project_created_date`, `project_last_modified_date`) VALUES
+(4,	'PRJ-376374',	'Project 1',	'WASH-01',	'WASH in Urban Homes',	'2019-10-07',	'2019-10-07',	1,	1563800.00,	1,	0,	0,	'0000-00-00',	'0000-00-00'),
+(5,	'PRJ-376374',	'Project 2',	'LEGAL-56',	'Human Rights Cases Funding',	'2019-10-07',	'2019-10-07',	1,	3200340.00,	1,	0,	0,	'0000-00-00',	'0000-00-00'),
+(6,	'PRJ-767755',	'Project 3',	'EDU-56',	'High School Scholarships',	'2019-10-07',	'2019-10-07',	2,	5600320.00,	1,	0,	0,	'0000-00-00',	'0000-00-00');
+
+DROP TABLE IF EXISTS `project_allocation`;
+CREATE TABLE `project_allocation` (
+  `project_allocation_id` int(100) NOT NULL AUTO_INCREMENT,
+  `project_allocation_track_number` varchar(100) DEFAULT NULL,
+  `fk_project_id` int(100) DEFAULT NULL,
+  `project_allocation_name` varchar(100) DEFAULT NULL,
+  `project_allocation_amount` decimal(10,2) DEFAULT NULL,
+  `project_allocation_is_active` int(5) DEFAULT NULL,
+  `fk_center_id` int(100) DEFAULT NULL,
+  `project_allocation_extended_end_date` date DEFAULT NULL,
+  `project_allocation_created_date` date DEFAULT NULL,
+  `project_allocation_last_modified_date` varchar(45) DEFAULT NULL,
+  `project_allocation_created_by` int(100) DEFAULT NULL,
+  `project_allocation_last_modified_by` int(100) DEFAULT NULL,
+  PRIMARY KEY (`project_allocation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `project_allocation` (`project_allocation_id`, `project_allocation_track_number`, `fk_project_id`, `project_allocation_name`, `project_allocation_amount`, `project_allocation_is_active`, `fk_center_id`, `project_allocation_extended_end_date`, `project_allocation_created_date`, `project_allocation_last_modified_date`, `project_allocation_created_by`, `project_allocation_last_modified_by`) VALUES
+(1,	'CPA-76278',	4,	'Center Allocation 1',	560000.00,	1,	1,	'2019-10-11',	NULL,	NULL,	1,	1);
 
 DROP TABLE IF EXISTS `project_cost_proportion`;
 CREATE TABLE `project_cost_proportion` (
@@ -682,8 +712,6 @@ CREATE TABLE `project_cost_proportion` (
   `center_project_allocation_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`project_cost_proportion_id`),
   KEY `fk_project_cost_proportion_voucher_detail1_idx` (`voucher_detail_id`),
-  KEY `fk_project_cost_proportion_center_project_allocation1_idx` (`center_project_allocation_id`),
-  CONSTRAINT `fk_project_cost_proportion_center_project_allocation1` FOREIGN KEY (`center_project_allocation_id`) REFERENCES `center_project_allocation` (`center_project_allocation_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_project_cost_proportion_voucher_detail1` FOREIGN KEY (`voucher_detail_id`) REFERENCES `voucher_detail` (`voucher_detail_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -713,6 +741,9 @@ DROP TABLE IF EXISTS `request`;
 CREATE TABLE `request` (
   `request_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_track_number` varchar(100) DEFAULT NULL,
+  `request_name` varchar(100) DEFAULT NULL,
+  `fk_center_id` int(100) DEFAULT NULL,
+  `fk_approval_id` int(11) DEFAULT NULL,
   `request_date` date DEFAULT NULL,
   `request_description` varchar(100) DEFAULT NULL,
   `request_created_date` date DEFAULT NULL,
@@ -720,27 +751,58 @@ CREATE TABLE `request` (
   `request_last_modified_by` varchar(45) DEFAULT NULL,
   `request_last_modified_date` date DEFAULT NULL,
   `request_deleted_at` date DEFAULT NULL,
-  PRIMARY KEY (`request_id`)
+  PRIMARY KEY (`request_id`),
+  KEY `fk_request_center2_idx` (`fk_center_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  CONSTRAINT `fk_request_center1` FOREIGN KEY (`request_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_request_center2` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `request_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `request` (`request_id`, `request_track_number`, `request_date`, `request_description`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
-(1,	NULL,	'2019-09-29',	'Test request 1',	NULL,	NULL,	NULL,	NULL,	NULL),
-(2,	NULL,	'2019-09-29',	'Test request 2',	NULL,	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_center_id`, `fk_approval_id`, `request_date`, `request_description`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
+(1,	'REQ-76867',	'Request 1',	1,	2,	'2019-09-29',	'Test request 1',	'2019-10-12',	'1',	'1',	'2019-10-12',	NULL),
+(2,	'REQ-86798',	'Request 2',	1,	2,	'2019-09-29',	'Test request 2',	'2019-10-12',	'1',	'1',	'2019-10-12',	NULL);
+
+DROP TABLE IF EXISTS `request_detail`;
+CREATE TABLE `request_detail` (
+  `request_detail_id` int(100) NOT NULL AUTO_INCREMENT,
+  `request_detail_track_number` varchar(100) DEFAULT NULL,
+  `fk_request_id` int(100) DEFAULT NULL,
+  `request_detail_description` varchar(45) DEFAULT NULL,
+  `request_detail_quantity` int(10) DEFAULT NULL,
+  `request_detail_unit_cost` decimal(10,2) DEFAULT NULL,
+  `request_detail_total_cost` decimal(10,2) DEFAULT NULL,
+  `fk_expense_account_id` int(100) DEFAULT NULL,
+  `request_detail_created_date` date DEFAULT NULL,
+  `request_detail_created_by` int(100) DEFAULT NULL,
+  `request_detail_last_modified_by` int(100) DEFAULT NULL,
+  `request_detail_last_modified_date` date DEFAULT NULL,
+  PRIMARY KEY (`request_detail_id`),
+  KEY `fk_request_detail_request1_idx` (`fk_request_id`),
+  KEY `fk_request_detail_expense_account1_idx` (`fk_expense_account_id`),
+  CONSTRAINT `fk_request_detail_expense_account1` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_request_detail_request1` FOREIGN KEY (`fk_request_id`) REFERENCES `request` (`request_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
+(1,	'RQD-67655',	1,	'Request 1 Detail 1',	1,	200.00,	200.00,	1,	'2019-10-13',	1,	1,	'2019-10-13'),
+(2,	'RQD-67668',	1,	'Request 1 Detail 2',	2,	800.00,	1600.00,	1,	'2019-10-13',	1,	1,	'2019-10-13');
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `role_id` int(100) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  `created_by` varchar(45) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `last_modified_by` varchar(45) DEFAULT NULL,
-  `deleted_at` date DEFAULT NULL,
+  `role_track_number` varchar(100) DEFAULT NULL,
+  `role_name` varchar(100) DEFAULT NULL,
+  `role_created_by` int(100) DEFAULT NULL,
+  `role_created_date` date DEFAULT NULL,
+  `role_last_modified_date` date DEFAULT NULL,
+  `role_last_modified_by` varchar(45) DEFAULT NULL,
+  `role_deleted_at` date DEFAULT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `role` (`role_id`, `name`, `created_by`, `created_date`, `last_modified_date`, `last_modified_by`, `deleted_at`) VALUES
-(1,	'Department Manager',	NULL,	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `role` (`role_id`, `role_track_number`, `role_name`, `role_created_by`, `role_created_date`, `role_last_modified_date`, `role_last_modified_by`, `role_deleted_at`) VALUES
+(1,	'ROL-65362',	'Department Manager',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -764,6 +826,45 @@ INSERT INTO `setting` (`setting_id`, `type`, `description`, `created_date`, `las
 (9,	'language',	'english',	NULL,	NULL,	NULL,	NULL,	NULL),
 (10,	'text_align',	'left-to-right',	NULL,	NULL,	NULL,	NULL,	NULL),
 (14,	'skin_colour',	'blue',	NULL,	NULL,	NULL,	NULL,	NULL);
+
+DROP TABLE IF EXISTS `status`;
+CREATE TABLE `status` (
+  `status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `status_name` varchar(50) NOT NULL,
+  `fk_approve_item_id` int(11) NOT NULL,
+  `status_approval_sequence` varchar(50) NOT NULL,
+  `fk_role_id` int(100) NOT NULL,
+  `status_created_date` date NOT NULL,
+  `status_created_by` int(100) NOT NULL,
+  `status_last_modified_date` date NOT NULL,
+  `status_last_modified_by` int(100) NOT NULL,
+  PRIMARY KEY (`status_id`),
+  KEY `fk_role_id` (`fk_role_id`),
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  CONSTRAINT `status_ibfk_1` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`),
+  CONSTRAINT `status_ibfk_2` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `status` (`status_id`, `status_name`, `fk_approve_item_id`, `status_approval_sequence`, `fk_role_id`, `status_created_date`, `status_created_by`, `status_last_modified_date`, `status_last_modified_by`) VALUES
+(1,	'New',	1,	'',	1,	'0000-00-00',	0,	'0000-00-00',	0),
+(2,	'Submitted',	1,	'',	1,	'0000-00-00',	0,	'0000-00-00',	0),
+(3,	'Approved',	1,	'',	1,	'0000-00-00',	0,	'0000-00-00',	0);
+
+DROP TABLE IF EXISTS `transaction_effect`;
+CREATE TABLE `transaction_effect` (
+  `transaction_effect_id` int(100) NOT NULL AUTO_INCREMENT,
+  `transaction_effect_name` varchar(100) DEFAULT NULL,
+  `transaction_effect_created_date` date DEFAULT NULL,
+  `transaction_effect_last_modified_date` date DEFAULT NULL,
+  `transaction_effect_deleted_date` date DEFAULT NULL,
+  `transaction_effect_created_by` int(100) DEFAULT NULL,
+  `transaction_effect_last_modified_by` int(100) DEFAULT NULL,
+  PRIMARY KEY (`transaction_effect_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `transaction_effect` (`transaction_effect_id`, `transaction_effect_name`, `transaction_effect_created_date`, `transaction_effect_last_modified_date`, `transaction_effect_deleted_date`, `transaction_effect_created_by`, `transaction_effect_last_modified_by`) VALUES
+(1,	'payment',	NULL,	NULL,	NULL,	NULL,	NULL),
+(2,	'revenue',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `translation`;
 CREATE TABLE `translation` (
@@ -898,7 +999,46 @@ INSERT INTO `user_access_level` (`user_access_level_id`, `controller_method`, `c
 (209,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
 (210,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
 (211,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(212,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL);
+(212,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(213,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(214,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(215,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(216,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(217,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(218,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(219,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(220,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(221,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(222,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(223,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(224,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(225,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(226,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(227,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(228,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(229,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(230,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(231,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(232,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(233,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(234,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(235,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(236,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(237,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(238,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(239,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(240,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(241,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(242,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(243,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(244,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(245,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(246,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(247,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(248,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(249,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(250,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
+(251,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `user_priviledge`;
 CREATE TABLE `user_priviledge` (
@@ -940,8 +1080,9 @@ DROP TABLE IF EXISTS `voucher`;
 CREATE TABLE `voucher` (
   `voucher_id` int(100) NOT NULL,
   `voucher_track_number` varchar(50) DEFAULT NULL,
+  `voucher_number` int(10) DEFAULT NULL,
   `fk_center_id` int(100) DEFAULT NULL,
-  `voucher_date` varchar(45) DEFAULT NULL,
+  `voucher_date` date DEFAULT NULL,
   `fk_voucher_type_id` int(100) DEFAULT NULL,
   `voucher_cheque_number` int(100) DEFAULT NULL,
   `voucher_transaction_cleared_date` date DEFAULT NULL,
@@ -958,58 +1099,55 @@ CREATE TABLE `voucher` (
   KEY `fk_voucher_voucher_type1_idx` (`fk_voucher_type_id`),
   CONSTRAINT `fk_voucher_center1` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_voucher_voucher_type1` FOREIGN KEY (`fk_voucher_type_id`) REFERENCES `voucher_type` (`voucher_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions \n';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
   `voucher_detail_id` int(100) NOT NULL,
-  `voucher_id` int(100) DEFAULT NULL,
-  `income_expense_account_id` int(100) DEFAULT NULL COMMENT 'Can be income_account_id or expense_account_id depending on the selected voucher type',
-  `quantity` varchar(45) DEFAULT NULL,
-  `unit_cost` varchar(45) DEFAULT NULL,
-  `total_cost` varchar(45) DEFAULT NULL,
-  `description` varchar(45) DEFAULT NULL,
-  `last_modified_date` varchar(45) DEFAULT NULL,
-  `last_modified_by` varchar(45) DEFAULT NULL,
-  `request_detail_id` int(100) DEFAULT NULL,
+  `voucher_detail_track_number` varchar(100) DEFAULT NULL,
+  `fk_voucher_id` int(100) DEFAULT NULL,
+  `voucher_detail_description` varchar(45) DEFAULT NULL,
+  `voucher_detail_quantity` int(10) DEFAULT NULL,
+  `voucher_detail_unit_cost` decimal(10,2) DEFAULT NULL,
+  `voucher_detail_total_cost` decimal(10,2) DEFAULT NULL,
+  `voucher_detail_account` int(100) DEFAULT NULL COMMENT 'Can be income_account_id or expense_account_id depending on the selected voucher type',
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_project_allocation_id` int(100) DEFAULT NULL,
+  `voucher_detail_last_modified_date` date DEFAULT NULL,
+  `voucher_detail_last_modified_by` varchar(45) DEFAULT NULL,
+  `voucher_detail_created_by` int(100) DEFAULT NULL,
+  `voucher_detail_created_date` date DEFAULT NULL,
   PRIMARY KEY (`voucher_detail_id`),
-  KEY `fk_voucher_detail_voucher1_idx` (`voucher_id`),
-  KEY `fk_voucher_detail_request_detail1_idx` (`request_detail_id`),
-  CONSTRAINT `fk_voucher_detail_request_detail1` FOREIGN KEY (`request_detail_id`) REFERENCES `request_detail` (`request_detail_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_voucher_detail_voucher1` FOREIGN KEY (`voucher_id`) REFERENCES `voucher` (`voucher_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_voucher_detail_voucher1_idx` (`fk_voucher_id`),
+  KEY `fk_voucher_detail_request_detail1_idx` (`fk_approval_id`),
+  CONSTRAINT `voucher_detail_ibfk_1` FOREIGN KEY (`fk_voucher_id`) REFERENCES `voucher` (`voucher_id`),
+  CONSTRAINT `voucher_detail_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `request_detail` (`request_detail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  `is_active` varchar(45) DEFAULT NULL,
-  `created_by` varchar(45) DEFAULT NULL,
-  `created_date` varchar(45) DEFAULT NULL,
-  `last_modified_by` varchar(45) DEFAULT NULL,
-  `last_modified_date` varchar(45) DEFAULT NULL,
+  `voucher_type_name` varchar(45) DEFAULT NULL,
+  `voucher_type_is_active` int(5) DEFAULT NULL,
   `voucher_type_cash_account` varchar(20) DEFAULT NULL COMMENT 'Can either be bank or cash',
-  `voucher_type_transaction_effect_id` int(100) DEFAULT NULL COMMENT 'Can be payment or revenue',
+  `voucher_type_transaction_effect` varchar(20) DEFAULT NULL COMMENT 'Can be payment or revenue',
+  `voucher_type_created_by` int(100) DEFAULT NULL,
+  `voucher_type_created_date` date DEFAULT NULL,
+  `voucher_type_last_modified_by` int(100) DEFAULT NULL,
+  `voucher_type_last_modified_date` date DEFAULT NULL,
   PRIMARY KEY (`voucher_type_id`),
-  KEY `fk_voucher_type_voucher_type_transaction_effect1_idx` (`voucher_type_transaction_effect_id`),
-  CONSTRAINT `fk_voucher_type_voucher_type_transaction_effect1` FOREIGN KEY (`voucher_type_transaction_effect_id`) REFERENCES `voucher_type_transaction_effect` (`voucher_type_transaction_effect_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_voucher_type_voucher_type_transaction_effect1_idx` (`voucher_type_transaction_effect`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-DROP TABLE IF EXISTS `voucher_type_transaction_effect`;
-CREATE TABLE `voucher_type_transaction_effect` (
-  `voucher_type_transaction_effect_id` int(100) NOT NULL,
-  `voucher_type_transaction_effect_name` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`voucher_type_transaction_effect_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+INSERT INTO `voucher_type` (`voucher_type_id`, `voucher_type_name`, `voucher_type_is_active`, `voucher_type_cash_account`, `voucher_type_transaction_effect`, `voucher_type_created_by`, `voucher_type_created_date`, `voucher_type_last_modified_by`, `voucher_type_last_modified_date`) VALUES
+(2,	'Payment by Cash',	1,	'cash',	'payment',	NULL,	NULL,	NULL,	NULL),
+(3,	'Bank payment',	1,	'bank',	'payment',	NULL,	NULL,	NULL,	NULL),
+(4,	'Petty Cash Top Up',	1,	'cash',	'revenue',	NULL,	NULL,	NULL,	NULL),
+(5,	'Bank Cash Received',	1,	'bank',	'revenue',	NULL,	NULL,	NULL,	NULL),
+(6,	'Bank Charges',	1,	'bank',	'payment',	NULL,	NULL,	NULL,	NULL),
+(7,	'Bank Interest Receiveable',	1,	'bank',	'revenue',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
@@ -1024,4 +1162,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-10-09 15:55:56
+-- 2019-10-15 11:47:21

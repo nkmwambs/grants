@@ -9,9 +9,9 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approval_status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'approval_status'; // you MUST mention the table name
+  public $table = 'status'; // you MUST mention the table name
 
   function __construct(){
     parent::__construct();

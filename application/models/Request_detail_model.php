@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Request_detail_model extends MY_Model
+class Request_detail_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'request_detail'; // you MUST mention the table name
 
@@ -24,19 +24,39 @@ class Request_detail_model extends MY_Model
 
   public function detail_tables(){}
 
-  public function table_visible_columns(){
-    return array('request_detail_description','request_detail_quantity','request_detail_unit_cost',
-    'request_detail_total_cost','expense_account_name');
-  }
+    public function master_table_visible_columns(){}
 
-  public function table_hidden_columns(){}
+    public function master_table_hidden_columns(){}
 
-  public function master_table_visible_columns(){}
+    public function list_table_visible_columns(){}
 
-  public function master_table_hidden_columns(){}
+    public function list_table_hidden_columns(){}
 
-  public function list(){}
+    public function detail_list_table_visible_columns(){}
 
-  public function view(){}
+    public function detail_list_table_hidden_columns(){}
+
+    public function single_form_add_visible_columns(){}
+
+    public function single_form_add_hidden_columns(){}
+
+    public function master_multi_form_add_visible_columns(){}
+
+    public function detail_multi_form_add_visible_columns(){
+      return array('request_detail_description','request_detail_quantity','request_detail_unit_cost',
+      'request_detail_total_cost');
+    }
+
+    public function master_multi_form_add_hidden_columns(){}
+
+    public function detail_multi_form_add_hidden_columns(){}
+
+    function detail_list(){}
+
+    function master_view(){}
+
+    public function list(){}
+
+    public function view(){}
 
 }

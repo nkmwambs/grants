@@ -21,57 +21,41 @@ class Funder_model extends MY_Model implements CrudModelInterface, TableRelation
 
   function index(){}
 
+    public function lookup_tables(){}
 
-  //This method overrides the My_Model table_hidden_columns. Calling it with empty body entirely does away with the
-  //set default hidden columns i.e. all columns will be vieable as it is from the table.
-  // It works for the listing views for both simple and master-details
+    public function detail_tables(){
+      return array('project');
+    }
 
-  function table_hidden_columns(){
-    //$default_hidden_columns = parent::table_hidden_columns();
-    //$columns_to_show =  array('funder_created_date','funder_last_modified_date');
-    //Unset default hidden columns
-    //return $this->grants->unset_default_hidden_columns($default_hidden_columns,$columns_to_show);
-  }
+    public function master_table_visible_columns(){}
 
-  // This method when implemented overwites the any implementation of table_hidden_columns and allows the
-  // setting of columns to be shown on tables
-  // It works for the listing views for both simple and master-details
-  function table_visible_columns(){
+    public function master_table_hidden_columns(){}
 
-  }
+    public function list_table_visible_columns(){}
 
-  //List as an array all columns that should be seen in the master table of the master-detail view.
-  // It has a priority over the master_table_hidden_columns method
+    public function list_table_hidden_columns(){}
 
-  function master_table_visible_columns(){
+    public function detail_list_table_visible_columns(){}
 
-  }
+    public function detail_list_table_hidden_columns(){}
 
-  //Not working yet. Should allow hidding columns by default from the My Model method or overide it here
+    public function single_form_add_visible_columns(){}
 
-  //List as an array all columns that should be hidden in the master table of the master-detail view.
-  // Only works if master_table_visible_columns returns no array
-  function master_table_hidden_columns(){
+    public function single_form_add_hidden_columns(){}
 
-  }
+    public function master_multi_form_add_visible_columns(){}
 
-  // List all tables as an array that contain a primary relationship to this $table
-  function lookup_tables(){
+    public function detail_multi_form_add_visible_columns(){}
 
-  }
+    public function master_multi_form_add_hidden_columns(){}
 
-  // List all the tables as an array that contains a secondary relationship to this $table
-  function detail_tables(){
-    return array('project');
-  }
+    public function detail_multi_form_add_hidden_columns(){}
 
-  // Can bear a simple query result as array an overide the grants_model method
-  function list(){
+    function detail_list(){}
 
-  }
+    function master_view(){}
 
-  // Can bear a simple query results overide the grants_model view method
-  function view(){
+    public function list(){}
 
-  }
+    public function view(){}
 }

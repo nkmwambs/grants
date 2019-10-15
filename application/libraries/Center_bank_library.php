@@ -8,22 +8,18 @@
  *	NKarisa@ke.ci.org
  */
 
-class Reconciliation_library extends Grants
-{
+ class Center_bank_library extends Grants
+ {
 
-  private $CI;
+   private $CI;
 
-  function __construct(){
-    parent::__construct();
-    $this->CI =& get_instance();
-  }
+   function __construct(){
+     parent::__construct();
+     $this->CI =& get_instance();
+   }
 
   function index(){
 
-  }
-
-  function center_name_field_value(){
-    return 1;
   }
 
 }

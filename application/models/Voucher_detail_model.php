@@ -26,16 +26,37 @@ class Voucher_detail_model extends MY_Model implements CrudModelInterface, Table
 
   public function detail_tables(){}
 
-  public function table_visible_columns(){
-    return array('voucher_detail_description','voucher_detail_quantity',
-    'voucher_detail_unit_cost','voucher_detail_total_cost','voucher_detail_account','project_allocation_name');
-  }
-
-  public function table_hidden_columns(){}
-
   public function master_table_visible_columns(){}
 
   public function master_table_hidden_columns(){}
+
+  public function list_table_visible_columns(){}
+
+  public function list_table_hidden_columns(){}
+
+  public function detail_list_table_visible_columns(){}
+
+  public function detail_list_table_hidden_columns(){}
+
+  public function single_form_add_visible_columns(){}
+
+  public function single_form_add_hidden_columns(){}
+
+  public function master_multi_form_add_visible_columns(){}
+
+  public function detail_multi_form_add_visible_columns(){
+    return array('voucher_detail_description','voucher_detail_quantity',
+    'voucher_detail_unit_cost','voucher_detail_total_cost','voucher_detail_account','project_allocation_name');
+
+  }
+
+  public function master_multi_form_add_hidden_columns(){}
+
+  public function detail_multi_form_add_hidden_columns(){}
+
+  function detail_list(){}
+
+  function master_view(){}
 
   public function list(){}
 

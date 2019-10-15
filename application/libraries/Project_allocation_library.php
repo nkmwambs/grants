@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Reconciliation_library extends Grants
+class Project_allocation_library extends Grants
 {
 
   private $CI;
@@ -18,12 +18,7 @@ class Reconciliation_library extends Grants
     $this->CI =& get_instance();
   }
 
-  function index(){
+  function index(){}
 
-  }
-
-  function center_name_field_value(){
-    return 1;
-  }
 
 }

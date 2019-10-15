@@ -26,26 +26,38 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
     return array('request');
   }
 
-  //This method overrides the My_Model table_hidden_columns
-  function table_hidden_columns(){}
+  public function master_table_visible_columns(){}
 
-  function table_visible_columns(){}
+  public function master_table_hidden_columns(){}
 
-  function master_table_visible_columns(){}
+  public function list_table_visible_columns(){}
 
-//Not working yet. Should allow hidding columns by default from the My Model method or overide it here
-  function master_table_hidden_columns(){}
+  public function list_table_hidden_columns(){}
 
-  function list(){}
+  public function detail_list_table_visible_columns(){}
 
-  function view(){}
+  public function detail_list_table_hidden_columns(){}
 
-  function add(){
+  //public function single_form_add_visible_columns(){}
 
+  //public function single_form_add_hidden_columns(){}
+
+  public function master_multi_form_add_visible_columns(){
+        return array('approval_name','status_name');
   }
 
-  function edit(){
-    
-  }
+  public function detail_multi_form_add_visible_columns(){}
+
+  public function master_multi_form_add_hidden_columns(){}
+
+  public function detail_multi_form_add_hidden_columns(){}
+
+  function detail_list(){}
+
+  function master_view(){}
+
+  public function list(){}
+
+  public function view(){}
 
 }

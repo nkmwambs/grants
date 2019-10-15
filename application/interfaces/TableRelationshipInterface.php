@@ -6,9 +6,9 @@ interface TableRelationshipInterface {
 
   public function detail_tables();
 
-  public function table_visible_columns();
-
-  public function table_hidden_columns();
+  // public function table_visible_columns();
+  //
+  // public function table_hidden_columns();
 
   public function master_table_visible_columns();
 

@@ -31,16 +31,37 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array('voucher_detail');
   }
 
-  public function table_visible_columns(){
-    return array('voucher_track_number','voucher_number','center_name',
-    'voucher_date','voucher_type_name','voucher_cheque_number','voucher_vendor','voucher_description');
-  }
-
-  public function table_hidden_columns(){}
-
   public function master_table_visible_columns(){}
 
   public function master_table_hidden_columns(){}
+
+  public function list_table_visible_columns(){
+    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number','center_name');
+  }
+
+  public function list_table_hidden_columns(){}
+
+  public function detail_list_table_visible_columns(){}
+
+  public function detail_list_table_hidden_columns(){}
+
+  public function single_form_add_visible_columns(){}
+
+  public function single_form_add_hidden_columns(){}
+
+  public function master_multi_form_add_visible_columns(){
+    return array('center_name','voucher_number','voucher_date','voucher_type_name','voucher_cheque_number','voucher_vendor','voucher_description');
+  }
+
+  public function detail_multi_form_add_visible_columns(){}
+
+  public function master_multi_form_add_hidden_columns(){}
+
+  public function detail_multi_form_add_hidden_columns(){}
+
+  function detail_list(){}
+
+  function master_view(){}
 
   public function list(){}
 
