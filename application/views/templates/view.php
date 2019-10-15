@@ -22,6 +22,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns')?>" style="text-align:center;">
               <div class="btn btn-default"><?=get_phrase('approve_all_'.$this->controller.'_details');?></div>
+              <div class="btn btn-default"><?=get_phrase('decline_all_'.$this->controller.'_details');?></div>
           </th>
         </tr>
       <?php }?>
@@ -113,6 +114,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     <?php
                       if($is_approveable_item) {
                         echo list_table_approval_action($detail_table_name,$row[$detail_table_name.'_id']);
+                        //echo list_table_decline_action(($detail_table_name,$row[$detail_table_name.'_id']);
                       }
                      ?>
                   </td>

@@ -119,6 +119,15 @@ if( ! function_exists('list_table_approval_action')){
 	}
 }
 
+if( ! function_exists('list_table_decline_action')){
+	function list_table_decline_action($table_controller,$primary_key){
+
+		$string = '<a class="list_decline_link" href="'.base_url().strtolower($table_controller).'/decline/'.hash_id($primary_key).'">'.get_phrase("decline").'</a>';
+
+		return $string;
+	}
+}
+
 if( ! function_exists('add_record_button') ){
 	function add_record_button($table_controller,$has_details,$has_listing = ""){
 		$add_view = $has_listing == 1?"multi_form_add":"single_form_add";
