@@ -17,9 +17,18 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
   <div class="col-xs-12">
     <table class="table table-striped">
       <thead>
-        <tr><th colspan="3" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?> Master Record</th></tr>
+        <tr><th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?> Master Record</th></tr>
+        <?php if($is_approveable_item){?>
+        <tr>
+          <th colspan="<?=$this->config->item('master_table_columns')?>" style="text-align:center;">
+              <div class="btn btn-default"><?=get_phrase('approve_all_'.$this->controller.'_details');?></div>
+          </th>
+        </tr>
+      <?php }?>
       </thead>
       <tbody>
+
+
         <?php
 
             foreach ($columns as $row) {
@@ -100,7 +109,12 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                 <tr>
                   <td nowrap="nowrap">
                     <?=list_table_edit_action($detail_table_name,$row[$detail_table_name.'_id']);?> &nbsp;
-                    <?=list_table_delete_action($detail_table_name,$row[$detail_table_name.'_id']);?>
+                    <?=list_table_delete_action($detail_table_name,$row[$detail_table_name.'_id']);?> &nbsp;
+                    <?php
+                      if($is_approveable_item) {
+                        echo list_table_approval_action($detail_table_name,$row[$detail_table_name.'_id']);
+                      }
+                     ?>
                   </td>
                   <?php
                       $primary_key = 0;

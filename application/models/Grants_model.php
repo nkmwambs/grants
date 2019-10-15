@@ -24,8 +24,9 @@ class Grants_model extends CI_Model
   }
 
   function add(){
-    $post_array = $this->input->post();
-    echo json_encode($post_array);
+    //$post_array = $this->input->post();
+    //echo json_encode($post_array);
+    echo get_phrase('global_add_method_is_not_functional');
   }
 
 
@@ -288,56 +289,10 @@ class Grants_model extends CI_Model
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
     }
-
+    $this->db->where(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode') ));
     return $this->grants_get($table);
   }
 
-  // function view(){
-  //   // This $this->controller is a public parameter of the MY_Controller
-  //   $table = strtolower($this->controller);
-  //
-  //   $detail_tables = $this->grants->detail_tables($table);
-  //
-  //   $model = $this->current_model;
-  //
-  //   $this->db->select($this->master_view_select_columns());
-  //
-  //   $lookup_tables = $this->grants->lookup_tables($table);
-  //
-  //   $lookup_table_ids = array();
-  //
-  //   if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
-  //     foreach ($lookup_tables as $lookup_table) {
-  //         //Create table joins
-  //         $lookup_table_id = $lookup_table.'_id';
-  //         $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
-  //     }
-  //   }
-  //
-  //   $data = array();
-  //
-  //   $data['master'] = (array)$this->db->get_where($table,array($table.'_id'=> hash_id($this->uri->segment(3,0),'decode') ) )->row();
-  //
-  //   $data['master_table_name'] = $table;
-  //   // Get the name of the record creator
-  //   $data['created_by'] = $data['master'][$table.'_created_by'] >= 1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
-  //   array('user_id'=>$data['master'][$table.'_created_by']))->row()->user_name:get_phrase('creator_user_not_set');
-  //
-  //   //Get the name of the last record modifier
-  //   $data['last_modified_by'] = $data['master'][$table.'_last_modified_by'] >= 1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
-  //   array('user_id'=>$data['master'][$table.'_last_modified_by']))->row()->user_name:get_phrase('modifier_user_not_set');
-  //
-  //   if(is_array($detail_tables) && count($detail_tables) > 0 ){
-  //     foreach ($detail_tables as $detail_table) {
-  //         $data['detail'][$detail_table]['keys'] = $this->detail_list_select_columns($detail_table);
-  //         $data['detail'][$detail_table]['has_details'] = $this->grants->check_if_table_has_detail_table($detail_table);
-  //         $this->db->select($this->detail_list_select_columns($detail_table));
-  //         $data['detail'][$detail_table]['table_body']= $this->detail_list($detail_table);//return second arg as list and resolve the error
-  //     }
-  //   }
-  //
-  //   return $data;
-  // }
 
   function master_view(){
 
@@ -487,10 +442,24 @@ class Grants_model extends CI_Model
       }
     }
 
-
-
     return $visible_columns;
 
+  }
+
+  function approveable_item($approveable_item_name = ""){
+
+    $approveable_item_name = $approveable_item_name == ""?$this->controller:$approveable_item_name;
+
+    $approveable_item = $this->db->get_where('approveable_item',
+    array('approveable_item_name'=>$approveable_item_name))->num_rows();
+
+    $approveable_item_flag = false;
+
+    if($approveable_item > 0){
+      $approveable_item_flag = true;
+    }
+
+    return $approveable_item_flag;
   }
 
 }

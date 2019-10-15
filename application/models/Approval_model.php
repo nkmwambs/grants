@@ -60,4 +60,9 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
 
   public function view(){}
 
+    // Access methods
+  public function show_add_button(){
+      return false;
+    }
+
 }

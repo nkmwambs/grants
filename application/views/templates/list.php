@@ -1,21 +1,17 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-//print_r($result);
-
 extract($result);
-
 ?>
 
 <div class="row">
   <div class="col-xs-12">
     <form>
-      <label for="" class="label-control col-xs-3" style="text-align:right;font-weight:bold;">Views</label>
+      <label for="" class="label-control col-xs-3" style="text-align:right;font-weight:bold;"><?=get_phrase('views');?></label>
       <div class="col-xs-6">
         <select class="form-control">
           <option>Select a view</option>
         </select>
       </div>
-      <div class="col-xs-3"> <a href="#">Create View</a>  &nbsp; <a href="#">Edit View</a> &nbsp; <a href="#">Clone View</a></div>
+      <div class="col-xs-3"> <a href="#"><?=get_phrase('create_view');?></a>  &nbsp; <a href="#"><?=get_phrase('edit_view');?></a> &nbsp; <a href="#"><?=get_phrase('clone_view');?></a></div>
     </form>
   </div>
 </div>
@@ -24,7 +20,12 @@ extract($result);
 
 <div class="row" style="margin-bottom:25px;">
   <div class="col-xs-12" style="text-align:center;">
-    <?=add_record_button($this->controller, $has_details_table,$has_details_listing);?>
+
+    <?php
+    if($show_add_button){
+      echo add_record_button($this->controller, $has_details_table,$has_details_listing);
+    }
+    ?>
   </div>
 </div>
 

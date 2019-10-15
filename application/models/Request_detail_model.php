@@ -19,7 +19,7 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
   function index(){}
 
   public function lookup_tables(){
-    return array('request');
+    return array('request','status');
   }
 
   public function detail_tables(){}
@@ -58,5 +58,10 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
     public function list(){}
 
     public function view(){}
+
+    // Access Action  
+    public function show_add_button(){
+        return false;
+    }
 
 }

@@ -232,7 +232,11 @@ class Menu {
         if(array_pop($breadcrumb_list) !== $this->CI->uri->segment(1,'') ){
           $breadcrumb_list = $this->CI->session->breadcrumb_list;
           $new = array($this->CI->uri->segment(1,'') );
-          $breadcrumb_list = array_merge($breadcrumb_list,$new);
+
+          if(!in_array($this->CI->uri->segment(1,''),$breadcrumb_list)){
+            $breadcrumb_list = array_merge($breadcrumb_list,$new);
+          }
+
 
           $this->CI->session->set_userdata('breadcrumb_list', $breadcrumb_list );
         }

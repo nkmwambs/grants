@@ -209,11 +209,11 @@ function check_if_table_has_detail_table($table_name = ""){
 
   function number_field($column,$table,$is_header = false){
     $id = "";
-    $name = $column.'[]';
+    $name = 'detail['.$column.'][]';
 
     if($is_header){
       $id = $column;
-      $name = $column;
+      $name = 'header['.$column.']';
     }
 
     $value = 0;
@@ -232,12 +232,14 @@ function check_if_table_has_detail_table($table_name = ""){
   function text_field($column,$table,$is_header = false){
 
     $id = "";
-    $name = $column.'[]';
+    $name = 'detail['.$column.'][]';
 
     if($is_header){
       $id = $column;
-      $name = $column;
+      $name = 'header['.$column.']';
     }
+
+    //$name = $field;
 
     $value = "";
 
@@ -257,11 +259,11 @@ function check_if_table_has_detail_table($table_name = ""){
   function date_field($column,$table,$is_header = false){
 
         $id = "";
-        $name = $column.'[]';
+        $name = 'detail['.$column.'][]';
 
         if($is_header){
           $id = $column;
-          $name = $column;
+          $name = 'header['.$column.']';
         }
 
         $value = "";
@@ -283,11 +285,17 @@ function check_if_table_has_detail_table($table_name = ""){
     $options = $this->populate_values_from_lookup_table($lookup_table);
 
     $id = "";
-    $name = $column.'[]';
+    $column_placeholder = $column;
+
+    if(strpos($column,'_name') == true && $column !== $table.'_name'){
+        $column = 'fk_'.substr($column,0,-5).'_id';
+    }
+
+    $name = 'detail['.$column.'][]';
 
     if($is_header){
       $id = $column;
-      $name = $column;
+      $name = 'header['.$column.']';
     }
 
     $value = 0;
@@ -301,7 +309,7 @@ function check_if_table_has_detail_table($table_name = ""){
     }
 
     $select =  "<select id='".$id."' name='".$name."' class='form-control input_".$table." ".$column." ' required='required'>
-            <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column)))."</option>";
+            <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
 
             foreach ($options as $option_value=>$option_html) {
               $selected = "";
@@ -362,7 +370,13 @@ function check_if_table_has_detail_table($table_name = ""){
     $table = $table_name == ""?$this->controller:$table_name;
 
     if($this->CI->input->post()){
-      $this->CI->grants_model->add($this->CI->input->post());
+      $model = $this->current_model;
+
+      if(method_exists($this->CI->$model,'add')){
+        $this->CI->$model->add();
+      }else{
+        $this->CI->grants_model->add();
+      }
     }else{
       $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
       $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
@@ -426,19 +440,38 @@ function list(){
   return $query_result;
 }
 
+function show_add_button($table = ""){
+
+  $model = $this->current_model;
+
+  if($table !==""){
+    $model = $this->load_detail_model($table);
+  }
+
+  $show_add_button = true;
+
+  if(method_exists($this->CI->$model,'show_add_button') ){
+    $show_add_button = $this->CI->$model->show_add_button();
+  }
+
+  return $show_add_button;
+}
+
 function list_result(){
   $table = $this->controller;
 
   $result = $this->list();
   $keys = $this->CI->grants_model->list_select_columns();
   $has_details = $this->check_if_table_has_detail_table();
+  $show_add_button = $this->show_add_button();
 
   return array(
     'keys'=> $keys,
     'table_body'=>$result,
     'table_name'=> $table,
     'has_details_table' => $this->check_if_table_has_detail_table($table),
-    'has_details_listing' => $this->check_if_table_has_detail_listing($table)
+    'has_details_listing' => $this->check_if_table_has_detail_listing($table),
+    'show_add_button'=>$show_add_button
   );
 }
 
@@ -468,13 +501,17 @@ function detail_list_view($table){
   $result = $this->detail_list($table);
   $keys = $this->CI->grants_model->detail_list_select_columns($table);
   $has_details = $this->check_if_table_has_detail_table($table);
+  $is_approveable_item = $this->approveable_item($table);
+  $show_add_button = $this->show_add_button($table);
 
   return array(
     'keys'=> $keys,
     'table_body'=>$result,
     'table_name'=> $table,
     'has_details_table' => $has_details,
-    'has_details_listing' => $this->check_if_table_has_detail_listing($table)
+    'has_details_listing' => $this->check_if_table_has_detail_listing($table),
+    'is_approveable_item' => $is_approveable_item,
+    'show_add_button'=>$show_add_button
   );
 }
 
@@ -494,6 +531,16 @@ function master_view(){
   return $query_result;
 }
 
+function approveable_item($detail_table = ""){
+
+  if($detail_table !== ""){
+    //$model = $this->load_detail_model($detail_table);
+    return $this->CI->grants_model->approveable_item($detail_table);
+  }else{
+    return $this->CI->grants_model->approveable_item();
+  }
+
+}
 
 function view_result(){
   $table = $this->controller;
@@ -501,12 +548,14 @@ function view_result(){
   $query_output = $this->master_view();
   $keys = $this->CI->grants_model->master_select_columns();
   $has_details = $this->check_if_table_has_detail_table($table);
+  $is_approveable_item = $this->approveable_item();
 
   $result['master'] = array(
       'keys'=> $keys,
       'table_body'=>$query_output,
       'table_name'=> $table,
-      'has_details_table' => $has_details
+      'has_details_table' => $has_details,
+      'is_approveable_item' => $is_approveable_item
     );
 
     $detail_tables = $this->detail_tables($table);

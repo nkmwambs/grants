@@ -110,6 +110,15 @@ if( ! function_exists('list_table_delete_action')){
 	}
 }
 
+if( ! function_exists('list_table_approval_action')){
+	function list_table_approval_action($table_controller,$primary_key){
+
+		$string = '<a class="list_approval_link" href="'.base_url().strtolower($table_controller).'/approve/'.hash_id($primary_key).'">'.get_phrase("approve").'</a>';
+
+		return $string;
+	}
+}
+
 if( ! function_exists('add_record_button') ){
 	function add_record_button($table_controller,$has_details,$has_listing = ""){
 		$add_view = $has_listing == 1?"multi_form_add":"single_form_add";
@@ -129,7 +138,7 @@ if( ! function_exists('create_breadcrumb') ){
 		$string = get_phrase('you_are_here').": ";
 
 		foreach ($breadcrumb_list as $menuItem) {
-			$string .= '<a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a> | ';
+			$string .= '<a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a> <i class="fa fa-angle-right"></i> ';
 		}
 
 		return $string;
