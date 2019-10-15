@@ -23,11 +23,18 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function index(){}
 
-  public function lookup_tables(){}
+  public function lookup_tables(){
+    return array('center','voucher_type');
+  }
 
-  public function detail_tables(){}
+  public function detail_tables(){
+    return array('voucher_detail');
+  }
 
-  public function table_visible_columns(){}
+  public function table_visible_columns(){
+    return array('voucher_track_number','voucher_number','center_name',
+    'voucher_date','voucher_type_name','voucher_cheque_number','voucher_vendor','voucher_description');
+  }
 
   public function table_hidden_columns(){}
 

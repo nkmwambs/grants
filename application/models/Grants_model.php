@@ -24,7 +24,7 @@ class Grants_model extends CI_Model
     $table = $table_name == "" ? strtolower($this->controller) : $table_name;
 
     //$this->select_columns($table);
-    
+
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $lookup_table.'_id';
@@ -59,6 +59,8 @@ class Grants_model extends CI_Model
     }
 
     $this->db->select($table_columns);
+
+    //print_r($table_columns);
   }
 
   function edit(){
@@ -66,8 +68,10 @@ class Grants_model extends CI_Model
   }
 
   function add(){
-
+    $post_array = $this->input->post();
+    echo json_encode($post_array);
   }
+
 
   function view($detail_tables = array()){
 
@@ -95,7 +99,7 @@ class Grants_model extends CI_Model
 
     //Additonal select columns for lookup ids
     if(count($lookup_table_ids)>0){
-      $this->db->select($lookup_table_ids);
+      $this->db->select($lookup_table_ids,true);
     }
 
     $data = array();
@@ -123,6 +127,20 @@ class Grants_model extends CI_Model
   function get_all_table_fields($table_name = ""){
     $table = $table_name == ""?$this->controller:$table_name;
     return $this->db->table_exists($table)?$this->db->list_fields($table):array();
+  }
+
+  function table_fields_metadata($table_name = ""){
+    $table = $table_name == ""?$this->controller:$table_name;
+    return $this->db->field_data($table);
+  }
+
+  function lookup_values($table){
+    $result = $this->db->get($table)->result_array();
+
+    $ids_array = array_column($result,$table.'_id');
+    $value_array = array_column($result,$table.'_name');
+
+    return array_combine($ids_array,$value_array);
   }
 
 }

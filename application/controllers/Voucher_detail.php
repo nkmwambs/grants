@@ -8,18 +8,14 @@
  *	NKarisa@ke.ci.org
  */
 
-class Budget_month_spread_library extends Grants
-{
 
-  private $CI;
+class Voucher_detail extends MY_Controller
+{
 
   function __construct(){
     parent::__construct();
-    $this->CI =& get_instance();
-  }
-
-  function index(){
 
   }
+
 
 }

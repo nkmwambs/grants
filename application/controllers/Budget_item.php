@@ -9,7 +9,7 @@
  */
 
 
-class Journal extends MY_Controller
+class Budget_item extends MY_Controller
 {
 
   function __construct(){
@@ -19,20 +19,5 @@ class Journal extends MY_Controller
 
   function index(){}
 
-  static function get_menu_list(){
-
-  }
-
-  function page_name(){
-    return "journal";
-  }
-
-  function page_title(){
-    return "Journal";
-  }
-
-  function result(){
-    return $this->db->get('funder')->result_array();
-  }
 
 }

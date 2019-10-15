@@ -244,6 +244,17 @@
     }
     ev.preventDefault();
   });
+
+  function pre_record_post(){}
+  function on_record_post(){}
+  function post_record_post(){}
+  function pre_row_insert(){}
+  function on_row_insert(){}
+  function post_row_insert(){}
+  function pre_row_delete(){}
+  function on_row_delete(){}
+  function post_row_delete(){}
+
   </script>
 
 <style>

@@ -9,7 +9,7 @@
  */
 
 
-class Budget_detail extends MY_Controller
+class Request_detail extends MY_Controller
 {
 
   function __construct(){

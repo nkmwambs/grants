@@ -9,7 +9,7 @@
  */
 
 
-class Budget_month_spread extends MY_Controller
+class Budget_item_detail extends MY_Controller
 {
 
   function __construct(){

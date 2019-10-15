@@ -31,6 +31,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function result(){
     $action = $this->action.'_result';
     $lib = $this->current_library;
+
+    if($this->input->post()){
+        $this->$lib->$action();
+        exit;
+    }
+
     return $this->list_result = $this->$lib->$action();
   }
 
@@ -61,6 +67,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   // A specific controller can override crud method
 
   function crud_views(){
+
     $result = $this->result();
 
     // Page name, Page title and views_dir can be overrode in a controller
@@ -87,12 +94,31 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->crud_views();
   }
 
-  function add(){
+  // function add(){
+  //   $post_array = $this->input->post();
+  //   echo json_encode($post_array);
+  // }
+
+  function multi_form_add(){
+    $this->crud_views();
+  }
+
+  function single_form_add(){
     $this->crud_views();
   }
 
   function delete($id){
     echo "Record deleted successful";
+  }
+
+  function detail_row(){
+    $fields = $this->input->post('fields');
+
+    $lib = $this->controller."_detail_library";
+
+    $this->load->library($lib);
+
+    echo json_encode($this->$lib->detail_row_fields());
   }
 
 }

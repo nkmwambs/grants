@@ -8,18 +8,21 @@
  *	NKarisa@ke.ci.org
  */
 
-class Budget_detail_library extends Grants
-{
 
-  private $CI;
+class Project extends MY_Controller
+{
 
   function __construct(){
     parent::__construct();
-    $this->CI =& get_instance();
   }
 
   function index(){
 
   }
+
+  function page_title(){
+    return "Listing";
+  }
+
 
 }

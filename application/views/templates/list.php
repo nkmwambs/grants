@@ -24,7 +24,7 @@ extract($result);
 
 <div class="row" style="margin-bottom:25px;">
   <div class="col-xs-12" style="text-align:center;">
-    <?=add_record_button($this->controller);?>
+    <?=add_record_button($this->controller, $has_details_table);?>
   </div>
 </div>
 
@@ -64,7 +64,7 @@ extract($result);
                             }elseif(strpos($column,'is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
-                              echo ucfirst($row[$column]);
+                              echo ucfirst(str_replace("_"," ",$row[$column]));
                             }
 
                            ?>

@@ -80,7 +80,7 @@ if( ! function_exists('render_list_table_header') ){
 		$string = '<tr><th>'.get_phrase("action").'</th>';
 
 		foreach ($header_array as $th_value) {
-			if(strpos($th_value,'Key') == true || $th_value == $table_name."_id"  ) {
+			if(strpos($th_value,'key') == true || $th_value == $table_name."_id"  ) {
 				continue;
 			}
 
@@ -111,8 +111,9 @@ if( ! function_exists('list_table_delete_action')){
 }
 
 if( ! function_exists('add_record_button') ){
-	function add_record_button($table_controller){
-		 return '<a href="'.base_url().$table_controller.'/add" class="btn btn-default">'.get_phrase('add').' '.ucwords(str_replace("_"," ",$table_controller)).'</a>';
+	function add_record_button($table_controller,$has_details){
+		$add_view = $has_details == 1?"multi_form_add":"single_form_add";
+		 return '<a href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add').' '.ucwords(str_replace("_"," ",$table_controller)).'</a>';
 	}
 }
 

@@ -22,4 +22,8 @@ class Request_library extends Grants
 
   }
 
+  function center_name_field_value(){
+    return 1;
+  }
+
 }

@@ -62,5 +62,10 @@
 	</div>
 		<?php include 'includes_bottom.php';?>
     <?php include 'modal.php';?>
+		<?php
+				if(file_exists(VIEWPATH.$this->controller.'\js_script.php')){
+						include VIEWPATH.$this->controller.'\js_script.php';
+				}
+		?>
 </body>
 </html>

@@ -12,9 +12,6 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
 {
   public $table = 'approval'; // you MUST mention the table name
 
-  public $hidden_columns = array();
-  private $lookup_tables = array();
-
   function __construct(){
     parent::__construct();
   }
@@ -22,41 +19,33 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   function index(){}
 
   function lookup_tables(){
-    return array('approval_status','approveable_item');
+    return array('status');
   }
 
   function detail_tables(){
-
+    return array('request');
   }
 
   //This method overrides the My_Model table_hidden_columns
-  function table_hidden_columns(){
-    //Only use this table to indicate the models table which is a parameter in this class
-    $hidden_columns = array($this->table.'_last_modified_date',$this->table.'_created_date',
-    $this->table.'_last_modified_by',$this->table.'_created_by',$this->table.'_deleted_at');
+  function table_hidden_columns(){}
 
-    return $hidden_columns;
-  }
+  function table_visible_columns(){}
 
-  function table_visible_columns(){
-
-  }
-
-  function master_table_visible_columns(){
-    //return array('approval_track_number','approval_approveable_table_primary_key');
-  }
+  function master_table_visible_columns(){}
 
 //Not working yet. Should allow hidding columns by default from the My Model method or overide it here
-  function master_table_hidden_columns(){
-    //return array('funder_deleted_at');
+  function master_table_hidden_columns(){}
+
+  function list(){}
+
+  function view(){}
+
+  function add(){
+
   }
 
-  function list(){
-
-  }
-
-  function view(){
-
+  function edit(){
+    
   }
 
 }

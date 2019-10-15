@@ -8,10 +8,9 @@
  *	NKarisa@ke.ci.org
  */
 
-class Center_project_allocation_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Request_detail_model extends MY_Model
 {
-  public $table = 'center_project_allocation_model'; // you MUST mention the table name
-
+  public $table = 'request_detail'; // you MUST mention the table name
 
   function __construct(){
     parent::__construct();
@@ -19,11 +18,16 @@ class Center_project_allocation_model extends MY_Model implements CrudModelInter
 
   function index(){}
 
-  public function lookup_tables(){}
+  public function lookup_tables(){
+    return array('request');
+  }
 
   public function detail_tables(){}
 
-  public function table_visible_columns(){}
+  public function table_visible_columns(){
+    return array('request_detail_description','request_detail_quantity','request_detail_unit_cost',
+    'request_detail_total_cost','expense_account_name');
+  }
 
   public function table_hidden_columns(){}
 

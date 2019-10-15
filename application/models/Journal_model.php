@@ -13,15 +13,26 @@ class Journal_model extends CI_Model
 
   function __construct(){
     parent::__construct();
-    $this->load->database();
 
   }
 
-  function index(){
+  function index(){}
 
-  }
+  public function lookup_tables(){}
 
-  function list(){
+  public function detail_tables(){}
+
+  public function table_visible_columns(){}
+
+  public function table_hidden_columns(){}
+
+  public function master_table_visible_columns(){}
+
+  public function master_table_hidden_columns(){}
+
+  public function list(){
     
   }
+
+  public function view(){}
 }

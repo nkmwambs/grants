@@ -188,6 +188,25 @@ function table_columns($table,$hidden_columns = array()){
     }
   }
 
+  // Unset the created by, last_modified_by and deleted_at columns when listing
+
+  if( in_array($table.'_created_by', $columns_to_display) && $this->CI->config->item('hide_created_by_column') == true){
+    $created_by_id = array_search($table.'_created_by',$columns_to_display);
+    unset($columns_to_display[$created_by_id]);
+  }
+
+  if( in_array($table.'_last_modified_by', $columns_to_display)  && $this->CI->config->item('hide_last_modified_by_column') == true ){
+
+    $last_modified_by_id = array_search($table.'_last_modified_by',$columns_to_display);
+    unset($columns_to_display[$last_modified_by_id]);
+
+  }
+
+  if( in_array($table.'_deleted_at', $columns_to_display )  && $this->CI->config->item('hide_deleted_at_column') == true ){
+    $deleted_at = array_search($table.'_deleted_at',$columns_to_display);
+    unset($columns_to_display[$deleted_at]);
+  }
+
   return $columns_to_display;
 }
 
@@ -202,10 +221,9 @@ function switch_query_result_source($table_name = "",$force_action_to = ""){
 
   $result = array();
 
+
   if($force_action_to == 'list'){
-    //is_array($this->CI->$model->$action()) && count($this->CI->$model->$action()) > 0
     //Use the user defined results in the specific model
-    //$result = $this->CI->$model->$action();
     $result = $this->CI->grants_model->$action($this->CI->$model->$relationship_tables(),$table_name,$this->CI->uri->segment(3,0) );
   }else{
     //Use the array results produced from the grants model
@@ -220,26 +238,18 @@ function list_result($table_name = "",$force_action_to = ""){
 
       $result = $this->switch_query_result_source($table,$force_action_to);
 
+
       $keys = $this->table_columns($table,$this->table_hidden_columns($table));
 
-      if(in_array($table.'_created_by', $keys) ){
-        $created_by_id = array_search($table.'_created_by',$keys);
-        unset($keys[$created_by_id]);
-
-        $last_modified_by_id = array_search($table.'_last_modified_by',$keys);
-        unset($keys[$last_modified_by_id]);
-      }
-
       $has_detail = (is_array( $this->detail_tables($table) ) && count( $this->detail_tables($table) ) > 0 )?1:0;
-
-      //$table_header = $this->camel_case_header($table,$this->table_hidden_columns($table));
 
       $table_array = array(
           'keys'=> $keys,
           //'table_header'=>$table_header,
           'table_body'=>$result,
           'table_name'=>$table,
-          'has_details'=> $has_detail
+          'has_details'=> $has_detail,
+          'has_details_table' => $this->check_if_table_has_detail_table($table)
         );
 
         return $table_array;
@@ -254,7 +264,276 @@ function view_result(){
 
   }
 
-  function add_result(){
+
+  function check_if_table_has_detail_table($table_name = ""){
+
+    $table = $table_name == ""?$this->controller:$table_name;
+
+    $all_detail_tables = $this->detail_tables($table);
+
+    $has_detail_table = false;
+
+    if( is_array($all_detail_tables) && in_array($table.'_detail',$all_detail_tables) ){
+      $has_detail_table = true;
+    }
+
+    return $has_detail_table;
+  }
+
+  function get_fields_of_detail_table($table_name = ""){
+    $table = $table_name == ""?$this->controller:$table_name;
+
+    $detail_table_columns = array();
+
+    if($this->check_if_table_has_detail_table($table)){
+        $detail_table_columns = $this->table_columns($table.'_detail',$this->table_hidden_columns($table.'_detail'));
+    }
+
+    return $detail_table_columns;
 
   }
+
+  function detail_table_keys($table_name = ""){
+    $table = $table_name == ""?$this->controller:$table_name;
+
+    $detail_tables = $this->get_fields_of_detail_table($table);
+
+    $detail_table_keys = array();
+
+    unset($detail_tables[array_search($this->controller.'_name',$detail_tables)]);
+
+    foreach ($detail_tables as $detail_table_key) {
+
+      if( strpos($detail_table_key,'_id') == true ||
+          strpos($detail_table_key,'_track_number') == true
+      ){
+        continue;
+      }
+
+      $detail_table_keys[] = $detail_table_key;
+    }
+
+    return $detail_table_keys;
+  }
+
+  function single_form_add_result($table_name = ""){
+
+      $table = $table_name == ""?$this->controller:$table_name;
+
+      if($this->CI->input->post()){
+        $this->CI->grants_model->add($this->CI->input->post());
+      }else{
+        $keys = $this->table_columns($table,$this->table_hidden_columns($table));
+
+        return array(
+          'keys'=>$keys
+        );
+      }
+
+    }
+
+
+
+  function multi_form_add_result($table_name = ""){
+
+    $table = $table_name == ""?$this->controller:$table_name;
+
+    if($this->CI->input->post()){
+      $this->CI->grants_model->add($this->CI->input->post());
+    }else{
+      $keys = $this->table_columns($table,$this->table_hidden_columns($table));
+      $detail_table_keys = $this->detail_table_keys($table);
+
+      return array(
+        'keys'=>$keys,
+        'detail_table'=>$detail_table_keys
+      );
+    }
+
+  }
+
+  function field_type($table,$field){
+
+    $all_fields = $this->CI->grants_model->table_fields_metadata($table);
+
+    $array_of_columns = array_column($all_fields,'name');
+    $array_of_types = array_column($all_fields,'type');
+
+    $name_types = array_combine($array_of_columns,$array_of_types);
+
+    $column_type = 'int';
+
+    $field_type = 'number';
+
+    if(strpos($field,'_name') == true  && $field !== $table.'_name'){
+      //$field_type = "select";
+      $field = 'fk_'.substr($field,0,-5).'_id';
+    }
+
+    if(array_key_exists($field,$name_types)){
+      $column_type  = $name_types[$field];
+
+      if($column_type == 'int' || $column_type == 'decimal'){
+
+        $field_type = "number";
+
+        if(strpos($field,'_id') == true){
+          $field_type = "select";
+        }
+
+      } elseif($column_type == 'varchar'){
+        $field_type = "text";
+      }elseif ($column_type == 'date') {
+        $field_type = "date";
+      }
+
+    }
+
+    return $field_type;
+
+  }
+
+
+  function populate_values_from_lookup_table($table){
+    return $this->CI->grants_model->lookup_values($table);
+  }
+
+  function number_field($column,$table,$is_header = false){
+    $id = "";
+    $name = $column.'[]';
+
+    if($is_header){
+      $id = $column;
+      $name = $column;
+    }
+
+    $value = 0;
+
+    $library = $this->CI->controller.'_library';
+
+    $method = $column.'_field_value';
+
+    if(method_exists($this->CI->$library,$method)){
+      $value = $this->CI->$library->$method();
+    }
+
+    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control input_'.$table.' '.$column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$column))).'" />';
+  }
+
+  function text_field($column,$table,$is_header = false){
+
+    $id = "";
+    $name = $column.'[]';
+
+    if($is_header){
+      $id = $column;
+      $name = $column;
+    }
+
+    $value = "";
+
+    $library = $this->CI->controller.'_library';
+
+    $method = $column.'_field_value';
+
+    if(method_exists($this->CI->$library,$method)){
+      $value = $this->CI->$library->$method();
+    }
+
+
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control input_'.$table.' '.$column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$column))).'" />';
+  }
+
+
+  function date_field($column,$table,$is_header = false){
+
+        $id = "";
+        $name = $column.'[]';
+
+        if($is_header){
+          $id = $column;
+          $name = $column;
+        }
+
+        $value = "";
+
+        $library = $this->CI->controller.'_library';
+
+        $method = $column.'_field_value';
+
+        if(method_exists($this->CI->$library,$method)){
+          $value = $this->CI->$library->$method();
+        }
+
+      return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control datepicker input_'.$table.' '.$column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$column))).'" />';
+  }
+
+  function select_field($column,$table,$is_header = false){
+
+    $lookup_table = strtolower(substr($column,0,-5));
+    $options = $this->populate_values_from_lookup_table($lookup_table);
+
+    $id = "";
+    $name = $column.'[]';
+
+    if($is_header){
+      $id = $column;
+      $name = $column;
+    }
+
+    $value = 0;
+
+    $library = $this->CI->controller.'_library';
+
+    $method = $column.'_field_value';
+
+    if(method_exists($this->CI->$library,$method)){
+      $value = $this->CI->$library->$method();
+    }
+
+    $select =  "<select id='".$id."' name='".$name."' class='form-control input_".$table." ".$column." ' required='required'>
+            <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column)))."</option>";
+
+            foreach ($options as $option_value=>$option_html) {
+              $selected = "";
+              if($option_value == $value){
+                  $selected = "selected='selected'";
+              }
+              $select .= "<option value='".$option_value."' ".$selected.">".$option_html."</option>";
+            }
+
+    $select .= "</select>";
+
+    return $select;
+  }
+
+  function detail_row_fields(){
+
+    $detail_keys = $this->detail_table_keys($this->controller);
+
+    $fields = array();
+
+    foreach ($detail_keys as $key) {
+      $field_type = $this->field_type($this->controller.'_detail',$key);
+
+      $field = $field_type."_field";
+
+      $fields[$key] = $this->$field($key,$this->controller.'_detail');
+
+    }
+
+
+    return $fields;
+  }
+
+  function header_row_field($column){
+
+      $field_type = $this->field_type($this->controller,$column);
+
+      $field = $field_type."_field";
+
+      return $this->$field($column,$this->controller,true);
+
+  }
+
 }

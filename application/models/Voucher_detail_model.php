@@ -8,24 +8,28 @@
  *	NKarisa@ke.ci.org
  */
 
-class Budget_month_spread_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Voucher_detail_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'budget_month_spread'; // you MUST mention the table name
-
+  public $table = 'voucher_detail'; // you MUST mention the table name
 
   function __construct(){
     parent::__construct();
+    $this->load->database();
+
   }
 
   function index(){}
 
   public function lookup_tables(){
-    return array('budget_detail');
+    return array('voucher');
   }
 
   public function detail_tables(){}
 
-  public function table_visible_columns(){}
+  public function table_visible_columns(){
+    return array('voucher_detail_description','voucher_detail_quantity',
+    'voucher_detail_unit_cost','voucher_detail_total_cost','voucher_detail_account','project_allocation_name');
+  }
 
   public function table_hidden_columns(){}
 

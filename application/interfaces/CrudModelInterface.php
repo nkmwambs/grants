@@ -14,4 +14,8 @@ interface CrudModelInterface {
 
   public function view();
 
+  // public function single_form_add();
+  //
+  // public function multi_form_add();
+
 }

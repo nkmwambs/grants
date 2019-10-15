@@ -67,6 +67,8 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
     </table>
     <?php
 
+    if( isset($result['detail']) && count($result['detail']) > 0){
+
       foreach ($result['detail'] as $detail_table_name => $details) {
         extract($details);
 
@@ -77,7 +79,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
 
         <div class="row" style="margin-bottom:25px;">
           <div class="col-xs-12" style="text-align:center;">
-            <?=add_record_button($detail_table_name);?>
+            <?=add_record_button($detail_table_name,$has_details);?>
           </div>
         </div>
           <table class="table table-striped datatable_details">
@@ -89,9 +91,9 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
             <tbody>
               <?php foreach ($details['table_body'] as $row) { ?>
                 <tr>
-                  <td>
-                    <span><a href="#"><?=get_phrase('edit');?></a></span> &nbsp;
-                    <span><a href="#"><?=get_phrase('delete');?></a></span>
+                  <td nowrap="nowrap">
+                    <?=list_table_edit_action($detail_table_name,$row[$detail_table_name.'_id']);?> &nbsp;
+                    <?=list_table_delete_action($detail_table_name,$row[$detail_table_name.'_id']);?>
                   </td>
                   <?php
                       $primary_key = 0;
@@ -105,7 +107,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
                             if(strpos($column,'track_number') == true && $details['has_details'] == 1 ){
                               echo '<a href="'.base_url().strtolower($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'is_active') == true){
-                                echo $td_value == 1?"Yes":"No";
+                                echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
                             }else{
@@ -127,6 +129,7 @@ $columns = array_chunk($result['master'],$this->config->item('master_table_colum
           </table>
         <?php
       }
+    }
     ?>
   </div>
 </div>

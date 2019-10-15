@@ -8,31 +8,18 @@
  *	NKarisa@ke.ci.org
  */
 
-
-class Journal extends MY_Controller
+class Voucher_detail_library extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-
+    $this->CI =& get_instance();
   }
 
-  function index(){}
+  function index(){
 
-  static function get_menu_list(){
-
-  }
-
-  function page_name(){
-    return "journal";
-  }
-
-  function page_title(){
-    return "Journal";
-  }
-
-  function result(){
-    return $this->db->get('funder')->result_array();
   }
 
 }

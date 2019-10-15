@@ -22,4 +22,12 @@ class Voucher_library extends Grants
 
   }
 
+  function voucher_number_field_value(){
+    return 191001;
+  }
+
+  function center_name_field_value(){
+    return 1;
+  }
+
 }

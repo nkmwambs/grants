@@ -50,7 +50,7 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
     }
 
     function detail_tables(){
-      return array('center_project_allocation');
+      return array('project_allocation');
     }
 
     function list(){

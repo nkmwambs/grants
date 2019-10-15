@@ -24,7 +24,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
   }
 
   public function detail_tables(){
-    return array('budget_detail');
+    return array('budget_item');
   }
 
   public function table_visible_columns(){}

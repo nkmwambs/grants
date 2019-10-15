@@ -22,7 +22,9 @@ class Approval_status_model extends MY_Model implements CrudModelInterface, Tabl
 
 }
 
-public function lookup_tables(){}
+public function lookup_tables(){
+  return array('approveable_item');
+}
 
 public function detail_tables(){
 

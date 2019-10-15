@@ -8,24 +8,22 @@
  *	NKarisa@ke.ci.org
  */
 
-class Center_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Budget_item_detail_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-
-  public $table = 'center'; // you MUST mention the table name
+  public $table = 'budget_item_detail'; // you MUST mention the table name
 
 
   function __construct(){
     parent::__construct();
-    $this->load->database();
   }
 
   function index(){}
 
-  public function lookup_tables(){}
-
-  public function detail_tables(){
-    return array('budget','reconciliation','center_bank','project_allocation','request');
+  public function lookup_tables(){
+    return array('budget_item','month');
   }
+
+  public function detail_tables(){}
 
   public function table_visible_columns(){}
 
@@ -38,4 +36,5 @@ class Center_model extends MY_Model implements CrudModelInterface, TableRelation
   public function list(){}
 
   public function view(){}
+
 }

@@ -11,25 +11,33 @@
 class Request_model extends MY_Model
 {
   public $table = 'request'; // you MUST mention the table name
-  public $primary_key = 'request_id'; // you MUST mention the primary key
-  public $fillable = array(); // If you want, you can set an array with the fields that can be filled by insert/update
-  public $protected = array(); // ...Or you can set an array with the fields that cannot be filled by insert/update
 
   function __construct(){
     parent::__construct();
-    $this->load->database();
-
   }
 
-  function index(){
+  function index(){}
 
+  public function lookup_tables(){
+    return array('center','approval');
   }
 
-  function list(){
-
+  public function detail_tables(){
+    return array('request_detail');
   }
 
-  function view(){
-    
+  public function table_visible_columns(){
+    return array('center_name','request_name','request_date','request_description');
   }
+
+  public function table_hidden_columns(){}
+
+  public function master_table_visible_columns(){}
+
+  public function master_table_hidden_columns(){}
+
+  public function list(){}
+
+  public function view(){}
+
 }
