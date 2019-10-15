@@ -121,16 +121,31 @@ function check_if_table_has_detail_table($table_name = ""){
 
     $has_detail_table = false;
 
-    if( is_array($all_detail_tables) && in_array($table.'_detail',$all_detail_tables) ){
+    if(is_array($all_detail_tables) && count($all_detail_tables) > 0){
       $has_detail_table = true;
     }
-    //else
-    // if(is_array($all_detail_tables) && count($all_detail_tables) > 0){
-    //   $has_detail_table = true;
-    // }
 
     return $has_detail_table;
   }
+
+  function check_if_table_has_detail_listing($table_name = ""){
+
+      $table = $table_name == ""?$this->controller:$table_name;
+
+      $all_detail_tables = $this->detail_tables($table);
+
+      $has_detail_table = false;
+
+      if( is_array($all_detail_tables) && in_array($table.'_detail',$all_detail_tables) ){
+        $has_detail_table = true;
+      }
+      //else
+      // if(is_array($all_detail_tables) && count($all_detail_tables) > 0){
+      //   $has_detail_table = true;
+      // }
+
+      return $has_detail_table;
+    }
 
   function get_fields_of_detail_table($table_name = ""){
     $table = $table_name == ""?$this->controller:$table_name;
@@ -145,42 +160,6 @@ function check_if_table_has_detail_table($table_name = ""){
 
   }
 
-
-  // function single_form_add_result($table_name = ""){
-  //
-  //     $table = $table_name == ""?$this->controller:$table_name;
-  //
-  //     if($this->CI->input->post()){
-  //       $this->CI->grants_model->add($this->CI->input->post());
-  //     }else{
-  //       $keys = $this->table_columns($table,$this->table_hidden_columns($table));
-  //
-  //       return array(
-  //         'keys'=>$keys
-  //       );
-  //     }
-  //
-  //   }
-
-
-
-  // function multi_form_add_result($table_name = ""){
-  //
-  //   $table = $table_name == ""?$this->controller:$table_name;
-  //
-  //   if($this->CI->input->post()){
-  //     $this->CI->grants_model->add($this->CI->input->post());
-  //   }else{
-  //     $keys = $this->table_columns($table,$this->table_hidden_columns($table));
-  //     $detail_table_keys = $this->detail_table_keys($table);
-  //
-  //     return array(
-  //       'keys'=>$keys,
-  //       'detail_table'=>$detail_table_keys
-  //     );
-  //   }
-  //
-  // }
 
   function field_type($table,$field){
 
@@ -348,37 +327,10 @@ function check_if_table_has_detail_table($table_name = ""){
 
   }
 
-  // function detail_table_keys($table_name = ""){
-  //   $table = $table_name == ""?$this->controller:$table_name;
-  //
-  //   $detail_tables = $this->get_fields_of_detail_table($table);
-  //
-  //   $detail_table_keys = array();
-  //
-  //   unset($detail_tables[array_search($this->controller.'_name',$detail_tables)]);
-  //
-  //   foreach ($detail_tables as $detail_table_key) {
-  //
-  //     if( strpos($detail_table_key,'_id') == true ||
-  //         strpos($detail_table_key,'_track_number') == true
-  //     ){
-  //       continue;
-  //     }
-  //
-  //     $detail_table_keys[] = $detail_table_key;
-  //   }
-  //
-  //   return $detail_table_keys;
-  // }
-
   /**Testing these**/
 
   function detail_row_fields($fields_arrayy){
 
-    // $table = $this->controller."_detail";
-    //
-    // $detail_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table);
-    //
     $fields = array();
 
     foreach ($fields_arrayy as $key) {
@@ -485,7 +437,8 @@ function list_result(){
     'keys'=> $keys,
     'table_body'=>$result,
     'table_name'=> $table,
-    'has_details_table' => $this->check_if_table_has_detail_table($table)
+    'has_details_table' => $this->check_if_table_has_detail_table($table),
+    'has_details_listing' => $this->check_if_table_has_detail_listing($table)
   );
 }
 
@@ -520,7 +473,8 @@ function detail_list_view($table){
     'keys'=> $keys,
     'table_body'=>$result,
     'table_name'=> $table,
-    'has_details_table' => $has_details
+    'has_details_table' => $has_details,
+    'has_details_listing' => $this->check_if_table_has_detail_listing($table)
   );
 }
 

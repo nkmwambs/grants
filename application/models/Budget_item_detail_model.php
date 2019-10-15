@@ -25,16 +25,38 @@ class Budget_item_detail_model extends MY_Model implements CrudModelInterface, T
 
   public function detail_tables(){}
 
-  public function table_visible_columns(){}
+    public function master_table_visible_columns(){}
 
-  public function table_hidden_columns(){}
+    public function master_table_hidden_columns(){}
 
-  public function master_table_visible_columns(){}
+    public function list_table_visible_columns(){}
 
-  public function master_table_hidden_columns(){}
+    public function list_table_hidden_columns(){}
 
-  public function list(){}
+    public function detail_list_table_visible_columns(){}
 
-  public function view(){}
+    public function detail_list_table_hidden_columns(){}
+
+    //public function single_form_add_visible_columns(){}
+
+    //public function single_form_add_hidden_columns(){}
+
+    public function master_multi_form_add_visible_columns(){}
+
+    public function detail_multi_form_add_visible_columns(){
+      return array('budget_item_detail_name','budget_item_detail_amount','month_name');
+    }
+
+    public function master_multi_form_add_hidden_columns(){}
+
+    public function detail_multi_form_add_hidden_columns(){}
+
+    function detail_list(){}
+
+    function master_view(){}
+
+    public function list(){}
+
+    public function view(){}
 
 }

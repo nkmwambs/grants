@@ -43,7 +43,10 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
 
     public function single_form_add_hidden_columns(){}
 
-    public function master_multi_form_add_visible_columns(){}
+    public function master_multi_form_add_visible_columns(){
+      return array('project_name','project_code','project_description','project_start_date','project_end_date',
+      'project_cost','funding_status_name','funder_name');
+    }
 
     public function detail_multi_form_add_visible_columns(){}
 

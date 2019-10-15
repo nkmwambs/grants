@@ -24,7 +24,7 @@ extract($result);
 
 <div class="row" style="margin-bottom:25px;">
   <div class="col-xs-12" style="text-align:center;">
-    <?=add_record_button($this->controller, $has_details_table);?>
+    <?=add_record_button($this->controller, $has_details_table,$has_details_listing);?>
   </div>
 </div>
 

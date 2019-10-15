@@ -27,13 +27,35 @@ class Budget_item_model extends MY_Model implements CrudModelInterface, TableRel
     return array('budget_item_detail');
   }
 
-  public function table_visible_columns(){}
-
-  public function table_hidden_columns(){}
-
   public function master_table_visible_columns(){}
 
   public function master_table_hidden_columns(){}
+
+  public function list_table_visible_columns(){}
+
+  public function list_table_hidden_columns(){}
+
+  public function detail_list_table_visible_columns(){}
+
+  public function detail_list_table_hidden_columns(){}
+
+  //public function single_form_add_visible_columns(){}
+
+  //public function single_form_add_hidden_columns(){}
+
+  public function master_multi_form_add_visible_columns(){
+    return array('budget_item_description','budget_item_note','expense_account_name','project_allocation_name');
+  }
+
+  public function detail_multi_form_add_visible_columns(){}
+
+  public function master_multi_form_add_hidden_columns(){}
+
+  public function detail_multi_form_add_hidden_columns(){}
+
+  function detail_list(){}
+
+  function master_view(){}
 
   public function list(){}
 

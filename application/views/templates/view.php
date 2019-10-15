@@ -1,5 +1,5 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-print_r($result);
+//print_r($result);
 
 extract($result['master']);
 
@@ -86,7 +86,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <div class="row" style="margin-bottom:25px;">
           <div class="col-xs-12" style="text-align:center;">
-            <?=add_record_button($detail_table_name,$has_details_table);?>
+            <?=add_record_button($detail_table_name,$has_details_table,$has_details_listing);?>
           </div>
         </div>
           <table class="table table-striped datatable_details">
