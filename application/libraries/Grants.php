@@ -575,4 +575,12 @@ function view_result(){
 
 }
 
+function action_list($table,$primary_key,$is_approveable_item){
+  $data['table'] = $table;
+  $data['primary_key'] = $primary_key;
+  $data['is_approveable_item'] = $is_approveable_item;
+
+  return $this->CI->load->view('general/action_list',$data,true);
+}
+
 }

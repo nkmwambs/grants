@@ -177,7 +177,6 @@ class Grants_model extends CI_Model
 
     $get_all_table_fields = $this->get_all_table_fields($table);
 
-
     foreach ($get_all_table_fields as $get_all_table_field) {
 
       //Unset foreign keys columns, created_by and last_modified_by columns
@@ -215,8 +214,6 @@ class Grants_model extends CI_Model
         }
       }
     }
-
-
 
     return $visible_columns;
 
@@ -450,8 +447,8 @@ class Grants_model extends CI_Model
 
     $approveable_item_name = $approveable_item_name == ""?$this->controller:$approveable_item_name;
 
-    $approveable_item = $this->db->get_where('approveable_item',
-    array('approveable_item_name'=>$approveable_item_name))->num_rows();
+    $approveable_item = $this->db->get_where('approve_item',
+    array('approve_item_name'=>$approveable_item_name))->num_rows();
 
     $approveable_item_flag = false;
 

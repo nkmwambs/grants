@@ -121,4 +121,13 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     echo json_encode($this->$lib->detail_row_fields($fields));
   }
 
+  // function error(){
+  //   $page_data['page_name'] = 'error';
+  //   $page_data['page_title'] = 'Error Exceptions';
+  //   $page_data['views_dir'] = 'templates';
+  //   $page_data['error_message'] = 'templates';
+  //
+  //  $this->load->view('general/index',$page_data);
+  // }
+
 }

@@ -108,15 +108,10 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
             <tbody>
               <?php foreach ($table_body as $row) { ?>
                 <tr>
-                  <td nowrap="nowrap">
-                    <?=list_table_edit_action($detail_table_name,$row[$detail_table_name.'_id']);?> &nbsp;
-                    <?=list_table_delete_action($detail_table_name,$row[$detail_table_name.'_id']);?> &nbsp;
-                    <?php
-                      if($is_approveable_item) {
-                        echo list_table_approval_action($detail_table_name,$row[$detail_table_name.'_id']);
-                        //echo list_table_decline_action(($detail_table_name,$row[$detail_table_name.'_id']);
-                      }
-                     ?>
+                  <td>
+                      <?php
+                        echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
+                      ?>
                   </td>
                   <?php
                       $primary_key = 0;

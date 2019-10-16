@@ -2,7 +2,7 @@
 <script src="<?php echo base_url();?>assets/js/jquery-1.11.0.min.js"></script>-->
 
 		<!-- Bootstrap CDN -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
 
 		<link rel="stylesheet" href="<?php echo base_url();?>assets/css/ajax-bootstrap-select.css"/>
 
@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css"/>
 
 		<!--Jquery CDN Minified -->
-		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<!-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
 
 		<!--Datatables JS CDNs-->
 		<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -50,6 +50,11 @@
 <!--Local Scripts -->
 <!-- <link rel="stylesheet" href="<?=base_url();?>assets/css/bootstrap.css">
 <script src="<?=base_url();?>assets/js/jquery-1.11.0.min.js"></script> -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 
 <?php
     $skin_colour = $this->db->get_where('setting' , array(

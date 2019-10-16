@@ -27,7 +27,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array('request_detail');
   }
 
-  public function master_table_visible_columns(){}
+  public function master_table_visible_columns(){
+    //return array('request_id','request_name','request_created_by','request_last_modified_by');
+  }
 
   public function master_table_hidden_columns(){}
 
@@ -82,7 +84,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     $approval_id = 0;
 
     // Create an approval if the request object is approveable item
-    $approveable_item = $this->db->get_where('approveable_item',array('approveable_item_name'=>'request'));
+    $approveable_item = $this->db->get_where('approve_item',array('approve_item_name'=>'request'));
     if($approveable_item->num_rows() > 0){
       $approval_random = 'APR-'.rand(1000,90000);
       $approval['approval_track_number'] = $approval_random;
@@ -101,13 +103,14 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     $request_random = 'REQ-'.rand(1000,90000);
     $request['request_track_number'] = $request_random;
     $request['request_name'] = 'Request # '.$request_random;
-    $request['fk_center_id'] = 1;
+    $request['fk_center_id'] = $header['fk_center_id'];
     $request['fk_approval_id'] = $approval_id;
     $request['request_date'] = $header['request_date'];
     $request['request_description'] = $header['request_description'];
     $request['request_created_date'] = date('Y-m-d');
     $request['request_created_by'] = $this->session->user_id;
     $request['request_last_modified_by'] = $this->session->user_id;
+
 
     $this->db->insert('request',$request);
 
@@ -120,6 +123,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
       for($i=0;$i<sizeof($detail['request_detail_unit_cost']);$i++){
           foreach ($detail as $column => $values) {
+            if(strpos($column,'_name') == true && $column !== $this->controller.'_detail_name'){
+                $column = 'fk_'.substr($column,0,-5).'_id';
+            }
             $request_detail[$i][$column] = $values[$i];
             $request_detail[$i]['request_detail_track_number'] = 'RQD-'.rand(1000,90000);
             $request_detail[$i]['fk_request_id'] = $request_id;
@@ -139,6 +145,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     if ($this->db->trans_status() === FALSE)
     {
       echo get_phrase('insert_failed');
+      //echo json_encode($request);
     }else{
       // Send an email to the approver here
 

@@ -19,7 +19,7 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
   function index(){}
 
   public function lookup_tables(){
-    return array('request','status');
+    return array('request','status','expense_account','project_allocation');
   }
 
   public function detail_tables(){}
@@ -32,7 +32,11 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
 
     public function list_table_hidden_columns(){}
 
-    public function detail_list_table_visible_columns(){}
+    public function detail_list_table_visible_columns(){
+      return array('request_detail_id','request_detail_track_number','request_detail_description',
+      'request_detail_quantity','request_detail_unit_cost','request_detail_total_cost',
+      'expense_account_name','project_allocation_name','status_name');
+    }
 
     public function detail_list_table_hidden_columns(){}
 
@@ -44,7 +48,7 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
 
     public function detail_multi_form_add_visible_columns(){
       return array('request_detail_description','request_detail_quantity','request_detail_unit_cost',
-      'request_detail_total_cost');
+      'request_detail_total_cost','expense_account_name','project_allocation_name');
     }
 
     public function master_multi_form_add_hidden_columns(){}
@@ -59,7 +63,7 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
 
     public function view(){}
 
-    // Access Action  
+    // Access Action
     public function show_add_button(){
         return false;
     }

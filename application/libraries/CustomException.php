@@ -7,4 +7,8 @@ class CustomException extends Exception {
     .': <b>'.$this->getMessage().'</b> is not a valid file name';
     return $errorMsg;
   }
+
+  public function columnMismatch(){
+    return "Mismatch";
+  }
 }
