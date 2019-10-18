@@ -1,5 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-//print_r($result);
+//echo $this->session->role_id;
+//print_r($this->grants->display_approver_status_action(1,'request_detail'));
 
 extract($result['master']);
 
@@ -21,8 +22,16 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
         <?php if($is_approveable_item){?>
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns')?>" style="text-align:center;">
-              <div class="btn btn-default"><?=get_phrase('approve_all_'.$this->controller.'_details');?></div>
-              <div class="btn btn-default"><?=get_phrase('decline_all_'.$this->controller.'_details');?></div>
+
+              <?php
+              if(is_array($action_labels) && count($action_labels) > 0){
+                 foreach ($action_labels as $next_status_id => $action_label) {
+              ?>
+                <div class="btn btn-default"><?=get_phrase($action_label.'_all_details');?></div>
+              <?php
+              }
+                }
+              ?>
           </th>
         </tr>
       <?php }?>

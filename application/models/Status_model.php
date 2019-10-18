@@ -41,3 +41,6 @@ public function master_table_hidden_columns(){}
 public function list(){}
 
 public function view(){}
+
+
+}

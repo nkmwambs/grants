@@ -277,6 +277,7 @@ class Grants_model extends CI_Model
   function detail_list($table){
 
     $lookup_tables = $this->grants->lookup_tables($table);
+    //print_r($lookup_tables);
     // Run column selector
     $this->db->select($this->detail_list_select_columns($table));
 
@@ -448,7 +449,7 @@ class Grants_model extends CI_Model
     $approveable_item_name = $approveable_item_name == ""?$this->controller:$approveable_item_name;
 
     $approveable_item = $this->db->get_where('approve_item',
-    array('approve_item_name'=>$approveable_item_name))->num_rows();
+    array('approve_item_name'=>$approveable_item_name,'approve_item_is_active'=>1))->num_rows();
 
     $approveable_item_flag = false;
 
@@ -458,5 +459,121 @@ class Grants_model extends CI_Model
 
     return $approveable_item_flag;
   }
+
+  // This give the initial approval status when inserting a record
+
+  function initial_item_status($table_name = ""){
+
+    $table = $table_name == "" ? $this->controller : $table_name;
+
+    $approveable_item = $this->db->get_where('approve_item',
+    array('approve_item_name'=>$table,'approve_item_is_active'=>1));
+
+    $status_id = 0;
+
+    if($approveable_item->num_rows() > 0 ){
+      $approveable_item_id = $approveable_item->row()->approve_item_id;
+      $initial_status = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id,
+      'status_approval_sequence'=>1));
+
+      if($initial_status->num_rows() > 0 ){
+          $status_id = $initial_status->row()->status_id;
+      }
+
+    }
+
+    return $status_id;
+
+  }
+
+  function get_status_id($table,$primary_key){
+    $fk_status_id = 0;
+
+    $record_object = $this->db->get_where($table,array($table.'_id'=>$primary_key));
+
+    if($record_object->num_rows()>0 && array_key_exists('fk_status_id',(array)$record_object->row() ) ){
+     $fk_status_id = $this->db->get_where($table,array($table.'_id'=>$primary_key))->row()->fk_status_id;
+    }
+
+    return $fk_status_id;
+  }
+
+/**
+* The method produces an array of the valid approval status ids for the listed items
+*
+**/
+
+  function display_approver_status_action($item_status, $table_name = ""){
+
+    $user_role_id = $this->session->role_id;;
+
+    $table = $table_name == "" ? $this->controller : $table_name;
+
+    $approveable_item = $this->db->get_where('approve_item',
+    array('approve_item_name'=>$table,'approve_item_is_active'=>1));
+
+    //$label = array();
+    $raw_labels = array();
+
+    if($approveable_item->num_rows() > 0 ){
+      $approveable_item_id = $approveable_item->row()->approve_item_id;
+
+      $current_status_object = $this->db->get_where('status',array('status_id'=>$item_status));
+
+      if($current_status_object->num_rows()>0){
+          $current_status_approval_direction = $current_status_object->row()->status_approval_direction;
+          $current_status_approval_sequence = $current_status_object->row()->status_approval_sequence;
+
+          if($current_status_approval_direction == 1 || $current_status_approval_direction == 0){
+            //Point to the next status_action_label of status_approval_direction 1 or -1
+            $next_status_approval_sequence_object = $this->db->get_where('status',
+            array('fk_approve_item_id'=>$approveable_item_id,
+            'status_approval_sequence > '=>$current_status_approval_sequence));
+
+            if($next_status_approval_sequence_object->num_rows()>0){
+
+              $next_status_approval_sequence = $next_status_approval_sequence_object->row()->status_approval_sequence;
+
+              $this->db->where_in('status_approval_direction',array(1,-1));
+              $this->db->select(array('status_id','status_action_label'));
+              $this->db->join('status_role','status_role.fk_status_id=status.status_id');
+              $raw_labels = $this->db->get_where('status',
+              array('fk_approve_item_id'=>$approveable_item_id,
+              'status_approval_sequence'=>$next_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id));
+
+            }
+
+          }elseif ($current_status_approval_direction == -1) {
+            //Remain at the same status but point to the status_action_label of status_approval_direction 0
+             $status_approval_sequence = $current_status_object->row()->status_approval_sequence;
+
+             $this->db->where(array('status_approval_direction'=>0));
+             $this->db->select(array('status_id','status_action_label'));
+             $this->db->join('status_role','status_role.fk_status_id=status.status_id');
+             $raw_labels = $this->db->get_where('status',
+             array('fk_approve_item_id'=>$approveable_item_id,
+             'status_approval_sequence'=>$current_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id));
+          }
+
+      }
+
+      $columned_labels = array();
+      // Finally filter the resultant array to only retain the correct status_action_label based on the user role id
+      if(is_array($raw_labels->result_array()) && count($raw_labels->result_array()) > 0){
+        $status_ids_array = array_column($raw_labels->result_array(),'status_id');
+        $labels_array = array_column($raw_labels->result_array(),'status_action_label');
+
+        $columned_labels = array_combine($status_ids_array,$labels_array);
+      }
+
+      return $columned_labels;
+
+
+    }
+
+  }
+
+
+
 
 }

@@ -59,6 +59,8 @@ public $auth;
 		    $this->session->set_userdata('user_login', '1');
 		    $this->session->set_userdata('user_id', $row->user_id);
 		    $this->session->set_userdata('name', $row->first_name.' '.$row->last_name);
+        $this->session->set_userdata('role_id', $row->role_id);
+
         $this->session->set_userdata('breadcrumb_list',array());
         $this->user_model->get_user_priviledges();
 

@@ -52,3 +52,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+
+spl_autoload_register(function($classname){
+    // Autoload Interfaces
+
+    if( strpos($classname,'Interface') == true ){
+        require(FCPATH.'application/interfaces/'.$classname.'.php');
+    }
+
+    // Autoloading API classes
+
+    if(strpos($classname,'base') == true){
+        require(FCPATH.'application/api/'.$classname.'.php');
+    }
+
+});

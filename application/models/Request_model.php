@@ -84,12 +84,11 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     $approval_id = 0;
 
     // Create an approval if the request object is approveable item
-    $approveable_item = $this->db->get_where('approve_item',array('approve_item_name'=>'request'));
-    if($approveable_item->num_rows() > 0){
+    $request_approveable = $this->grants->approveable_item();//$this->db->get_where('approve_item',array('approve_item_name'=>'request'));
+    if($request_approveable){
       $approval_random = 'APR-'.rand(1000,90000);
       $approval['approval_track_number'] = $approval_random;
       $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
-      $approval['fk_status_id'] = 1;
       $approval['approval_created_by'] = $this->session->user_id;
       $approval['approval_created_date'] = date('Y-m-d');
       $approval['approval_last_modified_by'] = $this->session->user_id;
@@ -104,6 +103,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     $request['request_track_number'] = $request_random;
     $request['request_name'] = 'Request # '.$request_random;
     $request['fk_center_id'] = $header['fk_center_id'];
+    if($request_approveable){
+        $request['fk_status_id'] = $this->grants->initial_item_status();
+    }
     $request['fk_approval_id'] = $approval_id;
     $request['request_date'] = $header['request_date'];
     $request['request_description'] = $header['request_description'];
@@ -119,6 +121,8 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     // Get elements for the request_detail object
     if(isset($detail)){
 
+      $request_detail_approveable = $this->grants->approveable_item('request_detail');
+
       $request_detail = array();
 
       for($i=0;$i<sizeof($detail['request_detail_unit_cost']);$i++){
@@ -130,6 +134,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
             $request_detail[$i]['request_detail_track_number'] = 'RQD-'.rand(1000,90000);
             $request_detail[$i]['fk_request_id'] = $request_id;
             $request_detail[$i]['fk_status_id'] = 1;
+            //if($request_detail_approveable){
+              //  $request_detail['fk_status_id'] = $this->grants->initial_item_status('request_detail');
+            //}
             $request_detail[$i]['request_detail_created_date'] = date('Y-m-d');
             $request_detail[$i]['request_detail_created_by'] =  $this->session->user_id;
             $request_detail[$i]['request_detail_last_modified_by'] =  $this->session->user_id;

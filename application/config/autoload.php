@@ -133,3 +133,10 @@ $autoload['language'] = array();
 |	$autoload['model'] = array('first_model' => 'first');
 */
 $autoload['model'] = array('Grants_model');
+
+// spl_autoload_register(function($classname){
+//     if( strpos($classname,'Interface') !== false ){
+//         //strtolower($classname);
+//         require(FCPATH.'application/interfaces/'.$classname.'.php');
+//     }
+// });

@@ -21,7 +21,9 @@ class Center_model extends MY_Model implements CrudModelInterface, TableRelation
 
   function index(){}
 
-  public function lookup_tables(){}
+  public function lookup_tables(){
+
+  }
 
   public function detail_tables(){
     return array('budget','reconciliation','center_bank','project_allocation','request');

@@ -22,7 +22,7 @@ public $auth;
 
 
     public function index(){
-      $this->access->getAccess(__METHOD__);
+      //$this->access->getAccess(__METHOD__);
 
       $page_data['page_name'] = "dashboard";
       $page_data['page_title'] = "Dashboard";

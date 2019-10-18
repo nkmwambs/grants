@@ -139,203 +139,27 @@ function check_if_table_has_detail_table($table_name = ""){
       if( is_array($all_detail_tables) && in_array($table.'_detail',$all_detail_tables) ){
         $has_detail_table = true;
       }
-      //else
-      // if(is_array($all_detail_tables) && count($all_detail_tables) > 0){
-      //   $has_detail_table = true;
-      // }
 
       return $has_detail_table;
     }
 
-  function get_fields_of_detail_table($table_name = ""){
-    $table = $table_name == ""?$this->controller:$table_name;
-
-    $detail_table_columns = array();
-
-    if($this->check_if_table_has_detail_table($table)){
-        $detail_table_columns = $this->table_columns($table.'_detail',$this->table_hidden_columns($table.'_detail'));
-    }
-
-    return $detail_table_columns;
-
-  }
-
-
-  function field_type($table,$field){
-
-    $all_fields = $this->CI->grants_model->table_fields_metadata($table);
-
-    $array_of_columns = array_column($all_fields,'name');
-    $array_of_types = array_column($all_fields,'type');
-
-    $name_types = array_combine($array_of_columns,$array_of_types);
-
-    $column_type = 'int';
-
-    $field_type = 'number';
-
-    if(strpos($field,'_name') == true  && $field !== $table.'_name'){
-      //$field_type = "select";
-      $field = 'fk_'.substr($field,0,-5).'_id';
-    }
-
-    if(array_key_exists($field,$name_types)){
-      $column_type  = $name_types[$field];
-
-      if($column_type == 'int' || $column_type == 'decimal'){
-
-        $field_type = "number";
-
-        if(strpos($field,'_id') == true){
-          $field_type = "select";
-        }
-
-      } elseif($column_type == 'varchar'){
-        $field_type = "text";
-      }elseif ($column_type == 'date') {
-        $field_type = "date";
-      }
-
-    }
-
-    return $field_type;
-
-  }
-
-
-  function populate_values_from_lookup_table($table){
-    return $this->CI->grants_model->lookup_values($table);
-  }
-
-  function number_field($column,$table,$is_header = false){
-    $id = "";
-    $name = 'detail['.$column.'][]';
-
-    if($is_header){
-      $id = $column;
-      $name = 'header['.$column.']';
-    }
-
-    $value = 0;
-
-    $library = $this->CI->controller.'_library';
-
-    $method = $column.'_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
-    }
-
-    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control input_'.$table.' '.$column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$column))).'" />';
-  }
-
-  function text_field($column,$table,$is_header = false){
-
-    $id = "";
-    $name = 'detail['.$column.'][]';
-
-    if($is_header){
-      $id = $column;
-      $name = 'header['.$column.']';
-    }
-
-    //$name = $field;
-
-    $value = "";
-
-    $library = $this->CI->controller.'_library';
-
-    $method = $column.'_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
-    }
-
-
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control input_'.$table.' '.$column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$column))).'" />';
-  }
-
-
-  function date_field($column,$table,$is_header = false){
-
-        $id = "";
-        $name = 'detail['.$column.'][]';
-
-        if($is_header){
-          $id = $column;
-          $name = 'header['.$column.']';
-        }
-
-        $value = "";
-
-        $library = $this->CI->controller.'_library';
-
-        $method = $column.'_field_value';
-
-        if(method_exists($this->CI->$library,$method)){
-          $value = $this->CI->$library->$method();
-        }
-
-      return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control datepicker input_'.$table.' '.$column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$column))).'" />';
-  }
-
-  function select_field($column,$table,$is_header = false){
-
-    $lookup_table = strtolower(substr($column,0,-5));
-    $options = $this->populate_values_from_lookup_table($lookup_table);
-
-    $id = "";
-    $column_placeholder = $column;
-
-    if(strpos($column,'_name') == true && $column !== $table.'_name'){
-        $column = 'fk_'.substr($column,0,-5).'_id';
-    }
-
-    $name = 'detail['.$column.'][]';
-
-    if($is_header){
-      $id = $column;
-      $name = 'header['.$column.']';
-    }
-
-    $value = 0;
-
-    $library = $this->CI->controller.'_library';
-
-    $method = $column.'_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
-    }
-
-    $select =  "<select id='".$id."' name='".$name."' class='form-control input_".$table." ".$column." ' required='required'>
-            <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
-
-            foreach ($options as $option_value=>$option_html) {
-              $selected = "";
-              if($option_value == $value){
-                  $selected = "selected='selected'";
-              }
-              $select .= "<option value='".$option_value."' ".$selected.">".$option_html."</option>";
-            }
-
-    $select .= "</select>";
-
-    return $select;
-  }
-
 
   function header_row_field($column){
 
-      $field_type = $this->field_type($this->controller,$column);
+      $f = new Fields_base($column,$this->controller,true);
+
+      $field_type = $f->field_type();
 
       $field = $field_type."_field";
 
-      return $this->$field($column,$this->controller,true);
+      if($field_type == 'select'){
+        $lookup_table = strtolower(substr($column,0,-5));
+        return $f->$field($this->CI->grants_model->lookup_values($lookup_table));
+      }else{
+        return $f->$field();
+      }
 
   }
-
-  /**Testing these**/
 
   function detail_row_fields($fields_arrayy){
 
@@ -532,14 +356,11 @@ function master_view(){
 }
 
 function approveable_item($detail_table = ""){
+  return $this->CI->grants_model->approveable_item($detail_table);
+}
 
-  if($detail_table !== ""){
-    //$model = $this->load_detail_model($detail_table);
-    return $this->CI->grants_model->approveable_item($detail_table);
-  }else{
-    return $this->CI->grants_model->approveable_item();
-  }
-
+function display_approver_status_action($status_id, $table = ""){
+  return $this->CI->grants_model->display_approver_status_action($status_id, $table);
 }
 
 function view_result(){
@@ -555,7 +376,8 @@ function view_result(){
       'table_body'=>$query_output,
       'table_name'=> $table,
       'has_details_table' => $has_details,
-      'is_approveable_item' => $is_approveable_item
+      'is_approveable_item' => $is_approveable_item,
+      'action_labels'=>$this->action_labels($table,hash_id($this->CI->uri->segment(3,0),'decode'))
     );
 
     $detail_tables = $this->detail_tables($table);
@@ -575,12 +397,29 @@ function view_result(){
 
 }
 
+function action_labels($table,$primary_key){
+
+  $label = array();
+
+  $status_id = $this->CI->grants_model->get_status_id($table,$primary_key);
+
+  if($status_id > 0){
+    $label =  $this->display_approver_status_action($status_id,$table);
+  }
+  return $label;
+}
+
 function action_list($table,$primary_key,$is_approveable_item){
   $data['table'] = $table;
   $data['primary_key'] = $primary_key;
   $data['is_approveable_item'] = $is_approveable_item;
+  $data['action_labels'] = $this->action_labels($table,$primary_key);
 
   return $this->CI->load->view('general/action_list',$data,true);
+}
+
+function initial_item_status(){
+  return $this->CI->grants_model->initial_item_status();
 }
 
 }

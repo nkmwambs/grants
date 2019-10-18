@@ -20,7 +20,7 @@ class Reconciliation_model extends MY_Model
   function index(){}
 
   public function lookup_tables(){
-    return array('center','approval_status');
+    return array('center','status');
   }
 
   public function detail_tables(){}

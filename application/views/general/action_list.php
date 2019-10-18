@@ -1,3 +1,4 @@
+<?php  //print_r($action_labels); ?>
 <div class="dropdown">
                        <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
                          <?=get_phrase('action');?>
@@ -9,12 +10,17 @@
                          <li class="divider"></li>
                          <?php
                            if($is_approveable_item) {
-                          ?>
-                             <li><?=list_table_approval_action($table,$primary_key);?></li>
-                            <li class="divider"></li>
-                             <li><?=list_table_decline_action($table,$primary_key);?></li>
+                             if(is_array($action_labels) && count($action_labels) > 0){
+                               foreach ($action_labels as $next_status_id => $action_label) {
+                             ?>
+                                <li><a href="#"><?=get_phrase($action_label);?></a></li>
+                                <li class="divider"></li>
+                             <?php
+                           }
 
-                          <?php
+                             }
+
+
                            }
                           ?>
                        </ul>
