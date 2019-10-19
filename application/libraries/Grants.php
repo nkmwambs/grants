@@ -143,6 +143,29 @@ function check_if_table_has_detail_table($table_name = ""){
       return $has_detail_table;
     }
 
+    function detail_row_fields($fields_array){
+
+      $fields = array();
+
+      foreach ($fields_array as $key) {
+        $f = new Fields_base($key,$this->controller.'_detail');
+
+        $field_type = $f->field_type();
+
+        $field = $field_type."_field";
+
+        if($field_type == 'select'){
+          $lookup_table = strtolower(substr($key,0,-5));
+          $fields[$key] = $f->$field($this->CI->grants_model->lookup_values($lookup_table));
+        }else{
+          $fields[$key] = $f->$field();
+        }
+
+      }
+
+      return $fields;
+    }
+
 
   function header_row_field($column){
 
@@ -161,22 +184,6 @@ function check_if_table_has_detail_table($table_name = ""){
 
   }
 
-  function detail_row_fields($fields_arrayy){
-
-    $fields = array();
-
-    foreach ($fields_arrayy as $key) {
-      $field_type = $this->field_type($this->controller.'_detail',$key);
-
-      $field = $field_type."_field";
-
-      $fields[$key] = $this->$field($key,$this->controller.'_detail');
-
-    }
-
-
-    return $fields;
-  }
 
   function detail_multi_form_add_visible_columns($table){
     $model = $this->load_detail_model($table);

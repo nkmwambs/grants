@@ -169,7 +169,7 @@
       },
       success:function(response){
         alert(response);
-        window.location.reload();
+        //window.location.reload();
         on_record_post();
       },
       error:function(){

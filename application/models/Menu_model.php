@@ -52,6 +52,10 @@ function upsert_user_menu(){
       $order = $this->db->get_where('menu_user_order',array('fk_user_id'=>$this->session->user_id))->num_rows();
 
       foreach ($menu_ids as $menu_id) {
+        // this allows making one of the menu items be of order 0
+        if(sizeof($menu_ids)-1 == $order){
+          $user_menu_data['menu_user_order_priority_item'] = 0;
+        }
 
         $order++;
 

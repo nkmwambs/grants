@@ -11,7 +11,7 @@ class Fields_base{
 
   private $CI = null;
 
-  function __construct($column, $table, $is_header){
+  function __construct($column, $table, $is_header = false){
 
     $this->CI =& get_instance();
 

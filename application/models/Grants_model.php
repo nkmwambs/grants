@@ -24,9 +24,122 @@ class Grants_model extends CI_Model
   }
 
   function add(){
-    //$post_array = $this->input->post();
-    //echo json_encode($post_array);
-    echo get_phrase('global_add_method_is_not_functional');
+
+    $post_array = $this->input->post();
+
+    // Extract the post array into header and detail variables
+    extract($post_array);
+
+    // Determine if the input post has details or not by checking if the detail variable is set
+    $post_has_detail = isset($detail)?true:false;
+
+    // Instatiate the $approval_id to 0
+    $approval_id = 0;
+
+    // Check if the creation of the of the header and detail records requires an approval ticket
+    $header_record_requires_approval = $this->approveable_item($this->controller);
+    $detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
+
+    // Start a transaction
+    //$this->db->trans_start();
+
+    $approval = array();
+    // Create the approval ticket if required by the header record
+    if($header_record_requires_approval){
+      $approval_random = $this->config->item('track_prefix_approval').'-'.rand(1000,90000);
+      $approval['approval_track_number'] = $approval_random;
+      $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
+      $approval['approval_created_by'] = $this->session->user_id;
+      $approval['approval_created_date'] = date('Y-m-d');
+      $approval['approval_last_modified_by'] = $this->session->user_id;
+
+      $this->db->insert('approval',$approval);
+
+      // Get the approval ticket insert id when created and reassign the initialized $approval_id
+      $approval_id = $this->db->insert_id();
+    }
+
+   //echo json_encode($approval);
+
+    // This array will hold the array with values for header record insert
+    $header_columns = array();
+
+    // Insert the header record. Use the $approval_id to insert into the fk_approval_id field
+    $header_random = $this->config->item('track_prefix_'.$this->controller).'-'.rand(1000,90000);
+    $header_columns[$this->controller.'_track_number'] = $header_random;
+    $header_columns[$this->controller.'_name'] = ucfirst($this->controller).' # '.$header_random;
+
+    foreach ($header as $key => $value) {
+      $header_columns[$key] = $value;
+    }
+
+    if($header_record_requires_approval){
+      $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
+      $header_columns['fk_approval_id'] = $approval_id;
+    }
+
+    $header_columns[$this->controller.'_created_date'] = date('Y-m-d');
+    $header_columns[$this->controller.'_created_by'] = $this->session->user_id;
+    $header_columns[$this->controller.'_last_modified_by'] = $this->session->user_id;
+
+    // Insert header record
+    $this->db->insert($this->controller,$header_columns);
+    //echo json_encode($header_columns);
+    // Get the insert id of the header record inserted
+    $header_id = $this->db->insert_id();
+
+    // Proceed with inserting details after checking if $post_has_detail
+    if($post_has_detail){
+
+      // The $detail_array is initia to hold the array of the for looped variable since the original $detail will be shifted
+      $detail_array = $detail;
+
+      // This is the array that will hold the insert batch array
+      $detail_columns = array();
+
+      // Get the first element of the detail array to be used to determine the number of detail rows
+      $shifted_element = array_shift($detail);
+
+      // Construct an insert batch array using the detail array
+      for($i=0;$i<sizeof($shifted_element);$i++){
+        foreach ($detail_array as $column => $values) {
+          if(strpos($column,'_name') == true && $column !== $this->controller.'_detail_name'){
+              $column = 'fk_'.substr($column,0,-5).'_id';
+          }
+          $detail_columns[$i][$column] = $values[$i];
+
+          $detail_random = $this->config->item('track_prefix_'.$this->controller.'_detail').'-'.rand(1000,90000);
+          $detail_columns[$i][$this->controller.'_detail_track_number'] = $detail_random;
+          $detail_columns[$i]['fk_'.$this->controller.'_id'] = $header_id;
+
+          // Only insert fk_status_if is the detail record requires approval
+          if($detail_records_require_approval){
+              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->controller.'_detaail');
+          }
+
+          $detail_columns[$i][$this->controller.'_detail_created_date'] = date('Y-m-d');
+          $detail_columns[$i][$this->controller.'_detail_created_by'] =  $this->session->user_id;
+          $detail_columns[$i][$this->controller.'_detail_last_modified_by'] =  $this->session->user_id;
+        }
+      }
+      //echo json_encode($detail_columns);
+      // Insert the details using insert batch
+      $this->db->insert_batch($this->controller.'_detail',$detail_columns);
+
+    }
+
+    // End the transaction and determine if successful
+    // if ($this->db->trans_status() === FALSE)
+    // {
+    //   echo get_phrase('insert_failed');
+    //   //echo json_encode($request);
+    // }else{
+    //   // Send an email to the approver here
+    //
+       echo get_phrase('insert_successful');
+    //   //echo json_encode($detail);
+    // }
+
   }
 
 
