@@ -34,13 +34,48 @@
                       <?php
                         echo $this->grants->header_row_field($column);
                       ?>
-
                     </div>
                   </div>
                 <?php
                   }
                  ?>
+                 <div class="form-group">
+                   <div class="col-xs-12" style="text-align:center;">
+                     <div class="btn btn-default"><?=get_phrase('reset');?></div>
+                     <button class="btn btn-default save"><?=get_phrase('save');?></button>
+                     <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
+                   </div>
+                 </div>
           </div>
       </div>
     </div>
 </div>
+
+<script>
+$(".save, .save_new").on('click',function(ev){
+  pre_record_post();
+
+  var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>";
+  var data = $(this).closest('form').serializeArray();
+
+  $.ajax({
+    url:url,
+    data:data,
+    type:"POST",
+    beforeSend:function(){
+
+    },
+    success:function(response){
+      alert(response);
+      //window.location.reload();
+      on_record_post();
+    },
+    error:function(){
+
+    }
+  });
+
+  post_record_post();
+  ev.preventDefault();
+});
+</script>

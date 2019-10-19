@@ -12,3 +12,6 @@ $config['track_prefix_approval'] = 'APR';
 $config['track_prefix_request_detail'] = 'RQD';
 $config['track_prefix_voucher'] = 'VCH';
 $config['track_prefix_voucher_detail'] = 'VCD';
+$config['track_prefix_budget'] = 'BGT';
+$config['track_prefix_budget'] = 'BGT';
+$config['track_prefix_budget_item'] = 'BGI';

@@ -94,11 +94,6 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->crud_views();
   }
 
-  // function add(){
-  //   $post_array = $this->input->post();
-  //   echo json_encode($post_array);
-  // }
-
   function multi_form_add(){
     $this->crud_views();
   }

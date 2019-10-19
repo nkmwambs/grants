@@ -59,6 +59,8 @@ class Fields_base{
         $field_type = "text";
       }elseif ($column_type == 'date') {
         $field_type = "date";
+      }else{
+        $field_type = "text";
       }
 
     }
