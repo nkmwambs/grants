@@ -239,17 +239,41 @@ function check_if_table_has_detail_table($table_name = ""){
 
 function list_table_visible_columns(){
   $model = $this->current_model;
-  return $this->CI->$model->list_table_visible_columns();
+  $columns = $this->CI->$model->list_table_visible_columns();
+
+  //Add the table id columns if does not exist in $columns
+  if(is_array($columns) && !in_array($this->controller.'_id',$columns)){
+    array_unshift($columns,$this->controller.'_id');
+  }
+
+  return $columns;
+
 }
 
 function detail_list_table_visible_columns($table){
   $model = $this->load_detail_model($table);
-  return $this->CI->$model->detail_list_table_visible_columns();
+
+  $columns = $this->CI->$model->detail_list_table_visible_columns();
+
+  //Add the table id columns if does not exist in $columns
+  if(is_array($columns) && !in_array($this->controller.'_id',$columns)){
+    array_unshift($columns,$this->controller.'_id');
+  }
+
+  return $columns;
 }
 
 function master_table_visible_columns(){
   $model = $this->current_model;
-  return $this->CI->$model->master_table_visible_columns();
+
+  $columns = $this->CI->$model->master_table_visible_columns();
+
+  //Add the table id columns if does not exist in $columns
+  if(is_array($columns) && !in_array($this->controller.'_id',$columns)){
+    array_unshift($columns,$this->controller.'_id');
+  }
+
+  return $columns;
 }
 
 function list(){

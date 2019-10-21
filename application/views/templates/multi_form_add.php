@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-  //print_r($result);
-  //print_r($this->db->field_data($this->controller));
+
   extract($result);
+  //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 ?>
 
 <div class="row">
@@ -15,7 +15,7 @@
             </div>
 			         <div class="panel-body">
 
-              <?php echo form_open(base_url().$this->controller.'/add' , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
+              <?php echo form_open(base_url().$this->controller.'/'.$this->action , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 
                   foreach ($keys as $column) {
 
@@ -158,6 +158,11 @@
     pre_record_post();
 
     var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>";
+
+    if('<?=$this->uri->segment(3,0);?>' !== 0){
+      url = "<?=base_url().$this->controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
+    }
+
     var data = $(this).closest('form').serializeArray();
 
     $.ajax({

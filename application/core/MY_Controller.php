@@ -9,8 +9,11 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   public $current_model;
   public $controller;
   public $action;
+  public $id = null;
+  public $master_table = null;
 
   function __construct(){
+
     parent::__construct();
 
     $segment = $this->uri->segment(1, 'approval');
@@ -24,16 +27,30 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->library($this->current_library);
     $this->load->model($this->current_model);
 
-    $this->load->database();
+    if($this->action == 'view'){
+      $this->session->set_userdata('master_table',$this->controller);
+      $this->id = hash_id($this->uri->segment(3,0),'decode');
+    }elseif ($this->action == 'list') {
+      $this->session->set_userdata('master_table',null);
+    }
+
   }
 
 
   function result(){
+
     $action = $this->action.'_result';
+
     $lib = $this->current_library;
 
     if($this->input->post()){
+
+      if($this->id !== null){
+        $this->$lib->$action($this->id);
+      }else{
         $this->$lib->$action();
+      }
+
         exit;
     }
 
@@ -77,6 +94,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $page_data['result'] = $result;
 
     // Can be overrode in a specific controller
+    //$this->load->add_package_path(APPPATH.'workplan', FALSE);
     $this->load_template($page_data);
   }
 
@@ -94,7 +112,10 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->crud_views();
   }
 
-  function multi_form_add(){
+
+// The null $id happens if the record being created has no dependant primary record
+  function multi_form_add($id = null){
+    $this->id = $id;
     $this->crud_views();
   }
 

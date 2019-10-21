@@ -15,3 +15,4 @@ $config['track_prefix_voucher_detail'] = 'VCD';
 $config['track_prefix_budget'] = 'BGT';
 $config['track_prefix_budget'] = 'BGT';
 $config['track_prefix_budget_item'] = 'BGI';
+$config['track_prefix_budget_item_detail'] = 'BTS';

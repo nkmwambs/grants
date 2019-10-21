@@ -28,12 +28,14 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
   public function master_table_visible_columns(){
-    //return array('request_id','request_name','request_created_by','request_last_modified_by');
+    //return array('request_name','request_created_by','request_last_modified_by');
   }
 
   public function master_table_hidden_columns(){}
 
-  public function list_table_visible_columns(){}
+  public function list_table_visible_columns(){
+      //return array('request_id','request_name','request_created_by','request_last_modified_by');
+  }
 
   public function list_table_hidden_columns(){}
 

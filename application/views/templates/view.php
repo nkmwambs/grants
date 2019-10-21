@@ -1,8 +1,7 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-//echo $this->session->role_id;
-//print_r($this->grants->display_approver_status_action(1,'request_detail'));
 
 extract($result['master']);
+//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 
 //Remove the primary key field from the master table
 $master_primary_key = $table_body[$this->controller.'_id'];
@@ -105,7 +104,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <div class="row" style="margin-bottom:25px;">
           <div class="col-xs-12" style="text-align:center;">
-            <?=add_record_button($detail_table_name,$has_details_table,$has_details_listing);?>
+            <?=add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing);?>
           </div>
         </div>
           <table class="table table-striped datatable_details">

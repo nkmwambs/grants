@@ -1,5 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 extract($result);
+//echo isset($this->session->master_table)?$this->session->master_table:"Not set"; 
 ?>
 
 <div class="row">
@@ -23,7 +24,7 @@ extract($result);
 
     <?php
     if($show_add_button){
-      echo add_record_button($this->controller, $has_details_table,$has_details_listing);
+      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
     }
     ?>
   </div>

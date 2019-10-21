@@ -25,6 +25,7 @@ class Grants_model extends CI_Model
 
   function add(){
 
+    // Asign the post input to $post_array
     $post_array = $this->input->post();
 
     // Extract the post array into header and detail variables
@@ -32,6 +33,10 @@ class Grants_model extends CI_Model
 
     // Determine if the input post has details or not by checking if the detail variable is set
     $post_has_detail = isset($detail)?true:false;
+
+    // // Check if mandatory columns exists: created_by, created_date, last_modified_by,
+    // // last_modified_date, fk_approval_id and fk_status_id
+    // $mandatory_insert_columns = array($this->controller.'');
 
     // Instatiate the $approval_id to 0
     $approval_id = 0;
@@ -73,10 +78,17 @@ class Grants_model extends CI_Model
       $header_columns[$key] = $value;
     }
 
+    if(isset($this->session->master_table) && $this->session->master_table !== null){
+      $header_columns['fk_'.$this->session->master_table.'_id'] = hash_id($this->id,'decode');
+    }
+
     if($header_record_requires_approval){
       $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
-      $header_columns['fk_approval_id'] = $approval_id;
+    }else{
+      $header_columns['fk_status_id'] = 0;
     }
+
+    $header_columns['fk_approval_id'] = $approval_id;
 
     $header_columns[$this->controller.'_created_date'] = date('Y-m-d');
     $header_columns[$this->controller.'_created_by'] = $this->session->user_id;
@@ -84,7 +96,7 @@ class Grants_model extends CI_Model
 
     // Insert header record
     $this->db->insert($this->controller,$header_columns);
-    //echo json_encode($header_columns);
+    echo json_encode($header_columns);
     // Get the insert id of the header record inserted
     $header_id = $this->db->insert_id();
 
