@@ -22,8 +22,9 @@
                     if( strpos($column,'_id') == true ||
                         strpos($column,'_track_number') == true ||
                         strpos($column,'_created_date') == true ||
-                        strpos($column,'_last_modified_date') == true
-                        //strpos($column,'_name') == true
+                        strpos($column,'_last_modified_date') == true ||
+                        strpos($column,'_created_by') == true ||
+                        strpos($column,'_last_modified_by') == true
                     ){
                       continue;
                     }
@@ -56,6 +57,11 @@ $(".save, .save_new").on('click',function(ev){
   pre_record_post();
 
   var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>";
+
+  if('<?=$this->uri->segment(3,0);?>' !== 0){
+    url = "<?=base_url().$this->controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
+  }
+
   var data = $(this).closest('form').serializeArray();
 
   $.ajax({

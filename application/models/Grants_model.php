@@ -25,6 +25,14 @@ class Grants_model extends CI_Model
 
   function add(){
 
+    // There are 3 insert scenarios
+    // Scenario 1: Master detail insert without a primary relationship and master requires approval
+    // Scenario 2: Master detail insert without a primary relationship and master doesn't require approval
+    // Scenario 3: Master detail insert with a primary relationship and master requires approval
+    // Scenario 4: Master detail insert with a primary relationship and master doesn't require approval
+    // Scenario 5: Single record insert that requires approval
+    // Scenario 6: Single record insert that doesn't require approval
+
     // Asign the post input to $post_array
     $post_array = $this->input->post();
 
@@ -34,13 +42,6 @@ class Grants_model extends CI_Model
     // Determine if the input post has details or not by checking if the detail variable is set
     $post_has_detail = isset($detail)?true:false;
 
-    // // Check if mandatory columns exists: created_by, created_date, last_modified_by,
-    // // last_modified_date, fk_approval_id and fk_status_id
-    // $mandatory_insert_columns = array($this->controller.'');
-
-    // Instatiate the $approval_id to 0
-    $approval_id = 0;
-
     // Check if the creation of the of the header and detail records requires an approval ticket
     $header_record_requires_approval = $this->approveable_item($this->controller);
     $detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
@@ -49,8 +50,23 @@ class Grants_model extends CI_Model
     //$this->db->trans_start();
 
     $approval = array();
+
+    // Instatiate the $approval_id to 0
+    $approval_id = 0;
+
+    if($this->id){
+
+       $decoded_hash_id = hash_id($this->id,'decode');
+
+        $approval_id = $this->db->get_where($this->session->master_table,
+        array($this->session->master_table.'_id'=>$decoded_hash_id))->row()->fk_approval_id;
+
+    }
+
     // Create the approval ticket if required by the header record
-    if($header_record_requires_approval){
+
+    //if($header_record_requires_approval && $approval_id == 0){
+
       $approval_random = $this->config->item('track_prefix_approval').'-'.rand(1000,90000);
       $approval['approval_track_number'] = $approval_random;
       $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
@@ -62,8 +78,9 @@ class Grants_model extends CI_Model
 
       // Get the approval ticket insert id when created and reassign the initialized $approval_id
       $approval_id = $this->db->insert_id();
-    }
 
+    //}
+    //echo $this->id;
    //echo json_encode($approval);
 
     // This array will hold the array with values for header record insert
@@ -82,11 +99,11 @@ class Grants_model extends CI_Model
       $header_columns['fk_'.$this->session->master_table.'_id'] = hash_id($this->id,'decode');
     }
 
-    if($header_record_requires_approval){
+    //if($header_record_requires_approval){
       $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
-    }else{
-      $header_columns['fk_status_id'] = 0;
-    }
+    //}else{
+      //$header_columns['fk_status_id'] = 0;
+    //}
 
     $header_columns['fk_approval_id'] = $approval_id;
 
@@ -96,7 +113,7 @@ class Grants_model extends CI_Model
 
     // Insert header record
     $this->db->insert($this->controller,$header_columns);
-    echo json_encode($header_columns);
+    //echo json_encode($header_columns);
     // Get the insert id of the header record inserted
     $header_id = $this->db->insert_id();
 
@@ -125,9 +142,11 @@ class Grants_model extends CI_Model
           $detail_columns[$i]['fk_'.$this->controller.'_id'] = $header_id;
 
           // Only insert fk_status_if is the detail record requires approval
-          if($detail_records_require_approval){
-              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->controller.'_detaail');
-          }
+          //if($detail_records_require_approval){
+              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->controller.'_detail');
+          //}
+
+          $detail['fk_approval_id'] = $approval_id;
 
           $detail_columns[$i][$this->controller.'_detail_created_date'] = date('Y-m-d');
           $detail_columns[$i][$this->controller.'_detail_created_by'] =  $this->session->user_id;
@@ -255,16 +274,11 @@ class Grants_model extends CI_Model
 
 
     foreach ($get_all_table_fields as $get_all_table_field) {
-
       //Unset foreign keys columns
-
       if( substr($get_all_table_field,0,3) == 'fk_'){
         unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
       }
-
-
     }
-
 
     $visible_columns = $get_all_table_fields;
     $lookup_columns = array();
@@ -279,7 +293,9 @@ class Grants_model extends CI_Model
 
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
-            if(strpos($lookup_table_column,'_name') == true || strpos($lookup_table_column,'_id') == true){
+            if(
+              $lookup_table_column == $lookup_table.'_id' || $lookup_table_column == $lookup_table.'_name'
+            ){
               array_push($visible_columns,$lookup_table_column);
             }
 
@@ -288,8 +304,7 @@ class Grants_model extends CI_Model
       }
     }
 
-
-
+  
     return $visible_columns;
 
   }
@@ -403,16 +418,22 @@ class Grants_model extends CI_Model
 
     $lookup_tables = $this->grants->lookup_tables($table);
     //print_r($lookup_tables);
+    //exit;
     // Run column selector
     $this->db->select($this->detail_list_select_columns($table));
-
+    //print_r($this->detail_list_select_columns($table));
+    //exit;
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $lookup_table.'_id';
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
     }
+    // print_r(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode')));
+    // exit;
     $this->db->where(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode') ));
+    //print_r($this->grants_get($table));
+    //exit;
     return $this->grants_get($table);
   }
 
@@ -426,6 +447,8 @@ class Grants_model extends CI_Model
       $this->db->select($this->master_view_select_columns());
 
       $lookup_tables = $this->grants->lookup_tables($table);
+      //echo implode(',',$this->master_view_select_columns());
+      //exit();
 
       if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
@@ -518,12 +541,53 @@ class Grants_model extends CI_Model
 
     }
 
-
-
     return $visible_columns;
-
   }
 
+  function single_form_add_visible_columns(){
+
+    // Check if the table has list_table_visible_columns not empty
+    $master_table_visible_columns = $this->grants->single_form_add_visible_columns();
+    $lookup_tables = $this->grants->lookup_tables();
+
+    $get_all_table_fields = $this->get_all_table_fields();
+
+    foreach ($get_all_table_fields as $get_all_table_field) {
+      //Unset foreign keys columns, created_by and last_modified_by columns
+      if( substr($get_all_table_field,0,3) == 'fk_' ||
+           strpos($get_all_table_field,'_deleted_at') == true
+        ){
+        unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
+      }
+    }
+
+
+    $visible_columns = $get_all_table_fields;
+    $lookup_columns = array();
+
+    if(is_array($master_table_visible_columns) && count($master_table_visible_columns) > 0 ){
+      $visible_columns = $master_table_visible_columns;
+    }else{
+
+      if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+        foreach ($lookup_tables as $lookup_table) {
+
+          $lookup_table_columns = $this->get_all_table_fields($lookup_table);
+
+          foreach ($lookup_table_columns as $lookup_table_column) {
+            // Only include the name field of the look up table in the select columns
+            if(strpos($lookup_table_column,'_name') == true){
+              array_push($visible_columns,$lookup_table_column);
+            }
+
+          }
+        }
+      }
+
+    }
+
+    return $visible_columns;
+  }
 
   function detail_multi_form_add_visible_columns($table){
 
@@ -592,7 +656,7 @@ class Grants_model extends CI_Model
     $table = $table_name == "" ? $this->controller : $table_name;
 
     $approveable_item = $this->db->get_where('approve_item',
-    array('approve_item_name'=>$table,'approve_item_is_active'=>1));
+    array('approve_item_name'=>$table));
 
     $status_id = 0;
 
@@ -664,7 +728,7 @@ class Grants_model extends CI_Model
               $this->db->join('status_role','status_role.fk_status_id=status.status_id');
               $raw_labels = $this->db->get_where('status',
               array('fk_approve_item_id'=>$approveable_item_id,
-              'status_approval_sequence'=>$next_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id));
+              'status_approval_sequence'=>$next_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id))->result_array();
 
             }
 
@@ -677,16 +741,16 @@ class Grants_model extends CI_Model
              $this->db->join('status_role','status_role.fk_status_id=status.status_id');
              $raw_labels = $this->db->get_where('status',
              array('fk_approve_item_id'=>$approveable_item_id,
-             'status_approval_sequence'=>$current_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id));
+             'status_approval_sequence'=>$current_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id))->result_array();
           }
 
       }
 
       $columned_labels = array();
       // Finally filter the resultant array to only retain the correct status_action_label based on the user role id
-      if(is_array($raw_labels->result_array()) && count($raw_labels->result_array()) > 0){
-        $status_ids_array = array_column($raw_labels->result_array(),'status_id');
-        $labels_array = array_column($raw_labels->result_array(),'status_action_label');
+      if(is_array($raw_labels) && count($raw_labels) > 0){
+        $status_ids_array = array_column($raw_labels,'status_id');
+        $labels_array = array_column($raw_labels,'status_action_label');
 
         $columned_labels = array_combine($status_ids_array,$labels_array);
       }

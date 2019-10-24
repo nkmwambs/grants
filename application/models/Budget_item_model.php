@@ -20,7 +20,7 @@ class Budget_item_model extends MY_Model implements CrudModelInterface, TableRel
   function index(){}
 
   public function lookup_tables(){
-    return array('budget','expense_account','status');
+    return array('budget','expense_account','status','approval');
   }
 
   public function detail_tables(){

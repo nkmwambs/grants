@@ -33,14 +33,17 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
     public function list_table_hidden_columns(){}
 
     public function detail_list_table_visible_columns(){
-      return array('request_detail_id','request_detail_track_number','request_detail_description',
+      return array('request_detail_track_number','request_detail_description',
       'request_detail_quantity','request_detail_unit_cost','request_detail_total_cost',
       'expense_account_name','project_allocation_name','status_name');
     }
 
     public function detail_list_table_hidden_columns(){}
 
-    public function single_form_add_visible_columns(){}
+    public function single_form_add_visible_columns(){
+      return array('request_detail_description','request_detail_quantity','request_detail_unit_cost',
+      'request_detail_total_cost','expense_account_name','project_allocation_name');
+    }
 
     public function single_form_add_hidden_columns(){}
 

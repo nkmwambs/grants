@@ -23,7 +23,7 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   }
 
   function detail_tables(){
-    return array('request');
+    return array('request','budget','voucher');
   }
 
   public function master_table_visible_columns(){}

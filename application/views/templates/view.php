@@ -1,5 +1,5 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-
+//print_r($result);
 extract($result['master']);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 
@@ -114,7 +114,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               <?=render_list_table_header($detail_table_name,$keys);?>
             </thead>
             <tbody>
-              <?php foreach ($table_body as $row) { ?>
+              <?php foreach ($table_body as $row) {
+                //print_r($row);
+                ?>
                 <tr>
                   <td>
                       <?php
@@ -123,13 +125,15 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                   </td>
                   <?php
                       $primary_key = 0;
+
                       foreach ($keys as $column){
                         $primary_key = $row[$primary_key_column]
+
                   ?>
                         <td>
 
                           <?php
-                          if(isset($row[$column])){
+                          if(isset($row[$column]) && array_key_exists($column,$row) ){
                             if(strpos($column,'track_number') == true && $has_details_table == 1 ){
                               echo '<a href="'.base_url().strtolower($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'is_active') == true){

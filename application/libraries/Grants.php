@@ -110,7 +110,9 @@ function get_all_table_fields($table_name = ""){
 }
 
 
-function edit_result(){}
+function edit_result(){
+  //$this->mandatory_fields($table);
+}
 
 
 function check_if_table_has_detail_table($table_name = ""){
@@ -196,9 +198,16 @@ function check_if_table_has_detail_table($table_name = ""){
     return $this->CI->$model->master_multi_form_add_visible_columns();
   }
 
+  function single_form_add_visible_columns(){
+    $model = $this->current_model;
+    return $this->CI->$model->single_form_add_visible_columns();
+  }
+
   function multi_form_add_result($table_name = ""){
 
     $table = $table_name == ""?$this->controller:$table_name;
+
+    //$this->mandatory_fields($table);
 
     if($this->CI->input->post()){
       $model = $this->current_model;
@@ -209,6 +218,8 @@ function check_if_table_has_detail_table($table_name = ""){
         $this->CI->grants_model->add();
       }
     }else{
+      $this->mandatory_fields($table);
+
       $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
       $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
 
@@ -224,10 +235,20 @@ function check_if_table_has_detail_table($table_name = ""){
 
       $table = $table_name == ""?$this->controller:$table_name;
 
+
       if($this->CI->input->post()){
-        $this->CI->grants_model->add($this->CI->input->post());
+        //$this->CI->grants_model->add($this->CI->input->post());
+        $model = $this->current_model;
+
+        if(method_exists($this->CI->$model,'add')){
+          $this->CI->$model->add();
+        }else{
+          $this->CI->grants_model->add();
+        }
       }else{
-          $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
+        $this->mandatory_fields($table);
+
+        $keys = $this->CI->grants_model->single_form_add_visible_columns();
 
         return array(
           'keys'=>$keys
@@ -256,8 +277,8 @@ function detail_list_table_visible_columns($table){
   $columns = $this->CI->$model->detail_list_table_visible_columns();
 
   //Add the table id columns if does not exist in $columns
-  if(is_array($columns) && !in_array($this->controller.'_id',$columns)){
-    array_unshift($columns,$this->controller.'_id');
+  if(is_array($columns) && !in_array($table.'_id',$columns)){
+    array_unshift($columns,$table.'_id');
   }
 
   return $columns;
@@ -312,8 +333,92 @@ function show_add_button($table = ""){
   return $show_add_button;
 }
 
+function mandatory_fields($table){
+
+  if($table!=='approval'){
+      //Mandatory Fields: created_by, created_date,last_modified_by,last_modified_date,fk_approval_id,fk_status_id
+      $mandatory_fields = array($table.'_created_date',$table.'_created_by',$table.'_last_modified_by',
+      $table.'_last_modified_date','fk_approval_id','fk_status_id');
+
+      // Check if the table is in the approveable items table if not create it
+      $approve_items = $this->CI->db->get_where('approve_item',array('approve_item_name'=>$table));
+
+      $approve_item_id = 0;
+
+      if($approve_items->num_rows() == 0){
+        $data['approve_item_name'] = $table;
+        $data['approve_item_is_active'] = 0;
+        $data['approve_item_created_date'] = date('Y-m-d');
+        $data['approve_item_created_by'] = $this->CI->session->user_id;
+        $data['approve_item_last_modified_by'] = $this->CI->session->user_id;
+
+        $this->CI->db->insert('approve_item',$data);
+
+        $approve_item_id = $this->CI->db->insert_id();
+
+      }else{
+        $approve_item_id = $approve_items->row()->approve_item_id;
+      }
+
+      // Check is the the table has a status with status_approval_sequence 1 if not create it with status name
+
+      $status = $this->CI->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
+
+      $status_id = 0;
+
+      if($status->num_rows() == 0){
+        $status_data['status_name'] = get_phrase('new');
+        $status_data['status_action_label'] = "";
+        $status_data['fk_approve_item_id'] = $approve_item_id;
+        $status_data['status_approval_sequence'] = 1;
+        $status_data['status_approval_direction'] = 1;
+        $status_data['status_is_requiring_approver_action'] = 0;
+        $status_data['fk_role_id'] = $this->CI->session->role_id;
+        $status_data['status_created_date'] =  date('Y-m-d');
+        $status_data['status_created_by'] = $this->CI->session->user_id;
+        $status_data['status_last_modified_by']  = $this->CI->session->user_id;
+
+        $this->CI->db->insert('status',$status_data);
+
+        $status_id = $this->CI->db->insert_id();
+
+      }
+
+      // Check if the fields exists in the listed table and if not alter the table by adding a column with default value as the newly inserted status_id
+
+      $fields_to_add = array();
+
+      $table_fields = $this->CI->grants_model->get_all_table_fields($table);
+
+      foreach ($mandatory_fields as $mandatory_field) {
+        if(!in_array($mandatory_field,$table_fields)) {
+
+          if(substr($mandatory_field,0,3) == 'fk_' || substr($mandatory_field,-3,3) == '_by'){
+            $fields_to_add[$mandatory_field]['type'] = 'INT';
+            $fields_to_add[$mandatory_field]['constraint'] = '100';
+          }elseif(strpos($mandatory_field,'_date') == true){
+            $fields_to_add[$mandatory_field]['type'] = 'date';
+            //$fields_to_add[$mandatory_field]['constraint'] = '100';
+          }else{
+            $fields_to_add[$mandatory_field]['type'] = 'varchar';
+            $fields_to_add[$mandatory_field]['constraint'] = '100';
+          }
+
+        }
+      }
+
+      if(count($fields_to_add) > 0){
+        $this->CI->load->dbforge();
+        $this->CI->dbforge->add_column($table, $fields_to_add);
+      }
+  }
+}
+
 function list_result(){
+
   $table = $this->controller;
+
+  $this->mandatory_fields($table);
 
   $result = $this->list();
   $keys = $this->CI->grants_model->list_select_columns();
@@ -396,6 +501,8 @@ function display_approver_status_action($status_id, $table = ""){
 
 function view_result(){
   $table = $this->controller;
+
+  $this->mandatory_fields($table);
 
   $query_output = $this->master_view();
   $keys = $this->CI->grants_model->master_select_columns();

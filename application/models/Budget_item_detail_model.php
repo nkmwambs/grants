@@ -51,6 +51,8 @@ class Budget_item_detail_model extends MY_Model implements CrudModelInterface, T
 
     public function detail_multi_form_add_hidden_columns(){}
 
+    public function single_form_add_visible_columns(){}  
+
     function detail_list(){}
 
     function master_view(){}

@@ -119,11 +119,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->crud_views();
   }
 
-  function single_form_add(){
+  function single_form_add($id = null){
+    $this->id = $id;
     $this->crud_views();
   }
 
-  function delete($id){
+  function delete($id = null){
     echo "Record deleted successful";
   }
 
