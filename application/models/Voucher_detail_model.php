@@ -26,6 +26,19 @@ class Voucher_detail_model extends MY_Model implements CrudModelInterface, Table
 
   public function detail_tables(){}
 
+  public function false_keys(){
+
+      return array(
+        'fk_voucher_type_id'=>array(
+          'representing_key'=>'detail_account',
+          'lookup_keys'=>array(
+            'expense_account_name'=>array(2,3,6),
+            'income_account_name'=>array(5,7)
+          )
+        )
+      );
+    }
+
   public function master_table_visible_columns(){}
 
   public function master_table_hidden_columns(){}

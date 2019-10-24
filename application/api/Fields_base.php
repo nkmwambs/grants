@@ -72,10 +72,12 @@ class Fields_base{
   function number_field(){
     $id = "";
     $name = 'detail['.$this->column.'][]';
+    $master_class = "detail";
 
     if($this->is_header){
       $id = $this->column;
       $name = 'header['.$this->column.']';
+      $master_class = 'master';
     }
 
     $value = 0;
@@ -88,17 +90,19 @@ class Fields_base{
       $value = $this->CI->$library->$method();
     }
 
-    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
   function text_field(){
 
     $id = "";
     $name = 'detail['.$this->column.'][]';
+    $master_class = "detail";
 
     if($this->is_header){
       $id = $this->column;
       $name = 'header['.$this->column.']';
+      $master_class = 'master';
     }
 
     $value = "";
@@ -112,7 +116,7 @@ class Fields_base{
     }
 
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
 
@@ -120,10 +124,12 @@ class Fields_base{
 
         $id = "";
         $name = 'detail['.$this->column.'][]';
+        $master_class = "detail";
 
         if($this->is_header){
           $id = $this->column;
           $name = 'header['.$this->column.']';
+          $master_class = 'master';
         }
 
         $value = "";
@@ -136,7 +142,7 @@ class Fields_base{
           $value = $this->CI->$library->$method();
         }
 
-      return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+      return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
   function select_field($options){
@@ -150,10 +156,12 @@ class Fields_base{
     }
 
     $name = 'detail['.$this->column.'][]';
+    $master_class = "detail";
 
     if($this->is_header){
       $id = $this->column;
       $name = 'header['.$this->column.']';
+      $master_class = 'master';
     }
 
     $value = 0;
@@ -166,7 +174,7 @@ class Fields_base{
       $value = $this->CI->$library->$method();
     }
 
-    $select =  "<select id='".$id."' name='".$name."' class='form-control input_".$this->table." ".$this->column." ' required='required'>
+    $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
             <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
 
             foreach ($options as $option_value=>$option_html) {

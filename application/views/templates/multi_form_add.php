@@ -1,5 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
+  //print_r($result);
   extract($result);
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 ?>
@@ -96,6 +96,40 @@
   </div>
 
   <script type="text/javascript">
+
+  $(document).on('change','.master',function(){
+    var all_false_keys = '<?=json_encode($detail_false_keys);?>';
+    var elem = $(this);
+    var obj = JSON.parse(all_false_keys);
+
+    $.each(obj,function(i,el){
+
+        if(elem.hasClass(i)){
+          var representing_key = el.representing_key;
+          var lookup_keys = el.lookup_keys;
+          //alert(representing_key);
+          $(".th_data").each(function(thi,th){
+
+            if($(th).attr('id') == 'th_voucher_'+representing_key){
+              //$(th).prop('id','th_expense_account_name');
+              $.each(lookup_keys,function(lki,lkel){
+
+                if($.inArray(parseInt(elem.val()),lkel) > -1){
+                  //alert('hello');
+                  $(th).prop('id','th_'+lki);
+                }
+
+              });
+            }
+
+          });
+
+        }else{
+          //alert('Not a false key trigger '+ i +' = '+elem.attr('id'));
+        }
+    });
+
+  });
 
     $('.insert_row').click(function(ev){
 

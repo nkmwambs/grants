@@ -19,6 +19,10 @@ private $action;
 
 private $table;
 
+// Feature model methods
+
+private $false_keys_model_method = 'false_keys';
+
 function __construct(){
 
   // Instantiate Codeigniter Singleton class
@@ -203,6 +207,18 @@ function check_if_table_has_detail_table($table_name = ""){
     return $this->CI->$model->single_form_add_visible_columns();
   }
 
+  function false_keys($detail_table){
+  $model = $this->load_detail_model($detail_table);
+
+  $false_keys = array();
+
+  if(method_exists($this->CI->$model,$this->false_keys_model_method)){
+      $false_keys = $this->CI->$model->false_keys();
+  }
+
+  return $false_keys;
+}
+
   function multi_form_add_result($table_name = ""){
 
     $table = $table_name == ""?$this->controller:$table_name;
@@ -222,10 +238,12 @@ function check_if_table_has_detail_table($table_name = ""){
 
       $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
       $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
+      $false_keys = $this->false_keys($table.'_detail');
 
       return array(
         'keys'=>$keys,
-        'detail_table'=>$detail_table_keys
+        'detail_table'=>$detail_table_keys,
+        'detail_false_keys'=>$false_keys
       );
     }
 
