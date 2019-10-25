@@ -8,6 +8,8 @@
                          <li class="divider"></li>
                          <li><?=list_table_delete_action($table,$primary_key);?></li>
                          <li class="divider"></li>
+                         <li><?=get_phrase('attachments');?></li>
+                         <li class="divider"></li>
                          <?php
                            if($is_approveable_item) {
                              if(is_array($action_labels) && count($action_labels) > 0){

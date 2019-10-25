@@ -1,11 +1,39 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+/**
+* The grants management system is a framework developed by Compassion Africa Regional Development team
+* to help FCPs manage their finances. It an open framework that be easily be adopted by any grant managing
+* organization.
+*
+* @author Nicodemus Karisa
+* @package Grants Management System
+* @copyright Compassion International Kenya
+* @license https://compassion-africa.org/lisences.html
+*
+*/
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+* Main system library
+*
+* @author Nicodemus Karisa
+* @package Grants Management System
+* @copyright Compassion International Kenya
+* @license https://compassion-africa.org/lisences.html
+*/
 
 class Grants{
 
-// This is a variable carrying the instance for Codeigniter singleton class
+/**
+* This is a variable carrying the instance for Codeigniter singleton class
+* @var object
+*/
 private $CI;
 
-// This is the library for the current running master controller
+/**
+* This is the library for the current running master controller
+* @var String
+*/
 private $current_library;
 
 // This is the model for the current running master controller

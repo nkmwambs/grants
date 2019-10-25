@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 extract($result);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set"; 
+//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 ?>
 
 <div class="row">
@@ -55,6 +55,8 @@ extract($result);
                     <li><?=list_table_edit_action($this->controller,$primary_key);?></li>
                     <li class="divider"></li>
                     <li><?=list_table_delete_action($this->controller,$primary_key);?></li>
+                    <li class="divider"></li>
+                    <li><a href="#"><?=get_phrase('attachments');?></a></li>
 
                   </ul>
                 </div>

@@ -39,6 +39,14 @@ class Access{
     //$this->CI->load->database();
   }
 
+  /**
+  * getAccess
+  *
+  * Get users controller methods access abilities
+  * @param $controller_method String : Name of the controller seeking it's access abilities for a logged in user
+  * @return void 
+  */
+
   function getAccess($controller_method){
 
     $user_id = $this->CI->session->user_id;
