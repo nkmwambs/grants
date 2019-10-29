@@ -11,7 +11,9 @@
 		"source": "https://github.com/bcit-ci/CodeIgniter"
 	},
 	"require": {
-		"php": ">=5.3.7"
+		"php": ">=5.3.7",
+		"owasp/phprbac": "^2.0",
+		"nette/security": "^3.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "4.* || 5.*",
