@@ -130,6 +130,7 @@ class Menu {
       }
 
         return $top_menu_items;
+        //return array('Approval'=>[],'Bank'=>[],'Budget'=>[],'Center'=>[],'Workplan'=>[],'Voucher'=>[]);
     }
 
     function set_menu_sessions(){
@@ -139,6 +140,8 @@ class Menu {
       $sizeOfMenuItemsByDatabase = $this->CI->menu_model->get_count_of_menu_items();
 
       if($sizeOfMenuItemsByController !== $sizeOfMenuItemsByDatabase){
+        // $this->CI->db->where(array('menu_derivative_controller'=>'Role'));
+        // $this->CI->db->delete('menu',$data);
           $this->CI->session->unset_userdata('user_menu');
           $this->CI->session->unset_userdata('user_priority_menu');
           $this->CI->session->unset_userdata('user_more_menu');
@@ -159,14 +162,7 @@ class Menu {
 
           $user_priority_menu = elevate_array_element_to_key($user_menu_by_priority_groups[1],'menu_derivative_controller');
 
-          // if(!isset($user_menu_by_priority_groups[1])){
-          //  throw new \Exception("Error Processing Request", 1);
-          // }
-
           $user_more_menu = elevate_array_element_to_key($user_menu_by_priority_groups[0],'menu_derivative_controller');
-
-
-          //$this->CI->session->set_userdata('test_session',$user_menu_by_priority_groups);
 
           $this->CI->session->set_userdata('user_menu',$full_user_menu);
 

@@ -32,6 +32,19 @@ function upsert_menu($menus){
         }
       }
 
+      //Array diff
+
+      $arr_menu = array_column($this->db->get('menu')->result_array(),'menu_derivative_controller');
+      //$arr_controllers = array('Approval','Bank','Budget','Center');
+      $removed_controllers = array_diff($arr_menu,array_keys($menus));
+
+      if(count($removed_controllers) > 0){
+        foreach ($removed_controllers as $removed_controller) {
+          $this->db->where(array('menu_derivative_controller'=>$removed_controller));
+          $this->db->delete('menu');
+        }
+      }
+
 }
 
 function upsert_user_menu(){
@@ -52,7 +65,8 @@ function upsert_user_menu(){
       $order = $this->db->get_where('menu_user_order',array('fk_user_id'=>$this->session->user_id))->num_rows();
 
       foreach ($menu_ids as $menu_id) {
-        // this allows making one of the menu items be of order 0
+        // This allows making one of the menu items be of order 0
+        $user_menu_data['menu_user_order_priority_item'] = 1;
         if(sizeof($menu_ids)-1 == $order){
           $user_menu_data['menu_user_order_priority_item'] = 0;
         }
