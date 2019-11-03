@@ -83,7 +83,7 @@
                 <div class="form-group">
                   <div class="col-xs-12">
                     <label class=""><?=get_phrase('attach_a_file(s)');?></label>
-                    <input type="file" multiple />
+                    <input type="file" name="attachment" multiple />
                   </div>
               </div>
 
@@ -218,7 +218,7 @@
       },
       success:function(response){
         alert(response);
-        //window.location.reload();
+        window.location.reload();
         on_record_post();
       },
       error:function(){

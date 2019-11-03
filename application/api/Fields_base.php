@@ -84,7 +84,7 @@ class Fields_base{
 
     $library = $this->CI->controller.'_library';
 
-    $method = $this->column.'_field_value';
+    $method = $this->column.'_default_field_value';
 
     if(method_exists($this->CI->$library,$method)){
       $value = $this->CI->$library->$method();
@@ -109,7 +109,7 @@ class Fields_base{
 
     $library = $this->CI->controller.'_library';
 
-    $method = $this->column.'_field_value';
+    $method = $this->column.'_default_field_value';
 
     if(method_exists($this->CI->$library,$method)){
       $value = $this->CI->$library->$method();
@@ -136,7 +136,7 @@ class Fields_base{
 
         $library = $this->CI->controller.'_library';
 
-        $method = $this->column.'_field_value';
+        $method = $this->column.'_default_field_value';
 
         if(method_exists($this->CI->$library,$method)){
           $value = $this->CI->$library->$method();
@@ -168,7 +168,7 @@ class Fields_base{
 
     $library = $this->CI->controller.'_library';
 
-    $method = $this->column.'_field_value';
+    $method = $this->column.'_default_field_value';
 
     if(method_exists($this->CI->$library,$method)){
       $value = $this->CI->$library->$method();

@@ -67,4 +67,11 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function view(){}
 
+    /**Local methods**/
+  function highest_voucher_number($center_id = 1){
+
+    // Get max voucher number for center
+    return $this->db->select_max("voucher_number")->get_where('voucher',
+    array('fk_center_id'=>$center_id))->row()->voucher_number;
+  }
 }

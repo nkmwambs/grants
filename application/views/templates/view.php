@@ -17,22 +17,34 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
   <div class="col-xs-12">
     <table class="table table-striped">
       <thead>
-        <tr><th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?> Master Record</th></tr>
+        <tr><th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?>
+          <?=get_phrase('master_record');?>
+          <i title="<?=get_phrase('attachments(s)');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-paperclip pull-left"></i>
+          <i title="<?=get_phrase('message(s)');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-comments-o pull-left"></i>
+        </th></tr>
+
         <?php if($is_approveable_item){?>
-        <tr>
-          <th colspan="<?=$this->config->item('master_table_columns')?>" style="text-align:center;">
 
               <?php
               if(is_array($action_labels) && count($action_labels) > 0){
-                 foreach ($action_labels as $next_status_id => $action_label) {
               ?>
-                <div class="btn btn-default"><?=get_phrase($action_label.'_all_details');?></div>
+              <tr>
+                <th colspan="<?=$this->config->item('master_table_columns')?>" style="text-align:center;">
+
+                  <?php
+                     foreach ($action_labels as $next_status_id => $action_label) {
+                  ?>
+                    <div class="btn btn-default"><?=get_phrase($action_label.'_all_details');?></div>
+                  <?php
+                  }
+                  ?>
+                </th>
+              </tr>
+
               <?php
-              }
                 }
               ?>
-          </th>
-        </tr>
+
       <?php }?>
       </thead>
       <tbody>

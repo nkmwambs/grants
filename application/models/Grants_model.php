@@ -159,6 +159,9 @@ class Grants_model extends CI_Model
 
     }
 
+    // Insert attachments
+    
+
     // End the transaction and determine if successful
     // if ($this->db->trans_status() === FALSE)
     // {
@@ -304,7 +307,7 @@ class Grants_model extends CI_Model
       }
     }
 
-  
+
     return $visible_columns;
 
   }
