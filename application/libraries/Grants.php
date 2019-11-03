@@ -45,11 +45,37 @@ private $controller;
 // This is the action that has been called by the running controllers. It can either be list, view, edit, add or delete
 private $action;
 
+// Active table
 private $table;
 
 // Feature model methods
 
 private $false_keys_model_method = 'false_keys';
+
+// master_table_visible_columns
+
+private $master_table_visible_columns = [];
+
+// list_table_visible_columns
+private $list_table_visible_columns = [];
+
+// detail_list_table_visible_columns
+private $detail_list_table_visible_columns = [];
+
+// detail_multi_form_add_visible_columns
+private $detail_multi_form_add_visible_columns = [];
+
+// master_multi_form_add_visible_columns
+private $master_multi_form_add_visible_columns = [];
+
+// detail_list
+private $detail_list = [];
+
+// Look up tables 
+private $lookup_tables = [];
+
+// Details tables
+private $detail_tables = [];
 
 function __construct(){
 
@@ -93,10 +119,14 @@ function load_detail_model($table_name = ""){
 // The lookup_tables method holds the lookup referencing tables as array elements
 // Passing an argument to this method wrapper switches between the lookup tables of the main feature model to a certain details model
 
+
 function lookup_tables($table_name = ""){
   $model = $this->load_detail_model($table_name);
 
-  return $this->CI->$model->lookup_tables();
+  if(method_exists($this->CI->$model,'lookup_tables')){
+    $this->lookup_tables = $this->CI->$model->lookup_tables();
+  }
+  return $this->lookup_tables;
 }
 
 // This is wrapper method to the detail_tables of the specific feature model
@@ -106,7 +136,10 @@ function lookup_tables($table_name = ""){
 function detail_tables($table_name = ""){
   $model = $this->load_detail_model($table_name);
 
-  return $this->CI->$model->detail_tables();
+  if(method_exists($this->CI->$model,'detail_tables')){
+    $this->detail_tables  = $this->CI->$model->detail_tables();
+  }
+  return $this->detail_tables;
 }
 
 //This function allows unsetting default hidden columns. It's callable from specific model
@@ -147,6 +180,8 @@ function edit_result(){
 }
 
 
+// For example center has a foreign relationship to budget, request, reconciliation thus return true but reconciliation return false
+
 function check_if_table_has_detail_table($table_name = ""){
 
     $table = $table_name == ""?$this->controller:$table_name;
@@ -162,6 +197,7 @@ function check_if_table_has_detail_table($table_name = ""){
     return $has_detail_table;
   }
 
+  // For example check if voucher has voucher_detail - this return true but approval has not approval_details thus returns false
   function check_if_table_has_detail_listing($table_name = ""){
 
       $table = $table_name == ""?$this->controller:$table_name;
@@ -177,7 +213,7 @@ function check_if_table_has_detail_table($table_name = ""){
       return $has_detail_table;
     }
 
-    function detail_row_fields($fields_array){
+  function detail_row_fields($fields_array){
 
       $fields = array();
 
@@ -218,22 +254,6 @@ function check_if_table_has_detail_table($table_name = ""){
 
   }
 
-
-  function detail_multi_form_add_visible_columns($table){
-    $model = $this->load_detail_model($table);
-    return $this->CI->$model->detail_multi_form_add_visible_columns();
-  }
-
-
-  function master_multi_form_add_visible_columns(){
-    $model = $this->current_model;
-    return $this->CI->$model->master_multi_form_add_visible_columns();
-  }
-
-  function single_form_add_visible_columns(){
-    $model = $this->current_model;
-    return $this->CI->$model->single_form_add_visible_columns();
-  }
 
   function false_keys($detail_table){
   $model = $this->load_detail_model($detail_table);
@@ -302,46 +322,90 @@ function check_if_table_has_detail_table($table_name = ""){
       }
 
     }
-// Listing views specific methods
 
-function list_table_visible_columns(){
-  $model = $this->current_model;
-  $columns = $this->CI->$model->list_table_visible_columns();
 
-  //Add the table id columns if does not exist in $columns
-  if(is_array($columns) && !in_array($this->controller.'_id',$columns)){
-    array_unshift($columns,$this->controller.'_id');
-  }
 
-  return $columns;
 
-}
+// Visible Columns methods
 
 function detail_list_table_visible_columns($table){
   $model = $this->load_detail_model($table);
 
-  $columns = $this->CI->$model->detail_list_table_visible_columns();
+  if(method_exists($this->CI->$model,'detail_list_table_visible_columns')){
+    $this->detail_list_table_visible_columns = $this->CI->$model->detail_list_table_visible_columns();
 
-  //Add the table id columns if does not exist in $columns
-  if(is_array($columns) && !in_array($table.'_id',$columns)){
-    array_unshift($columns,$table.'_id');
+    //Add the table id columns if does not exist in $columns
+    if(is_array($this->detail_list_table_visible_columns) && !in_array($table.'_id',$this->detail_list_table_visible_columns)){
+      array_unshift($this->detail_list_table_visible_columns,$table.'_id');
+    }
+
   }
 
-  return $columns;
+  return $this->detail_list_table_visible_columns;
+}
+
+function list_table_visible_columns(){
+  $model = $this->current_model;
+
+  if(method_exists($this->CI->$model,'list_table_visible_columns')){
+    $this->list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+
+     //Add the table id columns if does not exist in $columns
+    if(is_array($this->list_table_visible_columns) && !in_array($this->controller.'_id',$this->list_table_visible_columns)){
+      array_unshift($this->list_table_visible_columns,$this->controller.'_id');
+    }
+  }
+
+  return $this->list_table_visible_columns;
+
 }
 
 function master_table_visible_columns(){
   $model = $this->current_model;
 
-  $columns = $this->CI->$model->master_table_visible_columns();
+  if(method_exists($this->CI->$model,'master_table_visible_columns')){
+    $this->master_table_visible_columns = $this->CI->$model->master_table_visible_columns();
 
-  //Add the table id columns if does not exist in $columns
-  if(is_array($columns) && !in_array($this->controller.'_id',$columns)){
-    array_unshift($columns,$this->controller.'_id');
+    //Add the table id columns if does not exist in $columns
+    if(is_array($this->master_table_visible_columns) && !in_array($this->controller.'_id',$this->master_table_visible_columns)){
+      array_unshift($this->master_table_visible_columns,$this->controller.'_id');
+    }
+
   }
 
-  return $columns;
+  return $this->master_table_visible_columns;
 }
+
+function detail_multi_form_add_visible_columns($table){
+  $model = $this->load_detail_model($table);
+
+  if(method_exists($this->CI->$model,'detail_multi_form_add_visible_columns')){
+    $this->detail_multi_form_add_visible_columns = $this->CI->$model->detail_multi_form_add_visible_columns();
+  }
+
+  return $this->CI->$model->detail_multi_form_add_visible_columns();
+}
+
+
+function master_multi_form_add_visible_columns(){
+  $model = $this->current_model;
+
+  if(method_exists($this->CI->$model,'master_multi_form_add_visible_columns')){
+    $this->master_multi_form_add_visible_columns =  $this->CI->$model->master_multi_form_add_visible_columns();
+  }
+  return $this->master_multi_form_add_visible_columns;
+}
+
+function single_form_add_visible_columns(){
+  $model = $this->current_model;
+
+  if(method_exists($this->CI->$model,'single_form_add_visible_columns')){
+    $this->single_form_add_visible_columns = $this->CI->$model->single_form_add_visible_columns();
+  }
+  return $this->single_form_add_visible_columns;
+}
+
+
 
 function list(){
   $model = $this->current_model;
@@ -483,24 +547,22 @@ function list_result(){
 
 // Master detail view specific methods
 
+// Query result for list tables
 function detail_list($table){
   $model = $this->load_detail_model($table);
 
-  // Get the tables foreign key relationship
-  $lookup_tables = $this->lookup_tables($table);
-
-  // Get result from grants model if feature model list returns empty
-  $feature_model_list_result = $this->CI->$model->detail_list(); // A full user defined query result
-  $grant_model_list_result = $this->CI->grants_model->detail_list($table); // System generated query result
-
-  $query_result = $grant_model_list_result;
-
-  if(is_array($feature_model_list_result) && count($feature_model_list_result) > 0){
-    $query_result = $feature_model_list_result;
+  if(method_exists($this->CI->$model,'detail_list') && 
+      is_array($this->CI->$model->detail_list()) &&
+      count($this->CI->$model->detail_list()) > 0
+    ){
+      $this->detail_list = $this->CI->$model->detail_list(); // A full user defined query result
+  } else{
+      $this->detail_list = $this->CI->grants_model->detail_list($table); // System generated query result
   }
 
-  return $query_result;
+  return $this->detail_list;
 }
+
 
 function detail_list_view($table){
 

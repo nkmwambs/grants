@@ -19,43 +19,12 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    //return array('center','approval','status');
     return array('center','approval');
   }
 
   public function detail_tables(){
     return array('request_detail');
   }
-
-  public function master_table_visible_columns(){
-    //return array('request_name','request_created_by','request_last_modified_by');
-  }
-
-  public function master_table_hidden_columns(){}
-
-  public function list_table_visible_columns(){
-      //return array('request_id','request_name','request_created_by','request_last_modified_by');
-  }
-
-  public function list_table_hidden_columns(){}
-
-  public function detail_list_table_visible_columns(){}
-
-  public function detail_list_table_hidden_columns(){}
-
-  public function single_form_add_visible_columns(){}
-
-  public function single_form_add_hidden_columns(){}
-
-  public function master_multi_form_add_visible_columns(){
-    return array('request_date','request_description','center_name');
-  }
-
-  public function detail_multi_form_add_visible_columns(){}
-
-  public function master_multi_form_add_hidden_columns(){}
-
-  public function detail_multi_form_add_hidden_columns(){}
 
   function detail_list(){}
 
