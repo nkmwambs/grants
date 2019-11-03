@@ -27,7 +27,10 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (89,	'APR-84905',	'Approval Ticket # APR-84905',	1,	'2019-10-24',	'2019-10-24 17:17:45',	1),
 (90,	'APR-47952',	'Approval Ticket # APR-47952',	1,	'2019-10-24',	'2019-10-24 21:19:48',	1),
 (91,	'APR-69751',	'Approval Ticket # APR-69751',	1,	'2019-10-24',	'2019-10-24 21:22:08',	1),
-(92,	'APR-37278',	'Approval Ticket # APR-37278',	1,	'2019-10-24',	'2019-10-24 21:25:35',	1);
+(92,	'APR-37278',	'Approval Ticket # APR-37278',	1,	'2019-10-24',	'2019-10-24 21:25:35',	1),
+(93,	'APR-26165',	'Approval Ticket # APR-26165',	1,	'2019-11-03',	'2019-11-03 11:13:44',	1),
+(94,	'APR-62159',	'Approval Ticket # APR-62159',	1,	'2019-11-03',	'2019-11-03 13:48:41',	1),
+(95,	'APR-8289',	'Approval Ticket # APR-8289',	1,	'2019-11-03',	'2019-11-03 13:51:31',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -67,7 +70,9 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_name`, `approve_ite
 (9,	'workplan',	0,	'2019-10-22',	1,	'2019-10-22 12:07:47',	1),
 (13,	'budget_item_detail',	0,	'2019-10-22',	1,	'2019-10-22 12:41:39',	1),
 (14,	'voucher_detail',	0,	'2019-10-22',	1,	'2019-10-22 12:41:52',	1),
-(18,	'project',	0,	'2019-10-25',	1,	'2019-10-24 22:22:18',	1);
+(18,	'project',	0,	'2019-10-25',	1,	'2019-10-24 22:22:18',	1),
+(19,	'project_allocation',	0,	'2019-11-03',	1,	'2019-11-03 10:36:29',	1),
+(20,	'center',	0,	'2019-11-03',	1,	'2019-11-03 11:14:26',	1);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -207,17 +212,19 @@ CREATE TABLE `center` (
   `center_created_date` date NOT NULL,
   `center_last_modified_date` date NOT NULL,
   `center_last_modified_by` int(100) NOT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`center_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the remote sites for the organization\n';
 
-INSERT INTO `center` (`center_id`, `center_track_number`, `center_name`, `center_code`, `center_start_date`, `center_end_date`, `center_is_active`, `center_created_by`, `center_created_date`, `center_last_modified_date`, `center_last_modified_by`) VALUES
-(1,	'CNT-97356',	'Kiserian CDC',	'KE0240',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1),
-(2,	'CNT-65378',	'Machakos CDC',	'KE0765',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1),
-(3,	'CNT-75637',	'Kilifi CDC',	'KE0340',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1),
-(4,	'CNT-65268',	'Mombasa CDC',	'KE0345',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1),
-(5,	'CNT-55473',	'Jinja CDC',	'UG0211',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1),
-(6,	'CNT-65370',	'Kampala CDC',	'UG0721',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1),
-(7,	'CNT-67653',	'Cape CDC',	'HT0422',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1);
+INSERT INTO `center` (`center_id`, `center_track_number`, `center_name`, `center_code`, `center_start_date`, `center_end_date`, `center_is_active`, `center_created_by`, `center_created_date`, `center_last_modified_date`, `center_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'CNT-97356',	'Kiserian CDC',	'KE0240',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
+(2,	'CNT-65378',	'Machakos CDC',	'KE0765',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
+(3,	'CNT-75637',	'Kilifi CDC',	'KE0340',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
+(4,	'CNT-65268',	'Mombasa CDC',	'KE0345',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
+(5,	'CNT-55473',	'Jinja CDC',	'UG0211',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
+(6,	'CNT-65370',	'Kampala CDC',	'UG0721',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
+(7,	'CNT-67653',	'Cape CDC',	'HT0422',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `center_bank`;
 CREATE TABLE `center_bank` (
@@ -553,22 +560,18 @@ CREATE TABLE `menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_created_date`, `menu_last_modified_date`, `menu_created_by`, `menu_last_modified_by`) VALUES
-(1,	'Approval',	'Approval',	NULL,	NULL,	NULL,	NULL),
-(2,	'Bank',	'Bank',	NULL,	NULL,	NULL,	NULL),
-(3,	'Budget',	'Budget',	NULL,	NULL,	NULL,	NULL),
-(4,	'Center',	'Center',	NULL,	NULL,	NULL,	NULL),
-(5,	'Dashboard',	'Dashboard',	NULL,	NULL,	NULL,	NULL),
-(6,	'Field',	'Field',	NULL,	NULL,	NULL,	NULL),
-(7,	'Funder',	'Funder',	NULL,	NULL,	NULL,	NULL),
-(8,	'Journal',	'Journal',	NULL,	NULL,	NULL,	NULL),
-(9,	'Language',	'Language',	NULL,	NULL,	NULL,	NULL),
-(10,	'Message',	'Message',	NULL,	NULL,	NULL,	NULL),
-(11,	'Request',	'Request',	NULL,	NULL,	NULL,	NULL),
-(12,	'User',	'User',	NULL,	NULL,	NULL,	NULL),
-(13,	'Voucher',	'Voucher',	NULL,	NULL,	NULL,	NULL),
-(14,	'Workplan',	'Workplan',	NULL,	NULL,	NULL,	NULL),
-(15,	'Setting',	'Setting',	NULL,	NULL,	NULL,	NULL),
-(16,	'Project_allocation',	'Project_allocation',	NULL,	NULL,	NULL,	NULL);
+(48,	'Center',	'Center',	NULL,	NULL,	NULL,	NULL),
+(49,	'Approval',	'Approval',	NULL,	NULL,	NULL,	NULL),
+(50,	'Bank',	'Bank',	NULL,	NULL,	NULL,	NULL),
+(51,	'Budget',	'Budget',	NULL,	NULL,	NULL,	NULL),
+(52,	'Workplan',	'Workplan',	NULL,	NULL,	NULL,	NULL),
+(55,	'Voucher',	'Voucher',	NULL,	NULL,	NULL,	NULL),
+(56,	'Dashboard',	'Dashboard',	NULL,	NULL,	NULL,	NULL),
+(58,	'Funder',	'Funder',	NULL,	NULL,	NULL,	NULL),
+(59,	'Journal',	'Journal',	NULL,	NULL,	NULL,	NULL),
+(60,	'Language',	'Language',	NULL,	NULL,	NULL,	NULL),
+(62,	'Project_allocation',	'Project_allocation',	NULL,	NULL,	NULL,	NULL),
+(63,	'Request',	'Request',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -582,58 +585,36 @@ CREATE TABLE `menu_user_order` (
   `menu_user_order_last_modified_date` date DEFAULT NULL,
   `menu_user_order_created_by` int(100) DEFAULT NULL,
   `menu_user_order_last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`menu_user_order_id`)
+  PRIMARY KEY (`menu_user_order_id`),
+  KEY `fk_menu_id` (`fk_menu_id`),
+  CONSTRAINT `menu_user_order_ibfk_1` FOREIGN KEY (`fk_menu_id`) REFERENCES `menu` (`menu_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`, `menu_user_order_is_active`, `menu_user_order_level`, `menu_user_order_priority_item`, `menu_user_order_created_date`, `menu_user_order_last_modified_date`, `menu_user_order_created_by`, `menu_user_order_last_modified_by`) VALUES
-(16,	1,	1,	1,	16,	1,	NULL,	NULL,	NULL,	NULL),
-(17,	1,	2,	1,	17,	0,	NULL,	NULL,	NULL,	NULL),
-(18,	1,	3,	1,	18,	1,	NULL,	NULL,	NULL,	NULL),
-(19,	1,	4,	1,	19,	0,	NULL,	NULL,	NULL,	NULL),
-(20,	1,	5,	1,	20,	1,	NULL,	NULL,	NULL,	NULL),
-(21,	1,	6,	1,	21,	0,	NULL,	NULL,	NULL,	NULL),
-(22,	1,	7,	1,	22,	1,	NULL,	NULL,	NULL,	NULL),
-(23,	1,	8,	1,	23,	1,	NULL,	NULL,	NULL,	NULL),
-(24,	1,	9,	1,	24,	0,	NULL,	NULL,	NULL,	NULL),
-(25,	1,	10,	1,	25,	1,	NULL,	NULL,	NULL,	NULL),
-(26,	1,	11,	1,	26,	1,	NULL,	NULL,	NULL,	NULL),
-(27,	1,	12,	1,	27,	0,	NULL,	NULL,	NULL,	NULL),
-(28,	1,	13,	1,	28,	1,	NULL,	NULL,	NULL,	NULL),
-(29,	1,	14,	1,	29,	1,	NULL,	NULL,	NULL,	NULL),
-(30,	1,	15,	1,	30,	0,	NULL,	NULL,	NULL,	NULL),
-(46,	1,	16,	1,	31,	1,	NULL,	NULL,	NULL,	NULL),
-(79,	2,	1,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
-(80,	2,	2,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
-(81,	2,	3,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
-(82,	2,	4,	1,	4,	1,	NULL,	NULL,	NULL,	NULL),
-(83,	2,	5,	1,	5,	1,	NULL,	NULL,	NULL,	NULL),
-(84,	2,	6,	1,	6,	1,	NULL,	NULL,	NULL,	NULL),
-(85,	2,	7,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
-(86,	2,	8,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
-(87,	2,	9,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
-(88,	2,	10,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
-(89,	2,	11,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
-(90,	2,	12,	1,	12,	1,	NULL,	NULL,	NULL,	NULL),
-(91,	2,	13,	1,	13,	1,	NULL,	NULL,	NULL,	NULL),
-(92,	2,	14,	1,	14,	1,	NULL,	NULL,	NULL,	NULL),
-(93,	2,	15,	1,	15,	1,	NULL,	NULL,	NULL,	NULL),
-(94,	2,	16,	1,	16,	0,	NULL,	NULL,	NULL,	NULL),
-(95,	3,	1,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
-(96,	3,	2,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
-(97,	3,	3,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
-(98,	3,	4,	1,	4,	1,	NULL,	NULL,	NULL,	NULL),
-(99,	3,	5,	1,	5,	1,	NULL,	NULL,	NULL,	NULL),
-(100,	3,	6,	1,	6,	1,	NULL,	NULL,	NULL,	NULL),
-(101,	3,	7,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
-(102,	3,	8,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
-(103,	3,	9,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
-(104,	3,	10,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
-(105,	3,	11,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
-(106,	3,	12,	1,	12,	1,	NULL,	NULL,	NULL,	NULL),
-(107,	3,	13,	1,	13,	1,	NULL,	NULL,	NULL,	NULL),
-(108,	3,	14,	1,	14,	1,	NULL,	NULL,	NULL,	NULL),
-(109,	3,	15,	1,	15,	1,	NULL,	NULL,	NULL,	NULL),
-(110,	3,	16,	1,	16,	0,	NULL,	NULL,	NULL,	NULL);
+(49,	1,	48,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
+(50,	1,	49,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
+(51,	1,	50,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
+(52,	1,	51,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
+(53,	1,	52,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
+(56,	1,	55,	1,	12,	1,	NULL,	NULL,	NULL,	NULL),
+(57,	1,	56,	1,	13,	1,	NULL,	NULL,	NULL,	NULL),
+(59,	1,	58,	1,	15,	1,	NULL,	NULL,	NULL,	NULL),
+(60,	1,	59,	1,	16,	1,	NULL,	NULL,	NULL,	NULL),
+(61,	1,	60,	1,	17,	0,	NULL,	NULL,	NULL,	NULL),
+(63,	1,	62,	1,	19,	1,	NULL,	NULL,	NULL,	NULL),
+(64,	1,	63,	1,	20,	1,	NULL,	NULL,	NULL,	NULL),
+(68,	NULL,	48,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
+(69,	NULL,	49,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
+(70,	NULL,	50,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
+(71,	NULL,	51,	1,	4,	1,	NULL,	NULL,	NULL,	NULL),
+(72,	NULL,	52,	1,	5,	1,	NULL,	NULL,	NULL,	NULL),
+(73,	NULL,	55,	1,	6,	1,	NULL,	NULL,	NULL,	NULL),
+(74,	NULL,	56,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
+(75,	NULL,	58,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
+(76,	NULL,	59,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
+(77,	NULL,	60,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
+(78,	NULL,	62,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
+(79,	NULL,	63,	1,	12,	0,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -689,6 +670,65 @@ CREATE TABLE `month` (
 INSERT INTO `month` (`month_id`, `month_track_number`, `month_number`, `month_name`, `fk_approval`, `fk_status_id`, `month_created_by`, `month_last_modified_by`, `month_created_date`, `month_last_modified_date`) VALUES
 (1,	'',	1,	'January',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00'),
 (2,	'',	2,	'February',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00');
+
+DROP TABLE IF EXISTS `phprbac_permissions`;
+CREATE TABLE `phprbac_permissions` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Lft` int(11) NOT NULL,
+  `Rght` int(11) NOT NULL,
+  `Title` char(64) COLLATE utf8_bin NOT NULL,
+  `Description` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `Title` (`Title`),
+  KEY `Lft` (`Lft`),
+  KEY `Rght` (`Rght`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `phprbac_permissions` (`ID`, `Lft`, `Rght`, `Title`, `Description`) VALUES
+(23,	0,	11,	'add_request',	'Add a new request'),
+(24,	0,	9,	'edit_request',	'Edit a request'),
+(25,	0,	7,	'delete_request',	'Delete a request'),
+(26,	0,	5,	'view_request',	'View a new request'),
+(27,	0,	3,	'approve_request',	'Approve a request'),
+(28,	0,	1,	'escalate_request',	'Escalate a request to a voucher');
+
+DROP TABLE IF EXISTS `phprbac_rolepermissions`;
+CREATE TABLE `phprbac_rolepermissions` (
+  `RoleID` int(11) NOT NULL,
+  `PermissionID` int(11) NOT NULL,
+  `AssignmentDate` int(11) NOT NULL,
+  PRIMARY KEY (`RoleID`,`PermissionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DROP TABLE IF EXISTS `phprbac_roles`;
+CREATE TABLE `phprbac_roles` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Lft` int(11) NOT NULL,
+  `Rght` int(11) NOT NULL,
+  `Title` varchar(128) COLLATE utf8_bin NOT NULL,
+  `Description` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `Title` (`Title`),
+  KEY `Lft` (`Lft`),
+  KEY `Rght` (`Rght`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `phprbac_roles` (`ID`, `Lft`, `Rght`, `Title`, `Description`) VALUES
+(1,	0,	9,	'authenticated_user',	'Authenticated User'),
+(2,	1,	2,	'accountant',	'Accountant'),
+(3,	3,	4,	'finance_director',	'Finance Director'),
+(4,	5,	6,	'super_admin',	'Supper Administrator'),
+(5,	7,	8,	'system_admin',	'System Administrator');
+
+DROP TABLE IF EXISTS `phprbac_userroles`;
+CREATE TABLE `phprbac_userroles` (
+  `UserID` int(11) NOT NULL,
+  `RoleID` int(11) NOT NULL,
+  `AssignmentDate` int(11) NOT NULL,
+  PRIMARY KEY (`UserID`,`RoleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
@@ -931,7 +971,9 @@ INSERT INTO `status` (`status_id`, `status_name`, `status_action_label`, `fk_app
 (34,	'New',	'',	9,	'1',	1,	0,	1,	'2019-10-22',	1,	'2019-10-22 12:07:47',	1),
 (38,	'New',	'',	13,	'1',	1,	0,	1,	'2019-10-22',	1,	'2019-10-22 12:32:49',	1),
 (39,	'New',	'',	14,	'1',	1,	0,	1,	'2019-10-22',	1,	'2019-10-22 12:40:39',	1),
-(43,	'New',	'',	18,	'1',	1,	0,	1,	'2019-10-25',	1,	'2019-10-24 22:22:18',	1);
+(43,	'New',	'',	18,	'1',	1,	0,	1,	'2019-10-25',	1,	'2019-10-24 22:22:18',	1),
+(44,	'New',	'',	19,	'1',	1,	0,	1,	'2019-11-03',	1,	'2019-11-03 10:36:29',	1),
+(45,	'New',	'',	20,	'1',	1,	0,	1,	'2019-11-03',	1,	'2019-11-03 11:14:26',	1);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -1245,10 +1287,9 @@ CREATE TABLE `voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
 INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `voucher_number`, `fk_center_id`, `voucher_date`, `fk_voucher_type_id`, `fk_approval_id`, `fk_status_id`, `voucher_cheque_number`, `voucher_transaction_cleared_date`, `voucher_transaction_cleared_month`, `voucher_vendor`, `voucher_description`, `voucher_allow_edit`, `voucher_created_by`, `voucher_created_date`, `voucher_last_modified_date`, `voucher_last_modified_by`) VALUES
-(3,	'VCH-8602',	'Voucher # VCH-8602',	191001,	1,	'2019-10-19',	2,	65,	10,	0,	'0000-00-00',	'0000-00-00',	'test',	'test',	0,	1,	'2019-10-19',	'2019-10-18 22:40:41',	1),
-(4,	'VCH-78775',	'Voucher # VCH-78775',	191001,	1,	'2019-10-22',	3,	87,	10,	0,	'0000-00-00',	'0000-00-00',	'Test',	'Test',	0,	1,	'2019-10-22',	'2019-10-22 12:51:19',	1),
-(5,	'VCH-35441',	'Voucher # VCH-35441',	191001,	1,	'2019-10-30',	2,	90,	10,	0,	'0000-00-00',	'0000-00-00',	'Test false',	'Test false',	0,	1,	'2019-10-24',	'2019-10-24 21:19:48',	1),
-(6,	'VCH-26832',	'Voucher # VCH-26832',	191001,	1,	'0000-00-00',	2,	91,	10,	0,	'0000-00-00',	'0000-00-00',	'Test false 2',	'False 2',	0,	1,	'2019-10-24',	'2019-10-24 21:22:08',	1);
+(7,	'VCH-54213',	'Voucher # VCH-54213',	191001,	1,	'2019-11-01',	2,	93,	10,	0,	'0000-00-00',	'0000-00-00',	'Test vendor',	'Testing',	0,	1,	'2019-11-03',	'2019-11-03 11:13:44',	1),
+(8,	'VCH-77164',	'Voucher # VCH-77164',	191002,	1,	'2019-11-03',	2,	94,	10,	0,	'0000-00-00',	'0000-00-00',	'Tested',	'Tested',	0,	1,	'2019-11-03',	'2019-11-03 13:48:41',	1),
+(9,	'VCH-46135',	'Voucher # VCH-46135',	191003,	1,	'2019-11-03',	2,	95,	10,	0,	'0000-00-00',	'0000-00-00',	'Testing',	'Testing',	0,	1,	'2019-11-03',	'2019-11-03 13:51:31',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
@@ -1276,9 +1317,10 @@ CREATE TABLE `voucher_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`, `fk_voucher_id`, `voucher_detail_description`, `voucher_detail_quantity`, `voucher_detail_unit_cost`, `voucher_detail_total_cost`, `fk_expense_account_id`, `fk_income_account_id`, `fk_approval_id`, `fk_status_id`, `fk_project_allocation_id`, `voucher_detail_last_modified_date`, `voucher_detail_last_modified_by`, `voucher_detail_created_by`, `voucher_detail_created_date`) VALUES
-(1,	'VCD-27588',	3,	'test',	20,	45.00,	900.00,	1,	NULL,	NULL,	NULL,	1,	NULL,	'1',	1,	'2019-10-19'),
-(2,	'VCD-23639',	3,	'test 3',	55,	67.00,	3685.00,	1,	NULL,	NULL,	NULL,	1,	NULL,	'1',	1,	'2019-10-19'),
-(3,	'VCD-45447',	6,	'false 2',	20,	5500.00,	110000.00,	2,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-10-24');
+(4,	'VCD-82223',	7,	'Test 1',	12,	100.00,	1200.00,	2,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
+(5,	'VCD-35399',	7,	'Test 2',	15,	150.00,	2250.00,	2,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
+(6,	'VCD-35577',	8,	'Tested',	100,	1200.00,	12000.00,	1,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
+(7,	'VCD-20210',	9,	'Testing',	150,	150.00,	22500.00,	1,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03');
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -1320,4 +1362,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-10-27 10:49:24
+-- 2019-11-03 14:20:46
