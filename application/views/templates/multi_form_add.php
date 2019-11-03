@@ -83,7 +83,7 @@
                 <div class="form-group">
                   <div class="col-xs-12">
                     <label class=""><?=get_phrase('attach_a_file(s)');?></label>
-                    <input type="file" name="attachment" multiple />
+                    <input type="file" name="attachments" multiple />
                   </div>
               </div>
 

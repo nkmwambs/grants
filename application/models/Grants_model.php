@@ -160,7 +160,9 @@ class Grants_model extends CI_Model
     }
 
     // Insert attachments
-    
+
+    $this->upload_attachment($header_id);
+
 
     // End the transaction and determine if successful
     // if ($this->db->trans_status() === FALSE)
@@ -176,6 +178,9 @@ class Grants_model extends CI_Model
 
   }
 
+  function upload_attachment($record_id){
+    
+  }
 
   function get_all_table_fields($table_name = ""){
     $table = $table_name == ""?$this->controller:$table_name;
