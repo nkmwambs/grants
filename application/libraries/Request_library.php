@@ -25,5 +25,9 @@ class Request_library extends Grants
   function center_name_field_value(){
     return 1;
   }
+  
+  function list_table_where(){
+    //return array('request_date'=>'2019-10-22');
+  }
 
 }

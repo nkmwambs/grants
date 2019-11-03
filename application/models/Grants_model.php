@@ -73,6 +73,8 @@ class Grants_model extends CI_Model
       $approval['approval_created_by'] = $this->session->user_id;
       $approval['approval_created_date'] = date('Y-m-d');
       $approval['approval_last_modified_by'] = $this->session->user_id;
+      $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',
+      array('approve_item_name'=>$this->controller))->row()->approve_item_id;
 
       $this->db->insert('approval',$approval);
 
@@ -81,8 +83,8 @@ class Grants_model extends CI_Model
 
     //}
     //echo $this->id;
-   //echo json_encode($approval);
-
+    //echo json_encode($approval);
+     //exit(); 
     // This array will hold the array with values for header record insert
     $header_columns = array();
 
@@ -426,20 +428,23 @@ class Grants_model extends CI_Model
 
     $lookup_tables = $this->grants->lookup_tables($table);
     //print_r($lookup_tables);
-    //exit;
+    //exit();
     // Run column selector
     $this->db->select($this->detail_list_select_columns($table));
     //print_r($this->detail_list_select_columns($table));
-    //exit;
+    //exit();
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $lookup_table.'_id';
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
     }
-    // print_r(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode')));
-    // exit;
-    $this->db->where(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode') ));
+    //print_r(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode')));
+    //exit();
+    $this->db->where(array($table.'.fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode') ));
+    //print_r($this->db->get($table)->result_array());
+    //echo $this->controller;
+    //exit();
     //print_r($this->grants_get($table));
     //exit;
     return $this->grants_get($table);
@@ -500,7 +505,10 @@ class Grants_model extends CI_Model
 
     $this->load->library($library);
 
-    if(method_exists($this->$library,'list_table_where')){
+    if(method_exists($this->$library,'list_table_where') && 
+        is_array($this->$library->list_table_where()) && 
+          count($this->$library->list_table_where()) > 0
+      ){
       $this->db->where($this->$library->list_table_where());
     }
 
@@ -770,7 +778,9 @@ class Grants_model extends CI_Model
 
   }
 
-
+function center_start_date($center_id){
+   return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
+}
 
 
 }

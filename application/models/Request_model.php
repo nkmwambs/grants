@@ -26,6 +26,10 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array('request_detail');
   }
 
+  function master_multi_form_add_visible_columns(){
+    return array('request_name','request_date','request_description','center_name');
+  }
+
   function detail_list(){}
 
   function master_view(){}

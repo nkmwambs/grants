@@ -19,38 +19,13 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   function index(){}
 
   function lookup_tables(){
-    //return array('status');
+    return array('approve_item');
   }
 
   function detail_tables(){
-    return array('request','budget','voucher');
+    return array('request','budget','voucher','center');
   }
 
-  public function master_table_visible_columns(){}
-
-  public function master_table_hidden_columns(){}
-
-  public function list_table_visible_columns(){}
-
-  public function list_table_hidden_columns(){}
-
-  public function detail_list_table_visible_columns(){}
-
-  public function detail_list_table_hidden_columns(){}
-
-  //public function single_form_add_visible_columns(){}
-
-  //public function single_form_add_hidden_columns(){}
-
-  public function master_multi_form_add_visible_columns(){
-        return array('approval_name','status_name');
-  }
-
-  public function detail_multi_form_add_visible_columns(){}
-
-  public function master_multi_form_add_hidden_columns(){}
-
-  public function detail_multi_form_add_hidden_columns(){}
 
   function detail_list(){}
 

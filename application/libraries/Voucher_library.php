@@ -26,9 +26,20 @@ class Voucher_library extends Grants
     // Not yet factoring if the books of the month has been closed or new center
     $highest_voucher_number = $this->CI->voucher_model->highest_voucher_number();
 
-    $voucher_year = substr($highest_voucher_number,0,2);
-    $voucher_month = substr($highest_voucher_number,2,2);
-    $voucher_serial = substr($highest_voucher_number,4);
+    $center_id = 1;
+
+    $center_start_date = $this->center_start_date($center_id);
+
+    $voucher_year = date('y',strtotime($center_start_date));
+    $voucher_month = date('m',strtotime($center_start_date));
+    $voucher_serial = 0;
+
+    if($highest_voucher_number > 0){
+      $voucher_year = substr($highest_voucher_number,0,2);
+      $voucher_month = substr($highest_voucher_number,2,2);
+      $voucher_serial = substr($highest_voucher_number,4);
+    }
+
 
     $voucher_serial += 1;
 

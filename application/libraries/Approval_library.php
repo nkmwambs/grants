@@ -22,4 +22,8 @@ class Approval_library extends Grants
 
   }
 
+  function list_table_where(){
+    return array('fk_approve_item_id<>'=>20);
+  }
+
 }

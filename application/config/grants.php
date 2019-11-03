@@ -16,3 +16,4 @@ $config['track_prefix_budget'] = 'BGT';
 $config['track_prefix_budget'] = 'BGT';
 $config['track_prefix_budget_item'] = 'BGI';
 $config['track_prefix_budget_item_detail'] = 'BTS';
+$config['track_prefix_center'] = 'CNT';

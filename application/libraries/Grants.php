@@ -68,6 +68,9 @@ private $detail_multi_form_add_visible_columns = [];
 // master_multi_form_add_visible_columns
 private $master_multi_form_add_visible_columns = [];
 
+// single_form_add_visible_columns
+private $single_form_add_visible_columns = [];
+
 // detail_list
 private $detail_list = [];
 
@@ -666,6 +669,10 @@ function action_list($table,$primary_key,$is_approveable_item){
 
 function initial_item_status(){
   return $this->CI->grants_model->initial_item_status();
+}
+
+function center_start_date($center_id){
+  return $this->CI->grants_model->center_start_date($center_id);
 }
 
 }
