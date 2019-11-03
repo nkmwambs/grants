@@ -1,8 +1,11 @@
 <?php
 
-$rbac = new Rbac_base();
+//$rbac = new Rbac_base();
 
-print_r($rbac->add_permissions());
+//print_r($rbac->add_permissions());
+
+print_r($this->menu->getMenuItems());
+
 // $rbac = new  \PhpRbac\Rbac();
 //
 // // Create a Permission

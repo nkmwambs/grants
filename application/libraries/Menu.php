@@ -159,6 +159,10 @@ class Menu {
 
           $user_priority_menu = elevate_array_element_to_key($user_menu_by_priority_groups[1],'menu_derivative_controller');
 
+          // if(!isset($user_menu_by_priority_groups[1])){
+          //  throw new \Exception("Error Processing Request", 1);
+          // }
+
           $user_more_menu = elevate_array_element_to_key($user_menu_by_priority_groups[0],'menu_derivative_controller');
 
 
