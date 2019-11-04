@@ -9,12 +9,12 @@
  */
 
 
-class Role extends MY_Controller
+class Role_permission extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('role_library');
+    $this->load->library('role_permission_library');
   }
 
   function index(){}
@@ -22,7 +22,7 @@ class Role extends MY_Controller
   //function list(){}
 
   static function get_menu_list(){
-    return array('list_banks'=>array('view','arg1','arg2','arg3'));
+    //return array('list_banks'=>array('view','arg1','arg2','arg3'));
   }
 
 }

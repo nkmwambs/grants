@@ -8,9 +8,9 @@
  *	NKarisa@ke.ci.org
  */
 
-class Role_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Role_permission_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'role'; // you MUST mention the table name
+  public $table = 'role_permission'; // you MUST mention the table name
 
 
   function __construct(){
@@ -39,5 +39,5 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   function view(){
 
   }
-
+  
 }

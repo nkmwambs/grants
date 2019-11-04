@@ -8,15 +8,14 @@
  *	NKarisa@ke.ci.org
  */
 
-class Role_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Role_permission_library extends Grants
 {
-  public $table = 'role'; // you MUST mention the table name
 
+  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->load->database();
-
+    $this->CI =& get_instance();
   }
 
   function index(){
@@ -24,20 +23,5 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
 
-  function list(){
-
-  }
-
-  function lookup_tables(){
-
-  }
-
-  function detail_tables(){
-
-  }
-
-  function view(){
-
-  }
 
 }

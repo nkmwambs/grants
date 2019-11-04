@@ -9,12 +9,12 @@
  */
 
 
-class Role extends MY_Controller
+class Permission extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('role_library');
+    $this->load->library('permission_library');
   }
 
   function index(){}
