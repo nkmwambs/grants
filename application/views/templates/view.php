@@ -116,7 +116,12 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <div class="row" style="margin-bottom:25px;">
           <div class="col-xs-12" style="text-align:center;">
-            <?=add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing);?>
+            
+            <?php
+              if($show_add_button){
+                echo add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing);
+              }
+            ?>
           </div>
         </div>
           <table class="table table-striped datatable_details">

@@ -80,6 +80,9 @@ private $lookup_tables = [];
 // Details tables
 private $detail_tables = [];
 
+private $master_view = [];
+
+
 function __construct(){
 
   // Instantiate Codeigniter Singleton class
@@ -132,6 +135,7 @@ function lookup_tables($table_name = ""){
   return $this->lookup_tables;
 }
 
+
 // This is wrapper method to the detail_tables of the specific feature model
 // The detail_tables method holds the details referencing tables as array elements
 // Passing an argument to this wrapper switches between the main feature model detail_tables to a certain details models
@@ -175,11 +179,6 @@ function add_default_hidden_columns($default_hidden_columns,$columns_to_hide){
 
 function get_all_table_fields($table_name = ""){
   return $this->CI->grants_model->get_all_table_fields($table_name);
-}
-
-
-function edit_result(){
-  //$this->mandatory_fields($table);
 }
 
 
@@ -270,65 +269,8 @@ function check_if_table_has_detail_table($table_name = ""){
   return $false_keys;
 }
 
-  function multi_form_add_result($table_name = ""){
 
-    $table = $table_name == ""?$this->controller:$table_name;
-
-    //$this->mandatory_fields($table);
-
-    if($this->CI->input->post()){
-      $model = $this->current_model;
-
-      if(method_exists($this->CI->$model,'add')){
-        $this->CI->$model->add();
-      }else{
-        $this->CI->grants_model->add();
-      }
-    }else{
-      $this->mandatory_fields($table);
-
-      $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
-      $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
-      $false_keys = $this->false_keys($table.'_detail');
-
-      return array(
-        'keys'=>$keys,
-        'detail_table'=>$detail_table_keys,
-        'detail_false_keys'=>$false_keys
-      );
-    }
-
-  }
-
-  function single_form_add_result($table_name = ""){
-
-      $table = $table_name == ""?$this->controller:$table_name;
-
-
-      if($this->CI->input->post()){
-        //$this->CI->grants_model->add($this->CI->input->post());
-        $model = $this->current_model;
-
-        if(method_exists($this->CI->$model,'add')){
-          $this->CI->$model->add();
-        }else{
-          $this->CI->grants_model->add();
-        }
-      }else{
-        $this->mandatory_fields($table);
-
-        $keys = $this->CI->grants_model->single_form_add_visible_columns();
-
-        return array(
-          'keys'=>$keys
-        );
-      }
-
-    }
-
-
-
-
+  
 // Visible Columns methods
 
 function detail_list_table_visible_columns($table){
@@ -436,7 +378,7 @@ function show_add_button($table = ""){
   if($table !==""){
     $model = $this->load_detail_model($table);
   }
-
+  
   $show_add_button = true;
 
   if(method_exists($this->CI->$model,'show_add_button') ){
@@ -527,7 +469,76 @@ function mandatory_fields($table){
   }
 }
 
-function list_result(){
+
+
+
+// Query result for list tables
+
+/**
+ * detail_list_query
+ * 
+ * This is query result of the detail table. The result of this method will be used in the view_output
+ * to create the detail list
+ * 
+ * @return array
+ * 
+ */
+function detail_list_query($table){
+  $model = $this->load_detail_model($table);
+
+  if(method_exists($this->CI->$model,'detail_list_query_result') && 
+      is_array($this->CI->$model->detail_list_query()) &&
+      count($this->CI->$model->detail_list_query()) > 0
+    ){
+      $this->detail_list = $this->CI->$model->detail_list_query(); // A full user defined query result
+  } else{
+      $this->detail_list = $this->CI->grants_model->detail_list_query($table); // System generated query result
+  }
+
+  return $this->detail_list;
+}
+
+
+/**
+ * approveable_item
+ * 
+ * This method returns the true if the table id passed is in the approve_item with 
+ * the value of approve_item_is_active as 1 otherwise false. A true item is approveable
+ * 
+ * @return boolean
+ * 
+ */
+
+function approveable_item($detail_table = ""){
+  return $this->CI->grants_model->approveable_item($detail_table);
+}
+
+
+/**
+ * center_start_date
+ * 
+ * This is a wrapper method of the grants_model that returns the center start date
+ * 
+ * @return date
+ */
+
+function center_start_date($center_id){
+  return $this->CI->grants_model->center_start_date($center_id);
+}
+
+
+// The output methods below are the entry points for all loading pages in this framework
+// We have the following _output methods: list_output, view_output, single_form_add_output 
+// and multi_form_add_output
+
+/**
+ * list oputput
+ * 
+ * This method returns the output of the list action views
+ * 
+ * @return array 
+ */
+function list_output(){
 
   $table = $this->controller;
 
@@ -548,69 +559,86 @@ function list_result(){
   );
 }
 
-// Master detail view specific methods
-
-// Query result for list tables
-function detail_list($table){
-  $model = $this->load_detail_model($table);
-
-  if(method_exists($this->CI->$model,'detail_list') && 
-      is_array($this->CI->$model->detail_list()) &&
-      count($this->CI->$model->detail_list()) > 0
-    ){
-      $this->detail_list = $this->CI->$model->detail_list(); // A full user defined query result
-  } else{
-      $this->detail_list = $this->CI->grants_model->detail_list($table); // System generated query result
-  }
-
-  return $this->detail_list;
-}
-
-
+/**
+ * detail_list_view
+ * 
+ * This method creates an array to be used in the view_output. It used to construct the table array_result
+ * of each detail table
+ * 
+ * @return array
+ * 
+ */
 function detail_list_view($table){
 
-  $result = $this->detail_list($table);
+  // Query result of the detail table
+  $result = $this->detail_list_query($table);
+
+  // Selected column of the detail table
   $keys = $this->CI->grants_model->detail_list_select_columns($table);
+
+  // Check if the detail table has also other detail tables. 
+  // It makes its track number a link in the view if true
   $has_details = $this->check_if_table_has_detail_table($table);
+
+  // It check if the detail table is approveable so as to show the approval links in the status action
   $is_approveable_item = $this->approveable_item($table);
+
+  // Check if the add button is allowed to be shown
   $show_add_button = $this->show_add_button($table);
+
+  // Checks if the detail table has a detail table to it
+  $has_details_listing = $this->check_if_table_has_detail_listing($table);
 
   return array(
     'keys'=> $keys,
     'table_body'=>$result,
     'table_name'=> $table,
     'has_details_table' => $has_details,
-    'has_details_listing' => $this->check_if_table_has_detail_listing($table),
+    'has_details_listing' => $has_details_listing,
     'is_approveable_item' => $is_approveable_item,
     'show_add_button'=>$show_add_button
   );
 }
 
+/**
+ * master_view
+ * 
+ * This method provide the value of the table_body key of the master outer key of the view_output method
+ * 
+ * @return array
+ *  
+ */
+
 function master_view(){
   $model = $this->current_model;
 
   // Get result from grants model if feature model list returns empty
-  $feature_model_master_view_result = $this->CI->$model->master_view(); // A full user defined query result
-  $grant_model_master_view_result = $this->CI->grants_model->master_view(); // System generated query result
 
-  $query_result = $grant_model_master_view_result;
-
-  if(is_array($feature_model_master_view_result) && count($feature_model_master_view_result) > 0){
-    $query_result = $feature_model_master_view_result;
+  if(method_exists($this->CI->$model,'master_view') &&
+      is_array($this->CI->$model->master_view()) && 
+      count($this->CI->$model->master_view()) > 0 
+  ){
+    
+    $this->master_view = $this->CI->$model->master_view();
+  
+  }else{
+    $this->master_view = $this->CI->grants_model->master_view();
   }
 
-  return $query_result;
+
+  return $this->master_view;
 }
 
-function approveable_item($detail_table = ""){
-  return $this->CI->grants_model->approveable_item($detail_table);
-}
+/**
+ * view_output
+ * 
+ * This method returns the output of all view action views
+ * 
+ * @return array
+ * 
+ */
 
-function display_approver_status_action($status_id, $table = ""){
-  return $this->CI->grants_model->display_approver_status_action($status_id, $table);
-}
-
-function view_result(){
+function view_output(){
   $table = $this->controller;
 
   $this->mandatory_fields($table);
@@ -646,6 +674,104 @@ function view_result(){
 
 }
 
+/**
+ * 
+ * single_form_add_output
+ * 
+ * This method returns the output of all single add forms and also receives the post of the same forms
+ * 
+ * @return array
+ * 
+ */
+
+function single_form_add_output($table_name = ""){
+
+  $table = $table_name == ""?$this->controller:$table_name;
+
+
+  if($this->CI->input->post()){
+    //$this->CI->grants_model->add($this->CI->input->post());
+    $model = $this->current_model;
+
+    if(method_exists($this->CI->$model,'add')){
+      $this->CI->$model->add();
+    }else{
+      $this->CI->grants_model->add();
+    }
+  }else{
+    $this->mandatory_fields($table);
+
+    $keys = $this->CI->grants_model->single_form_add_visible_columns();
+
+    return array(
+      'keys'=>$keys
+    );
+  }
+
+}
+
+/**
+ * 
+ * multi_form_add_output
+ * 
+ * This method returns the output of the multi add form and receives the post of the same form
+ * 
+ * @return array
+ * 
+ */
+
+function multi_form_add_output($table_name = ""){
+
+  $table = $table_name == ""?$this->controller:$table_name;
+
+  //$this->mandatory_fields($table);
+
+  if($this->CI->input->post()){
+    $model = $this->current_model;
+
+    if(method_exists($this->CI->$model,'add')){
+      $this->CI->$model->add();
+    }else{
+      $this->CI->grants_model->add();
+    }
+  }else{
+    $this->mandatory_fields($table);
+
+    $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
+    $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
+    $false_keys = $this->false_keys($table.'_detail');
+
+    return array(
+      'keys'=>$keys,
+      'detail_table'=>$detail_table_keys,
+      'detail_false_keys'=>$false_keys
+    );
+  }
+
+}
+
+/**
+ * edit_output
+ * 
+ * This method provides the output of the edit form and receieves its post
+ * 
+ * @return array
+ */
+
+function edit_output(){
+  
+}
+
+
+// These are methods that require review
+
+
+function display_approver_status_action($status_id, $table = ""){
+  return $this->CI->grants_model->display_approver_status_action($status_id, $table);
+}
+
+
+
 function action_labels($table,$primary_key){
 
   $label = array();
@@ -669,10 +795,6 @@ function action_list($table,$primary_key,$is_approveable_item){
 
 function initial_item_status(){
   return $this->CI->grants_model->initial_item_status();
-}
-
-function center_start_date($center_id){
-  return $this->CI->grants_model->center_start_date($center_id);
 }
 
 }

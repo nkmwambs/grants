@@ -39,7 +39,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   function result(){
 
-    $action = $this->action.'_result';
+    $action = $this->action.'_output';
 
     $lib = $this->current_library;
 

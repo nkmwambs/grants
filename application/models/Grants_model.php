@@ -424,7 +424,7 @@ class Grants_model extends CI_Model
   }
 
 
-  function detail_list($table){
+  function detail_list_query($table){
 
     $lookup_tables = $this->grants->lookup_tables($table);
     //print_r($lookup_tables);
@@ -454,7 +454,7 @@ class Grants_model extends CI_Model
   function master_view(){
 
       $table = strtolower($this->controller);
-
+    
       $model = $this->current_model;
 
       $this->db->select($this->master_view_select_columns());
@@ -478,7 +478,10 @@ class Grants_model extends CI_Model
 
       $this->load->library($library);
 
-      if(method_exists($this->$library,'list_table_where')){
+      if( method_exists($this->$library,'list_table_where') && 
+          is_array($this->$library->list_table_where()) &&
+          count($this->$library->list_table_where()) > 0
+        ){
         $this->db->where($this->$library->list_table_where());
       }
 
