@@ -20,8 +20,6 @@ class Status_model extends MY_Model implements CrudModelInterface, TableRelation
 
   function index(){}
 
-}
-
 public function lookup_tables(){
   return array('approveable_item');
 }
