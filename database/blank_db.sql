@@ -10,27 +10,22 @@ CREATE TABLE `approval` (
   `approval_id` int(11) NOT NULL AUTO_INCREMENT,
   `approval_track_number` varchar(100) NOT NULL,
   `approval_name` varchar(100) NOT NULL,
+  `fk_approve_item_id` int(11) NOT NULL,
   `approval_created_by` int(100) NOT NULL,
   `approval_created_date` date NOT NULL,
   `approval_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `approval_last_modified_by` int(100) NOT NULL,
-  PRIMARY KEY (`approval_id`)
+  PRIMARY KEY (`approval_id`),
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  CONSTRAINT `approval_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
+  CONSTRAINT `approval_ibfk_2` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`, `approval_created_by`, `approval_created_date`, `approval_last_modified_date`, `approval_last_modified_by`) VALUES
-(83,	'APR-38355',	'Approval Ticket # APR-38355',	1,	'2019-10-22',	'2019-10-22 12:32:49',	1),
-(84,	'APR-89410',	'Approval Ticket # APR-89410',	1,	'2019-10-22',	'2019-10-22 12:37:48',	1),
-(85,	'APR-11342',	'Approval Ticket # APR-11342',	1,	'2019-10-22',	'2019-10-22 12:46:01',	1),
-(86,	'APR-37350',	'Approval Ticket # APR-37350',	1,	'2019-10-22',	'2019-10-22 12:47:45',	1),
-(87,	'APR-80740',	'Approval Ticket # APR-80740',	1,	'2019-10-22',	'2019-10-22 12:51:19',	1),
-(88,	'APR-7179',	'Approval Ticket # APR-7179',	1,	'2019-10-24',	'2019-10-24 17:16:12',	1),
-(89,	'APR-84905',	'Approval Ticket # APR-84905',	1,	'2019-10-24',	'2019-10-24 17:17:45',	1),
-(90,	'APR-47952',	'Approval Ticket # APR-47952',	1,	'2019-10-24',	'2019-10-24 21:19:48',	1),
-(91,	'APR-69751',	'Approval Ticket # APR-69751',	1,	'2019-10-24',	'2019-10-24 21:22:08',	1),
-(92,	'APR-37278',	'Approval Ticket # APR-37278',	1,	'2019-10-24',	'2019-10-24 21:25:35',	1),
-(93,	'APR-26165',	'Approval Ticket # APR-26165',	1,	'2019-11-03',	'2019-11-03 11:13:44',	1),
-(94,	'APR-62159',	'Approval Ticket # APR-62159',	1,	'2019-11-03',	'2019-11-03 13:48:41',	1),
-(95,	'APR-8289',	'Approval Ticket # APR-8289',	1,	'2019-11-03',	'2019-11-03 13:51:31',	1);
+INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`, `fk_approve_item_id`, `approval_created_by`, `approval_created_date`, `approval_last_modified_date`, `approval_last_modified_by`) VALUES
+(96,	'APR-5537',	'Approval Ticket # APR-5537',	20,	1,	'2019-11-03',	'2019-11-03 19:53:00',	1),
+(97,	'APR-5538',	'Approval Ticket # APR-5538',	20,	1,	'2019-11-03',	'2019-11-03 19:53:00',	1),
+(102,	'APR-32167',	'Approval Ticket # APR-32167',	2,	1,	'2019-11-03',	'2019-11-03 20:28:54',	1),
+(103,	'APR-8944',	'Approval Ticket # APR-8944',	3,	1,	'2019-11-03',	'2019-11-03 20:30:16',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -133,8 +128,6 @@ CREATE TABLE `budget` (
   CONSTRAINT `fk_budget_center1` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the budget items by activity';
 
-INSERT INTO `budget` (`budget_id`, `budget_track_number`, `budget_name`, `fk_center_id`, `fk_approval_id`, `fk_status_id`, `budget_year`, `budget_created_by`, `budget_created_date`, `budget_last_modified_by`, `budget_last_modified_date`) VALUES
-(5,	'BGT-48443',	'FY 20 Budget',	1,	84,	23,	2019,	1,	'2019-10-22',	1,	NULL);
 
 DROP TABLE IF EXISTS `budget_item`;
 CREATE TABLE `budget_item` (
@@ -165,10 +158,6 @@ CREATE TABLE `budget_item` (
   CONSTRAINT `fk_budget_detail_id_expense_account_id` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This hold activties and their budgeted cost';
 
-INSERT INTO `budget_item` (`budget_item_id`, `budget_item_track_number`, `budget_item_name`, `fk_budget_id`, `fk_expense_account_id`, `budget_item_description`, `fk_status_id`, `fk_approval_id`, `fk_project_allocation_id`, `budget_item_note`, `budget_item_created_by`, `budget_item_last_modified_by`, `budget_item_created_date`, `budget_item_last_modified_date`) VALUES
-(18,	'BGI-1945',	'Budget_item # BGI-1945',	5,	2,	'Budget Item 1',	30,	84,	1,	'This is an item note',	1,	1,	'2019-10-22',	NULL),
-(19,	'BGI-63028',	'Budget_item # BGI-63028',	5,	2,	'Item 2',	30,	85,	1,	'This item 2',	1,	1,	'2019-10-22',	NULL),
-(20,	'BGI-2134',	'Budget_item # BGI-2134',	5,	1,	'Item 3',	30,	86,	1,	'This is item 3',	1,	1,	'2019-10-22',	NULL);
 
 DROP TABLE IF EXISTS `budget_item_detail`;
 CREATE TABLE `budget_item_detail` (
@@ -193,11 +182,6 @@ CREATE TABLE `budget_item_detail` (
   CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
-INSERT INTO `budget_item_detail` (`budget_item_detail_id`, `budget_item_detail_track_number`, `budget_item_detail_name`, `fk_budget_item_id`, `fk_month_id`, `fk_status_id`, `fk_approval_id`, `budget_item_detail_amount`, `budget_item_detail_created_date`, `budget_item_detail_created_by`, `budget_item_detail_last_modified_by`, `budget_item_detail_last_modified_date`) VALUES
-(71,	'BTS-21982',	'Item 1',	18,	1,	38,	84,	100.00,	'2019-10-22',	1,	1,	NULL),
-(72,	'BTS-14101',	'Item 2',	18,	2,	38,	84,	450.00,	'2019-10-22',	1,	1,	NULL),
-(73,	'BTS-22292',	'Item 2 detail',	19,	2,	38,	85,	4500.00,	'2019-10-22',	1,	1,	NULL),
-(74,	'BTS-40115',	'Item 3',	20,	2,	38,	86,	2500.00,	'2019-10-22',	1,	1,	NULL);
 
 DROP TABLE IF EXISTS `center`;
 CREATE TABLE `center` (
@@ -218,13 +202,8 @@ CREATE TABLE `center` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the remote sites for the organization\n';
 
 INSERT INTO `center` (`center_id`, `center_track_number`, `center_name`, `center_code`, `center_start_date`, `center_end_date`, `center_is_active`, `center_created_by`, `center_created_date`, `center_last_modified_date`, `center_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'CNT-97356',	'Kiserian CDC',	'KE0240',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
-(2,	'CNT-65378',	'Machakos CDC',	'KE0765',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
-(3,	'CNT-75637',	'Kilifi CDC',	'KE0340',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
-(4,	'CNT-65268',	'Mombasa CDC',	'KE0345',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
-(5,	'CNT-55473',	'Jinja CDC',	'UG0211',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
-(6,	'CNT-65370',	'Kampala CDC',	'UG0721',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL),
-(7,	'CNT-67653',	'Cape CDC',	'HT0422',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	NULL,	NULL);
+(1,	'CNT-97356',	'Kiserian CDC',	'KE0240',	'2019-09-27',	'2019-09-27',	1,	1,	'2019-09-27',	'2019-09-27',	1,	96,	45),
+(8,	'CNT-42426',	'Kamangu CDC',	'KE0452',	'1990-11-13',	'0000-00-00',	1,	1,	'2019-11-03',	'0000-00-00',	1,	97,	45);
 
 DROP TABLE IF EXISTS `center_bank`;
 CREATE TABLE `center_bank` (
@@ -244,8 +223,6 @@ CREATE TABLE `center_bank` (
   CONSTRAINT `fk_center_bank_center1` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `center_bank` (`center_bank_id`, `center_bank_track_number`, `fk_center_id`, `center_bank_bank_account_number`, `fk_bank_branch_id`, `center_bank_created_date`, `center_bank_created_by`, `center_bank_last_modified_date`, `center_bank_last_modified_by`) VALUES
-(2,	'CBK-57546',	1,	'797267665421',	1,	'2019-10-09',	1,	'2019-10-09 15:33:15',	1);
 
 DROP TABLE IF EXISTS `center_group`;
 CREATE TABLE `center_group` (
@@ -842,10 +819,7 @@ CREATE TABLE `request` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_status_id`, `fk_center_id`, `fk_approval_id`, `request_date`, `request_description`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
-(75,	'REQ-59907',	'Request # REQ-59907',	14,	1,	83,	'2019-10-22',	'Testing this one',	'2019-10-22',	'1',	'1',	'2019-10-22 12:32:49',	NULL),
-(76,	'REQ-40327',	'Request # REQ-40327',	14,	1,	88,	'2019-10-24',	'Tease',	'2019-10-24',	'1',	'1',	'2019-10-24 17:16:12',	NULL),
-(77,	'REQ-68984',	'Request # REQ-68984',	14,	1,	89,	'2019-10-24',	'Tease 2',	'2019-10-24',	'1',	'1',	'2019-10-24 17:17:45',	NULL),
-(78,	'REQ-41169',	'Request # REQ-41169',	14,	1,	92,	'2019-10-24',	'With false',	'2019-10-24',	'1',	'1',	'2019-10-24 21:25:35',	NULL);
+(81,	'REQ-31629',	'Testing req',	14,	1,	103,	'2019-11-13',	'Test',	'2019-11-03',	'1',	'1',	'2019-11-03 20:30:16',	NULL);
 
 DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
@@ -872,11 +846,7 @@ CREATE TABLE `request_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
-(95,	'RQD-17432',	75,	'Test 1',	100,	120.00,	12000.00,	1,	1,	1,	75,	'2019-10-22',	1,	1,	'2019-10-22 12:35:00'),
-(96,	'RQD-54834',	75,	'Test 2',	50,	300.00,	1500.00,	2,	1,	1,	75,	'2019-10-22',	1,	1,	'2019-10-22 12:35:00'),
-(97,	'RQD-54360',	76,	'Tease 1',	10,	1450.00,	14500.00,	1,	1,	1,	NULL,	'2019-10-24',	1,	1,	'2019-10-24 17:16:12'),
-(98,	'RQD-8424',	77,	'Tease 2',	15,	430.00,	6450.00,	2,	1,	1,	NULL,	'2019-10-24',	1,	1,	'2019-10-24 17:17:45'),
-(99,	'RQD-30620',	78,	'false req',	100,	200.00,	20000.00,	3,	1,	1,	NULL,	'2019-10-24',	1,	1,	'2019-10-24 21:25:35');
+(102,	'RQD-33499',	81,	'Test',	17,	1800.00,	3060.00,	1,	1,	1,	NULL,	'2019-11-03',	1,	1,	'2019-11-03 20:30:16');
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
@@ -1287,9 +1257,8 @@ CREATE TABLE `voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
 INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `voucher_number`, `fk_center_id`, `voucher_date`, `fk_voucher_type_id`, `fk_approval_id`, `fk_status_id`, `voucher_cheque_number`, `voucher_transaction_cleared_date`, `voucher_transaction_cleared_month`, `voucher_vendor`, `voucher_description`, `voucher_allow_edit`, `voucher_created_by`, `voucher_created_date`, `voucher_last_modified_date`, `voucher_last_modified_by`) VALUES
-(7,	'VCH-54213',	'Voucher # VCH-54213',	191001,	1,	'2019-11-01',	2,	93,	10,	0,	'0000-00-00',	'0000-00-00',	'Test vendor',	'Testing',	0,	1,	'2019-11-03',	'2019-11-03 11:13:44',	1),
-(8,	'VCH-77164',	'Voucher # VCH-77164',	191002,	1,	'2019-11-03',	2,	94,	10,	0,	'0000-00-00',	'0000-00-00',	'Tested',	'Tested',	0,	1,	'2019-11-03',	'2019-11-03 13:48:41',	1),
-(9,	'VCH-46135',	'Voucher # VCH-46135',	191003,	1,	'2019-11-03',	2,	95,	10,	0,	'0000-00-00',	'0000-00-00',	'Testing',	'Testing',	0,	1,	'2019-11-03',	'2019-11-03 13:51:31',	1);
+(10,	'VCH-34315',	'Voucher # VCH-34315',	190901,	1,	'2019-11-03',	2,	0,	10,	0,	'0000-00-00',	'0000-00-00',	'Test',	'test',	0,	1,	'2019-11-03',	'2019-11-03 20:19:38',	1),
+(11,	'VCH-4745',	'Voucher # VCH-4745',	190902,	1,	'2019-11-03',	2,	102,	10,	0,	'0000-00-00',	'0000-00-00',	'Test2',	'Test2',	0,	1,	'2019-11-03',	'2019-11-03 20:28:54',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
@@ -1317,10 +1286,8 @@ CREATE TABLE `voucher_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`, `fk_voucher_id`, `voucher_detail_description`, `voucher_detail_quantity`, `voucher_detail_unit_cost`, `voucher_detail_total_cost`, `fk_expense_account_id`, `fk_income_account_id`, `fk_approval_id`, `fk_status_id`, `fk_project_allocation_id`, `voucher_detail_last_modified_date`, `voucher_detail_last_modified_by`, `voucher_detail_created_by`, `voucher_detail_created_date`) VALUES
-(4,	'VCD-82223',	7,	'Test 1',	12,	100.00,	1200.00,	2,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
-(5,	'VCD-35399',	7,	'Test 2',	15,	150.00,	2250.00,	2,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
-(6,	'VCD-35577',	8,	'Tested',	100,	1200.00,	12000.00,	1,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
-(7,	'VCD-20210',	9,	'Testing',	150,	150.00,	22500.00,	1,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03');
+(8,	'VCD-65221',	10,	'test',	100,	150.00,	15000.00,	1,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03'),
+(9,	'VCD-61861',	11,	'Test',	45,	560.00,	25200.00,	1,	NULL,	NULL,	39,	1,	NULL,	'1',	1,	'2019-11-03');
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -1362,4 +1329,6 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-11-03 14:20:46
+-- 2019-11-04 12:17:54
+1
+Downloading1
