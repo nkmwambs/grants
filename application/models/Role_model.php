@@ -29,7 +29,7 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function lookup_tables(){
-
+    
   }
 
   function detail_tables(){

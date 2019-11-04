@@ -62,7 +62,7 @@ public $auth;
         $this->session->set_userdata('role_id', $row->role_id);
 
         $this->session->set_userdata('breadcrumb_list',array());
-        $this->user_model->get_user_priviledges();
+        //$this->user_model->get_user_priviledges();
 
 			  return 'success';
 	}

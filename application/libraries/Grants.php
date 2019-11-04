@@ -250,6 +250,8 @@ function check_if_table_has_detail_table($table_name = ""){
       if($field_type == 'select'){
         $lookup_table = strtolower(substr($column,0,-5));
         return $f->$field($this->CI->grants_model->lookup_values($lookup_table));
+      }elseif(strrpos($column,'_is_active') == true ){
+        return $f->select_field(array(get_phrase('yes'),get_phrase('no')));
       }else{
         return $f->$field();
       }

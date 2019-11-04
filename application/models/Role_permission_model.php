@@ -23,13 +23,17 @@ class Role_permission_model extends MY_Model implements CrudModelInterface, Tabl
 
   }
 
+  // function single_form_add_visible_columns(){
+  //   return array('role_permission_name','fk_role_id','fk_permission_id');
+  // }
+
 
   function list(){
 
   }
 
   function lookup_tables(){
-
+    return array('role','permission');
   }
 
   function detail_tables(){

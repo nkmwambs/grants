@@ -29,7 +29,7 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
   }
 
   function lookup_tables(){
-
+    return array('menu');
   }
 
   function detail_tables(){
