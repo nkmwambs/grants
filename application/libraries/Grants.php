@@ -1,4 +1,4 @@
-<?php
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /**
 * The grants management system is a framework developed by Compassion Africa Regional Development team
 * to help FCPs manage their finances. It an open framework that be easily be adopted by any grant managing
@@ -9,17 +9,6 @@
 * @copyright Compassion International Kenya
 * @license https://compassion-africa.org/lisences.html
 *
-*/
-
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-/**
-* Main system library
-*
-* @author Nicodemus Karisa
-* @package Grants Management System
-* @copyright Compassion International Kenya
-* @license https://compassion-africa.org/lisences.html
 */
 
 class Grants{
