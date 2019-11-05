@@ -214,11 +214,19 @@ function unset_default_hidden_columns(Array $default_hidden_columns,Array $colum
   return $default_hidden_columns;
 }
 
-//This function allows to add more hidden columns. Callable from a specific model
-//Example:
-//$columns_to_hide = array('funder_description');
-//return $this->grants->add_default_hidden_columns($default_hidden_columns,$columns_to_hide)
-function add_default_hidden_columns($default_hidden_columns,$columns_to_hide){
+/**
+ * add_default_hidden_columns
+ * 
+ * This function allows to add more hidden columns. Callable from a specific model
+ * Example:$columns_to_hide = array('funder_description');
+ * return $this->grants->add_default_hidden_columns($default_hidden_columns,$columns_to_hide) 
+ * 
+ * @param $default_hidden_columns Array : Original hidden columns array
+ * @param $columns_to_hide Array : Array of Additional columns to be hidden 
+ * 
+ * @return Array
+ */
+function add_default_hidden_columns(Array $default_hidden_columns,Array $columns_to_hide): Array{
   foreach ($columns_to_hide as $column_to_hide) {
     array_push($default_hidden_columns,$column_to_hide);
   }
@@ -226,8 +234,16 @@ function add_default_hidden_columns($default_hidden_columns,$columns_to_hide){
   return $default_hidden_columns;
 }
 
-
-function get_all_table_fields($table_name = ""){
+/**
+ * get_all_table_fields
+ * 
+ * The method returns all fields names of the selected table. It's a wrapper method from grants model
+ * 
+ * @param $table_name String : The selected table
+ * 
+ * @return Array
+ */
+function get_all_table_fields(String $table_name = ""): Array {
   return $this->CI->grants_model->get_all_table_fields($table_name);
 }
 
@@ -238,9 +254,11 @@ function get_all_table_fields($table_name = ""){
  * This method check if the selected table has any foreign table related to it. For example the center table
  * has foreign tables budget, request, reconciliation related to it.
  * 
- * @return Boolean
+ * @param $table_name String : The selected table
+ * 
+ * @return boolean 
  */
-function check_if_table_has_detail_table($table_name = ""){
+function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
     $table = $table_name == ""?$this->controller:$table_name;
 
@@ -261,10 +279,12 @@ function check_if_table_has_detail_table($table_name = ""){
    * This method checks if the selected table has xxxx_detail table related to it. For example the table
    * voucher has voucher_detail table as one of its foreign tables.
    * 
+   * @param $table_name String : The selected table
+   * 
    * @return Boolean
    */
 
-   function check_if_table_has_detail_listing($table_name = ""){
+   function check_if_table_has_detail_listing(String $table_name = ""): Bool{
 
       $table = $table_name == ""?$this->controller:$table_name;
 
@@ -285,9 +305,11 @@ function check_if_table_has_detail_table($table_name = ""){
    * This method populates the cell values of the detail of the multi_form_add page.
    * It checks if there are any set changes in field type and implements them.
    * 
+   * @param $fields_array String : Array of table fields
+   * 
    * @return String
    */  
-  function detail_row_fields($fields_array){
+  function detail_row_fields(Array $fields_array): Array {
 
       $this->set_change_field_type($this->controller.'_detail');
 
@@ -331,10 +353,12 @@ function check_if_table_has_detail_table($table_name = ""){
    * This method populates the single_form_add or master part of the multi_form_add pages.
    * It also checks if their is set_change_field_type of the current column from the feature library
    * 
+   * @param $column String : A column from a table
+   * 
    * @return String
    */
     
-  function header_row_field($column){
+  function header_row_field(String $column): String {
       
       $f = new Fields_base($column,$this->controller,true);
 
@@ -377,6 +401,8 @@ function check_if_table_has_detail_table($table_name = ""){
    * This method checks if the feature library has the method change_field_type and if present get the 
    * array return values. The array is in the format of : 
    * array('column_name'=>array('field_type'=>$new_field_type,'options'=>$options)) where options is only set for select field type
+   * 
+   * @param $detail_table String : Selected table  
    * 
    * @return Array 
    */
@@ -421,10 +447,22 @@ function check_if_table_has_detail_table($table_name = ""){
   
 // Visible Columns methods
 
-function detail_list_table_visible_columns($table){
+/**
+ * detail_list_table_visible_columns
+ * 
+ * Returns an array of columns to be selected in a listing table in a master-detail view action page
+ * 
+ * @param $table String : Selected detail table
+ * 
+ * @return Array
+ */
+function detail_list_table_visible_columns(String $table) {
+
   $model = $this->load_detail_model($table);
 
-  if(method_exists($this->CI->$model,'detail_list_table_visible_columns')){
+  if(method_exists($this->CI->$model,'detail_list_table_visible_columns') && 
+      is_array($this->CI->$model->detail_list_table_visible_columns())
+  ){
     $this->detail_list_table_visible_columns = $this->CI->$model->detail_list_table_visible_columns();
 
     //Add the table id columns if does not exist in $columns
@@ -437,10 +475,20 @@ function detail_list_table_visible_columns($table){
   return $this->detail_list_table_visible_columns;
 }
 
-function list_table_visible_columns(){
+/**
+ * list_table_visible_columns
+ * 
+ * Returns an array of selected fields for the list page tables
+ * 
+ * @return Array 
+ * 
+ */
+function list_table_visible_columns() {
   $model = $this->current_model;
 
-  if(method_exists($this->CI->$model,'list_table_visible_columns')){
+  if(method_exists($this->CI->$model,'list_table_visible_columns') &&
+    is_array($this->CI->$model->list_table_visible_columns())
+  ){
     $this->list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
 
      //Add the table id columns if does not exist in $columns
@@ -453,10 +501,19 @@ function list_table_visible_columns(){
 
 }
 
+/**
+ * master_table_visible_columns
+ * 
+ * Returns an array of selected fields in the master part of the master-detail view action pages
+ * 
+ * @return Array
+ */
 function master_table_visible_columns(){
   $model = $this->current_model;
 
-  if(method_exists($this->CI->$model,'master_table_visible_columns')){
+  if(method_exists($this->CI->$model,'master_table_visible_columns') &&
+  is_array($this->CI->$model->master_table_visible_columns())
+  ){
     $this->master_table_visible_columns = $this->CI->$model->master_table_visible_columns();
 
     //Add the table id columns if does not exist in $columns
@@ -469,30 +526,59 @@ function master_table_visible_columns(){
   return $this->master_table_visible_columns;
 }
 
+/**
+ * detail_multi_form_add_visible_columns
+ * 
+ * Gives an array of the fields to be selected in detail part of a multi_form_add action pages
+ * 
+ * @param $table String : The selected table
+ * 
+ * @return Array
+ */
 function detail_multi_form_add_visible_columns($table){
   $model = $this->load_detail_model($table);
 
-  if(method_exists($this->CI->$model,'detail_multi_form_add_visible_columns')){
+  if(method_exists($this->CI->$model,'detail_multi_form_add_visible_columns') &&
+    is_array($this->CI->$model->detail_multi_form_add_visible_columns())
+  ){
     $this->detail_multi_form_add_visible_columns = $this->CI->$model->detail_multi_form_add_visible_columns();
   }
 
   return $this->CI->$model->detail_multi_form_add_visible_columns();
 }
 
-
-function master_multi_form_add_visible_columns(){
+/**
+ * master_multi_form_add_visible_columns
+ * 
+ * Returns an array of the selected fields/ columns of the master part of the multi_form_add action pages
+ * 
+ * @return Array
+ * 
+ */
+function master_multi_form_add_visible_columns() {
   $model = $this->current_model;
 
-  if(method_exists($this->CI->$model,'master_multi_form_add_visible_columns')){
+  if(method_exists($this->CI->$model,'master_multi_form_add_visible_columns') &&
+      is_array($this->CI->$model->master_multi_form_add_visible_columns())
+  ){
     $this->master_multi_form_add_visible_columns =  $this->CI->$model->master_multi_form_add_visible_columns();
   }
   return $this->master_multi_form_add_visible_columns;
 }
 
+/**
+ * single_form_add_visible_columns
+ * 
+ * Return an array of the selected fields/ columns of the single_form_add action pages
+ * 
+ * @return Array
+ */
 function single_form_add_visible_columns(){
   $model = $this->current_model;
 
-  if(method_exists($this->CI->$model,'single_form_add_visible_columns')){
+  if(method_exists($this->CI->$model,'single_form_add_visible_columns') && 
+      is_array($this->CI->$model->single_form_add_visible_columns())
+  ){
     $this->single_form_add_visible_columns = $this->CI->$model->single_form_add_visible_columns();
   }
   return $this->single_form_add_visible_columns;
