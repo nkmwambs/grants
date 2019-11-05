@@ -439,9 +439,14 @@ function single_form_add_visible_columns(){
   return $this->single_form_add_visible_columns;
 }
 
-
-
-function list(){
+/**
+ * list
+ * 
+ * This method returns the query results for the list pages
+ * 
+ * @return Array
+ */
+function list_query(){
   $model = $this->current_model;
 
   // Get the tables foreign key relationship
@@ -658,7 +663,7 @@ function list_output(){
 
   $this->mandatory_fields($table);
 
-  $result = $this->list();
+  $result = $this->list_query();
   $keys = $this->CI->grants_model->list_select_columns();
   $has_details = $this->check_if_table_has_detail_table();
   $show_add_button = $this->show_add_button();
