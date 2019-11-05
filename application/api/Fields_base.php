@@ -119,6 +119,30 @@ class Fields_base{
     return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
+  function longtext_field(){
+
+    $id = "";
+    $name = 'detail['.$this->column.'][]';
+    $master_class = "detail";
+
+    if($this->is_header){
+      $id = $this->column;
+      $name = 'header['.$this->column.']';
+      $master_class = 'master';
+    }
+
+    $value = "";
+
+    $library = $this->CI->controller.'_library';
+
+    $method = $this->column.'_default_field_value';
+
+    if(method_exists($this->CI->$library,$method)){
+      $value = $this->CI->$library->$method();
+    }
+
+    return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" >'.$value.'</textarea>';
+  }
 
   function date_field(){
 

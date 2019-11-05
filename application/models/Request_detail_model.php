@@ -22,7 +22,6 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
     return array('request','status','expense_account','project_allocation');
   }
 
-  public function detail_tables(){}
 
     public function master_table_visible_columns(){}
 

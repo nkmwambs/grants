@@ -22,4 +22,8 @@ class Budget_item_library extends Grants
 
   }
 
+  function change_field_type(){
+    return array('budget_item_note'=>array('field_type'=>'longtext'));
+  }
+
 }

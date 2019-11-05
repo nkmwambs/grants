@@ -33,8 +33,13 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function detail_list(){}
 
-  function master_view(){
-    //return $this->db->select(array('voucher_id','voucher_date'))->get_where('voucher')->result_array();
+  // function master_view(){
+  //   //return $this->db->select(array('voucher_id','voucher_date'))->get_where('voucher')->result_array();
+  // }
+
+  function master_multi_form_add_visible_columns(){
+    return array('voucher_name','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_description','center_name','voucher_type_name');
   }
 
   public function list(){}

@@ -4,7 +4,7 @@ interface TableRelationshipInterface {
 
   public function lookup_tables();
 
-  public function detail_tables();
+  //public function detail_tables();
 
   // public function table_visible_columns();
   //

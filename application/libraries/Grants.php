@@ -1,4 +1,18 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php 
+
+/**
+* The grants management system is a framework developed by Compassion Africa Regional Development team
+* to help FCPs manage their finances. It an open framework that be easily be adopted by any grant managing
+* organization.
+*
+* @author Nicodemus Karisa
+* @package Grants Management System
+* @copyright Compassion International Kenya
+* @license https://compassion-africa.org/lisences.html
+*
+*/
+
+defined('BASEPATH') OR exit('No direct script access allowed');
 /**
 * The grants management system is a framework developed by Compassion Africa Regional Development team
 * to help FCPs manage their finances. It an open framework that be easily be adopted by any grant managing
@@ -71,7 +85,18 @@ private $detail_tables = [];
 
 private $master_view = [];
 
-
+/**
+ * __construct
+ * 
+ * This is the construct to this class. It sets the following:
+ * 
+ * - The CI Instance
+ * - Laod the main library and model
+ * - Sets the active table ($this->controller)
+ * - Set the active action ($this->action)
+ * 
+ * @return Void
+ */
 function __construct(){
 
   // Instantiate Codeigniter Singleton class
@@ -95,13 +120,22 @@ function __construct(){
   //Loading system model (Grants_model). The autoloaded grants model does work in library context and has to loaded here
   $this->CI->load->model('grants_model');
 
+  // Loading the main feature library
   $this->CI->load->library($this->current_library);
 }
 
-// This method switches loading between the main controller model and a specified detail model. It switches to a detail model if
-// the detail table is passed as an argument
 
-function load_detail_model($table_name = ""){
+/**
+ * load_detail_model
+ * 
+ * This method helps to reload the detail table/ foreign table model. It can be used to toggle models
+ * It returns the toggled model name
+ * 
+ * @param $table_name String : The table to toggle a model to
+ *  
+ * @return String
+ */
+function load_detail_model(String $table_name = ""): String{
   $model =  $this->current_model;
 
   if($table_name !== "" && !is_array($table_name)){
@@ -112,12 +146,19 @@ function load_detail_model($table_name = ""){
   return $model;
 }
 
-// This method is a wrapper to the lookup_tables method of the specific feature model
-// The lookup_tables method holds the lookup referencing tables as array elements
-// Passing an argument to this method wrapper switches between the lookup tables of the main feature model to a certain details model
-
-
-function lookup_tables($table_name = ""){
+/**
+ * lookup_tables
+ * 
+ * This method is a wrapper to the lookup_tables method of the specific feature model
+ * The lookup_tables method holds the lookup referencing tables as array elements
+ * Passing an argument to this method wrapper switches between the lookup tables of the main 
+ * feature model to a certain details model
+ * 
+ * @param $table_name String : The table to check it's lookup tables for
+ * 
+ * @return Array
+ */
+function lookup_tables(String $table_name = ""): Array{
   $model = $this->load_detail_model($table_name);
 
   if(method_exists($this->CI->$model,'lookup_tables')){
@@ -127,26 +168,44 @@ function lookup_tables($table_name = ""){
 }
 
 
-// This is wrapper method to the detail_tables of the specific feature model
-// The detail_tables method holds the details referencing tables as array elements
-// Passing an argument to this wrapper switches between the main feature model detail_tables to a certain details models
-
-function detail_tables($table_name = ""){
+/**
+ * detail_tables
+ * 
+ * This is wrapper method to the detail_tables of the specific feature model
+ * The detail_tables method holds the details referencing tables as array elements
+ * Passing an argument to this wrapper switches between the main feature model 
+ * detail_tables to a certain details models
+ * 
+ * @param $table_name String : The table to check detail tables for
+ * 
+ * @return Array
+ */
+function detail_tables(String $table_name = ""): Array {
   $model = $this->load_detail_model($table_name);
 
-  if(method_exists($this->CI->$model,'detail_tables')){
+  if(method_exists($this->CI->$model,'detail_tables') && 
+      is_array($this->CI->$model->detail_tables()) 
+    ){
     $this->detail_tables  = $this->CI->$model->detail_tables();
   }
+
   return $this->detail_tables;
 }
 
-//This function allows unsetting default hidden columns. It's callable from specific model
-//Example:
-//$columns_to_show =  array('funder_created_date','funder_last_modified_date');
-//Unset default hidden columns
-//return $this->grants->unset_default_hidden_columns($default_hidden_columns,$columns_to_show);
-
-function unset_default_hidden_columns($default_hidden_columns,$columns_to_unset){
+/**
+ * unset_default_hidden_coulumns  
+ * 
+ * This function allows unsetting default hidden columns. It's callable from specific model
+ * Example:$columns_to_show =  array('funder_created_date','funder_last_modified_date');
+ * Unset default hidden columns
+ * return $this->grants->unset_default_hidden_columns($default_hidden_columns,$columns_to_show)
+ * 
+ * @param $default_hidden_columns Array : Array of the hidden columns
+ * @param $columns_to_unset Array : Array of columns to Unset
+ * 
+ * @return Array
+ */
+function unset_default_hidden_columns(Array $default_hidden_columns,Array $columns_to_unset): Array {
   foreach ($columns_to_unset as $column_to_unset) {
     $unset_default_hidden_column = in_array($column_to_unset,$default_hidden_columns);
     unset($default_hidden_columns[$unset_default_hidden_column]);
