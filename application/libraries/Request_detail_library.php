@@ -22,6 +22,8 @@ class Request_detail_library extends Grants
 
   }
 
-
+  function change_field_type(){
+    //return array('request_detail_description'=>array('field_type'=>'select','options'=>array('One','Two')));
+  }
 
 }

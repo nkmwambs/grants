@@ -105,6 +105,8 @@ function __construct(){
 
   //Loading system model (Grants_model). The autoloaded grants model does work in library context and has to loaded here
   $this->CI->load->model('grants_model');
+
+  $this->CI->load->library($this->current_library);
 }
 
 // This method switches loading between the main controller model and a specified detail model. It switches to a detail model if
@@ -182,8 +184,14 @@ function get_all_table_fields($table_name = ""){
 }
 
 
-// For example center has a foreign relationship to budget, request, reconciliation thus return true but reconciliation return false
-
+/**
+ *  check_if_table_has_detail_table
+ * 
+ * This method check if the selected table has any foreign table related to it. For example the center table
+ * has foreign tables budget, request, reconciliation related to it.
+ * 
+ * @return Boolean
+ */
 function check_if_table_has_detail_table($table_name = ""){
 
     $table = $table_name == ""?$this->controller:$table_name;
@@ -199,8 +207,16 @@ function check_if_table_has_detail_table($table_name = ""){
     return $has_detail_table;
   }
 
-  // For example check if voucher has voucher_detail - this return true but approval has not approval_details thus returns false
-  function check_if_table_has_detail_listing($table_name = ""){
+  /**
+   * check_if_table_has_detail_listing
+   * 
+   * This method checks if the selected table has xxxx_detail table related to it. For example the table
+   * voucher has voucher_detail table as one of its foreign tables.
+   * 
+   * @return Boolean
+   */
+
+   function check_if_table_has_detail_listing($table_name = ""){
 
       $table = $table_name == ""?$this->controller:$table_name;
 
@@ -215,7 +231,17 @@ function check_if_table_has_detail_table($table_name = ""){
       return $has_detail_table;
     }
 
+  /**
+   * detail_row_fields
+   * 
+   * This method populates the cell values of the detail of the multi_form_add page.
+   * It checks if there are any set changes in field type and implements them.
+   * 
+   * @return String
+   */  
   function detail_row_fields($fields_array){
+
+      $this->set_change_field_type($this->controller.'_detail');
 
       $fields = array();
 
@@ -226,7 +252,18 @@ function check_if_table_has_detail_table($table_name = ""){
 
         $field = $field_type."_field";
 
-        if($field_type == 'select'){
+        if(array_key_exists($key,$this->set_field_type)){
+
+          $field_type = $this->set_field_type[$key]['field_type'];
+          $field = $field_type."_field";
+  
+          if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
+            $fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
+          }else{
+            $fields[$key] =  $f->$field();
+          }
+
+        }elseif($field_type == 'select'){
           $lookup_table = strtolower(substr($key,0,-5));
           $fields[$key] = $f->$field($this->CI->grants_model->lookup_values($lookup_table));
         }else{
@@ -238,16 +275,44 @@ function check_if_table_has_detail_table($table_name = ""){
       return $fields;
     }
 
+    private $set_field_type = [];  
 
+  /**
+   * header_row_field
+   * 
+   * This method populates the single_form_add or master part of the multi_form_add pages.
+   * It also checks if their is set_change_field_type of the current column from the feature library
+   * 
+   * @return String
+   */
+    
   function header_row_field($column){
-
+      
       $f = new Fields_base($column,$this->controller,true);
 
+      $this->set_change_field_type();
+      
       $field_type = $f->field_type();
 
       $field = $field_type."_field";
 
-      if($field_type == 'select'){
+      $lib = $this->current_library;
+
+      if(array_key_exists($column,$this->set_field_type)){
+
+        $field_type = $this->set_field_type[$column]['field_type'];
+        $field = $field_type."_field";
+
+        if($field_type == 'select' && count($this->set_field_type[$column]['options']) > 0){
+          return $f->select_field($this->set_field_type[$column]['options']);
+        }else{
+          return $f->$field();
+        }
+
+
+      }elseif($field_type == 'select'){
+        // $column has a _name suffix if is a foreign key in the table
+        // This is converted from fk_xxxx_id where xxxx is the primary table name
         $lookup_table = strtolower(substr($column,0,-5));
         return $f->$field($this->CI->grants_model->lookup_values($lookup_table));
       }elseif(strrpos($column,'_is_active') == true ){
@@ -255,6 +320,39 @@ function check_if_table_has_detail_table($table_name = ""){
       }else{
         return $f->$field();
       }
+
+  }
+
+  /**
+   * set_change_field_type
+   * 
+   * This method checks if the feature library has the method change_field_type and if present get the 
+   * array return values. The array is in the format of : 
+   * array('column_name'=>array('field_type'=>$new_field_type,'options'=>$options)) where options is only set for select field type
+   * 
+   * @return Array 
+   */
+  function set_change_field_type($detail_table = ""){
+
+    // Aray format for the change_field_type method in feature library: 
+    //array('field_type'=>$new_type,'options'=>$options);
+
+    $library = $this->controller.'_library';
+
+    if($detail_table !== ""){
+      $this->CI->load->library($detail_table.'_library');
+      $library = $detail_table.'_library';
+    }
+
+    if( method_exists($this->CI->$library,'change_field_type') && 
+        is_array($this->CI->$library->change_field_type())
+      ){
+      
+        $this->set_field_type = $this->CI->$library->change_field_type();
+
+    }
+
+    return $this->set_field_type;
 
   }
 
@@ -373,6 +471,17 @@ function list(){
   return $query_result;
 }
 
+/**
+ * show_add_button
+ * 
+ * This method controls the toggle of the add button in the view and list action pages
+ * It tries to check if the method show_add_button exists in the feature model and has a return of
+ * true or false. If true the add button will be shown else hidden
+ * 
+ * @return Boolean
+ * 
+ */
+
 function show_add_button($table = ""){
 
   $model = $this->current_model;
@@ -389,6 +498,19 @@ function show_add_button($table = ""){
 
   return $show_add_button;
 }
+
+/**
+ * mandatory_fields
+ * 
+ * This method adds mandatory fields in a table. All tables should contain the following fields:
+ * xxxx_created_date, xxxx_created_by, xxxx_last_modified_date, xxxx_last_modified_by, fk_approval_id and
+ * fk_status_id
+ * 
+ * Again the approve_item table should contain the name of the table as approvable item and create a default 
+ * new status of this table in the status table. Give this new status an status_approval_sequence of 1
+ * 
+ * @return void
+ */
 
 function mandatory_fields($table){
 
@@ -441,7 +563,8 @@ function mandatory_fields($table){
 
       }
 
-      // Check if the fields exists in the listed table and if not alter the table by adding a column with default value as the newly inserted status_id
+      // Check if the mandatory fields exists in the listed table and if not alter the table by 
+      // adding a column with default value as the newly inserted status_id
 
       $fields_to_add = array();
 

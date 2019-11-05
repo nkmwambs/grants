@@ -23,5 +23,8 @@ class Permission_library extends Grants
   }
 
 
+  function change_field_type(){
+    return array('permission_name'=>array('field_type'=>'select','options'=>array('Hello','Children')));
+  }
 
 }
