@@ -617,11 +617,13 @@ function list_query(){
  * It tries to check if the method show_add_button exists in the feature model and has a return of
  * true or false. If true the add button will be shown else hidden
  * 
+ * @param $table String : Selected table
+ * 
  * @return Boolean
  * 
  */
 
-function show_add_button($table = ""){
+function show_add_button(String $table = ""): Bool {
 
   $model = $this->current_model;
 
@@ -648,10 +650,12 @@ function show_add_button($table = ""){
  * Again the approve_item table should contain the name of the table as approvable item and create a default 
  * new status of this table in the status table. Give this new status an status_approval_sequence of 1
  * 
+ * @param $table String : The selected table
+ * 
  * @return void
  */
 
-function mandatory_fields($table){
+function mandatory_fields(String $table): Void{
 
   if($table!=='approval'){
       //Mandatory Fields: created_by, created_date,last_modified_by,last_modified_date,fk_approval_id,fk_status_id
@@ -744,10 +748,12 @@ function mandatory_fields($table){
  * This is query result of the detail table. The result of this method will be used in the view_output
  * to create the detail list
  * 
+ * @param $table String : The selected table
+ * 
  * @return array
  * 
  */
-function detail_list_query($table){
+function detail_list_query(String $table): Array {
   $model = $this->load_detail_model($table);
 
   if(method_exists($this->CI->$model,'detail_list_query_result') && 
@@ -769,11 +775,13 @@ function detail_list_query($table){
  * This method returns the true if the table id passed is in the approve_item with 
  * the value of approve_item_is_active as 1 otherwise false. A true item is approveable
  * 
+ * @param $detail_table String : The selected table
+ * 
  * @return boolean
  * 
  */
 
-function approveable_item($detail_table = ""){
+function approveable_item($detail_table = ""): Bool {
   return $this->CI->grants_model->approveable_item($detail_table);
 }
 
@@ -783,10 +791,12 @@ function approveable_item($detail_table = ""){
  * 
  * This is a wrapper method of the grants_model that returns the center start date
  * 
- * @return date
+ * @param $center_id  int : Selected Center 
+ * 
+ * @return String
  */
 
-function center_start_date($center_id){
+function center_start_date(int $center_id): String {
   return $this->CI->grants_model->center_start_date($center_id);
 }
 
@@ -829,10 +839,12 @@ function list_output(){
  * This method creates an array to be used in the view_output. It used to construct the table array_result
  * of each detail table
  * 
+ * @param $table String : Selected table
+ * 
  * @return array
  * 
  */
-function detail_list_view($table){
+function detail_list_view(String $table): Array {
 
   // Query result of the detail table
   $result = $this->detail_list_query($table);
@@ -873,7 +885,7 @@ function detail_list_view($table){
  *  
  */
 
-function master_view(){
+function master_view(): Array {
   $model = $this->current_model;
 
   // Get result from grants model if feature model list returns empty
