@@ -85,6 +85,7 @@ private $detail_tables = [];
 
 private $master_view = [];
 
+private $edit_visible_columns = [];
 /**
  * __construct
  * 
@@ -161,7 +162,9 @@ function load_detail_model(String $table_name = ""): String{
 function lookup_tables(String $table_name = ""): Array{
   $model = $this->load_detail_model($table_name);
 
-  if(method_exists($this->CI->$model,'lookup_tables')){
+  if(method_exists($this->CI->$model,'lookup_tables') && 
+      is_array($this->CI->$model->lookup_tables())
+    ){
     $this->lookup_tables = $this->CI->$model->lookup_tables();
   }
   return $this->lookup_tables;
@@ -354,11 +357,12 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    * It also checks if their is set_change_field_type of the current column from the feature library
    * 
    * @param $column String : A column from a table
+   * @param $field_value Mixed : Value of the field mainly from edit form
    * 
    * @return String
    */
     
-  function header_row_field(String $column): String {
+  function header_row_field(String $column, $field_value = ""): String {
       
       $f = new Fields_base($column,$this->controller,true);
 
@@ -376,9 +380,9 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         $field = $field_type."_field";
 
         if($field_type == 'select' && count($this->set_field_type[$column]['options']) > 0){
-          return $f->select_field($this->set_field_type[$column]['options']);
+          return $f->select_field($this->set_field_type[$column]['options'], $field_value);
         }else{
-          return $f->$field();
+          return $f->$field($field_value);
         }
 
 
@@ -386,11 +390,11 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // $column has a _name suffix if is a foreign key in the table
         // This is converted from fk_xxxx_id where xxxx is the primary table name
         $lookup_table = strtolower(substr($column,0,-5));
-        return $f->$field($this->CI->grants_model->lookup_values($lookup_table));
+        return $f->$field($this->CI->grants_model->lookup_values($lookup_table), $field_value);
       }elseif(strrpos($column,'_is_active') == true ){
-        return $f->select_field(array(get_phrase('yes'),get_phrase('no')));
+        return $f->select_field(array(get_phrase('yes'),get_phrase('no')), $field_value);
       }else{
-        return $f->$field();
+        return $f->$field($field_value);
       }
 
   }
@@ -582,6 +586,17 @@ function single_form_add_visible_columns(){
     $this->single_form_add_visible_columns = $this->CI->$model->single_form_add_visible_columns();
   }
   return $this->single_form_add_visible_columns;
+}
+
+function edit_visible_columns(){
+  $model = $this->current_model;
+
+  if(method_exists($this->CI->$model,'edit_visible_columns') && 
+      is_array($this->CI->$model->edit_visible_columns())
+  ){
+    $this->single_form_add_visible_columns = $this->CI->$model->edit_visible_columns();
+  }
+  return $this->edit_visible_columns;
 }
 
 /**
@@ -1033,11 +1048,48 @@ function multi_form_add_output($table_name = ""){
  * 
  * @return array
  */
+function edit_output($table_name = ""){
 
-function edit_output(){
-  
+  $table = $table_name == ""?$this->controller:$table_name;
+
+  if($this->CI->input->post()){
+    //$this->CI->grants_model->add($this->CI->input->post());
+    $model = $this->current_model;
+
+    if(method_exists($this->CI->$model,'edit')){
+      $this->CI->$model->edit();
+    }else{
+      $this->CI->grants_model->edit();
+    }
+  }else{
+    $this->mandatory_fields($table);
+
+    $edit_query = $this->edit_query($table);
+
+    return array(
+      'keys'=>$edit_query
+    );
+  }
+
 }
 
+function edit_query($table){
+  
+  $keys = $this->CI->grants_model->edit_visible_columns();
+
+  $edit_query = array();
+
+  foreach($keys as $column => $value){
+    if(strpos($column,'_id') == true && $column !== $table.'_id' ){
+      $edit_query[substr($column,0,-3).'_name'] = $value;
+    }else{
+      $edit_query[$column] = $value;
+    }
+
+  }
+
+  return $edit_query;
+}
 
 // These are methods that require review
 

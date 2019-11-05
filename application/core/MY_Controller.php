@@ -34,6 +34,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
       $this->session->set_userdata('master_table',null);
     }
 
+    $this->id = $this->uri->segment(3, 0);
+
   }
 
 

@@ -518,6 +518,22 @@ class Grants_model extends CI_Model
     return $this->db->get($table)->result_array();
   }
 
+  function grants_get_row($table){
+
+    $library = $table.'_library';
+
+    $this->load->library($library);
+
+    if(method_exists($this->$library,'list_table_where') && 
+        is_array($this->$library->list_table_where()) && 
+          count($this->$library->list_table_where()) > 0
+      ){
+      $this->db->where($this->$library->list_table_where());
+    }
+
+    return $this->db->get($table)->row();
+  }
+
   function master_multi_form_add_visible_columns(){
 
     // Check if the table has list_table_visible_columns not empty
@@ -606,6 +622,63 @@ class Grants_model extends CI_Model
     }
 
     return $visible_columns;
+  }
+
+  function edit_visible_columns(){
+        
+        $table = $this->controller;
+
+        // Check if the table has list_table_visible_columns not empty
+        $edit_visible_columns = $this->grants->edit_visible_columns();
+        $lookup_tables = $this->grants->lookup_tables();
+    
+        $get_all_table_fields = $this->get_all_table_fields();
+    
+        foreach ($get_all_table_fields as $get_all_table_field) {
+          //Unset foreign keys columns, created_by and last_modified_by columns
+          if( substr($get_all_table_field,0,3) == 'fk_' ||
+               strpos($get_all_table_field,'_deleted_at') == true
+            ){
+            unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
+          }
+        }
+    
+    
+        $visible_columns = $get_all_table_fields;
+        $lookup_columns = array();
+    
+        if(is_array($edit_visible_columns) && count($edit_visible_columns) > 0 ){
+          $visible_columns = $edit_visible_columns;
+        }else{
+    
+          if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+            foreach ($lookup_tables as $lookup_table) {
+    
+              $lookup_table_columns = $this->get_all_table_fields($lookup_table);
+    
+              foreach ($lookup_table_columns as $lookup_table_column) {
+                // Only include the name field of the look up table in the select columns
+                if(strpos($lookup_table_column,'_name') == true){
+                  //array_push($visible_columns,$lookup_table_column);
+                  array_push($visible_columns,substr($lookup_table_column,0,-5).'_id');
+                }
+    
+              }
+            }
+          }
+    
+        }
+
+        if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+          foreach ($lookup_tables as $lookup_table) {
+              $lookup_table_id = $lookup_table.'_id';
+              $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
+          }
+        }
+    
+        $this->db->select($visible_columns);
+        $this->db->where(array($table.'_id'=>hash_id($this->id,'decode')));
+        return $this->grants_get_row($table);
   }
 
   function detail_multi_form_add_visible_columns($table){

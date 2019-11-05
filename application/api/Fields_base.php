@@ -69,7 +69,7 @@ class Fields_base{
 
   }
 
-  function number_field(){
+  function number_field($value = 0){
     $id = "";
     $name = 'detail['.$this->column.'][]';
     $master_class = "detail";
@@ -80,7 +80,7 @@ class Fields_base{
       $master_class = 'master';
     }
 
-    $value = 0;
+    //$value = 0;
 
     $library = $this->CI->controller.'_library';
 
@@ -93,7 +93,7 @@ class Fields_base{
     return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
-  function text_field(){
+  function text_field($value = ""){
 
     $id = "";
     $name = 'detail['.$this->column.'][]';
@@ -105,7 +105,7 @@ class Fields_base{
       $master_class = 'master';
     }
 
-    $value = "";
+    //$value = "Hello";
 
     $library = $this->CI->controller.'_library';
 
@@ -119,7 +119,7 @@ class Fields_base{
     return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
-  function longtext_field(){
+  function longtext_field($value = ""){
 
     $id = "";
     $name = 'detail['.$this->column.'][]';
@@ -131,7 +131,7 @@ class Fields_base{
       $master_class = 'master';
     }
 
-    $value = "";
+    //$value = "";
 
     $library = $this->CI->controller.'_library';
 
@@ -144,7 +144,7 @@ class Fields_base{
     return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" >'.$value.'</textarea>';
   }
 
-  function date_field(){
+  function date_field($value = ""){
 
         $id = "";
         $name = 'detail['.$this->column.'][]';
@@ -156,7 +156,7 @@ class Fields_base{
           $master_class = 'master';
         }
 
-        $value = "";
+        $value = $value == "" ? date('Y-m-d') : $value;
 
         $library = $this->CI->controller.'_library';
 
@@ -169,7 +169,7 @@ class Fields_base{
       return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
-  function select_field($options){
+  function select_field($options, $selected_option = 0){
 
     $id = "";
 
@@ -188,7 +188,6 @@ class Fields_base{
       $master_class = 'master';
     }
 
-    $value = 0;
 
     $library = $this->CI->controller.'_library';
 
@@ -203,7 +202,7 @@ class Fields_base{
 
             foreach ($options as $option_value=>$option_html) {
               $selected = "";
-              if($option_value == $value){
+              if($option_value == $selected_option){
                   $selected = "selected='selected'";
               }
               $select .= "<option value='".$option_value."' ".$selected.">".$option_html."</option>";

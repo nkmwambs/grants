@@ -56,6 +56,7 @@
                      <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
                    </div>
                  </div>
+               <form>  
           </div>
       </div>
     </div>
