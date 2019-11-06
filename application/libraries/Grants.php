@@ -392,7 +392,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         $lookup_table = strtolower(substr($column,0,-5));
         return $f->$field($this->CI->grants_model->lookup_values($lookup_table), $field_value);
       }elseif(strrpos($column,'_is_active') == true ){
-        return $f->select_field(array(get_phrase('yes'),get_phrase('no')), $field_value);
+        return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value);
       }else{
         return $f->$field($field_value);
       }
