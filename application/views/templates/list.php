@@ -1,5 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-//print_r($result);
+ 
+//print_r($this->user_model->check_role_has_permissions('Bank','read'));
+
+
 extract($result);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 ?>
@@ -96,3 +99,7 @@ extract($result);
     </table>
   </div>
 </div>
+
+<script>
+  
+</script>

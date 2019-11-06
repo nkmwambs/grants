@@ -62,9 +62,11 @@ public $auth;
         $this->session->set_userdata('role_id', $row->role_id);
 
         $this->session->set_userdata('breadcrumb_list',array());
-        //$this->user_model->get_user_priviledges();
 
-			  return 'success';
+        $this->session->set_userdata('role_permissions',$this->user_model->get_user_permissions($row->role_id));
+        //$this->session->set_userdata('role_permissions',$this->user_model->perms($row->role_id));
+        
+		return 'success';
 	}
     //Validating login from ajax request
     function validate_login($email = '', $password = '') {

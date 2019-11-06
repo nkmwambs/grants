@@ -2,7 +2,7 @@
 
 interface TableRelationshipInterface {
 
-  public function lookup_tables();
+  // public function lookup_tables();
 
   //public function detail_tables();
 

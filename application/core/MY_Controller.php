@@ -11,6 +11,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   public $action;
   public $id = null;
   public $master_table = null;
+  public $has_permission = false;
 
   function __construct(){
 
@@ -35,6 +36,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }
 
     $this->id = $this->uri->segment(3, 0);
+
+    $this->load->model('user_model');
 
   }
 
@@ -61,7 +64,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   }
 
   function page_name(){
-    return $this->action;
+    return $this->has_permission?$this->action:'error';
   }
 
   function page_title(){
@@ -72,7 +75,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function views_dir(){
     $view_path = $this->controller;
 
-    if(!file_exists(VIEWPATH.$view_path.'/'.$this->page_name().'.php')){
+    if(!file_exists(VIEWPATH.$view_path.'/'.$this->page_name().'.php') || !$this->has_permission ){
       $view_path =  'templates';
     }
 
@@ -103,6 +106,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   // Can be overrode in a speicific controller
   function list(){
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'read');
     $this->crud_views();
   }
 

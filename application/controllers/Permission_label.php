@@ -8,19 +8,19 @@
  *	NKarisa@ke.ci.org
  */
 
-class Permission_library extends Grants
-{
 
-  private $CI;
+class Permission_label extends MY_Controller
+{
 
   function __construct(){
     parent::__construct();
-    $this->CI =& get_instance();
-  }
-
-  function index(){
 
   }
+  function index(){}
 
+
+  static function get_menu_list(){
+
+  }
 
 }

@@ -39,53 +39,110 @@ private $CI;
 */
 private $current_library;
 
-// This is the model for the current running master controller
+/**
+ * This is the model for the current running master controller
+ * @var String
+ */
 private $current_model;
 
-// This the current/ master detail table name which is equivalent to the running master controller
+/**
+ * This the current/ master detail table name which is equivalent to the running master controller
+ * @var String
+ */
 private $controller;
 
-// This is the action that has been called by the running controllers. It can either be list, view, edit, add or delete
+/**
+ * This is the action that has been called by the running controllers. It can either be list, view, edit, add or delete
+ * @var String
+ */
 private $action;
 
-// Active table
+/**
+ * Active table
+ * @var String
+ */
 private $table;
 
-// Feature model methods
-
+/**
+ * Hold an array that is used to switch fields in the details of the multi_form_add action pages
+ * @var String
+ */
 private $false_keys_model_method = 'false_keys';
 
-// master_table_visible_columns
 
+/**
+ * master_table_visible_columns holds the selected fields of the master part of the master-detail view action pages
+ * @var Array 
+ */
 private $master_table_visible_columns = [];
 
-// list_table_visible_columns
+/**
+ * list_table_visible_columns holds the selected fields of the list action pages
+ * @var Array
+ */
 private $list_table_visible_columns = [];
 
-// detail_list_table_visible_columns
+/**
+ * detail_list_table_visible_columns holds the selected fields of the detail part of the master-detail view action pages
+ * @var Array
+ */
 private $detail_list_table_visible_columns = [];
 
-// detail_multi_form_add_visible_columns
+/**
+ * detail_multi_form_add_visible_columns holds the selected fields of the detail part of the 
+ * multi_form_add action pages
+ * @var String
+ */
 private $detail_multi_form_add_visible_columns = [];
 
-// master_multi_form_add_visible_columns
+/**
+ * master_multi_form_add_visible_columns holds selected fields for the master part of the 
+ * multi_form_add action pages
+ * @var Array
+ */
 private $master_multi_form_add_visible_columns = [];
 
-// single_form_add_visible_columns
+/**
+ * single_form_add_visible_columns
+ * @var Array
+ */
 private $single_form_add_visible_columns = [];
 
-// detail_list
-private $detail_list = [];
+/**
+ * detail_list_query holds the query result of the detail part of the master-detail view action pages
+ * @var Array
+ */
+private $detail_list_query = [];
 
-// Look up tables 
+/**
+ * Look up tables of the active table
+ * @var Array
+ */
 private $lookup_tables = [];
 
-// Details tables
+/**
+ * Details tables array of the active table
+ * @var Array
+ */
 private $detail_tables = [];
 
+/**
+ * Query result for the master part of the master-detail of view action page
+ * @var Array
+ */
 private $master_view = [];
 
+/**
+ * Selected columns of the edit action page with database results
+ * @var Array
+ */
 private $edit_visible_columns = [];
+
+/**
+ * Holds the change field type array from the feature library
+ * @var Array
+ */
+private $set_field_type = [];  
 /**
  * __construct
  * 
@@ -347,8 +404,6 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
       return $fields;
     }
-
-    private $set_field_type = [];  
 
   /**
    * header_row_field
@@ -775,12 +830,12 @@ function detail_list_query(String $table): Array {
       is_array($this->CI->$model->detail_list_query()) &&
       count($this->CI->$model->detail_list_query()) > 0
     ){
-      $this->detail_list = $this->CI->$model->detail_list_query(); // A full user defined query result
+      $this->detail_list_query = $this->CI->$model->detail_list_query(); // A full user defined query result
   } else{
-      $this->detail_list = $this->CI->grants_model->detail_list_query($table); // System generated query result
+      $this->detail_list_query = $this->CI->grants_model->detail_list_query($table); // System generated query result
   }
 
-  return $this->detail_list;
+  return $this->detail_list_query;
 }
 
 

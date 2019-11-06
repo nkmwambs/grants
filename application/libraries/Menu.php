@@ -173,9 +173,11 @@ class Menu {
       }
 
     }
-
-
+    
+    
     function navigation(){
+      
+      $permission = $this->CI->session->role_permissions;
 
       $this->set_menu_sessions();
 
@@ -184,6 +186,7 @@ class Menu {
       $nav = "";
 
       foreach ($menus as $menu => $items) {
+        if($this->CI->user_model->check_role_has_permissions($menu,'read')){
           $nav .= '
           <li class="">
               <a href="'.base_url().strtolower($menu).'/list">
@@ -191,6 +194,8 @@ class Menu {
               </a>
           </li>
           ';
+        }
+          
       }
 
       if(count($this->CI->session->user_more_menu) > 0 ){
@@ -203,13 +208,15 @@ class Menu {
                 ';
 
                   foreach ($this->CI->session->user_more_menu as $user_menu => $user_menu_item) {
-                    $nav .= '
-                      <li>
-                        <a href="'.base_url().strtolower($user_menu).'/list">
-                          <span class="title">'.get_phrase($user_menu).'</span>
-                        </a>
-                      </li>
-                    ';
+                    if($this->CI->user_model->check_role_has_permissions($user_menu,'read')){
+                      $nav .= '
+                        <li>
+                          <a href="'.base_url().strtolower($user_menu).'/list">
+                            <span class="title">'.get_phrase($user_menu).'</span>
+                          </a>
+                        </li>
+                      ';
+                    }
                   }
 
             $nav .='

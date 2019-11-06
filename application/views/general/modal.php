@@ -198,7 +198,7 @@
 
 
   $(document).ready(function() {
-      $('.datatable').DataTable({
+      $('.datatable').DataTables({
         dom: 'lBfrtip',
         buttons: [
             'copyHtml5',

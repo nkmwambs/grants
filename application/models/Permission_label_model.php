@@ -8,9 +8,9 @@
  *	NKarisa@ke.ci.org
  */
 
-class Permission_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Permission_label_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'permission'; // you MUST mention the table name
+  public $table = 'permission_label'; // you MUST mention the table name
 
 
   function __construct(){
@@ -29,11 +29,11 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
   }
 
   function lookup_tables(){
-    return array('menu','permission_label');
+    
   }
 
   function detail_tables(){
-
+    return array('permission');
   }
 
   function view(){

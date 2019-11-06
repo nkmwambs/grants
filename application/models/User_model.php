@@ -11,9 +11,6 @@
 class User_model extends MY_Model
 {
   public $table = 'user'; // you MUST mention the table name
-  public $primary_key = 'user_id'; // you MUST mention the primary key
-  public $fillable = array(); // If you want, you can set an array with the fields that can be filled by insert/update
-  public $protected = array(); // ...Or you can set an array with the fields that cannot be filled by insert/update
 
   function __construct(){
     parent::__construct();
@@ -25,18 +22,70 @@ class User_model extends MY_Model
 
   }
 
-  function get_user_priviledges(){
+  function get_user_permissions($role_id){    
+ 
+      $role_permission_array = array();
 
-    $user_id = $this->session->user_id;
+      // Get role permissions for the role
+      $this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));
+      //$this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));    
+      
+      $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
+      $this->db->join('permission_label','permission_label.permission_label_id=permission.fk_permission_label_id');
+      $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+  
+      $role_permissions_object = $this->db->get_where('role_permission',
+      array('fk_role_id'=>$role_id,'role_permission_is_active'=>1));
+  
+      // Build the $role_permission_array if $role_permissions_object is not empty
+  
+        if($role_permissions_object->num_rows() > 0){
+  
+          $role_permissions = $role_permissions_object->result_object();
+  
+          foreach($role_permissions as $row){
+              $role_permission_array[$row->menu_derivative_controller][$row->permission_label_name] = $row->permission_name;
+          }
+        
+        }
+  
+        return $role_permission_array;
+  }
 
-    //Get current/logged in user priviledges
-    $this->db->join('user_access_level','user_access_level.user_access_level_id=user_priviledge.user_access_level_id');
-    $arr = $this->db->get_where('user_priviledge',array('user_id'=>$user_id))->result_object();
+  function perms($role_id = 1){
+      $permission = array();
 
-    $user_session_priviledges = array_column($arr,'controller_method');
+      $permission['Center']['create'][] = 'add_center';
+      $permission['Center']['read'][] = 'show_center';
+      $permission['Center']['update'][] = 'edit_center';
+      $permission['Center']['update'][] = 'approve_center';
+      $permission['Center']['update'][] = 'decline_center';
+      $permission['Center']['delete'][] = 'delete_center';
 
-    $this->session->set_userdata('user_priviledges',$user_session_priviledges);
-    //return $user_session_priviledges;
+      $permission['Approval']['read'][] = 'add_approval';
+
+      $permission['Role_permission']['read'][] = 'add_role_permission';
+
+      $permission['Role']['read'][] = 'add_role_permission';
+
+      $permission['Permission']['read'][] = 'add_role_permission';
+    
+      return $permission;
+
+  }
+
+  function check_role_has_permissions($active_controller,$permission_label){
+      $permission = $this->session->role_permissions;
+
+      $has_permission = false;
+
+      if( array_key_exists($active_controller,$permission) && 
+          array_key_exists($permission_label,$permission[$active_controller])
+        ){
+          $has_permission = true;
+        } 
+  
+       return $has_permission; 
   }
 
 }
