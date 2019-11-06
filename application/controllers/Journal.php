@@ -31,7 +31,7 @@ class Journal extends MY_Controller
     return "Journal";
   }
 
-  function result(){
+  function result($id = 0){
     return $this->db->get('funder')->result_array();
   }
 

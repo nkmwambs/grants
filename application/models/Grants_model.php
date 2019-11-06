@@ -19,8 +19,19 @@ class Grants_model extends CI_Model
 
   }
 
-  function edit(){
+  function edit($id){
 
+    $post_array = $this->input->post();
+
+    extract($post_array);
+    $id = hash_id($id,'decode');
+    $data = $header;
+    //print_r($header);
+    //exit();
+    $this->db->where(array($this->controller.'_id'=>$id));
+    $this->db->update($this->controller,$data);
+
+    echo "Update completed";
   }
 
   function add(){

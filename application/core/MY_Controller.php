@@ -39,15 +39,16 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   }
 
 
-  function result(){
+  function result($id = 0){
 
     $action = $this->action.'_output';
 
     $lib = $this->current_library;
 
     if($this->input->post()){
-
-      if($this->id !== null){
+      if($id > 0){
+        $this->$lib->$action($id);
+      }elseif($this->id !== null){
         $this->$lib->$action($this->id);
       }else{
         $this->$lib->$action();
@@ -85,9 +86,9 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   // A specific controller can override crud method
 
-  function crud_views(){
+  function crud_views($id = 0){
 
-    $result = $this->result();
+    $result = $this->result($id);
 
     // Page name, Page title and views_dir can be overrode in a controller
     $page_data['page_name'] = $this->page_name();
@@ -110,8 +111,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->crud_views();
   }
 
-  function edit(){
-    $this->crud_views();
+  function edit($id){
+    $this->crud_views($id);
   }
 
 

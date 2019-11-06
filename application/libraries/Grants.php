@@ -1048,18 +1048,18 @@ function multi_form_add_output($table_name = ""){
  * 
  * @return array
  */
-function edit_output($table_name = ""){
+function edit_output($id = ""){
 
-  $table = $table_name == ""?$this->controller:$table_name;
+  $table = $this->controller;
 
   if($this->CI->input->post()){
     //$this->CI->grants_model->add($this->CI->input->post());
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'edit')){
-      $this->CI->$model->edit();
+      $this->CI->$model->edit($id);
     }else{
-      $this->CI->grants_model->edit();
+      $this->CI->grants_model->edit($id);
     }
   }else{
     $this->mandatory_fields($table);

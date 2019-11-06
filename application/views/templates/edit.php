@@ -18,7 +18,7 @@ extract($result);
 			
             <div class="panel-body">
 
-              <?php echo form_open(base_url().$this->controller.'/edit' , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
+              <?php echo form_open(base_url().$this->controller.'/edit/'.$this->uri->segment(3,0) , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 
                   foreach ($keys as $column => $value) {
 
@@ -55,8 +55,8 @@ extract($result);
 
                  <div class="form-group">
                    <div class="col-xs-12" style="text-align:center;">
-                     <button class="btn btn-default save"><?=get_phrase('edit');?></button>
-                     <button class="btn btn-default save_new"><?=get_phrase('edit_and_continue');?></button>
+                     <button class="btn btn-default edit"><?=get_phrase('edit');?></button>
+                     <button class="btn btn-default edit_continue back"><?=get_phrase('edit_and_continue');?></button>
                    </div>
                  </div>
                </form>  
@@ -64,3 +64,39 @@ extract($result);
       </div>
     </div>
 </div>
+
+<script>
+$(".edit, .edit_continue").on('click',function(ev){
+  pre_record_post();
+
+  var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
+
+  var data = $(this).closest('form').serializeArray();
+
+  $.ajax({
+    url:url,
+    data:data,
+    type:"POST",
+    beforeSend:function(){
+
+    },
+    success:function(response){
+      alert(response);
+
+      if($(this).hasClass('back')){
+			  window.history.back(1);        
+      } else {
+        window.location.reload();
+      }
+      on_record_post();
+    },
+    error:function(){
+
+    }
+  });
+
+  post_record_post();
+  ev.preventDefault();
+});
+
+</script>
