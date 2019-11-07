@@ -22,4 +22,7 @@ $config['track_prefix_permission'] = 'PEM';
 $config['track_prefix_role'] = 'ROL';
 $config['track_prefix_role_permission'] = 'RPM';
 $config['track_prefix_permission_label'] = 'PBL';
+$config['track_prefix_user'] = 'USR';
+$config['track_prefix_user_detail'] = 'USD';
+$config['track_prefix_user_setting'] = 'USS';
 

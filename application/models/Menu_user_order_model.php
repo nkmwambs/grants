@@ -29,7 +29,7 @@ class Menu_user_order_model extends MY_Model implements CrudModelInterface, Tabl
   }
 
   function lookup_tables(){
-    return array('menu');
+    return array('menu','user');
   }
 
   function detail_tables(){
