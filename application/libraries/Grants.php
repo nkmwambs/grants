@@ -707,7 +707,7 @@ function update_query_result_for_fields_changed_to_select_type(String $table, Ar
     foreach($query_result as $index => $row){
 
       foreach($changed_fields as $changed_field){
-        if(array_key_exists($changed_field,$row)){
+        if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
           $query_result[$index][$changed_field] = $this->set_field_type[$changed_field]['options'][$row[$changed_field]];
         }
       }
