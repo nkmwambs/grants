@@ -22,5 +22,14 @@ class Menu_user_order_library extends Grants
 
   }
 
+  function change_field_type(){
+    $change_field_type = array();
+
+    $change_field_type['menu_user_order_priority_item']['field_type'] = 'select';
+    $change_field_type['menu_user_order_priority_item']['options'] = array(get_phrase('collapse'),get_phrase('expanded'));
+
+    return $change_field_type;
+  }
+
 
 }
