@@ -161,3 +161,13 @@ if( ! function_exists('create_breadcrumb') ){
 		return $string;
 	}
 }
+
+
+if(! function_exists('record_prefix')){
+	function record_prefix($string){
+		$lead_string = substr($string,0,2);
+		$trail_string = substr($string,-2,2);
+		
+		return strtoupper($lead_string.$trail_string);
+	}
+}

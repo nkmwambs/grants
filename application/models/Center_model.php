@@ -22,7 +22,7 @@ class Center_model extends MY_Model implements CrudModelInterface, TableRelation
   function index(){}
 
   public function lookup_tables(){
-
+    return array('approval','status');
   }
 
   public function detail_tables(){
@@ -53,7 +53,7 @@ class Center_model extends MY_Model implements CrudModelInterface, TableRelation
 
   public function detail_multi_form_add_hidden_columns(){}
 
-  function detail_list(){}
+  //function detail_list_query(){}
 
   function master_view(){}
 

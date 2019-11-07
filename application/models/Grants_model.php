@@ -78,7 +78,7 @@ class Grants_model extends CI_Model
 
     //if($header_record_requires_approval && $approval_id == 0){
 
-      $approval_random = $this->config->item('track_prefix_approval').'-'.rand(1000,90000);
+      $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
       $approval['approval_track_number'] = $approval_random;
       $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
       $approval['approval_created_by'] = $this->session->user_id;
@@ -100,7 +100,7 @@ class Grants_model extends CI_Model
     $header_columns = array();
 
     // Insert the header record. Use the $approval_id to insert into the fk_approval_id field
-    $header_random = $this->config->item('track_prefix_'.$this->controller).'-'.rand(1000,90000);
+    $header_random = record_prefix($this->controller).'-'.rand(1000,90000);
     $header_columns[$this->controller.'_track_number'] = $header_random;
     $header_columns[$this->controller.'_name'] = ucfirst($this->controller).' # '.$header_random;
 
@@ -150,7 +150,7 @@ class Grants_model extends CI_Model
           }
           $detail_columns[$i][$column] = $values[$i];
 
-          $detail_random = $this->config->item('track_prefix_'.$this->controller.'_detail').'-'.rand(1000,90000);
+          $detail_random = record_prefix($this->controller.'_detail').'-'.rand(1000,90000);
           $detail_columns[$i][$this->controller.'_detail_track_number'] = $detail_random;
           $detail_columns[$i]['fk_'.$this->controller.'_id'] = $header_id;
 
@@ -438,6 +438,7 @@ class Grants_model extends CI_Model
   function detail_list_query($table){
 
     $lookup_tables = $this->grants->lookup_tables($table);
+    //echo $table.'</br>';
     //print_r($lookup_tables);
     //exit();
     // Run column selector
@@ -499,13 +500,13 @@ class Grants_model extends CI_Model
       $data = (array)$this->db->get_where($table,array($table.'_id'=> hash_id($this->uri->segment(3,0),'decode') ) )->row();
 
       // Get the name of the record creator
-      $created_by = $data[$table.'_created_by'] >= 1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
+      $created_by = $data[$table.'_created_by'] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
       array('user_id'=>$data[$table.'_created_by']))->row()->user_name:get_phrase('creator_user_not_set');
 
       $data['created_by'] = $created_by;
 
       //Get the name of the last record modifier
-      $last_modified_by = $data[$table.'_last_modified_by'] >= 1? $this->db->select('CONCAT(`first_name`," ",`last_name`) as user_name')->get_where('user',
+      $last_modified_by = $data[$table.'_last_modified_by'] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
       array('user_id'=>$data[$table.'_last_modified_by']))->row()->user_name:get_phrase('modifier_user_not_set');
 
       $data['last_modified_by'] = $last_modified_by;

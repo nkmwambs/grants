@@ -864,7 +864,7 @@ function mandatory_fields(String $table): Void{
 function detail_list_query(String $table): Array {
   $model = $this->load_detail_model($table);
 
-  if(method_exists($this->CI->$model,'detail_list_query_result') && 
+  if(method_exists($this->CI->$model,'detail_list_query') && 
       is_array($this->CI->$model->detail_list_query()) &&
       count($this->CI->$model->detail_list_query()) > 0
     ){
