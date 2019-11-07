@@ -25,7 +25,46 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (96,	'APR-5537',	'Approval Ticket # APR-5537',	20,	1,	'2019-11-03',	'2019-11-03 19:53:00',	1),
 (97,	'APR-5538',	'Approval Ticket # APR-5538',	20,	1,	'2019-11-03',	'2019-11-03 19:53:00',	1),
 (102,	'APR-32167',	'Approval Ticket # APR-32167',	2,	1,	'2019-11-03',	'2019-11-03 20:28:54',	1),
-(103,	'APR-8944',	'Approval Ticket # APR-8944',	3,	1,	'2019-11-03',	'2019-11-03 20:30:16',	1);
+(103,	'APR-8944',	'Approval Ticket # APR-8944',	3,	1,	'2019-11-03',	'2019-11-03 20:30:16',	1),
+(104,	'APR-27696',	'Approval Ticket # APR-27696',	4,	1,	'2019-11-04',	'2019-11-04 13:28:25',	1),
+(105,	'APR-11482',	'Approval Ticket # APR-11482',	21,	1,	'2019-11-04',	'2019-11-04 17:09:19',	1),
+(106,	'APR-65403',	'Approval Ticket # APR-65403',	5,	1,	'2019-11-05',	'2019-11-05 12:48:41',	1),
+(107,	'APR-64720',	'Approval Ticket # APR-64720',	13,	1,	'2019-11-05',	'2019-11-05 12:51:05',	1),
+(108,	'APR-58046',	'Approval Ticket # APR-58046',	5,	1,	'2019-11-05',	'2019-11-05 12:53:09',	1),
+(109,	'APR-86074',	'Approval Ticket # APR-86074',	5,	1,	'2019-11-05',	'2019-11-05 12:54:38',	1),
+(110,	'APR-48084',	'Approval Ticket # APR-48084',	13,	1,	'2019-11-05',	'2019-11-05 12:55:41',	1),
+(111,	'APR-52319',	'Approval Ticket # APR-52319',	22,	1,	'2019-11-06',	'2019-11-06 06:34:25',	1),
+(112,	'APR-46907',	'Approval Ticket # APR-46907',	22,	1,	'2019-11-06',	'2019-11-06 06:40:40',	1),
+(113,	'APR-44071',	'Approval Ticket # APR-44071',	22,	1,	'2019-11-06',	'2019-11-06 06:40:58',	1),
+(114,	'APR-15040',	'Approval Ticket # APR-15040',	22,	1,	'2019-11-06',	'2019-11-06 06:41:30',	1),
+(115,	'APR-71521',	'Approval Ticket # APR-71521',	22,	1,	'2019-11-06',	'2019-11-06 06:41:51',	1),
+(116,	'APR-15468',	'Approval Ticket # APR-15468',	22,	1,	'2019-11-06',	'2019-11-06 06:43:25',	1),
+(117,	'APR-67892',	'Approval Ticket # APR-67892',	22,	1,	'2019-11-06',	'2019-11-06 06:43:48',	1),
+(118,	'APR-65393',	'Approval Ticket # APR-65393',	23,	1,	'2019-11-06',	'2019-11-06 06:49:29',	1),
+(119,	'APR-37375',	'Approval Ticket # APR-37375',	23,	1,	'2019-11-06',	'2019-11-06 06:51:01',	1),
+(120,	'APR-25982',	'Approval Ticket # APR-25982',	25,	1,	'2019-11-06',	'2019-11-06 12:48:54',	1),
+(121,	'APR-78526',	'Approval Ticket # APR-78526',	25,	1,	'2019-11-06',	'2019-11-06 12:51:56',	1),
+(122,	'APR-75858',	'Approval Ticket # APR-75858',	25,	1,	'2019-11-06',	'2019-11-06 12:52:25',	1),
+(123,	'APR-82676',	'Approval Ticket # APR-82676',	25,	1,	'2019-11-06',	'2019-11-06 12:52:43',	1),
+(124,	'APR-56746',	'Approval Ticket # APR-56746',	22,	1,	'2019-11-06',	'2019-11-06 12:59:59',	1),
+(125,	'APR-69540',	'Approval Ticket # APR-69540',	22,	1,	'2019-11-06',	'2019-11-06 13:03:31',	1),
+(126,	'APR-21280',	'Approval Ticket # APR-21280',	22,	1,	'2019-11-06',	'2019-11-06 13:04:53',	1),
+(127,	'APR-50717',	'Approval Ticket # APR-50717',	22,	1,	'2019-11-06',	'2019-11-06 13:05:22',	1),
+(128,	'APR-2948',	'Approval Ticket # APR-2948',	22,	1,	'2019-11-06',	'2019-11-06 13:06:00',	1),
+(129,	'APR-36452',	'Approval Ticket # APR-36452',	23,	1,	'2019-11-06',	'2019-11-06 13:08:26',	1),
+(130,	'APR-87712',	'Approval Ticket # APR-87712',	23,	1,	'2019-11-06',	'2019-11-06 13:09:19',	1),
+(131,	'APR-40379',	'Approval Ticket # APR-40379',	23,	1,	'2019-11-06',	'2019-11-06 14:50:06',	1),
+(132,	'APR-28331',	'Approval Ticket # APR-28331',	23,	1,	'2019-11-06',	'2019-11-06 14:50:25',	1),
+(133,	'APR-8605',	'Approval Ticket # APR-8605',	22,	1,	'2019-11-06',	'2019-11-06 15:19:26',	1),
+(134,	'APR-9277',	'Approval Ticket # APR-9277',	22,	1,	'2019-11-06',	'2019-11-06 15:19:54',	1),
+(135,	'APR-76958',	'Approval Ticket # APR-76958',	22,	1,	'2019-11-06',	'2019-11-06 15:20:32',	1),
+(136,	'APR-52589',	'Approval Ticket # APR-52589',	23,	1,	'2019-11-06',	'2019-11-06 15:21:17',	1),
+(137,	'APR-18856',	'Approval Ticket # APR-18856',	23,	1,	'2019-11-06',	'2019-11-06 15:21:42',	1),
+(138,	'APR-14664',	'Approval Ticket # APR-14664',	23,	1,	'2019-11-06',	'2019-11-06 15:22:04',	1),
+(139,	'APR-4457',	'Approval Ticket # APR-4457',	22,	1,	'2019-11-06',	'2019-11-06 15:23:54',	1),
+(140,	'APR-24345',	'Approval Ticket # APR-24345',	23,	1,	'2019-11-06',	'2019-11-06 15:24:32',	1),
+(141,	'APR-15537',	'Approval Ticket # APR-15537',	22,	1,	'2019-11-06',	'2019-11-06 15:44:48',	1),
+(142,	'APR-73181',	'Approval Ticket # APR-73181',	23,	1,	'2019-11-06',	'2019-11-06 15:45:37',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -67,7 +106,13 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_name`, `approve_ite
 (14,	'voucher_detail',	0,	'2019-10-22',	1,	'2019-10-22 12:41:52',	1),
 (18,	'project',	0,	'2019-10-25',	1,	'2019-10-24 22:22:18',	1),
 (19,	'project_allocation',	0,	'2019-11-03',	1,	'2019-11-03 10:36:29',	1),
-(20,	'center',	0,	'2019-11-03',	1,	'2019-11-03 11:14:26',	1);
+(20,	'center',	0,	'2019-11-03',	1,	'2019-11-03 11:14:26',	1),
+(21,	'role',	0,	'2019-11-04',	1,	'2019-11-04 17:06:04',	1),
+(22,	'permission',	0,	'2019-11-04',	1,	'2019-11-04 17:06:51',	1),
+(23,	'role_permission',	0,	'2019-11-04',	1,	'2019-11-04 17:17:01',	1),
+(24,	'dashboard',	0,	'2019-11-05',	1,	'2019-11-05 17:03:44',	1),
+(25,	'permission_label',	0,	'2019-11-06',	1,	'2019-11-06 12:48:45',	1),
+(26,	'bank',	0,	'2019-11-06',	1,	'2019-11-06 15:26:32',	1);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -78,13 +123,15 @@ CREATE TABLE `bank` (
   `bank_is_active` int(5) DEFAULT NULL,
   `bank_created_date` date DEFAULT NULL,
   `bank_created_by` int(100) DEFAULT NULL,
-  `bank_last_modified_date` date DEFAULT NULL,
+  `bank_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `bank_last_modified_by` int(100) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the banks for centers';
 
-INSERT INTO `bank` (`bank_id`, `bank_track_number`, `bank_name`, `bank_swift_code`, `bank_is_active`, `bank_created_date`, `bank_created_by`, `bank_last_modified_date`, `bank_last_modified_by`) VALUES
-(1,	'BAK-87365',	'Commercial Bank of Kenya',	'2365',	NULL,	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `bank` (`bank_id`, `bank_track_number`, `bank_name`, `bank_swift_code`, `bank_is_active`, `bank_created_date`, `bank_created_by`, `bank_last_modified_date`, `bank_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'BAK-87365',	'Commercial Bank of Kenya',	'2365',	1,	NULL,	NULL,	'2019-11-06 15:28:30',	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank_branch`;
 CREATE TABLE `bank_branch` (
@@ -128,6 +175,8 @@ CREATE TABLE `budget` (
   CONSTRAINT `fk_budget_center1` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the budget items by activity';
 
+INSERT INTO `budget` (`budget_id`, `budget_track_number`, `budget_name`, `fk_center_id`, `fk_approval_id`, `fk_status_id`, `budget_year`, `budget_created_by`, `budget_created_date`, `budget_last_modified_by`, `budget_last_modified_date`) VALUES
+(1,	'BGT-35787',	'KE0240 Annual Budget',	1,	104,	23,	2019,	1,	'2019-11-04',	1,	NULL);
 
 DROP TABLE IF EXISTS `budget_item`;
 CREATE TABLE `budget_item` (
@@ -158,6 +207,9 @@ CREATE TABLE `budget_item` (
   CONSTRAINT `fk_budget_detail_id_expense_account_id` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This hold activties and their budgeted cost';
 
+INSERT INTO `budget_item` (`budget_item_id`, `budget_item_track_number`, `budget_item_name`, `fk_budget_id`, `fk_expense_account_id`, `budget_item_description`, `fk_status_id`, `fk_approval_id`, `fk_project_allocation_id`, `budget_item_note`, `budget_item_created_by`, `budget_item_last_modified_by`, `budget_item_created_date`, `budget_item_last_modified_date`) VALUES
+(1,	'BGI-31994',	'Budget_item # BGI-31994',	1,	2,	'School Fees',	30,	106,	1,	'These are school Fees for 30 children',	1,	1,	'2019-11-05',	NULL),
+(3,	'BGI-83348',	'Budget_item # BGI-83348',	1,	1,	'School Uniform',	30,	109,	1,	'School Uniform',	1,	1,	'2019-11-05',	NULL);
 
 DROP TABLE IF EXISTS `budget_item_detail`;
 CREATE TABLE `budget_item_detail` (
@@ -182,6 +234,9 @@ CREATE TABLE `budget_item_detail` (
   CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
+INSERT INTO `budget_item_detail` (`budget_item_detail_id`, `budget_item_detail_track_number`, `budget_item_detail_name`, `fk_budget_item_id`, `fk_month_id`, `fk_status_id`, `fk_approval_id`, `budget_item_detail_amount`, `budget_item_detail_created_date`, `budget_item_detail_created_by`, `budget_item_detail_last_modified_by`, `budget_item_detail_last_modified_date`) VALUES
+(2,	'BTS-49381',	'Test',	1,	1,	38,	107,	14500.00,	'2019-11-05',	1,	1,	NULL),
+(5,	'BTS-19507',	'School Uniform for Girls',	3,	2,	38,	110,	165000.00,	'2019-11-05',	1,	1,	NULL);
 
 DROP TABLE IF EXISTS `center`;
 CREATE TABLE `center` (
@@ -377,6 +432,12 @@ DROP TABLE IF EXISTS `dashboard`;
 CREATE TABLE `dashboard` (
   `dashboard_id` int(100) NOT NULL AUTO_INCREMENT,
   `dashboard_name` varchar(100) DEFAULT NULL,
+  `dashboard_created_date` date DEFAULT NULL,
+  `dashboard_created_by` int(100) DEFAULT NULL,
+  `dashboard_last_modified_by` int(100) DEFAULT NULL,
+  `dashboard_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`dashboard_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -529,6 +590,7 @@ CREATE TABLE `menu` (
   `menu_id` int(100) NOT NULL AUTO_INCREMENT,
   `menu_name` varchar(100) DEFAULT NULL,
   `menu_derivative_controller` varchar(100) DEFAULT NULL,
+  `menu_is_active` int(5) NOT NULL DEFAULT '1',
   `menu_created_date` date DEFAULT NULL,
   `menu_last_modified_date` date DEFAULT NULL,
   `menu_created_by` int(100) DEFAULT NULL,
@@ -536,19 +598,23 @@ CREATE TABLE `menu` (
   PRIMARY KEY (`menu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_created_date`, `menu_last_modified_date`, `menu_created_by`, `menu_last_modified_by`) VALUES
-(48,	'Center',	'Center',	NULL,	NULL,	NULL,	NULL),
-(49,	'Approval',	'Approval',	NULL,	NULL,	NULL,	NULL),
-(50,	'Bank',	'Bank',	NULL,	NULL,	NULL,	NULL),
-(51,	'Budget',	'Budget',	NULL,	NULL,	NULL,	NULL),
-(52,	'Workplan',	'Workplan',	NULL,	NULL,	NULL,	NULL),
-(55,	'Voucher',	'Voucher',	NULL,	NULL,	NULL,	NULL),
-(56,	'Dashboard',	'Dashboard',	NULL,	NULL,	NULL,	NULL),
-(58,	'Funder',	'Funder',	NULL,	NULL,	NULL,	NULL),
-(59,	'Journal',	'Journal',	NULL,	NULL,	NULL,	NULL),
-(60,	'Language',	'Language',	NULL,	NULL,	NULL,	NULL),
-(62,	'Project_allocation',	'Project_allocation',	NULL,	NULL,	NULL,	NULL),
-(63,	'Request',	'Request',	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_is_active`, `menu_created_date`, `menu_last_modified_date`, `menu_created_by`, `menu_last_modified_by`) VALUES
+(84,	'Approval',	'Approval',	1,	NULL,	NULL,	NULL,	NULL),
+(85,	'Bank',	'Bank',	1,	NULL,	NULL,	NULL,	NULL),
+(86,	'Budget',	'Budget',	1,	NULL,	NULL,	NULL,	NULL),
+(87,	'Center',	'Center',	1,	NULL,	NULL,	NULL,	NULL),
+(88,	'Dashboard',	'Dashboard',	1,	NULL,	NULL,	NULL,	NULL),
+(89,	'Funder',	'Funder',	1,	NULL,	NULL,	NULL,	NULL),
+(90,	'Journal',	'Journal',	1,	NULL,	NULL,	NULL,	NULL),
+(91,	'Language',	'Language',	1,	NULL,	NULL,	NULL,	NULL),
+(92,	'Permission',	'Permission',	1,	NULL,	NULL,	NULL,	NULL),
+(93,	'Permission_label',	'Permission_label',	1,	NULL,	NULL,	NULL,	NULL),
+(94,	'Project_allocation',	'Project_allocation',	1,	NULL,	NULL,	NULL,	NULL),
+(95,	'Request',	'Request',	1,	NULL,	NULL,	NULL,	NULL),
+(96,	'Role',	'Role',	1,	NULL,	NULL,	NULL,	NULL),
+(97,	'Role_permission',	'Role_permission',	1,	NULL,	NULL,	NULL,	NULL),
+(98,	'Voucher',	'Voucher',	1,	NULL,	NULL,	NULL,	NULL),
+(99,	'Workplan',	'Workplan',	1,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -568,30 +634,22 @@ CREATE TABLE `menu_user_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`, `menu_user_order_is_active`, `menu_user_order_level`, `menu_user_order_priority_item`, `menu_user_order_created_date`, `menu_user_order_last_modified_date`, `menu_user_order_created_by`, `menu_user_order_last_modified_by`) VALUES
-(49,	1,	48,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
-(50,	1,	49,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
-(51,	1,	50,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
-(52,	1,	51,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
-(53,	1,	52,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
-(56,	1,	55,	1,	12,	1,	NULL,	NULL,	NULL,	NULL),
-(57,	1,	56,	1,	13,	1,	NULL,	NULL,	NULL,	NULL),
-(59,	1,	58,	1,	15,	1,	NULL,	NULL,	NULL,	NULL),
-(60,	1,	59,	1,	16,	1,	NULL,	NULL,	NULL,	NULL),
-(61,	1,	60,	1,	17,	0,	NULL,	NULL,	NULL,	NULL),
-(63,	1,	62,	1,	19,	1,	NULL,	NULL,	NULL,	NULL),
-(64,	1,	63,	1,	20,	1,	NULL,	NULL,	NULL,	NULL),
-(68,	NULL,	48,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
-(69,	NULL,	49,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
-(70,	NULL,	50,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
-(71,	NULL,	51,	1,	4,	1,	NULL,	NULL,	NULL,	NULL),
-(72,	NULL,	52,	1,	5,	1,	NULL,	NULL,	NULL,	NULL),
-(73,	NULL,	55,	1,	6,	1,	NULL,	NULL,	NULL,	NULL),
-(74,	NULL,	56,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
-(75,	NULL,	58,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
-(76,	NULL,	59,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
-(77,	NULL,	60,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
-(78,	NULL,	62,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
-(79,	NULL,	63,	1,	12,	0,	NULL,	NULL,	NULL,	NULL);
+(100,	1,	84,	1,	1,	1,	NULL,	NULL,	NULL,	NULL),
+(101,	1,	85,	1,	2,	1,	NULL,	NULL,	NULL,	NULL),
+(102,	1,	86,	1,	3,	1,	NULL,	NULL,	NULL,	NULL),
+(103,	1,	87,	1,	4,	1,	NULL,	NULL,	NULL,	NULL),
+(104,	1,	88,	1,	5,	1,	NULL,	NULL,	NULL,	NULL),
+(105,	1,	89,	1,	6,	1,	NULL,	NULL,	NULL,	NULL),
+(106,	1,	90,	1,	7,	1,	NULL,	NULL,	NULL,	NULL),
+(107,	1,	91,	1,	8,	1,	NULL,	NULL,	NULL,	NULL),
+(108,	1,	92,	1,	9,	1,	NULL,	NULL,	NULL,	NULL),
+(109,	1,	93,	1,	10,	1,	NULL,	NULL,	NULL,	NULL),
+(110,	1,	94,	1,	11,	1,	NULL,	NULL,	NULL,	NULL),
+(111,	1,	95,	1,	12,	0,	NULL,	NULL,	NULL,	NULL),
+(112,	1,	96,	1,	13,	0,	NULL,	NULL,	NULL,	NULL),
+(113,	1,	97,	1,	14,	0,	NULL,	NULL,	NULL,	NULL),
+(114,	1,	98,	1,	15,	0,	NULL,	NULL,	NULL,	NULL),
+(115,	1,	99,	1,	16,	0,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -647,6 +705,67 @@ CREATE TABLE `month` (
 INSERT INTO `month` (`month_id`, `month_track_number`, `month_number`, `month_name`, `fk_approval`, `fk_status_id`, `month_created_by`, `month_last_modified_by`, `month_created_date`, `month_last_modified_date`) VALUES
 (1,	'',	1,	'January',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00'),
 (2,	'',	2,	'February',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00');
+
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE `permission` (
+  `permission_id` int(11) NOT NULL AUTO_INCREMENT,
+  `permission_track_number` varchar(100) NOT NULL,
+  `permission_name` varchar(100) NOT NULL,
+  `permission_description` longtext NOT NULL,
+  `permission_is_active` int(5) NOT NULL,
+  `fk_permission_label_id` int(5) NOT NULL,
+  `fk_menu_id` int(11) DEFAULT NULL,
+  `fk_approval_id` int(11) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  `permission_created_date` date DEFAULT NULL,
+  `permission_created_by` int(100) DEFAULT NULL,
+  `permission_deleted_at` date DEFAULT NULL,
+  `permission_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `permission_last_modified_by` int(100) DEFAULT NULL,
+  PRIMARY KEY (`permission_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `permission` (`permission_id`, `permission_track_number`, `permission_name`, `permission_description`, `permission_is_active`, `fk_permission_label_id`, `fk_menu_id`, `fk_approval_id`, `fk_status_id`, `permission_created_date`, `permission_created_by`, `permission_deleted_at`, `permission_last_modified_date`, `permission_last_modified_by`) VALUES
+(1,	'PEM-67237',	'add_bank',	'Adding a bank record',	1,	1,	85,	111,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:40:40',	1),
+(2,	'PEM-76389',	'delete_bank',	'Delete a bank record',	1,	4,	85,	112,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:40:40',	1),
+(3,	'PEM-17597',	'edit_bank',	'Edit a bank record',	1,	3,	85,	113,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:40:58',	1),
+(4,	'PEM-16315',	'approve_bank',	'Approve a bank record',	1,	3,	85,	114,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:41:30',	1),
+(5,	'PEM-18704',	'decline_bank',	'Decline a bank record',	1,	3,	85,	115,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:41:51',	1),
+(6,	'PEM-40807',	'add_budget',	'Add a budget record',	1,	1,	70,	116,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:43:25',	1),
+(7,	'PEM-8842',	'delete_budget',	'Delete a budget record',	1,	4,	70,	117,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 06:43:48',	1),
+(8,	'PEM-73661',	'create_center',	'Creating a center record',	1,	1,	87,	124,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 12:59:59',	1),
+(9,	'PEM-48190',	'delete_center',	'Deleting a center record',	1,	4,	87,	125,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 13:03:31',	1),
+(10,	'PEM-42646',	'show_center',	'Show a list of centers',	1,	2,	87,	126,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 13:04:53',	1),
+(11,	'PEM-43210',	'approve_center',	'Approve a new center',	1,	3,	87,	127,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 13:05:22',	1),
+(12,	'PEM-21026',	'decline_center',	'Decline a new or existing center',	1,	3,	87,	128,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 13:06:00',	1),
+(13,	'PEM-24767',	'show_roles',	'Listing of roles',	1,	2,	96,	133,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 15:19:26',	1),
+(14,	'PEM-21918',	'show_permissions',	'List of permissions',	1,	2,	92,	134,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 15:19:54',	1),
+(15,	'PEM-47235',	'show_role_permission',	'List all role permissions',	1,	2,	97,	135,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 15:20:32',	1),
+(16,	'PEM-13934',	'show_bank',	'Listing of banks',	1,	2,	85,	139,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 15:23:54',	1),
+(17,	'PEM-84197',	'show_vouchers',	'List all vouchers',	1,	2,	98,	141,	47,	'2019-11-06',	1,	NULL,	'2019-11-06 15:44:48',	1);
+
+DROP TABLE IF EXISTS `permission_label`;
+CREATE TABLE `permission_label` (
+  `permission_label_id` int(100) NOT NULL AUTO_INCREMENT,
+  `permission_label_track_number` varchar(100) NOT NULL,
+  `permission_label_name` varchar(100) NOT NULL,
+  `permission_label_description` varchar(100) NOT NULL,
+  `fk_approval_id` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  `permission_label_created_date` date NOT NULL,
+  `permission_label_created_by` int(100) NOT NULL,
+  `permission_label_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `permission_label_last_modified_by` int(100) NOT NULL,
+  PRIMARY KEY (`permission_label_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `permission_label` (`permission_label_id`, `permission_label_track_number`, `permission_label_name`, `permission_label_description`, `fk_approval_id`, `fk_status_id`, `permission_label_created_date`, `permission_label_created_by`, `permission_label_last_modified_date`, `permission_label_last_modified_by`) VALUES
+(1,	'PBL-56069',	'create',	'Mark all permissions used to create a new record',	120,	50,	'2019-11-06',	1,	'2019-11-06 12:48:54',	1),
+(2,	'PBL-32200',	'read',	'Mark all permissions used to read a record',	121,	50,	'2019-11-06',	1,	'2019-11-06 12:51:56',	1),
+(3,	'PBL-37242',	'update',	'Mark all permissions for updating a record',	122,	50,	'2019-11-06',	1,	'2019-11-06 12:52:25',	1),
+(4,	'PBL-14166',	'delete',	'Mark all permissions used to delete a record',	123,	50,	'2019-11-06',	1,	'2019-11-06 12:52:43',	1);
 
 DROP TABLE IF EXISTS `phprbac_permissions`;
 CREATE TABLE `phprbac_permissions` (
@@ -846,29 +965,64 @@ CREATE TABLE `request_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
-(102,	'RQD-33499',	81,	'Test',	17,	1800.00,	3060.00,	1,	1,	1,	NULL,	'2019-11-03',	1,	1,	'2019-11-03 20:30:16');
+(102,	'RQD-33499',	81,	'Testing this',	17,	1800.00,	3060.00,	1,	1,	1,	103,	'2019-11-03',	1,	1,	'2019-11-05 18:00:55');
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `role_id` int(100) NOT NULL AUTO_INCREMENT,
   `role_track_number` varchar(100) DEFAULT NULL,
   `role_name` varchar(100) DEFAULT NULL,
+  `role_description` longtext,
+  `role_is_active` int(5) DEFAULT NULL,
   `role_created_by` int(100) DEFAULT NULL,
   `role_created_date` date DEFAULT NULL,
-  `role_last_modified_date` date DEFAULT NULL,
+  `role_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role_last_modified_by` varchar(45) DEFAULT NULL,
   `role_deleted_at` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `role` (`role_id`, `role_track_number`, `role_name`, `role_created_by`, `role_created_date`, `role_last_modified_date`, `role_last_modified_by`, `role_deleted_at`) VALUES
-(1,	'ROL-65362',	'Department Manager',	NULL,	NULL,	NULL,	NULL,	NULL),
-(2,	'ROL-76388',	'M&E Specialist',	NULL,	NULL,	NULL,	NULL,	NULL),
-(3,	'ROL-76899',	'Training Faciliator',	NULL,	NULL,	NULL,	NULL,	NULL),
-(4,	'ROL-57628',	'Finance Director',	NULL,	NULL,	NULL,	NULL,	NULL),
-(5,	'ROL-68638',	'Junior Accountant',	NULL,	NULL,	NULL,	NULL,	NULL),
-(6,	'ROL-57827',	'Senior Accountant',	NULL,	NULL,	NULL,	NULL,	NULL),
-(7,	'ROL-65572',	'Assistant Finance Director',	NULL,	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `role` (`role_id`, `role_track_number`, `role_name`, `role_description`, `role_is_active`, `role_created_by`, `role_created_date`, `role_last_modified_date`, `role_last_modified_by`, `role_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'ROL-65362',	'Department Manager',	'Department Manager',	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(2,	'ROL-76388',	'M&E Specialist',	'M & E Specialist',	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(3,	'ROL-76899',	'Training Faciliator',	'Training Facilitator',	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(4,	'ROL-57628',	'Finance Director',	'Finance Director',	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(5,	'ROL-68638',	'Junior Accountant',	'Junior Accountant',	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(6,	'ROL-57827',	'Senior Accountant',	NULL,	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(7,	'ROL-65572',	'Assistant Finance Director',	NULL,	1,	NULL,	NULL,	'2019-11-06 06:08:14',	NULL,	NULL,	NULL,	NULL),
+(8,	'ROL-25358',	'Store Keeper',	NULL,	1,	1,	'2019-11-04',	'2019-11-06 06:08:14',	'1',	NULL,	105,	46);
+
+DROP TABLE IF EXISTS `role_permission`;
+CREATE TABLE `role_permission` (
+  `role_permission_id` int(100) NOT NULL AUTO_INCREMENT,
+  `role_permission_track_number` varchar(100) NOT NULL,
+  `role_permission_name` varchar(100) NOT NULL,
+  `role_permission_is_active` int(5) NOT NULL,
+  `fk_role_id` int(100) NOT NULL,
+  `fk_permission_id` int(100) NOT NULL,
+  `fk_approval_id` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  `role_permission_created_date` date NOT NULL,
+  `role_permission_created_by` int(100) NOT NULL,
+  `role_permission_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `role_permission_last_modified_by` int(100) NOT NULL,
+  PRIMARY KEY (`role_permission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_number`, `role_permission_name`, `role_permission_is_active`, `fk_role_id`, `fk_permission_id`, `fk_approval_id`, `fk_status_id`, `role_permission_created_date`, `role_permission_created_by`, `role_permission_last_modified_date`, `role_permission_last_modified_by`) VALUES
+(1,	'RPM-44961',	'Add a bank by Finance Director',	1,	4,	1,	118,	48,	'2019-11-06',	1,	'2019-11-06 06:51:01',	1),
+(2,	'RPM-76913',	'Delete a bank by finance director',	1,	4,	2,	119,	48,	'2019-11-06',	1,	'2019-11-06 06:51:01',	1),
+(3,	'RPM-75372',	'Department manager creating a center',	1,	1,	8,	129,	48,	'2019-11-06',	1,	'2019-11-06 13:08:26',	1),
+(4,	'RPM-46216',	'Department Manager listing center',	1,	1,	10,	130,	48,	'2019-11-06',	1,	'2019-11-06 13:09:19',	1),
+(5,	'RPM-48713',	'Adding bank by Head of Department',	1,	1,	1,	131,	48,	'2019-11-06',	1,	'2019-11-06 14:50:06',	1),
+(6,	'RPM-55056',	'Delete a bank by head of department',	1,	1,	2,	132,	48,	'2019-11-06',	1,	'2019-11-06 14:50:25',	1),
+(7,	'RPM-75351',	'List of roles by Department Manager',	1,	1,	13,	136,	48,	'2019-11-06',	1,	'2019-11-06 15:21:17',	1),
+(8,	'RPM-71273',	'List of permissions by department manager',	1,	1,	14,	137,	48,	'2019-11-06',	1,	'2019-11-06 15:21:42',	1),
+(9,	'RPM-27263',	'List of role permissions by department manager',	1,	1,	15,	138,	48,	'2019-11-06',	1,	'2019-11-06 15:22:04',	1),
+(10,	'RPM-11454',	'Department head listing of banks',	1,	1,	16,	140,	48,	'2019-11-06',	1,	'2019-11-06 15:24:32',	1),
+(11,	'RPM-58936',	'Department Manager listing all voucher',	1,	1,	17,	142,	48,	'2019-11-06',	1,	'2019-11-06 15:45:37',	1);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -943,7 +1097,13 @@ INSERT INTO `status` (`status_id`, `status_name`, `status_action_label`, `fk_app
 (39,	'New',	'',	14,	'1',	1,	0,	1,	'2019-10-22',	1,	'2019-10-22 12:40:39',	1),
 (43,	'New',	'',	18,	'1',	1,	0,	1,	'2019-10-25',	1,	'2019-10-24 22:22:18',	1),
 (44,	'New',	'',	19,	'1',	1,	0,	1,	'2019-11-03',	1,	'2019-11-03 10:36:29',	1),
-(45,	'New',	'',	20,	'1',	1,	0,	1,	'2019-11-03',	1,	'2019-11-03 11:14:26',	1);
+(45,	'New',	'',	20,	'1',	1,	0,	1,	'2019-11-03',	1,	'2019-11-03 11:14:26',	1),
+(46,	'New',	'',	21,	'1',	1,	0,	1,	'2019-11-04',	1,	'2019-11-04 17:06:04',	1),
+(47,	'New',	'',	22,	'1',	1,	0,	1,	'2019-11-04',	1,	'2019-11-04 17:06:51',	1),
+(48,	'New',	'',	23,	'1',	1,	0,	1,	'2019-11-04',	1,	'2019-11-04 17:17:01',	1),
+(49,	'New',	'',	24,	'1',	1,	0,	1,	'2019-11-05',	1,	'2019-11-05 17:03:44',	1),
+(50,	'New',	'',	25,	'1',	1,	0,	1,	'2019-11-06',	1,	'2019-11-06 12:48:45',	1),
+(51,	'New',	'',	26,	'1',	1,	0,	1,	'2019-11-06',	1,	'2019-11-06 15:26:32',	1);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -1017,181 +1177,6 @@ CREATE TABLE `translation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `user_id` int(100) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) DEFAULT NULL,
-  `last_name` varchar(100) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `center_group_link_id` int(100) DEFAULT NULL,
-  `is_center_group_manager` int(5) DEFAULT NULL,
-  `language_id` int(100) DEFAULT NULL COMMENT 'User''s default language',
-  `is_active` int(5) DEFAULT '1',
-  `role_id` int(100) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  KEY `fk_user_center_group_link1_idx` (`center_group_link_id`),
-  KEY `fk_user_language1_idx` (`language_id`),
-  KEY `role_id` (`role_id`),
-  CONSTRAINT `fk_user_center_group_link1` FOREIGN KEY (`center_group_link_id`) REFERENCES `center_group_link` (`center_group_link_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_user_language1` FOREIGN KEY (`language_id`) REFERENCES `language` (`language_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT INTO `user` (`user_id`, `first_name`, `last_name`, `email`, `center_group_link_id`, `is_center_group_manager`, `language_id`, `is_active`, `role_id`, `password`) VALUES
-(1,	'Nicodemus',	'Karisa',	'nkmwambs@gmail.com',	NULL,	NULL,	NULL,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e'),
-(2,	'Nicodemus 2',	'Karisa 2',	'nkmwambs2@gmail.com',	NULL,	NULL,	NULL,	1,	2,	'fbdf9989ea636d6b339fd6b85f63e06e'),
-(3,	'Nicodemus 3',	'Karisa 3',	'nkmwambs3@gmail.com',	NULL,	NULL,	NULL,	1,	3,	'fbdf9989ea636d6b339fd6b85f63e06e'),
-(4,	'Nicodemus 4',	'Karisa 4',	'nkmwambs4@gmail.com',	NULL,	NULL,	NULL,	1,	4,	'fbdf9989ea636d6b339fd6b85f63e06e'),
-(5,	'Nicodemus 5',	'Karisa 5',	'nkmwambs5@gmail.com',	NULL,	NULL,	NULL,	1,	5,	'fbdf9989ea636d6b339fd6b85f63e06e'),
-(6,	'Nicodemus 5',	'Karisa 5',	'nkmwambs5@gmail.com',	NULL,	NULL,	NULL,	1,	6,	'fbdf9989ea636d6b339fd6b85f63e06e'),
-(7,	'Nicodemus 7',	'Karisa 7',	'nkmwambs7@gmail.com',	NULL,	NULL,	NULL,	1,	7,	'fbdf9989ea636d6b339fd6b85f63e06e');
-
-DROP TABLE IF EXISTS `user_access_level`;
-CREATE TABLE `user_access_level` (
-  `user_access_level_id` int(11) NOT NULL AUTO_INCREMENT,
-  `controller_method` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `deleted_at` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`user_access_level_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT INTO `user_access_level` (`user_access_level_id`, `controller_method`, `created_date`, `created_by`, `deleted_at`, `last_modified_date`, `last_modified_by`) VALUES
-(1,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(133,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(134,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(135,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(136,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(137,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(138,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(139,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(140,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(141,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(142,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(143,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(144,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(145,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(146,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(147,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(148,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(149,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(150,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(151,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(152,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(153,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(154,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(155,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(156,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(157,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(158,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(159,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(160,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(161,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(162,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(163,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(164,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(165,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(166,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(167,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(168,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(169,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(170,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(171,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(172,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(173,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(174,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(175,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(176,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(177,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(178,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(179,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(180,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(181,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(182,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(183,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(184,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(185,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(186,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(187,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(188,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(189,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(190,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(191,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(192,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(193,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(194,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(195,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(196,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(197,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(198,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(199,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(200,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(201,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(202,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(203,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(204,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(205,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(206,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(207,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(208,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(209,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(210,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(211,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(212,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(213,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(214,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(215,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(216,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(217,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(218,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(219,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(220,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(221,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(222,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(223,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(224,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(225,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(226,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(227,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(228,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(229,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(230,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(231,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(232,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(233,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(234,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(235,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(236,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(237,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(238,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(239,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(240,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(241,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(242,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(243,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(244,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(245,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(246,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(247,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(248,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(249,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(250,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(251,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(252,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(253,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(254,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(255,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(256,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(257,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(258,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(259,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(260,	'my_controller::list',	NULL,	NULL,	NULL,	NULL,	NULL),
-(261,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL),
-(262,	'dashboard::index',	NULL,	NULL,	NULL,	NULL,	NULL);
-
 DROP TABLE IF EXISTS `user_priviledge`;
 CREATE TABLE `user_priviledge` (
   `user_priviledge_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -1204,11 +1189,9 @@ CREATE TABLE `user_priviledge` (
   `last_modified_by` int(100) DEFAULT NULL,
   PRIMARY KEY (`user_priviledge_id`),
   KEY `fk_user_priviledge_user_access_level1_idx` (`user_access_level_id`),
-  CONSTRAINT `fk_user_priviledge_user_access_level1` FOREIGN KEY (`user_access_level_id`) REFERENCES `user_access_level` (`user_access_level_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_user_priviledge_user_access_level1` FOREIGN KEY (`user_access_level_id`) REFERENCES `permission` (`permission_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `user_priviledge` (`user_priviledge_id`, `user_access_level_id`, `user_id`, `created_date`, `created_by`, `deleted_at`, `last_modified_date`, `last_modified_by`) VALUES
-(1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `variance_note`;
 CREATE TABLE `variance_note` (
@@ -1329,6 +1312,6 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-11-04 12:17:54
+-- 2019-11-07 05:55:15
 1
 Downloading1
