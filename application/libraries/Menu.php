@@ -128,7 +128,9 @@ class Menu {
             $top_menu_items[$controller] = $controller::get_menu_list();
         }
       }
-
+        // Forcefully add Menu controller to menu table
+        $top_menu_items['Menu'] = array();
+        
         return $top_menu_items;
         //return array('Approval'=>[],'Bank'=>[],'Budget'=>[],'Center'=>[],'Workplan'=>[],'Voucher'=>[]);
     }
@@ -164,11 +166,58 @@ class Menu {
 
           $user_more_menu = elevate_array_element_to_key($user_menu_by_priority_groups[0],'menu_derivative_controller');
 
+
           $this->CI->session->set_userdata('user_menu',$full_user_menu);
 
-          $this->CI->session->set_userdata('user_priority_menu',$user_priority_menu);
+          // Build user priority and more menu based on user read label permission of the logged role
+          $user_priority_menu_based_on_permissions = array();
+          $user_more_menu_based_on_permissions = array();
 
-          $this->CI->session->set_userdata('user_more_menu',$user_more_menu);
+          // Filter user priority menu based on the read label permission of the logged role
+          foreach($user_priority_menu as $menu => $options ){
+            if($this->CI->user_model->check_role_has_permissions($menu,'read')){
+              $user_priority_menu_based_on_permissions[$menu] = $options;
+            } 
+          }
+
+          // Filter the user more menu based on the read label permission of the logged role
+          foreach($user_more_menu as $menu => $options ){
+            if($this->CI->user_model->check_role_has_permissions($menu,'read')){
+              $user_more_menu_based_on_permissions[$menu] = $options;
+            } 
+          }
+          
+          // Check if the filter priority menu has less than the config set max_priority_menu_items,
+          // If yes, take the first max_priority_menu_items items from user more menu anf push them to the 
+          // user priority menu
+
+          if(
+              count($user_priority_menu_based_on_permissions) < $this->CI->config->item('max_priority_menu_items') && 
+              count($user_more_menu_based_on_permissions) > 0  
+          ){
+
+              // Makes multiple arrays of user_more_menu_based_on_permissions of size of config max_priority_menu_items
+              // Take the first max_priority_menu_items elements to $user_priority_menu_based_on_permissions
+
+              $chunked_user_more = array_chunk($user_more_menu_based_on_permissions,
+              $this->CI->config->item('max_priority_menu_items'),true);
+
+              foreach($chunked_user_more[0] as $menu => $options){
+                $user_priority_menu_based_on_permissions[$menu] = $options;
+              }
+
+              // Remove the first max_priority_menu_items elements from $user_more_menu_based_on_permissions 
+              // and assign the remaning to $user_more_menu_based_on_permissions 
+              $user_more_menu_based_on_permissions = array_slice($user_more_menu_based_on_permissions,
+              $this->CI->config->item('max_priority_menu_items'));
+              
+              
+          } 
+
+          $this->CI->session->set_userdata('user_priority_menu',$user_priority_menu_based_on_permissions);
+
+          $this->CI->session->set_userdata('user_more_menu',$user_more_menu_based_on_permissions);
+
 
       }
 

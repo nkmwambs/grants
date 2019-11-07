@@ -9,6 +9,10 @@ function __construct(){
   $this->load->database();
 }
 
+function detail_tables(){
+  return array('menu_user_order');
+}
+
 function get_count_of_menu_items(){
   return $this->db->get('menu')->num_rows();
 }

@@ -1,4 +1,13 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+
+//$user_more_menu_based_on_permissions = $this->session->user_more_menu;
+
+//$chunked_user_more = array_chunk($user_more_menu_based_on_permissions,
+//              $this->config->item('max_priority_menu_items'), true);
+
+//print_r($chunked_user_more);  
+
 
 //$rbac = new Rbac_base();
 

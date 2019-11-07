@@ -48,6 +48,14 @@ class User_model extends MY_Model
           }
         
         }
+
+        // Check if default permission is not present, add it
+
+        if( !array_key_exists($this->config->item('default_launch_controller'),$role_permission_array) || 
+            !in_array('read',$role_permission_array)
+          ){
+          $role_permission_array[$this->config->item('default_launch_controller')]['read'] = "show_dashboard";
+        }
   
         return $role_permission_array;
   }
