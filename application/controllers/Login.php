@@ -58,19 +58,22 @@ public $auth;
 
 		    $this->session->set_userdata('user_login', '1');
 		    $this->session->set_userdata('user_id', $row->user_id);
-		    $this->session->set_userdata('name', $row->first_name.' '.$row->last_name);
-        $this->session->set_userdata('role_id', $row->role_id);
+		    $this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
+        $this->session->set_userdata('role_id', $row->fk_role_id);
 
         $this->session->set_userdata('breadcrumb_list',array());
 
-        $this->session->set_userdata('role_permissions',$this->user_model->get_user_permissions($row->role_id));
+        $this->session->set_userdata('role_permissions',
+        $this->user_model->get_user_permissions($row->fk_role_id));
+
+        $this->session->set_userdata('system_admin',$row->user_system_admin);
         //$this->session->set_userdata('role_permissions',$this->user_model->perms($row->role_id));
         
 		return 'success';
 	}
     //Validating login from ajax request
     function validate_login($email = '', $password = '') {
-        $credential = array('email' => $email,"is_active"=>1,"password"=>md5($password));
+        $credential = array('user_email' => $email,"user_is_active"=>1,"user_password"=>md5($password));
 
         // Checking login credential for admin
         $query = $this->db->get_where('user', $credential);
@@ -106,11 +109,11 @@ public $auth;
         $new_password           =   substr( md5( rand(100000,200000) ) , 0,7);
 
         // Checking credential for user
-        $query = $this->db->get_where('user' , array('email' => $email));
+        $query = $this->db->get_where('user' , array('user_email' => $email));
         if ($query->num_rows() > 0)
         {
-            $this->db->where('email' , $email);
-            $this->db->update('user' , array('password' => md5($new_password)));
+            $this->db->where('user_email' , $email);
+            $this->db->update('user' , array('user_password' => md5($new_password)));
             $resp['status']         = 'true';
         }
 
@@ -124,9 +127,9 @@ public $auth;
         echo json_encode($resp);
     }
 
-    function access_denied_error(){
-      $this->load->view('general/access_denied_error');
-    }
+    // function access_denied_error(){
+    //   $this->load->view('general/access_denied_error');
+    // }
 
     /*     * *****LOGOUT FUNCTION ****** */
 

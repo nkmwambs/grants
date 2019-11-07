@@ -112,26 +112,31 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   // Can be overrode in a speicific controller
   function view(){
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'read');
     $this->crud_views();
   }
 
   function edit($id){
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
     $this->crud_views($id);
   }
 
 
 // The null $id happens if the record being created has no dependant primary record
   function multi_form_add($id = null){
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create');
     $this->id = $id;
     $this->crud_views();
   }
 
   function single_form_add($id = null){
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create');
     $this->id = $id;
     $this->crud_views();
   }
 
   function delete($id = null){
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete');
     echo "Record deleted successful";
   }
 
@@ -144,14 +149,5 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     echo json_encode($this->$lib->detail_row_fields($fields));
   }
-
-  // function error(){
-  //   $page_data['page_name'] = 'error';
-  //   $page_data['page_title'] = 'Error Exceptions';
-  //   $page_data['views_dir'] = 'templates';
-  //   $page_data['error_message'] = 'templates';
-  //
-  //  $this->load->view('general/index',$page_data);
-  // }
 
 }

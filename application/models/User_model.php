@@ -22,6 +22,10 @@ class User_model extends MY_Model
 
   }
 
+  function detail_table(){
+    return array('user_detail');
+  }
+
   function get_user_permissions($role_id){    
  
       $role_permission_array = array();
@@ -87,8 +91,9 @@ class User_model extends MY_Model
 
       $has_permission = false;
 
-      if( array_key_exists($active_controller,$permission) && 
-          array_key_exists($permission_label,$permission[$active_controller])
+      if( (array_key_exists($active_controller,$permission) && 
+          array_key_exists($permission_label,$permission[$active_controller])) ||
+          $this->session->system_admin
         ){
           $has_permission = true;
         } 
