@@ -14,7 +14,7 @@ class Menu_user_order extends MY_Controller
 
   function __construct(){
     parent::__construct();
-    $this->load->library('role_library');
+    $this->load->library('menu_user_order_library');
   }
 
   function index(){}

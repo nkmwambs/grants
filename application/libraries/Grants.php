@@ -676,6 +676,44 @@ function list_query(){
   if(is_array($feature_model_list_result) && count($feature_model_list_result) > 0){
     $query_result = $feature_model_list_result;
   }
+ 
+  $query_result = $this->update_query_result_for_fields_changed_to_select_type($this->controller,$query_result);
+
+  return $query_result;
+}
+
+/**
+ * update_query_result_for_fields_changed_to_select_type
+ * 
+ * This method checks if there is any changed field type to select type in the feature library and updates
+ * the results from the database with the correct option value as set by the change_field_type options
+ * parameter in the lib
+ * 
+ * @param $table String : The selected table
+ * @param $query_result  Array : Original query result from the database table
+ * 
+ * @return Array
+ */
+
+function update_query_result_for_fields_changed_to_select_type(String $table, Array $query_result): Array {
+  // Check if there is a change of field type set and update the results
+  $this->set_change_field_type($table);
+  
+  if(count($this->set_field_type) > 0){
+
+    //Get changed columns 
+    $changed_fields = array_keys($this->set_field_type);
+
+    foreach($query_result as $index => $row){
+
+      foreach($changed_fields as $changed_field){
+        if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
+          $query_result[$index][$changed_field] = $this->set_field_type[$changed_field]['options'][$row[$changed_field]];
+        }
+      }
+    }
+
+  }
 
   return $query_result;
 }
