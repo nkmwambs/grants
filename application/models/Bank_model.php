@@ -26,6 +26,14 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+  function lookup_tables(){
+    
+  }
+
+  function detail_tables(){
+    
+  }
+
   function list(){
     // $table_columns = $this->grants->table_columns('approval',$this->hidden_columns);
     // $this->db->select($table_columns);
