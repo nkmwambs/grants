@@ -25,7 +25,7 @@ class User_setting_model extends MY_Model implements CrudModelInterface, TableRe
 
 
   function list(){
-    return array('user_detail');
+    
   }
 
   function lookup_tables(){

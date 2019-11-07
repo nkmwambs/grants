@@ -8,20 +8,20 @@
  *	NKarisa@ke.ci.org
  */
 
-
-class User extends MY_Controller implements CrudModelInterface
+class User_library extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->load->library('user_library');
+    $this->CI =& get_instance();
   }
 
-  function index(){}
+  function index(){
 
-
-  static function get_menu_list(){
-  
   }
+
+
 
 }

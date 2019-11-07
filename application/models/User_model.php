@@ -26,6 +26,37 @@ class User_model extends MY_Model
     return array('user_detail');
   }
 
+  function lookup_tables(){
+    return array('language','role');
+  }
+
+  function list(){
+
+  }
+
+  function list_table_visible_columns(){
+    return array('user_id','user_track_number','user_name','user_firstname',
+    'user_lastname','user_email','user_system_admin','user_is_active');
+  }
+
+  function default_launch_page($user_id){
+
+    $default_launch_page = $this->config->item('default_launch_page');
+
+    // $this->db->select(array('user_detail_value'));
+    // $this->db->join('user_detail','user_detail.fk_user_id=user.user_id');
+    // $this->db->join('user_setting','user_setting.user_setting_id=user_detail.fk_user_setting_id');
+    // $user_object = $this->db->get_where('user',
+    // array('user_id'=>$user_id,'user_setting_name'=>'default_launch_page'));
+
+    // if($user_object->num_rows() > 0){
+    //   $default_lauch_page = $user_object->row()->default_lauch_page;
+    // }
+
+    return strtolower($default_launch_page);
+
+  }
+
   function get_user_permissions($role_id){    
  
       $role_permission_array = array();
@@ -55,36 +86,36 @@ class User_model extends MY_Model
 
         // Check if default permission is not present, add it
 
-        if( !array_key_exists($this->config->item('default_launch_controller'),$role_permission_array) || 
+        if( !array_key_exists($this->config->item('default_launch_page'),$role_permission_array) || 
             !in_array('read',$role_permission_array)
           ){
-          $role_permission_array[$this->config->item('default_launch_controller')]['read'] = "show_dashboard";
+          $role_permission_array[$this->config->item('default_launch_page')]['read'] = "show_dashboard";
         }
   
         return $role_permission_array;
   }
 
-  function perms($role_id = 1){
-      $permission = array();
+  // function perms($role_id = 1){
+  //     $permission = array();
 
-      $permission['Center']['create'][] = 'add_center';
-      $permission['Center']['read'][] = 'show_center';
-      $permission['Center']['update'][] = 'edit_center';
-      $permission['Center']['update'][] = 'approve_center';
-      $permission['Center']['update'][] = 'decline_center';
-      $permission['Center']['delete'][] = 'delete_center';
+  //     $permission['Center']['create'][] = 'add_center';
+  //     $permission['Center']['read'][] = 'show_center';
+  //     $permission['Center']['update'][] = 'edit_center';
+  //     $permission['Center']['update'][] = 'approve_center';
+  //     $permission['Center']['update'][] = 'decline_center';
+  //     $permission['Center']['delete'][] = 'delete_center';
 
-      $permission['Approval']['read'][] = 'add_approval';
+  //     $permission['Approval']['read'][] = 'add_approval';
 
-      $permission['Role_permission']['read'][] = 'add_role_permission';
+  //     $permission['Role_permission']['read'][] = 'add_role_permission';
 
-      $permission['Role']['read'][] = 'add_role_permission';
+  //     $permission['Role']['read'][] = 'add_role_permission';
 
-      $permission['Permission']['read'][] = 'add_role_permission';
+  //     $permission['Permission']['read'][] = 'add_role_permission';
     
-      return $permission;
+  //     return $permission;
 
-  }
+  // }
 
   function check_role_has_permissions($active_controller,$permission_label){
       $permission = $this->session->role_permissions;
