@@ -205,7 +205,7 @@ class Fields_base{
               if($option_value == $selected_option){
                   $selected = "selected='selected'";
               }
-              $select .= "<option value='".$option_value."' ".$selected.">".$option_html."</option>";
+              $select .= "<option value='".$option_value."' ".$selected.">".get_phrase($option_html)."</option>";
             }
 
     $select .= "</select>";

@@ -1,5 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+//print_r($this->user_model->get_user_permissions(2));
 
 //$user_more_menu_based_on_permissions = $this->session->user_more_menu;
 
