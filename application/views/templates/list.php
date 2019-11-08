@@ -60,8 +60,6 @@ extract($result);
                     <li><?=list_table_edit_action($this->controller,$primary_key);?></li>
                     <li class="divider"></li>
                     <li><?=list_table_delete_action($this->controller,$primary_key);?></li>
-                    <li class="divider"></li>
-                    <li><a href="#"><?=get_phrase('attachments');?></a></li>
 
                   </ul>
                 </div>
@@ -82,7 +80,8 @@ extract($result);
                             }elseif(strpos($column,'is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
-                              echo ucfirst(str_replace("_"," ",$row[$column]));
+                              //echo str_replace("_"," ",$row[$column]);
+                              echo $row[$column];
                             }
 
                            ?>

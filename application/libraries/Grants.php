@@ -102,11 +102,6 @@ private $detail_multi_form_add_visible_columns = [];
  */
 private $master_multi_form_add_visible_columns = [];
 
-/**
- * single_form_add_visible_columns
- * @var Array
- */
-private $single_form_add_visible_columns = [];
 
 /**
  * detail_list_query holds the query result of the detail part of the master-detail view action pages
@@ -243,7 +238,19 @@ function lookup_tables(String $table_name = ""): Array{
 function detail_tables(String $table_name = ""): Array {
   $model = $this->load_detail_model($table_name);
 
-  if(method_exists($this->CI->$model,'detail_tables') && 
+  
+  if($this->controller == 'approval' && $this->action == 'view'){
+    // This is specific to approval view, only to list the detail listing of the select approveable 
+    // item
+    $id = $this->CI->uri->segment(3,0);
+
+    $this->CI->db->join('approve_item','approve_item.approve_item_id=approval.fk_approve_item_id');
+    $detail_table = $this->CI->db->get_where('approval',
+    array('approval_id'=>hash_id($id,'decode')))->row()->approve_item_name;
+    
+    $this->detail_tables = array($detail_table);
+  
+  }elseif(method_exists($this->CI->$model,'detail_tables') && 
       is_array($this->CI->$model->detail_tables()) 
     ){
     $this->detail_tables  = $this->CI->$model->detail_tables();
@@ -418,7 +425,15 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    */
     
   function header_row_field(String $column, $field_value = ""): String {
-      
+    //create, read, update
+    //  $field_permission = array('bank'=>array('bank_swift_code'=>array('read','write'))); 
+     
+    //  if(  array_key_exists($this->controller,$field_permission) && 
+    //       in_array($column,$field_permission[$this->controller]) 
+    //     ){
+
+    //  }
+
       $f = new Fields_base($column,$this->controller,true);
 
       $this->set_change_field_type();
@@ -454,6 +469,28 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
   }
 
+/**
+ * add_form_fields
+ * 
+ * This method builds the add form (single form add or multi form add - master part) fields. 
+ * It builds the columns names as keys anf the field html as the value in an associative array
+ * 
+ * @param $visible_columns_array Array : Columns to be selected
+ * 
+ * @return Array
+ */
+function add_form_fields(Array $visible_columns_array): Array {
+
+  $fields = array();
+
+  foreach ($visible_columns_array as $column) {
+    $fields[$column] = $this->header_row_field($column);
+  }
+
+  return $fields;  
+}
+
+  
   /**
    * set_change_field_type
    * 
@@ -629,18 +666,21 @@ function master_multi_form_add_visible_columns() {
  * single_form_add_visible_columns
  * 
  * Return an array of the selected fields/ columns of the single_form_add action pages
- * 
+ * It is a model wrapper method that is used in the grants_model single_form_add_visible_columns
+ * and not directly in this class
  * @return Array
  */
 function single_form_add_visible_columns(){
   $model = $this->current_model;
+  
+  $single_form_add_visible_columns = array();
 
   if(method_exists($this->CI->$model,'single_form_add_visible_columns') && 
       is_array($this->CI->$model->single_form_add_visible_columns())
   ){
-    $this->single_form_add_visible_columns = $this->CI->$model->single_form_add_visible_columns();
+    $single_form_add_visible_columns = $this->CI->$model->single_form_add_visible_columns();
   }
-  return $this->single_form_add_visible_columns;
+  return $single_form_add_visible_columns;
 }
 
 function edit_visible_columns(){
@@ -1083,12 +1123,14 @@ function single_form_add_output($table_name = ""){
       $this->CI->grants_model->add();
     }
   }else{
+    // Adds mandatory fields if not present in the current table
     $this->mandatory_fields($table);
 
-    $keys = $this->CI->grants_model->single_form_add_visible_columns();
+    $visible_columns = $this->CI->grants_model->single_form_add_visible_columns();
+    $fields = $this->add_form_fields($visible_columns);//$this->single_form_add_query();
 
     return array(
-      'keys'=>$keys
+      'fields'=> $fields
     );
   }
 
@@ -1121,12 +1163,16 @@ function multi_form_add_output($table_name = ""){
   }else{
     $this->mandatory_fields($table);
 
-    $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
+    // Adds mandatory fields if not present in the current table
+    $visible_columns = $this->CI->grants_model->master_multi_form_add_visible_columns();
+    $fields = $this->add_form_fields($visible_columns);//$this->master_multi_form_add_visible_columns_query();
+
+    // $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
     $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
     $false_keys = $this->false_keys($table.'_detail');
 
     return array(
-      'keys'=>$keys,
+      'fields'=>$fields,
       'detail_table'=>$detail_table_keys,
       'detail_false_keys'=>$false_keys
     );
@@ -1183,6 +1229,71 @@ function edit_query($table){
 
   return $edit_query;
 }
+
+/**
+ * check_role_has_field_permission
+ * 
+ * This method is a wrapper of the user_model check_role_has_field_permission method.
+ * It helps to check if the logged user has permission to acccess a controlled field
+ * Any field that has been flagged in the permission table is referred to as a controlled field
+ */
+function check_role_has_field_permission($table, $permission_label,$column){
+  return $this->CI->user_model->check_role_has_field_permission(
+    $table, $permission_label, $column
+  );
+}
+
+/**
+ * action_before_insert
+ * 
+ * A wrapper method to feature model serving the grants model add method
+ * 
+ * @param $post_array Array : Form post array
+ * 
+ * @return Array
+ * 
+ */
+function action_before_insert($post_array): Array {
+  
+  $model = $this->current_model;
+
+  $updated_post_array = array();
+
+  if(method_exists($this->CI->$model,'action_before_insert')){
+    $updated_post_array = $this->CI->$model->action_before_insert($post_array);
+  }
+
+  return $updated_post_array;
+}
+
+/**
+ * action_after_insert
+ * 
+ * This is used to hold the action to be triggered after a record insert in the grants model add method
+ * For Example sending an email to a record approver
+ * 
+ * @param $post_array Array : A post form array
+ * @param $approve_id int: The primary key of the Approval ticket raised
+ * @param $header_id int: The priamry key of the inserted record
+ * 
+ * @return Boolean : If false return an error message 
+ */
+function action_after_insert($post_array,$approval_id,$header_id): bool {
+  $model = $this->current_model;
+
+  $status = true;
+
+  if(method_exists($this->CI->$model,'action_after_insert')){
+    $status = $this->CI->$model->action_after_insert($post_array,$approval_id,$header_id);
+
+    // if(!is_bool($status)){
+    //   $status = true;
+    // }
+  }
+
+   return $status;
+}
+
 
 // These are methods that require review
 

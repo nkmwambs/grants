@@ -8,22 +8,36 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approval_library extends Grants
+class Approve_item_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
+  public $table = 'approve_item'; // you MUST mention the table name
 
-  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->CI =& get_instance();
+    $this->load->database();
+
   }
 
   function index(){
 
   }
 
-  function list_table_where(){
-    return array('approve_item_is_active'=>1);
+
+  function list(){
+
+  }
+
+  function lookup_tables(){
+    
+  }
+
+  function detail_tables(){
+
+  }
+
+  function view(){
+
   }
 
 }

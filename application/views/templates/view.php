@@ -1,5 +1,5 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-//print_r($result);
+//print_r($result['detail']);
 extract($result['master']);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 

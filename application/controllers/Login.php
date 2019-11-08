@@ -56,10 +56,11 @@ public $auth;
 
 	function create_user_session ($row,$first_login_attempt = false){
 
-		    $this->session->set_userdata('user_login', '1');
-		    $this->session->set_userdata('user_id', $row->user_id);
-		    $this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
+		$this->session->set_userdata('user_login', '1');
+		$this->session->set_userdata('user_id', $row->user_id);
+		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
         $this->session->set_userdata('role_id', $row->fk_role_id);
+        $this->session->set_userdata('center_id',9);
 
         $this->session->set_userdata('breadcrumb_list',array());
 

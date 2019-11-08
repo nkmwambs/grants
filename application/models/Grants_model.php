@@ -8,8 +8,17 @@
  *	NKarisa@ke.ci.org
  */
 
+
 class Grants_model extends CI_Model
 {
+
+  /**
+ * single_form_add_visible_columns
+ * @var Array
+ */
+public $single_form_add_visible_columns = [];
+
+
 
   function __construct(){
     parent::__construct();
@@ -46,6 +55,9 @@ class Grants_model extends CI_Model
 
     // Asign the post input to $post_array
     $post_array = $this->input->post();
+
+    // Check if there is a before insert method set in the feature model wrapped via grants model
+    $post_array = $this->grants->action_before_insert($post_array);
 
     // Extract the post array into header and detail variables
     extract($post_array);
@@ -133,7 +145,7 @@ class Grants_model extends CI_Model
     // Proceed with inserting details after checking if $post_has_detail
     if($post_has_detail){
 
-      // The $detail_array is initia to hold the array of the for looped variable since the original $detail will be shifted
+      // The $detail_array is initial to hold the array of the for looped variable since the original $detail will be shifted
       $detail_array = $detail;
 
       // This is the array that will hold the insert batch array
@@ -172,7 +184,7 @@ class Grants_model extends CI_Model
 
     }
 
-    // Insert attachments
+    // Insert attachments - Not important since an alternative means has been thought
 
     $this->upload_attachment($header_id);
 
@@ -183,9 +195,14 @@ class Grants_model extends CI_Model
     //   echo get_phrase('insert_failed');
     //   //echo json_encode($request);
     // }else{
-    //   // Send an email to the approver here
-    //
-       echo get_phrase('insert_successful');
+
+        // This runs after post is successful. It is defined in feature model wrapped via grants model
+        if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
+          echo get_phrase('insert_successful');
+        }else{
+          echo get_phrase('insert_successful_without_post_action');
+        }
+        
     //   //echo json_encode($detail);
     // }
 
@@ -206,6 +223,7 @@ class Grants_model extends CI_Model
   }
 
   function lookup_values($table){
+
     $result = $this->db->get($table)->result_array();
 
     $ids_array = array_column($result,$table.'_id');
@@ -632,8 +650,16 @@ class Grants_model extends CI_Model
       }
 
     }
+     
+    $controlled_visible_column = array();
 
-    return $visible_columns;
+    foreach($visible_columns as $column){
+      if($this->grants->check_role_has_field_permission($this->controller,'create',$column)){
+        $controlled_visible_column[] = $column;
+      }  
+    }
+
+    return $controlled_visible_column;
   }
 
   function edit_visible_columns(){
@@ -870,5 +896,15 @@ function center_start_date($center_id){
    return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
 }
 
+// function role_fields_permission(){
+//   $permission = array();
+
+//   // Permission type 2 = Field Access, 1 = Pages Acess
+
+//   //$permission['departmentmanager']['Bank']['bank_swift_code'] = 1550;
+//   $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
+//   $this->db->get_where('role_permission',
+//   array('fk_role_id'=>$this->session->role_id,'permission.permission_type'=>2));
+// }
 
 }
