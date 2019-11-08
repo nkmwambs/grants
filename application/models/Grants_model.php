@@ -881,5 +881,15 @@ function center_start_date($center_id){
    return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
 }
 
+// function role_fields_permission(){
+//   $permission = array();
+
+//   // Permission type 2 = Field Access, 1 = Pages Acess
+
+//   //$permission['departmentmanager']['Bank']['bank_swift_code'] = 1550;
+//   $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
+//   $this->db->get_where('role_permission',
+//   array('fk_role_id'=>$this->session->role_id,'permission.permission_type'=>2));
+// }
 
 }

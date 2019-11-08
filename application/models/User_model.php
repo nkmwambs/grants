@@ -67,7 +67,7 @@ class User_model extends MY_Model
       $role_permission_array = array();
 
       // Get role permissions for the role
-      $this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));
+      $this->db->select(array('menu_derivative_controller','permission_label_name','permission_name','permission_type'));
       //$this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));    
       
       $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
@@ -84,7 +84,7 @@ class User_model extends MY_Model
           $role_permissions = $role_permissions_object->result_object();
   
           foreach($role_permissions as $row){
-              $role_permission_array[$row->menu_derivative_controller][$row->permission_label_name] = $row->permission_name;
+              $role_permission_array[$row->menu_derivative_controller][$row->permission_type][$row->permission_label_name] = $row->permission_name;
           }
         
         }
@@ -94,41 +94,21 @@ class User_model extends MY_Model
         if( !array_key_exists($this->config->item('default_launch_page'),$role_permission_array) || 
             !in_array('read',$role_permission_array)
           ){
-          $role_permission_array[$this->config->item('default_launch_page')]['read'] = "show_dashboard";
+          $role_permission_array[$this->config->item('default_launch_page')][1]['read'] = "show_dashboard";
         }
   
         return $role_permission_array;
   }
 
-  // function perms($role_id = 1){
-  //     $permission = array();
 
-  //     $permission['Center']['create'][] = 'add_center';
-  //     $permission['Center']['read'][] = 'show_center';
-  //     $permission['Center']['update'][] = 'edit_center';
-  //     $permission['Center']['update'][] = 'approve_center';
-  //     $permission['Center']['update'][] = 'decline_center';
-  //     $permission['Center']['delete'][] = 'delete_center';
-
-  //     $permission['Approval']['read'][] = 'add_approval';
-
-  //     $permission['Role_permission']['read'][] = 'add_role_permission';
-
-  //     $permission['Role']['read'][] = 'add_role_permission';
-
-  //     $permission['Permission']['read'][] = 'add_role_permission';
-    
-  //     return $permission;
-
-  // }
-
-  function check_role_has_permissions($active_controller,$permission_label){
+  function check_role_has_permissions($active_controller,$permission_label,$permission_type = 1){
       $permission = $this->session->role_permissions;
 
       $has_permission = false;
 
       if( (array_key_exists($active_controller,$permission) && 
-          array_key_exists($permission_label,$permission[$active_controller])) ||
+          array_key_exists($permission_type,$permission[$active_controller]) &&
+          array_key_exists($permission_label,$permission[$active_controller][$permission_type])) ||
           $this->session->system_admin
         ){
           $has_permission = true;

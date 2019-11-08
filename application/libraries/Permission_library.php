@@ -22,5 +22,17 @@ class Permission_library extends Grants
 
   }
 
+  function change_field_type(){
+    $change_field_type = array();
+
+    $change_field_type['permission_type']['field_type']='select';
+    $change_field_type['permission_type']['options'] = array(
+      '1'=>get_phrase('page_access'),
+      '2'=>get_phrase('field_access')
+    );
+
+    return $change_field_type;
+  }
+
 
 }
