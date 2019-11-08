@@ -394,8 +394,8 @@ public $single_form_add_visible_columns = [];
       }
     }
 
-    return $visible_columns;
-
+    //return $visible_columns;
+    return $this->control_column_visibility($table,$visible_columns);
   }
 
 
@@ -564,7 +564,14 @@ public $single_form_add_visible_columns = [];
     return $this->db->get($table)->row();
   }
 
-  function master_multi_form_add_visible_columns(){
+  /**
+   * master_multi_form_add_visible_columns
+   * 
+   * Lists in a array the selected columns/ fields in a master part of the multi form add action page
+   * 
+   * @return Array
+   */
+  function master_multi_form_add_visible_columns(): Array {
 
     // Check if the table has list_table_visible_columns not empty
     $master_table_visible_columns = $this->grants->master_multi_form_add_visible_columns();
@@ -606,10 +613,39 @@ public $single_form_add_visible_columns = [];
 
     }
 
-    return $visible_columns;
+      return $this->control_column_visibility($this->controller,$visible_columns);
   }
 
-  function single_form_add_visible_columns(){
+  /**
+   * control_column_visibility
+   * 
+   * This method checks if a field/column has permission to with a create label
+   * @todo - May need to expand this method to factor in create and read labels
+   * @param $table String : Selected table
+   * @param $visible_columns Array : Array of visible/ selected columns/ fields
+   * 
+   * @return Array
+   */
+  function control_column_visibility(String $table, Array $visible_columns): Array{
+    $controlled_visible_columns = array();
+
+    foreach($visible_columns as $column){
+      if($this->grants->check_role_has_field_permission($table,'create',$column)){
+        $controlled_visible_columns[] = $column;
+      }  
+    }
+
+    return $controlled_visible_columns;
+  }
+
+  /**
+   * single_form_add_visible_columns
+   * 
+   * This is an array of the selected columns/fields to be used in SQL query in a single form add action page
+   * 
+   * @return Array
+   */
+  function single_form_add_visible_columns(): Array{
 
     // Check if the table has list_table_visible_columns not empty
     $master_table_visible_columns = $this->grants->single_form_add_visible_columns();
@@ -650,16 +686,8 @@ public $single_form_add_visible_columns = [];
       }
 
     }
-     
-    $controlled_visible_column = array();
 
-    foreach($visible_columns as $column){
-      if($this->grants->check_role_has_field_permission($this->controller,'create',$column)){
-        $controlled_visible_column[] = $column;
-      }  
-    }
-
-    return $controlled_visible_column;
+    return $this->control_column_visibility($this->controller,$visible_columns);
   }
 
   function edit_visible_columns(){
@@ -720,7 +748,7 @@ public $single_form_add_visible_columns = [];
   }
 
   function detail_multi_form_add_visible_columns($table){
-
+    
     // Check if the table has list_table_visible_columns not empty
     $detail_table_visible_columns = $this->grants->detail_multi_form_add_visible_columns($table);
     $lookup_tables = $this->grants->lookup_tables($table);
@@ -759,7 +787,7 @@ public $single_form_add_visible_columns = [];
       }
     }
 
-    return $visible_columns;
+    return $this->control_column_visibility($table,$visible_columns);//$visible_columns;
 
   }
 

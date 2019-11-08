@@ -32,6 +32,11 @@ class Role_permission_model extends MY_Model implements CrudModelInterface, Tabl
 
   }
 
+  function list_table_visible_columns(){
+    return array('role_permission_track_number','permission_name','role_permission_is_active',
+    'permission_field','role_name','permission_name');
+  }
+
   function lookup_tables(){
     return array('role','permission');
   }

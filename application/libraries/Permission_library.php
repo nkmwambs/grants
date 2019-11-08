@@ -34,5 +34,12 @@ class Permission_library extends Grants
     return $change_field_type;
   }
 
+  function default_field_value(){
+    return array(
+      'permission_type'=>1,
+      'permission_is_active'=>1
+    );
+  }
+
 
 }
