@@ -426,13 +426,13 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
     
   function header_row_field(String $column, $field_value = ""): String {
     //create, read, update
-     $field_permission = array('bank'=>array('bank_swift_code'=>array('read','write'))); 
+    //  $field_permission = array('bank'=>array('bank_swift_code'=>array('read','write'))); 
      
-     if(  array_key_exists($this->controller,$field_permission) && 
-          in_array($column,$field_permission[$this->controller]) 
-        ){
+    //  if(  array_key_exists($this->controller,$field_permission) && 
+    //       in_array($column,$field_permission[$this->controller]) 
+    //     ){
 
-     }
+    //  }
 
       $f = new Fields_base($column,$this->controller,true);
 

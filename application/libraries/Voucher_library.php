@@ -51,8 +51,9 @@ class Voucher_library extends Grants
   function default_field_value(){
     return array(
       'voucher_date'=>date('Y-m-d'),
-      'center_name'=>9,
-      'voucher_number'=>$this->voucher_number_default_field_value()
+      'center_name'=>$this->CI->session->center_id,
+      'voucher_number'=>$this->voucher_number_default_field_value(),
+      'voucher_type_name'=>2
     );
   }
 

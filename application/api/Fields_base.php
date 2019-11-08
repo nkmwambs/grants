@@ -53,8 +53,9 @@ class Fields_base{
       if($column_type == 'int' || $column_type == 'decimal'){
 
         $field_type = "number";
-
-        if(strpos($this->column,'_id') == true){
+         
+        // All fields of format fk_xxx_id are select types
+        if(strpos($this->column,'_id') == true && strpos($this->column,'fk_') == true ){
           $field_type = "select";
         }
 

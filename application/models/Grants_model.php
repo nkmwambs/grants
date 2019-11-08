@@ -215,6 +215,7 @@ public $single_form_add_visible_columns = [];
   }
 
   function lookup_values($table){
+
     $result = $this->db->get($table)->result_array();
 
     $ids_array = array_column($result,$table.'_id');
@@ -618,11 +619,11 @@ public $single_form_add_visible_columns = [];
     }
 
 
-    $this->single_form_add_visible_columns = $get_all_table_fields;
+    $visible_columns = $get_all_table_fields;
     $lookup_columns = array();
 
     if(is_array($master_table_visible_columns) && count($master_table_visible_columns) > 0 ){
-      $this->single_form_add_visible_columns = $master_table_visible_columns;
+      $visible_columns = $master_table_visible_columns;
     }else{
 
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
@@ -633,7 +634,7 @@ public $single_form_add_visible_columns = [];
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
             if(strpos($lookup_table_column,'_name') == true){
-              array_push($this->single_form_add_visible_columns,$lookup_table_column);
+              array_push($visible_columns,$lookup_table_column);
             }
 
           }
@@ -641,8 +642,9 @@ public $single_form_add_visible_columns = [];
       }
 
     }
-
-    return $this->single_form_add_visible_columns;
+    //print_r($visible_columns);
+    //exit();
+    return $visible_columns;
   }
 
   function edit_visible_columns(){

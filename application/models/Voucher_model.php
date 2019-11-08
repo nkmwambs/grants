@@ -38,7 +38,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   // }
 
   function master_multi_form_add_visible_columns(){
-    return array('voucher_name','voucher_number','voucher_date','voucher_cheque_number',
+    return array('voucher_number','voucher_date','voucher_cheque_number',
     'voucher_vendor','voucher_description','center_name','voucher_type_name');
   }
 
