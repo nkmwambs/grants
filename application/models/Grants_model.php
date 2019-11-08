@@ -56,6 +56,9 @@ public $single_form_add_visible_columns = [];
     // Asign the post input to $post_array
     $post_array = $this->input->post();
 
+    // Check if there is a before insert method set in the feature model wrapped via grants model
+    $post_array = $this->grants->action_before_insert($post_array);
+
     // Extract the post array into header and detail variables
     extract($post_array);
 
@@ -142,7 +145,7 @@ public $single_form_add_visible_columns = [];
     // Proceed with inserting details after checking if $post_has_detail
     if($post_has_detail){
 
-      // The $detail_array is initia to hold the array of the for looped variable since the original $detail will be shifted
+      // The $detail_array is initial to hold the array of the for looped variable since the original $detail will be shifted
       $detail_array = $detail;
 
       // This is the array that will hold the insert batch array
@@ -181,7 +184,7 @@ public $single_form_add_visible_columns = [];
 
     }
 
-    // Insert attachments
+    // Insert attachments - Not important since an alternative means has been thought
 
     $this->upload_attachment($header_id);
 
@@ -192,9 +195,14 @@ public $single_form_add_visible_columns = [];
     //   echo get_phrase('insert_failed');
     //   //echo json_encode($request);
     // }else{
-    //   // Send an email to the approver here
-    //
-       echo get_phrase('insert_successful');
+
+        // This runs after post is successful. It is defined in feature model wrapped via grants model
+        if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
+          echo get_phrase('insert_successful');
+        }else{
+          echo get_phrase('insert_successful_without_post_action');
+        }
+        
     //   //echo json_encode($detail);
     // }
 

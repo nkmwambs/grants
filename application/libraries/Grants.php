@@ -1243,6 +1243,57 @@ function check_role_has_field_permission($table, $permission_label,$column){
   );
 }
 
+/**
+ * action_before_insert
+ * 
+ * A wrapper method to feature model serving the grants model add method
+ * 
+ * @param $post_array Array : Form post array
+ * 
+ * @return Array
+ * 
+ */
+function action_before_insert($post_array): Array {
+  
+  $model = $this->current_model;
+
+  $updated_post_array = array();
+
+  if(method_exists($this->CI->$model,'action_before_insert')){
+    $updated_post_array = $this->CI->$model->action_before_insert($post_array);
+  }
+
+  return $updated_post_array;
+}
+
+/**
+ * action_after_insert
+ * 
+ * This is used to hold the action to be triggered after a record insert in the grants model add method
+ * For Example sending an email to a record approver
+ * 
+ * @param $post_array Array : A post form array
+ * @param $approve_id int: The primary key of the Approval ticket raised
+ * @param $header_id int: The priamry key of the inserted record
+ * 
+ * @return Boolean : If false return an error message 
+ */
+function action_after_insert($post_array,$approval_id,$header_id): bool {
+  $model = $this->current_model;
+
+  $status = true;
+
+  if(method_exists($this->CI->$model,'action_after_insert')){
+    $status = $this->CI->$model->action_after_insert($post_array,$approval_id,$header_id);
+
+    // if(!is_bool($status)){
+    //   $status = true;
+    // }
+  }
+
+   return $status;
+}
+
 
 // These are methods that require review
 

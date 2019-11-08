@@ -82,6 +82,33 @@ class User_model extends MY_Model
   }
 
   /**
+   * action_before_insert
+   * 
+   * This method changes the password to a hash of md5 before inserting to user table. 
+   * This is a system contract method
+   * 
+   * @return Array
+   */
+  function action_before_insert($post_array): Array {
+    $post_array['header']['user_password'] = md5($post_array['header']['user_password']);
+
+    return $post_array;
+  }
+ 
+  /**
+   * action_after_insert
+   * 
+   * This method sends an email to new user.
+   * This is a system contract method
+   * 
+   * @return Boolean
+   */
+  function action_after_insert($post_array,$approval_id,$header_id):bool{
+    $this->email_model->user_registration_email($post_array);
+    return true;
+  }
+
+  /**
    * default_launch_page
    * 
    * Setting the default launch page if user detail table has any for the logged user otherwise use the one 
