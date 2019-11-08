@@ -1,38 +1,36 @@
 <!--<link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap.css">
 <script src="<?php echo base_url();?>assets/js/jquery-1.11.0.min.js"></script>-->
 
-		<!-- Bootstrap CDN -->
-		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+<!-- Bootstrap CDN -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
 
-		<link rel="stylesheet" href="<?php echo base_url();?>assets/css/ajax-bootstrap-select.css"/>
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/ajax-bootstrap-select.css"/>
 
-		<!--Datatables CSS CDNs-->
-		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
-		<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css"/>
+<!--Datatables CSS CDNs-->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css"/>
 
-		<!--Jquery CDN Minified -->
-		<!-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
+<!--Jquery CDN Minified -->
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
 
-		<!--Datatables JS CDNs-->
-		<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<!--Datatables JS CDNs-->
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 
-		<!--Bootstrap JS CDNs-->
-		<script src="<?php echo base_url();?>assets/js/bootstrap.js"></script>
+<!--Bootstrap JS CDNs-->
+<script src="<?php echo base_url();?>assets/js/bootstrap.js"></script>
 
-		<!--Bootstrap Select-->
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css"/>
-   		<link rel="stylesheet" href="<?php echo base_url();?>assets/css/ajax-bootstrap-select.css"/>
+<!--Bootstrap Select-->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css"/>
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/ajax-bootstrap-select.css"/>
 
-		<!--Datatables Buttons JS CDNs-->
-		<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
-		<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.flash.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-		<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
-		<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
-		<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
-		<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
-
-
+<!--Datatables Buttons JS CDNs-->
+<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.flash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
 
 <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/font-icons/entypo/css/entypo.css">
@@ -52,8 +50,8 @@
 <script src="<?=base_url();?>assets/js/jquery-1.11.0.min.js"></script> -->
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 
 <?php
@@ -70,7 +68,7 @@
     <link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-rtl.css">
 <?php endif; ?>
 
-        <!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+<!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -118,6 +116,4 @@
             return false;
         }
     }
-
-
 </script>

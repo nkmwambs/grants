@@ -46,6 +46,17 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function view(){}
 
+  public function list_table_visible_columns(){
+    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
+  }
+
+  public function master_table_visible_columns(){
+    return array('voucher_type_id','voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_description','center_name','center_id','voucher_type_name',
+    'voucher_last_modified_by','voucher_created_by');
+  }
+
     /**Local methods**/
   function highest_voucher_number($center_id = 1){
 

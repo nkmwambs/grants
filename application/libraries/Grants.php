@@ -490,7 +490,18 @@ function add_form_fields(Array $visible_columns_array): Array {
   return $fields;  
 }
 
-  
+
+function edit_form_fields(Array $visible_columns_array): Array {
+
+  $fields = array();
+
+  foreach ($visible_columns_array as $column => $value) {
+    $fields[$column] = $this->header_row_field($column, $value);
+  }
+
+  return $fields;  
+}
+
   /**
    * set_change_field_type
    * 
@@ -601,7 +612,7 @@ function list_table_visible_columns() {
  * master_table_visible_columns
  * 
  * Returns an array of selected fields in the master part of the master-detail view action pages
- * 
+ * @todo - Needs to be worked out to allow only selecting name fields for lookups without their ids. Currently you need both.
  * @return Array
  */
 function master_table_visible_columns(){
@@ -1194,7 +1205,7 @@ function edit_output($id = ""){
   $table = $this->controller;
 
   if($this->CI->input->post()){
-    //$this->CI->grants_model->add($this->CI->input->post());
+    
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'edit')){
@@ -1206,9 +1217,10 @@ function edit_output($id = ""){
     $this->mandatory_fields($table);
 
     $edit_query = $this->edit_query($table);
+    $fields = $this->edit_form_fields($edit_query);// Go this place
 
     return array(
-      'keys'=>$edit_query
+      'fields'=>$fields
     );
   }
 
@@ -1229,6 +1241,8 @@ function edit_query($table){
 
   }
 
+  //print_r($edit_query);
+  //exit();
   return $edit_query;
 }
 
