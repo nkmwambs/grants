@@ -642,9 +642,16 @@ public $single_form_add_visible_columns = [];
       }
 
     }
-    //print_r($visible_columns);
-    //exit();
-    return $visible_columns;
+     
+    $controlled_visible_column = array();
+
+    foreach($visible_columns as $column){
+      if($this->grants->check_role_has_field_permission($this->controller,'create',$column)){
+        $controlled_visible_column[] = $column;
+      }  
+    }
+
+    return $controlled_visible_column;
   }
 
   function edit_visible_columns(){

@@ -1230,6 +1230,20 @@ function edit_query($table){
   return $edit_query;
 }
 
+/**
+ * check_role_has_field_permission
+ * 
+ * This method is a wrapper of the user_model check_role_has_field_permission method.
+ * It helps to check if the logged user has permission to acccess a controlled field
+ * Any field that has been flagged in the permission table is referred to as a controlled field
+ */
+function check_role_has_field_permission($table, $permission_label,$column){
+  return $this->CI->user_model->check_role_has_field_permission(
+    $table, $permission_label, $column
+  );
+}
+
+
 // These are methods that require review
 
 
