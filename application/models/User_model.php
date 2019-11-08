@@ -238,6 +238,11 @@ class User_model extends MY_Model
     
     $active_controller = ucfirst($active_controller);
 
+    // Forces checking a field of a detail table
+    if(strpos($active_controller,"_detail") ==  true){
+      $active_controller = substr($active_controller,0,-7);
+    }
+
     //Is the passed column is a permission controlled field?
     $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
     $is_column_controlled = $this->db->get_where('permission',
@@ -246,9 +251,11 @@ class User_model extends MY_Model
     if($is_column_controlled->num_rows() > 0){
       // Yes, it permission controlled
       $has_permission = $this->check_role_has_permissions($active_controller,$permission_label,2);
+      
     }else{
       // No its not permission controlled
       $has_permission = true;
+      
     }
 
 

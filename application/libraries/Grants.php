@@ -1169,6 +1169,8 @@ function multi_form_add_output($table_name = ""){
 
     // $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
     $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
+    //print_r($detail_table_keys);
+    //exit();
     $false_keys = $this->false_keys($table.'_detail');
 
     return array(
@@ -1261,6 +1263,8 @@ function action_before_insert($post_array): Array {
 
   if(method_exists($this->CI->$model,'action_before_insert')){
     $updated_post_array = $this->CI->$model->action_before_insert($post_array);
+  }else{
+    $updated_post_array = $post_array;
   }
 
   return $updated_post_array;
