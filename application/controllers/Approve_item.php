@@ -8,22 +8,21 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approval_library extends Grants
-{
 
-  private $CI;
+class Approve_item extends MY_Controller
+{
 
   function __construct(){
     parent::__construct();
-    $this->CI =& get_instance();
+    $this->load->library('approve_item_library');
   }
 
-  function index(){
+  function index(){}
 
-  }
+  //function list(){}
 
-  function list_table_where(){
-    return array('approve_item_is_active'=>1);
+  static function get_menu_list(){
+    
   }
 
 }

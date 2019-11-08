@@ -17,7 +17,7 @@
 
               <?php echo form_open(base_url().$this->controller.'/'.$this->action , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 
-                  foreach ($keys as $column) {
+                  foreach ($fields as $column => $field) {
 
                     if( strpos($column,'_id') == true ||
                         strpos($column,'_track_number') == true ||
@@ -34,7 +34,8 @@
                     <label for="" class="control-label col-xs-3"><?=ucwords(str_replace("_"," ",$column));?></label>
                     <div class="col-xs-9">
                       <?php
-                        echo $this->grants->header_row_field($column);
+                        //echo $this->grants->header_row_field($column);
+                        echo $field;
                       ?>
 
                     </div>

@@ -22,6 +22,18 @@ class User_library extends Grants
 
   }
 
+  function change_field_type(){
+    $change_field_type = array();
+
+    $change_field_type['user_system_admin']['field_type'] = 'select';
+    $change_field_type['user_system_admin']['options'] = array(get_phrase('no'),get_phrase('yes'));
+
+    $change_field_type['user_password']['field_type'] = 'password';
+
+    $change_field_type['user_email']['field_type'] = 'email';
+
+    return $change_field_type;
+  }
 
 
 }

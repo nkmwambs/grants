@@ -39,6 +39,11 @@ class User_model extends MY_Model
     'user_lastname','user_email','user_system_admin','user_is_active');
   }
 
+  function single_form_add_visible_columns(){
+    return array('user_name','user_firstname','user_lastname','user_email',
+    'user_system_admin','user_password','language_name','role_name');
+  }
+
   function default_launch_page($user_id){
 
     $default_launch_page = $this->config->item('default_launch_page');

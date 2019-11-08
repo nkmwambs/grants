@@ -11,6 +11,8 @@ class Fields_base{
 
   private $CI = null;
 
+  private $default_field_value = null;
+  
   function __construct($column, $table, $is_header = false){
 
     $this->CI =& get_instance();
@@ -21,6 +23,7 @@ class Fields_base{
 
     $this->is_header = $is_header;
 
+    $this->set_default_field_value();
   }
 
   function index(){
@@ -69,7 +72,8 @@ class Fields_base{
 
   }
 
-  function number_field($value = 0){
+  private function input_fields($value){
+
     $id = "";
     $name = 'detail['.$this->column.'][]';
     $master_class = "detail";
@@ -80,93 +84,67 @@ class Fields_base{
       $master_class = 'master';
     }
 
-    //$value = 0;
+    $value = $this->default_field_value !== 0 ? $this->default_field_value : $value;
 
+    return array('id'=>$id,'name'=>$name,'master_class'=>$master_class,'value'=>$value);
+  }
+  
+  function set_default_field_value(){
+    
     $library = $this->CI->controller.'_library';
 
-    $method = $this->column.'_default_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
+    if(method_exists($this->CI->$library,'default_field_value')){
+     
+      $default_fields_values = $this->CI->$library->default_field_value();
+     
+      if(array_key_exists($this->column,$default_fields_values)){
+        $this->default_field_value = $default_fields_values[$this->column];
+      }
     }
+
+    return $this->default_field_value;
+  }
+
+  function number_field($value = 0){
+
+    extract($this->input_fields($value));
 
     return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
   function text_field($value = ""){
 
-    $id = "";
-    $name = 'detail['.$this->column.'][]';
-    $master_class = "detail";
-
-    if($this->is_header){
-      $id = $this->column;
-      $name = 'header['.$this->column.']';
-      $master_class = 'master';
-    }
-
-    //$value = "Hello";
-
-    $library = $this->CI->controller.'_library';
-
-    $method = $this->column.'_default_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
-    }
-
+    extract($this->input_fields($value));
 
     return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
+  function email_field($value = ""){
+
+    extract($this->input_fields($value));
+
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+  }
+
+  function password_field($value = ""){
+
+    extract($this->input_fields($value));
+
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+  }
+
   function longtext_field($value = ""){
 
-    $id = "";
-    $name = 'detail['.$this->column.'][]';
-    $master_class = "detail";
-
-    if($this->is_header){
-      $id = $this->column;
-      $name = 'header['.$this->column.']';
-      $master_class = 'master';
-    }
-
-    //$value = "";
-
-    $library = $this->CI->controller.'_library';
-
-    $method = $this->column.'_default_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
-    }
+    extract($this->input_fields($value));
 
     return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" >'.$value.'</textarea>';
   }
 
   function date_field($value = ""){
 
-        $id = "";
-        $name = 'detail['.$this->column.'][]';
-        $master_class = "detail";
+    extract($this->input_fields($value));
 
-        if($this->is_header){
-          $id = $this->column;
-          $name = 'header['.$this->column.']';
-          $master_class = 'master';
-        }
-
-        $value = $value == "" ? date('Y-m-d') : $value;
-
-        $library = $this->CI->controller.'_library';
-
-        $method = $this->column.'_default_field_value';
-
-        if(method_exists($this->CI->$library,$method)){
-          $value = $this->CI->$library->$method();
-        }
-
-      return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
   function select_field($options, $selected_option = 0){
@@ -189,13 +167,9 @@ class Fields_base{
     }
 
 
-    $library = $this->CI->controller.'_library';
-
-    $method = $this->column.'_default_field_value';
-
-    if(method_exists($this->CI->$library,$method)){
-      $value = $this->CI->$library->$method();
-    }
+    $this->set_default_field_value();
+   
+    $selected_option = $this->default_field_value !== 0 ? $this->default_field_value : $selected_option;
 
     $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
             <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";

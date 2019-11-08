@@ -26,7 +26,7 @@ class Voucher_library extends Grants
     // Not yet factoring if the books of the month has been closed or new center
     $highest_voucher_number = $this->CI->voucher_model->highest_voucher_number();
 
-    $center_id = 1;
+    $center_id = $this->CI->session->center_id;
 
     $center_start_date = $this->center_start_date($center_id);
 
@@ -48,12 +48,13 @@ class Voucher_library extends Grants
     return $voucher_year.$voucher_month.$voucher_serial;
   }
 
-  function voucher_date_default_field_value(){
-    return date('Y-m-d');
+  function default_field_value(){
+    return array(
+      'voucher_date'=>date('Y-m-d'),
+      'center_name'=>9,
+      'voucher_number'=>$this->voucher_number_default_field_value()
+    );
   }
 
-  function center_name_field_value(){
-    return 1;
-  }
 
 }

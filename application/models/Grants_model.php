@@ -8,8 +8,17 @@
  *	NKarisa@ke.ci.org
  */
 
+
 class Grants_model extends CI_Model
 {
+
+  /**
+ * single_form_add_visible_columns
+ * @var Array
+ */
+public $single_form_add_visible_columns = [];
+
+
 
   function __construct(){
     parent::__construct();
@@ -609,11 +618,11 @@ class Grants_model extends CI_Model
     }
 
 
-    $visible_columns = $get_all_table_fields;
+    $this->single_form_add_visible_columns = $get_all_table_fields;
     $lookup_columns = array();
 
     if(is_array($master_table_visible_columns) && count($master_table_visible_columns) > 0 ){
-      $visible_columns = $master_table_visible_columns;
+      $this->single_form_add_visible_columns = $master_table_visible_columns;
     }else{
 
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
@@ -624,7 +633,7 @@ class Grants_model extends CI_Model
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
             if(strpos($lookup_table_column,'_name') == true){
-              array_push($visible_columns,$lookup_table_column);
+              array_push($this->single_form_add_visible_columns,$lookup_table_column);
             }
 
           }
@@ -633,7 +642,7 @@ class Grants_model extends CI_Model
 
     }
 
-    return $visible_columns;
+    return $this->single_form_add_visible_columns;
   }
 
   function edit_visible_columns(){
