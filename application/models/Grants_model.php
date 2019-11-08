@@ -281,10 +281,8 @@ public $single_form_add_visible_columns = [];
       }
     }
 
-
-
-    return $visible_columns;
-
+    //return $visible_columns;
+    return $this->control_column_visibility($this->controller,$visible_columns,'read');
   }
 
   function list($lookup_tables){
@@ -620,17 +618,17 @@ public $single_form_add_visible_columns = [];
    * control_column_visibility
    * 
    * This method checks if a field/column has permission to with a create label
-   * @todo - May need to expand this method to factor in create and read labels
    * @param $table String : Selected table
    * @param $visible_columns Array : Array of visible/ selected columns/ fields
+   * @param $permission_label String : Can be create, update or read
    * 
    * @return Array
    */
-  function control_column_visibility(String $table, Array $visible_columns): Array{
+  function control_column_visibility(String $table, Array $visible_columns, String $permission_label = 'create'): Array{
     $controlled_visible_columns = array();
 
     foreach($visible_columns as $column){
-      if($this->grants->check_role_has_field_permission($table,'create',$column)){
+      if($this->grants->check_role_has_field_permission($table,$permission_label,$column)){
         $controlled_visible_columns[] = $column;
       }  
     }
@@ -741,8 +739,10 @@ public $single_form_add_visible_columns = [];
               $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
           }
         }
+
+        $controlled_field_permission = $this->control_column_visibility($table, $visible_columns,'update');
     
-        $this->db->select($visible_columns);
+        $this->db->select($controlled_field_permission);
         $this->db->where(array($table.'_id'=>hash_id($this->id,'decode')));
         return $this->grants_get_row($table);
   }

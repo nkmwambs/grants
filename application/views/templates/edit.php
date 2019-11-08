@@ -20,7 +20,8 @@ extract($result);
 
               <?php echo form_open(base_url().$this->controller.'/edit/'.$this->uri->segment(3,0) , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 
-                  foreach ($keys as $column => $value) {
+                  //foreach ($keys as $column => $value) {
+                  foreach ($fields as $column => $field) {
 
                     if( strpos($column,'_id') == true ||
                         strpos($column,'_track_number') == true ||
@@ -36,8 +37,9 @@ extract($result);
                     <label for="" class="control-label col-xs-3"><?=ucwords(str_replace("_"," ",$column));?></label>
                     <div class="col-xs-9">
                       <?php
-                        echo $this->grants->header_row_field($column, $value);
+                        //echo $this->grants->header_row_field($column, $value);
                         //echo $value;
+                        echo $field;
                       ?>
                     </div>
                   </div>

@@ -85,7 +85,7 @@ class Fields_base{
       $master_class = 'master';
     }
 
-    $value = $this->default_field_value !== 0 ? $this->default_field_value : $value;
+    $value = ($value == "" && $this->default_field_value !== 0 ) ? $this->default_field_value : $value;
 
     return array('id'=>$id,'name'=>$name,'master_class'=>$master_class,'value'=>$value);
   }
@@ -170,7 +170,7 @@ class Fields_base{
 
     $this->set_default_field_value();
    
-    $selected_option = $this->default_field_value !== 0 ? $this->default_field_value : $selected_option;
+    $selected_option = ($selected_option == "" && $this->default_field_value !== 0 ) ? $this->default_field_value : $selected_option;
 
     $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
             <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
