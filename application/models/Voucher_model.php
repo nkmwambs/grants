@@ -51,9 +51,14 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
   }
 
+  public function detail_list_table_visible_columns(){
+    return array('voucher_detail_track_number','voucher_detail_description','voucher_detail_quantity',
+    'voucher_detail_cost','voucher_detail_total_cost','expense_account_name','income_account_name');
+  }
+
   public function master_table_visible_columns(){
-    return array('voucher_type_id','voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_description','center_name','voucher_type_name');
+    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_by','voucher_created_date');
   }
 
     /**Local methods**/
