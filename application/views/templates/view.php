@@ -21,6 +21,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
           <?=get_phrase('master_record');?>
           <i title="<?=get_phrase('attachments(s)');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-paperclip pull-left"></i>
           <i title="<?=get_phrase('message(s)');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-comments-o pull-left"></i>
+          <i title="<?=get_phrase('print');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-print pull-right"></i>
         </th></tr>
 
         <?php if($is_approveable_item){?>
