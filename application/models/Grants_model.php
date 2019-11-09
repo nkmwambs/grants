@@ -322,6 +322,22 @@ public $single_form_add_visible_columns = [];
 
     if(is_array($master_table_visible_columns) && count($master_table_visible_columns) > 0 ){
       $visible_columns = $master_table_visible_columns;
+
+        if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+          foreach ($lookup_tables as $lookup_table) {
+            
+            // Add primary_keys for the lookup tables in the visible columns array
+            $lookup_table_fields_data = $this->db->field_data($lookup_table);
+            
+            foreach($lookup_table_fields_data as $field_data){
+              if($field_data->primary_key == 1){
+                array_push($visible_columns,$field_data->name);
+              }
+            }
+
+          }
+        }    
+
     }else{
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
@@ -485,7 +501,15 @@ public $single_form_add_visible_columns = [];
     
       $model = $this->current_model;
 
-      $this->db->select($this->master_view_select_columns());
+      $select_columns = $this->master_view_select_columns();
+
+      // Add created_by and last_modified_by fields if noe exists in columns selected
+      if( !in_array($table.'_created_by',$select_columns) || 
+          !in_array($table.'_last_modified_by',$select_columns)){
+        array_push($select_columns,$table.'_created_by',$table.'_last_modified_by'); 
+      }
+
+      $this->db->select($select_columns);
 
       $lookup_tables = $this->grants->lookup_tables($table);
       //echo implode(',',$this->master_view_select_columns());
@@ -514,7 +538,7 @@ public $single_form_add_visible_columns = [];
       }
 
       $data = (array)$this->db->get_where($table,array($table.'_id'=> hash_id($this->uri->segment(3,0),'decode') ) )->row();
-
+      
       // Get the name of the record creator
       $created_by = $data[$table.'_created_by'] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
       array('user_id'=>$data[$table.'_created_by']))->row()->user_name:get_phrase('creator_user_not_set');
