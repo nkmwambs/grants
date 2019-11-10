@@ -2,8 +2,6 @@
  
 //print_r($this->user_model->get_user_permissions(2));
 
-//print_r($result['table_body']);
-
 extract($result);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 ?>

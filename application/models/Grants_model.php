@@ -18,17 +18,38 @@ class Grants_model extends CI_Model
  */
 public $single_form_add_visible_columns = [];
 
-
-
+  /**
+   * __construct
+   * 
+   * Intializer method
+   * 
+   * @return Void
+   */
   function __construct(){
     parent::__construct();
   }
 
+  /**
+   * index
+   * 
+   * Index method
+   * 
+   * @return Void
+   */
   function index(){
 
   }
 
-  function edit($id){
+/**
+ * edit
+ * 
+ * This is the default edit method if not overwritten in the feature model
+ * 
+ * @param String $id : Hashed Id which is derived from the 3rd URI segment
+ * @todo Use Transactions
+ * @return String
+ */
+  function edit(String $id):String{
 
     $post_array = $this->input->post();
 
@@ -37,21 +58,26 @@ public $single_form_add_visible_columns = [];
     $data = $header;
     //print_r($header);
     //exit();
-    $this->db->where(array($this->controller.'_id'=>$id));
+    $this->db->where(array($this->grants->primary_key_field($this->controller) => $id));
     $this->db->update($this->controller,$data);
 
     echo "Update completed";
   }
 
-  function add(){
-
-    // There are 3 insert scenarios
-    // Scenario 1: Master detail insert without a primary relationship and master requires approval
-    // Scenario 2: Master detail insert without a primary relationship and master doesn't require approval
-    // Scenario 3: Master detail insert with a primary relationship and master requires approval
-    // Scenario 4: Master detail insert with a primary relationship and master doesn't require approval
-    // Scenario 5: Single record insert that requires approval
-    // Scenario 6: Single record insert that doesn't require approval
+  /**
+   * add
+   * 
+   * This is the default add method if not overwritten by a feature model. It automates the following:
+   * - Action_before_insert post query manipulation
+   * - Action_after_insert for any post create clean up/tidying up events
+   * - Creates an approval record
+   * - Automates the creation of both primary and foreign table inserts for master detail entries
+   * 
+   * @todo Implement Transaction
+   * 
+   * @return String
+   */
+  public function add(){
 
     // Asign the post input to $post_array
     $post_array = $this->input->post();
@@ -67,7 +93,7 @@ public $single_form_add_visible_columns = [];
 
     // Check if the creation of the of the header and detail records requires an approval ticket
     $header_record_requires_approval = $this->approveable_item($this->controller);
-    $detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
+    $detail_records_require_approval = $this->approveable_item($this->grants->dependant_table($this->controller));
 
     // Start a transaction
     //$this->db->trans_start();
@@ -82,7 +108,7 @@ public $single_form_add_visible_columns = [];
        $decoded_hash_id = hash_id($this->id,'decode');
 
         $approval_id = $this->db->get_where($this->session->master_table,
-        array($this->session->master_table.'_id'=>$decoded_hash_id))->row()->fk_approval_id;
+        array($this->grants->primary_key_field($this->session->master_table) => $decoded_hash_id))->row()->fk_approval_id;
 
     }
 
@@ -114,7 +140,7 @@ public $single_form_add_visible_columns = [];
     // Insert the header record. Use the $approval_id to insert into the fk_approval_id field
     $header_random = record_prefix($this->controller).'-'.rand(1000,90000);
     $header_columns[$this->controller.'_track_number'] = $header_random;
-    $header_columns[$this->controller.'_name'] = ucfirst($this->controller).' # '.$header_random;
+    $header_columns[$this->grants->name_field($this->controller)] = ucfirst($this->controller).' # '.$header_random;
 
     foreach ($header as $key => $value) {
       $header_columns[$key] = $value;
@@ -157,18 +183,20 @@ public $single_form_add_visible_columns = [];
       // Construct an insert batch array using the detail array
       for($i=0;$i<sizeof($shifted_element);$i++){
         foreach ($detail_array as $column => $values) {
-          if(strpos($column,'_name') == true && $column !== $this->controller.'_detail_name'){
-              $column = 'fk_'.substr($column,0,-5).'_id';
+          //if(strpos($column,'_name') == true && $column !== $this->grants->dependant_table($this->controller).'_name'){
+          if( !$this->grants->is_lookup_tables_name_field($this->controller,$column) && 
+              $this->grants->is_name_field($this->controller) ){    
+            $column = 'fk_'.substr($column,0,-5).'_id';
           }
           $detail_columns[$i][$column] = $values[$i];
 
-          $detail_random = record_prefix($this->controller.'_detail').'-'.rand(1000,90000);
+          $detail_random = record_prefix($this->grants->dependant_table($this->controller)).'-'.rand(1000,90000);
           $detail_columns[$i][$this->controller.'_detail_track_number'] = $detail_random;
           $detail_columns[$i]['fk_'.$this->controller.'_id'] = $header_id;
 
           // Only insert fk_status_if is the detail record requires approval
           //if($detail_records_require_approval){
-              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->controller.'_detail');
+              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->grants->dependant_table($this->controller));
           //}
 
           $detail['fk_approval_id'] = $approval_id;
@@ -180,7 +208,7 @@ public $single_form_add_visible_columns = [];
       }
       //echo json_encode($detail_columns);
       // Insert the details using insert batch
-      $this->db->insert_batch($this->controller.'_detail',$detail_columns);
+      $this->db->insert_batch($this->grants->dependant_table($this->controller),$detail_columns);
 
     }
 
@@ -208,33 +236,91 @@ public $single_form_add_visible_columns = [];
 
   }
 
-  function upload_attachment($record_id){
+  /**
+   * upload_attachment
+   * @todo To be implemented later
+   * @param String $record_id of the inserted header_id in the add method
+   * 
+   * @return void
+   */
+  private function upload_attachment($record_id){
     
   }
 
-  function get_all_table_fields($table_name = ""){
+  /**
+   * get_all_table_fields
+   * 
+   * A wrapper to CI table_exists method to check if a specified table exists in current database
+   * and lists its field in an array or returns an empty array if not
+   * 
+   * @param String $table_name : Selected table
+   * 
+   * @return Array - Array of table fields
+   */
+  public function get_all_table_fields(String $table_name = ""):Array{
     $table = $table_name == ""?$this->controller:$table_name;
     return $this->db->table_exists($table)?$this->db->list_fields($table):array();
   }
 
-  function table_fields_metadata($table_name = ""){
+  /**
+   * table_fields_metadata
+   * 
+   * A field_data CI method wrapper to list field metadata 
+   * 
+   * @param String $table_name : Selected table
+   * 
+   * @return Array - Table fields metadata
+   */
+  public function table_fields_metadata($table_name = ""){
     $table = $table_name == ""?$this->controller:$table_name;
-    return $this->db->field_data($table);
+    return $this->db->table_exists($table)?$this->db->field_data($table):array();
+  }
+
+  /**
+   * table_exists
+   * 
+   * A wrapper method table_exists CI DB object 
+   * 
+   * @param String : Selected table to check if exists
+   * 
+   * @return Boolean
+   */
+  public function table_exists(String $table_name = ""):bool{
+    
+    $table = $table_name == ""?$this->controller:$table_name;
+
+    $table_exists = false;
+
+    if($this->db->table_exists($table)){
+      $table_exists = true;
+    }
+
+    return $table_exists;
   }
 
   function lookup_values($table){
 
     $result = $this->db->get($table)->result_array();
 
-    $ids_array = array_column($result,$table.'_id');
-    $value_array = array_column($result,$table.'_name');
+    $ids_array = array_column($result,$this->grants->primary_key_field($table));
+    $value_array = array_column($result,$this->grants->name_field($table));
 
     return array_combine($ids_array,$value_array);
   }
 
-  /** Refined methods **/
-
-  function list_select_columns(){
+  /**
+   * list_select_columns
+   * 
+   * A method that returns an array of columns to be used as keys list_output method in the grants library.
+   * It checks if the feature model has defined the list_table_visble_columns (Wrapped via grants library) 
+   * or gets an array of all fields of the active table and
+   * if finds any, adds to the fields array the name columns of the lookup tables as defined in the feature model
+   * (Wrapped via grants library)
+   *  Finally implements checking field access permissions 
+   * 
+   * @return Array : An array of columns to be used in the list method
+   */
+  public function list_select_columns(){
 
     // Check if the table has list_table_visible_columns not empty
     $list_table_visible_columns = $this->grants->list_table_visible_columns();
@@ -248,11 +334,13 @@ public $single_form_add_visible_columns = [];
       //Unset foreign keys columns, created_by and last_modified_by columns
 
       if( substr($get_all_table_field,0,3) == 'fk_' ||
-          strpos($get_all_table_field,'_created_by') == true ||
-           strpos($get_all_table_field,'_last_modified_by') == true ||
-           strpos($get_all_table_field,'_deleted_at') == true
+          $this->grants->is_history_tracking_field($this->controller,$get_all_table_field,'created_by') ||
+           $this->grants->is_history_tracking_field($this->controller,$get_all_table_field,'last_modified_by') ||
+           $this->grants->is_history_tracking_field($this->controller,$get_all_table_field,'deleted_at')
         ){
+
         unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
+      
       }
 
 
@@ -272,7 +360,7 @@ public $single_form_add_visible_columns = [];
 
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
-            if(strpos($lookup_table_column,'_name') == true){
+            if($this->grants->is_name_field($lookup_table,$lookup_table_column)){
               array_push($visible_columns,$lookup_table_column);
             }
 
@@ -285,14 +373,28 @@ public $single_form_add_visible_columns = [];
     return $this->control_column_visibility($this->controller,$visible_columns,'read');
   }
 
-  function list($lookup_tables){
+
+  /**
+   * list
+   * 
+   * This method uses the list_select_columns returned array and creates table joins based on the 
+   * lookup tables defined in the selected/active table lookup_tables feature model. This method has been 
+   * used in the grants model to construct the list_query (A method switching between grants model database against the 
+   * feature model results). The methods returns database results.
+   * 
+   * @todo Needs to be renamed to list_query to match a sibling method detail_list_query
+   * 
+   * @param Array $lookup_tables : An array of lookup tables as defined in the feature model lookup_tables method
+   * @return Array : Database results
+   */
+  public function list(Array $lookup_tables):Array{
     $table = $this->controller;
     // Run column selector
     $this->db->select($this->list_select_columns());
 
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
-          $lookup_table_id = $lookup_table.'_id';
+          $lookup_table_id = $this->grants->primary_key_field($lookup_table);
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
     }
@@ -300,8 +402,24 @@ public $single_form_add_visible_columns = [];
     return $this->grants_get($table);
 
   }
-
-  function master_view_select_columns(){
+  
+  /**
+   * master_view_select_columns
+   * 
+   * This method creates an array of selected columns to be used in the master_view method in this model.
+   * The master_view method of this model is used to implement the grants master_view method which finally feeds
+   * to the view_output method.
+   * 
+   * This methods utilizes a feature model wrapper method master_table_visible_columns from grant library which
+   * checks if the feature model has specified columns to be used in the query of the master table of a view action page
+   * or If not specified, it uses all fields from the selected table, ensuring that the foreign keys in this case are unset
+   * In both cases above, it ensures that the name fields of the lookup tables are added to this array
+   * 
+   * It finally implements the fields access permission checks and returns the final array
+   * 
+   * @return Array - Select columns
+   */
+  private function master_view_select_columns(){
 
     // Check if the table has list_table_visible_columns not empty
     $master_table_visible_columns = $this->grants->master_table_visible_columns();
@@ -347,7 +465,7 @@ public $single_form_add_visible_columns = [];
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
             if(
-              $lookup_table_column == $lookup_table.'_id' || $lookup_table_column == $lookup_table.'_name'
+              $lookup_table_column == $this->grants->primary_key_field($lookup_table) || $lookup_table_column == $this->grants->name_field($lookup_table)
             ){
               array_push($visible_columns,$lookup_table_column);
             }
@@ -357,12 +475,31 @@ public $single_form_add_visible_columns = [];
       }
     }
 
-
-    return $visible_columns;
+    return $this->control_column_visibility($this->controller,$visible_columns,'read');
 
   }
 
-  function detail_list_select_columns($table){
+  /**
+   * detail_list_select_columns
+   * 
+   * It method is similar in use to the list_select_columns in its use only that it is used in creating select 
+   * column array for the detail list table in a view action table.
+   * 
+   * It accepts an argument equal to the detail table name and check if the detail_list_table_visible_columns
+   * (A feature model wrapper method) in the feature model returns any array or else uses all fields from
+   * the selected table.
+   * 
+   * By default, all foreign keys, created_by, last_modified_by and deleted_at columns are unset in this method in the
+   * case the columns are derived from all table fields and in this case, name fields from the lookup tables
+   * are added to the array.
+   * 
+   * Field access permissions are applied to the array before it return
+   * 
+   * @param String : Name of the detail table
+   * 
+   * @return Array : Array of selected columns 
+   */
+  public function detail_list_select_columns($table){
 
     // Check if the table has list_table_visible_columns not empty
     $detail_list_table_visible_columns = $this->grants->detail_list_table_visible_columns($table);
@@ -375,9 +512,9 @@ public $single_form_add_visible_columns = [];
       //Unset foreign keys columns, created_by and last_modified_by columns
 
       if( substr($get_all_table_field,0,3) == 'fk_' ||
-          strpos($get_all_table_field,'_created_by') == true ||
-           strpos($get_all_table_field,'_last_modified_by') == true ||
-           strpos($get_all_table_field,'_deleted_at') == true
+           $this->grants->is_history_tracking_field($table,$get_all_table_field,'created_by') ||
+           $this->grants->is_history_tracking_field($table,$get_all_table_field,'last_modified_by') ||
+           $this->grants->is_history_tracking_field($table,$get_all_table_field,'deleted_at')
         ){
         unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
       }
@@ -399,7 +536,7 @@ public $single_form_add_visible_columns = [];
 
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
-            if(strpos($lookup_table_column,'_name') == true){
+            if($this->grants->is_name_field($lookup_table,$lookup_table_column)){
               array_push($visible_columns,$lookup_table_column);
             }
 
@@ -408,12 +545,23 @@ public $single_form_add_visible_columns = [];
       }
     }
 
-    //return $visible_columns;
     return $this->control_column_visibility($table,$visible_columns);
   }
 
-
-  function master_select_columns(){
+  /**
+   * master_select_columns
+   * 
+   * This method serves the view_output method in the grant model with keys of the master table in the view action pages
+   * 
+   * It tries to check in the feature model wrapper method master_table_visible_columns has been set or if not use the
+   * all fields of the selected table. If using all fields from the table, it will unset the foreign keys and deleted_at fields and
+   * ensure that the name fields of the lookup tables have been added to the select column array being created.
+   * 
+   * Finally, the method sanitizes the resultant array by enforcing the field access permissions
+   * 
+   * @return Array - Master table keys in the view action pages 
+   */
+  public function master_select_columns(){
 
     $table = $this->controller;
 
@@ -429,7 +577,7 @@ public $single_form_add_visible_columns = [];
       //Unset foreign keys columns, created_by and last_modified_by columns
 
       if( substr($get_all_table_field,0,3) == 'fk_' ||
-           strpos($get_all_table_field,'_deleted_at') == true
+            $this->grants->is_history_tracking_field($table,$get_all_table_field,'deleted_at')
         ){
         unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
       }
@@ -451,7 +599,7 @@ public $single_form_add_visible_columns = [];
 
           foreach ($lookup_table_columns as $lookup_table_column) {
             // Only include the name field of the look up table in the select columns
-            if(strpos($lookup_table_column,'_name') == true){
+            if($this->grants->is_name_field($lookup_table,$lookup_table_column)){
               array_push($visible_columns,$lookup_table_column);
             }
 
@@ -460,37 +608,40 @@ public $single_form_add_visible_columns = [];
       }
     }
 
-
-
-    return $visible_columns;
+    //return $visible_columns; // Come here
+    return $this->control_column_visibility($table,$visible_columns,'read');
 
   }
 
-
+  /**
+   * detail_list_query
+   * 
+   * This method creates a query result to be used in the grants library detail_list_query method then in the 
+   * detail_list_view and finally in the view_output. 
+   * 
+   * It takes the select column array of the detail_list_select_columns and implements of the detail table lookup tables
+   * and then applies a where condition to only select records related to the selected master record.
+   * 
+   * @param String - Selected detail table
+   * @return Array - Database result
+   */
   function detail_list_query($table){
 
     $lookup_tables = $this->grants->lookup_tables($table);
-    //echo $table.'</br>';
-    //print_r($lookup_tables);
-    //exit();
+    
     // Run column selector
     $this->db->select($this->detail_list_select_columns($table));
-    //print_r($this->detail_list_select_columns($table));
-    //exit();
+
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
-          $lookup_table_id = $lookup_table.'_id';
+          $lookup_table_id = $this->grants->primary_key_field($lookup_table);
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
     }
-    //print_r(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode')));
-    //exit();
-    $this->db->where(array($table.'.fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode') ));
-    //print_r($this->db->get($table)->result_array());
-    //echo $this->controller;
-    //exit();
-    //print_r($this->grants_get($table));
-    //exit;
+
+    // A condition to get records by the $id of the selected master table record (URI segment 3)
+    $this->db->where(array($table.'.fk_'.$this->grants->primary_key_field($this->controller) => hash_id($this->uri->segment(3,0),'decode') ));
+
     return $this->grants_get($table);
   }
 
@@ -504,9 +655,11 @@ public $single_form_add_visible_columns = [];
       $select_columns = $this->master_view_select_columns();
 
       // Add created_by and last_modified_by fields if noe exists in columns selected
-      if( !in_array($table.'_created_by',$select_columns) || 
-          !in_array($table.'_last_modified_by',$select_columns)){
-        array_push($select_columns,$table.'_created_by',$table.'_last_modified_by'); 
+      if( !in_array($this->grants->history_tracking_field($table,'created_by'),$select_columns) || 
+          !in_array($this->grants->history_tracking_field($table,'last_modified_by'),$select_columns)
+        ){
+        array_push($select_columns,$this->grants->history_tracking_field($table,'created_by'),
+        $this->grants->history_tracking_field($table,'last_modified_by')); 
       }
 
       $this->db->select($select_columns);
@@ -518,7 +671,7 @@ public $single_form_add_visible_columns = [];
       if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
             //Create table joins
-            $lookup_table_id = $lookup_table.'_id';
+            $lookup_table_id = $this->grants->primary_key_field($lookup_table);
             $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
         }
       }
@@ -537,17 +690,17 @@ public $single_form_add_visible_columns = [];
         $this->db->where($this->$library->list_table_where());
       }
 
-      $data = (array)$this->db->get_where($table,array($table.'_id'=> hash_id($this->uri->segment(3,0),'decode') ) )->row();
+      $data = (array)$this->db->get_where($table,array($this->grants->primary_key_field($table) => hash_id($this->uri->segment(3,0),'decode') ) )->row();
       
       // Get the name of the record creator
-      $created_by = $data[$table.'_created_by'] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
-      array('user_id'=>$data[$table.'_created_by']))->row()->user_name:get_phrase('creator_user_not_set');
+      $created_by = $data[$this->grants->history_tracking_field($table,'created_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
+      array('user_id'=>$data[$this->grants->history_tracking_field($table,'created_by')]))->row()->user_name:get_phrase('creator_user_not_set');
 
       $data['created_by'] = $created_by;
 
       //Get the name of the last record modifier
-      $last_modified_by = $data[$table.'_last_modified_by'] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
-      array('user_id'=>$data[$table.'_last_modified_by']))->row()->user_name:get_phrase('modifier_user_not_set');
+      $last_modified_by = $data[$this->grants->history_tracking_field($table,'last_modified_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
+      array('user_id'=>$data[$this->grants->history_tracking_field($table,'_last_modified_by')]))->row()->user_name:get_phrase('modifier_user_not_set');
 
       $data['last_modified_by'] = $last_modified_by;
 
@@ -712,7 +865,19 @@ public $single_form_add_visible_columns = [];
     return $this->control_column_visibility($this->controller,$visible_columns);
   }
 
-  function edit_visible_columns(){
+  /**
+   * edit_visible_columns
+   * 
+   * This method uses the edit_visible_columns wrapper method from grants library if set or 
+   * all fields of the active table as select columns and the URI 3rd segement as where condition
+   * to get the query results of the current record to be editted.
+   * 
+   * The foreign key fields and deleted at field is escaped and all the lookup name fields are exchanged
+   * to their respective primary key fields.
+   * 
+   * @return Array - Database query result (Single row)
+   */
+  function edit_visible_columns():Object {
         
         $table = $this->controller;
 
@@ -736,7 +901,25 @@ public $single_form_add_visible_columns = [];
         $lookup_columns = array();
     
         if(is_array($edit_visible_columns) && count($edit_visible_columns) > 0 ){
+
           $visible_columns = $edit_visible_columns;
+
+          foreach ($visible_columns as $column_index => $visible_column) {
+            // Replace the lookup table name fields
+            if( $this->grants->is_lookup_tables_name_field($table,$visible_column,true) !== null ){
+              // Remove the lookup table name field. To be replaced with the primary key field of the 
+              // lookup table
+              unset($visible_columns[$column_index]);
+
+              // Get the lookup table with the name field equals to $visible_column
+              $lookup_table = $this->grants->is_lookup_tables_name_field($table,$visible_column,true);
+
+              // Add to the visible column the primary key field of the lookup table above
+              array_push($visible_columns,$this->grants->primary_key_field($lookup_table));
+            }
+
+          }
+
         }else{
     
           if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
@@ -746,9 +929,8 @@ public $single_form_add_visible_columns = [];
     
               foreach ($lookup_table_columns as $lookup_table_column) {
                 // Only include the name field of the look up table in the select columns
-                if(strpos($lookup_table_column,'_name') == true){
-                  //array_push($visible_columns,$lookup_table_column);
-                  array_push($visible_columns,substr($lookup_table_column,0,-5).'_id');
+                if($this->grants->is_name_field($lookup_table,$lookup_table_column)){
+                  array_push($visible_columns,$this->grants->primary_key_field($lookup_table));
                 }
     
               }
@@ -759,15 +941,16 @@ public $single_form_add_visible_columns = [];
 
         if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
           foreach ($lookup_tables as $lookup_table) {
-              $lookup_table_id = $lookup_table.'_id';
+              $lookup_table_id = $this->grants->primary_key_field($lookup_table);
               $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
           }
         }
 
         $controlled_field_permission = $this->control_column_visibility($table, $visible_columns,'update');
-    
+        //print_r($controlled_field_permission);
+        //exit('Edit visible columns');
         $this->db->select($controlled_field_permission);
-        $this->db->where(array($table.'_id'=>hash_id($this->id,'decode')));
+        $this->db->where(array($this->grants->primary_key_field($table) => hash_id($this->id,'decode')));
         return $this->grants_get_row($table);
   }
 
@@ -948,15 +1131,5 @@ function center_start_date($center_id){
    return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
 }
 
-// function role_fields_permission(){
-//   $permission = array();
-
-//   // Permission type 2 = Field Access, 1 = Pages Acess
-
-//   //$permission['departmentmanager']['Bank']['bank_swift_code'] = 1550;
-//   $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
-//   $this->db->get_where('role_permission',
-//   array('fk_role_id'=>$this->session->role_id,'permission.permission_type'=>2));
-// }
 
 }

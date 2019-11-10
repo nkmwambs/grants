@@ -222,6 +222,211 @@ function lookup_tables(String $table_name = ""): Array{
   return $this->lookup_tables;
 }
 
+/**
+ * dependant_table
+ * 
+ * This method checks if a dependant_table is set in the feature model. A dependant table is a special
+ * detail table that can only be filled depending on the master table (Both are filled at the same time by the user)
+ * 
+ * It implements the backward compatlibilty checking wether the legacy way of naming dependant tables has been 
+ * adhered to i.e. a suffix of _detail to the table name
+ * 
+ * @param String $table_name : Selected table acting as the master
+ * @return String : Dependant table 
+ */
+public function dependant_table($table_name = ""){
+
+  $model = $this->load_detail_model($table_name);
+
+  $dependant_table = "";
+
+  if(property_exists($this->CI->$model,'dependant_table')){
+      $dependant_table = $this->CI->$model->dependant_table;
+  }elseif($this->CI->grants_model->table_exists($table_name."_detail")){
+    //Legacy way of implementing dependancy table was to create a table suffixed with _detail.
+    // This part checks if this has been implemented if the dependant_table property is not defined
+      $dependant_table = $table_name."_detail";
+  }
+
+  return $dependant_table; 
+}
+/**
+ * primary_key_field
+ * 
+ * This method retrieves the primary key field of the selected table
+ * 
+ * @param String $table_name - Selected table
+ * @return String - Primary key field
+ */
+public function primary_key_field(String $table_name):String {
+  
+  $metadata = $this->CI->grants_model->table_fields_metadata($table_name);
+
+  $primary_key_field = "";
+
+  foreach($metadata as $data){
+    if($data->primary_key == 1){
+      $primary_key_field = $data->name;
+    }
+  }
+
+  return $primary_key_field;
+}
+
+/**
+ * name_field
+ * 
+ * Gets the name field of a selected table. It does this by checking it the feature model property name_field
+ * exists, if not it will check on the legacy naming convention of siffixing name fields with _name
+ * 
+ * @param String $table_name : Selected table name
+ * @return String - Table name field
+ */
+public function name_field(String $table_name = ""):String {
+  
+  $model = $this->load_detail_model($table_name);
+   
+  $name_field = "";
+
+  if(property_exists($this->CI->$model,'name_field')){
+    $name_field = $this->CI->$model->name_field;
+  }else{
+    $fields = $this->CI->grants_model->get_all_table_fields($table_name);
+
+    if(in_array($table_name.'_name',$fields)){
+      $name_field = $table_name.'_name';
+    }
+    
+  }
+
+  return $name_field;
+
+}
+
+/**
+ * history_tracking_field
+ * 
+ * Checks for the field name of the history fields from the feature model property if it exists
+ * 
+ * History tracking fields are: deleted_at, created_date, last_modified_date, created_by and 
+ * last_modified_by
+ * 
+ * It returns the legacy naming if the feature property doesn't exists, otherwise empty string
+ * 
+ * @param String $table_name - Table to select
+ * @param String $history_type - Can either be deleted_at, created_date, last_modified_date, 
+ * created_by or last_modified_by
+ * 
+ * @return String - History field name
+ */
+public function history_tracking_field(String $table_name,String $history_type): String {
+
+  $model = $this->load_detail_model($table_name);
+
+  $history_type_field = "";
+
+  if(property_exists($this->CI->$model,$history_type.'_field') ){
+    $property = $history_type.'_field';
+    $history_type_field = $this->CI->$model->$property;
+  }else{
+    $fields = $this->CI->grants_model->get_all_table_fields($table_name);
+
+    if(in_array($table_name.'_'.$history_type,$fields)){
+      $history_type_field = $table_name.'_'.$history_type;
+    }
+  }
+
+  return $history_type_field;
+
+}
+
+/**
+ * 
+ */
+public function is_history_tracking_field(String $table_name, String $column, String $history_type){
+
+  $is_history_tracking_field = false;
+
+  //Helps to prevent the use of invalid history tracking fields
+  $template_history_types = array('created_date','created_by','last_modified_date','last_modified_by','deleted_at');
+
+  //foreach($history_types as $history_type){
+
+    if(in_array($history_type,$template_history_types)){
+      $history_tracking_field = $this->history_tracking_field($table_name,$history_type);
+
+      if($column == $history_tracking_field){
+        $is_history_tracking_field = true;
+      }
+    }
+
+  //}
+
+  return $is_history_tracking_field;
+
+}
+
+/**
+ * is_name_field
+ * 
+ * Checks if a field passed is a name field of the passed table
+ * 
+ * @param String $table - Table to check a column from
+ * @param String $column - Column to check if name field
+ * @return Boolean - True if name field else false
+ */
+public function is_name_field($table,$column){
+  
+  $table_name_field = $this->name_field($table);
+  
+  $is_name_field = false;
+
+  if(strtolower($table_name_field) == strtolower($column)){
+    $is_name_field = true;
+  }
+
+  return $is_name_field;
+}
+
+/**
+ * is_lookup_tables_name_field
+ * 
+ * This method checks a passed column if its a name field of any of the passed table lookup_tables
+ * If it finds it in any of the lookup tables, it can return a true bool if the 3rd argument $return_lookup_table
+ * is set to false (Default) or return the name of the lookup table with that posseses the passed column
+ * as its name field.
+ * 
+ * @param String $master_table - Table to iterate its lookup tables
+ * @param String $column - The column/field to check for
+ * @param Boolean $return_lookup_table - Toogle what to be returned, if true returns bool else the name of 
+ * the lookup table with the passed column as its name field
+ * 
+ * @return Mixed - Can either be Bool or the name of a lookup table
+ */
+public function is_lookup_tables_name_field($master_table,$column, $return_lookup_table = false ){
+  
+  $lookup_tables = $this->lookup_tables($master_table);
+  
+  $is_name_field = false;
+  
+  $table_to_return = null;
+
+  if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
+    foreach($lookup_tables as $lookup_table){
+      if($this->is_name_field($lookup_table,$column)){
+        $is_name_field = true;
+        $table_to_return = $lookup_table;
+      }
+    }
+  }
+
+  if($return_lookup_table){
+    return $table_to_return;
+  }else{
+    return $is_name_field;
+  }
+  
+}
 
 /**
  * detail_tables
@@ -230,6 +435,12 @@ function lookup_tables(String $table_name = ""): Array{
  * The detail_tables method holds the details referencing tables as array elements
  * Passing an argument to this wrapper switches between the main feature model 
  * detail_tables to a certain details models
+ * 
+ * It helps to nullify the use of the detail_tables feature method if the parameter dependant_table in the 
+ * feature model is set
+ * 
+ * This method also specifies how the approval list should list its detail tables. The detail tables should
+ * be listed one by one depending on the one selected on the list action page of the approval listing
  * 
  * @param $table_name String : The table to check detail tables for
  * 
@@ -241,7 +452,7 @@ function detail_tables(String $table_name = ""): Array {
   
   if($this->controller == 'approval' && $this->action == 'view'){
     // This is specific to approval view, only to list the detail listing of the select approveable 
-    // item
+    // items
     $id = $this->CI->uri->segment(3,0);
 
     $this->CI->db->join('approve_item','approve_item.approve_item_id=approval.fk_approve_item_id');
@@ -249,12 +460,19 @@ function detail_tables(String $table_name = ""): Array {
     array('approval_id'=>hash_id($id,'decode')))->row()->approve_item_name;
     
     $this->detail_tables = array($detail_table);
-  
+
+  }elseif($this->dependant_table($table_name) !== "" ){
+    // If dependant_table exists, you can't have more than one detail table. This piece nullifies the use
+    // of the detail_tables feature model if is set
+    $this->detail_tables[] = $this->dependant_table($table_name);
+
   }elseif(method_exists($this->CI->$model,'detail_tables') && 
       is_array($this->CI->$model->detail_tables()) 
     ){
-    $this->detail_tables  = $this->CI->$model->detail_tables();
-  }
+    
+      $this->detail_tables  = $this->CI->$model->detail_tables();
+  
+    }
 
   return $this->detail_tables;
 }
@@ -359,7 +577,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
       $has_detail_table = false;
 
-      if( is_array($all_detail_tables) && in_array($table.'_detail',$all_detail_tables) ){
+      if( is_array($all_detail_tables) && in_array($this->dependant_table($table),$all_detail_tables) ){
         $has_detail_table = true;
       }
 
@@ -378,12 +596,12 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    */  
   function detail_row_fields(Array $fields_array): Array {
 
-      $this->set_change_field_type($this->controller.'_detail');
+      $this->set_change_field_type($this->dependant_table($this->controller));
 
       $fields = array();
 
       foreach ($fields_array as $key) {
-        $f = new Fields_base($key,$this->controller.'_detail');
+        $f = new Fields_base($key,$this->dependant_table($this->controller));
 
         $field_type = $f->field_type();
 
@@ -494,7 +712,8 @@ function add_form_fields(Array $visible_columns_array): Array {
 function edit_form_fields(Array $visible_columns_array): Array {
 
   $fields = array();
-
+  //print_r($visible_columns_array);
+  //exit();
   foreach ($visible_columns_array as $column => $value) {
     $fields[$column] = $this->header_row_field($column, $value);
   }
@@ -574,7 +793,7 @@ function detail_list_table_visible_columns(String $table) {
 
     //Add the table id columns if does not exist in $columns
     if(is_array($this->detail_list_table_visible_columns) && !in_array($table.'_id',$this->detail_list_table_visible_columns)){
-      array_unshift($this->detail_list_table_visible_columns,$table.'_id');
+      array_unshift($this->detail_list_table_visible_columns,$this->primary_key_field($table));
     }
 
   }
@@ -597,10 +816,12 @@ function list_table_visible_columns() {
     is_array($this->CI->$model->list_table_visible_columns())
   ){
     $this->list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+    //print_r($this->list_table_visible_columns);
 
      //Add the table id columns if does not exist in $columns
-    if(is_array($this->list_table_visible_columns) && !in_array($this->controller.'_id',$this->list_table_visible_columns)){
-      array_unshift($this->list_table_visible_columns,$this->controller.'_id');
+    if(is_array($this->list_table_visible_columns) && 
+      !in_array($this->primary_key_field($this->controller),$this->list_table_visible_columns)){
+      array_unshift($this->list_table_visible_columns,$this->primary_key_field($this->controller));
     }
   }
 
@@ -624,8 +845,9 @@ function master_table_visible_columns(){
     $this->master_table_visible_columns = $this->CI->$model->master_table_visible_columns();
 
     //Add the table id columns if does not exist in $columns
-    if(is_array($this->master_table_visible_columns) && !in_array($this->controller.'_id',$this->master_table_visible_columns)){
-      array_unshift($this->master_table_visible_columns,$this->controller.'_id');
+    if(is_array($this->master_table_visible_columns) && 
+    !in_array($this->primary_key_field($this->controller),$this->master_table_visible_columns)){
+      array_unshift($this->master_table_visible_columns,$this->primary_key_field($this->controller));
     }
 
   }
@@ -700,7 +922,7 @@ function edit_visible_columns(){
   if(method_exists($this->CI->$model,'edit_visible_columns') && 
       is_array($this->CI->$model->edit_visible_columns())
   ){
-    $this->single_form_add_visible_columns = $this->CI->$model->edit_visible_columns();
+    $this->edit_visible_columns = $this->CI->$model->edit_visible_columns();
   }
   return $this->edit_visible_columns;
 }
@@ -708,26 +930,31 @@ function edit_visible_columns(){
 /**
  * list
  * 
- * This method returns the query results for the list pages
+ * This method returns the query results for the list pages.
+ * It checks first if there is any list method defined from the feature model or if missing
+ * get the default one from the grants model.
+ * Finally the method sanitises the final array by checking if there is a change in field type to a select
+ * type and point the correct options values
  * 
  * @return Array
  */
-function list_query(){
+function list_query(): Array {
   $model = $this->current_model;
 
   // Get the tables foreign key relationship
   $lookup_tables = $this->lookup_tables();
 
   // Get result from grants model if feature model list returns empty
-  $feature_model_list_result = $this->CI->$model->list(); // A full user defined query result
-  $grant_model_list_result = $this->CI->grants_model->list($lookup_tables); // System generated query result
-
-  $query_result = $grant_model_list_result;
-
-  if(is_array($feature_model_list_result) && count($feature_model_list_result) > 0){
-    $query_result = $feature_model_list_result;
+  $query_result = $this->CI->grants_model->list($lookup_tables); // System generated query result
+  
+  if(method_exists($this->CI->$model,'list')){
+    $feature_model_list_result = $this->CI->$model->list();
+    if(is_array($feature_model_list_result) && count($feature_model_list_result) > 0){
+      $query_result = $feature_model_list_result; // A full user defined query result
+    }
   }
- 
+
+  // Implemeting resetting of options if a field is changed from to a select type
   $query_result = $this->update_query_result_for_fields_changed_to_select_type($this->controller,$query_result);
 
   return $query_result;
@@ -809,6 +1036,7 @@ function show_add_button(String $table = ""): Bool {
  * Again the approve_item table should contain the name of the table as approvable item and create a default 
  * new status of this table in the status table. Give this new status an status_approval_sequence of 1
  * 
+ * @todo to take the database manipumation work to grants model
  * @param $table String : The selected table
  * 
  * @return void
@@ -895,9 +1123,6 @@ function mandatory_fields(String $table): Void{
       }
   }
 }
-
-
-
 
 // Query result for list tables
 
@@ -1179,10 +1404,10 @@ function multi_form_add_output($table_name = ""){
     $fields = $this->add_form_fields($visible_columns);//$this->master_multi_form_add_visible_columns_query();
 
     // $keys = $this->CI->grants_model->master_multi_form_add_visible_columns();
-    $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($table.'_detail');
+    $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($this->dependant_table($table));
     //print_r($detail_table_keys);
     //exit();
-    $false_keys = $this->false_keys($table.'_detail');
+    $false_keys = $this->false_keys($this->dependant_table($table));
 
     return array(
       'fields'=>$fields,

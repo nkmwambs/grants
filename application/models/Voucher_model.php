@@ -11,9 +11,14 @@
 class Voucher_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'voucher'; // you MUST mention the table name
-  public $primary_key = 'voucher_id'; // you MUST mention the primary key
-  public $fillable = array(); // If you want, you can set an array with the fields that can be filled by insert/update
-  public $protected = array(); // ...Or you can set an array with the fields that cannot be filled by insert/update
+  //public $primary_key = 'voucher_id'; // you MUST mention the primary key
+  public $dependant_table = 'voucher_detail';
+  public $name_field = 'voucher_name';
+  public $create_date_field = "voucher_created_date";
+  public $created_by_field = "voucher_created_by";
+  public $last_modified_date_field = "voucher_last_modified_date";
+  public $last_modified_by_field = "voucher_last_modified_by";
+  public $deleted_at_field = "voucher_deleted_at";
 
   function __construct(){
     parent::__construct();
@@ -31,6 +36,13 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array('voucher_detail');
   }
 
+  public function detail_table_relationships(){
+    $relationship['voucher_detail']['foreign_key'] = 'fk_voucher_id';
+
+    return $relationship;
+  }
+
+
   function detail_list(){}
 
   // function master_view(){
@@ -47,8 +59,10 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   public function view(){}
 
   public function list_table_visible_columns(){
-    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
+
+    // return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    // 'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
+  
   }
 
   public function detail_list_table_visible_columns(){
@@ -59,6 +73,10 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   public function master_table_visible_columns(){
     return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
     'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_by','voucher_created_date');
+  }
+
+  public function edit_visible_columns(){
+    return $this->master_table_visible_columns();
   }
 
     /**Local methods**/

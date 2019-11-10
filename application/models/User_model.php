@@ -242,11 +242,17 @@ class User_model extends MY_Model
     if(strpos($active_controller,"_detail") ==  true){
       $active_controller = substr($active_controller,0,-7);
     }
+   
 
     //Is the passed column is a permission controlled field?
-    $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
-    $is_column_controlled = $this->db->get_where('permission',
-    array('menu_derivative_controller'=>$active_controller,'permission_field'=>$column));
+    /**
+     * DON'T KNOW WHY THE CI QUERY DOESN'T WORK BUT THE NATIVE SQL DOES FOR EDIT ACTION PAGES
+     */
+    //$this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+    //$is_column_controlled = $this->db->get_where('permission',array('menu_derivative_controller'=>$active_controller,'permission_field'=>$column));
+    
+    $sql = "SELECT * FROM permission JOIN menu ON permission.fk_menu_id=menu.menu_id WHERE menu_derivative_controller = '".$active_controller."' AND permission_field='".$column."'";
+    $is_column_controlled = $this->db->query($sql);
 
     if($is_column_controlled->num_rows() > 0){
       // Yes, it permission controlled
