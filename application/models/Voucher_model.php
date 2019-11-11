@@ -72,7 +72,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function master_table_visible_columns(){
     return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_by','voucher_created_date');
+    'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_by','voucher_last_modified_by','voucher_created_date');
   }
 
   public function edit_visible_columns(){
