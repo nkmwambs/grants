@@ -1,49 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r($this->user_model->get_user_permissions(2));
-
-//$user_more_menu_based_on_permissions = $this->session->user_more_menu;
-
-//$chunked_user_more = array_chunk($user_more_menu_based_on_permissions,
-//              $this->config->item('max_priority_menu_items'), true);
-
-//print_r($chunked_user_more);  
-
-
-//$rbac = new Rbac_base();
-
-//print_r($rbac->add_permissions());
-
-// $rbac = new  \PhpRbac\Rbac();
-//
-// // Create a Permission
-// $perm_id = $rbac->Permissions->add('delete_posts', 'Can delete forum posts');
-// $perm_id = $rbac->Permissions->add('create_posts', 'Can create forum posts');
-//
-// // Create a Role
-// $role_id = $rbac->Roles->add('forum_moderator', 'User can moderate forums');
-//
-//
-// $perm_descriptions = array(
-//     'Can delete users',
-//     'Can edit user profiles',
-//     'Can view users'
-// );
-//
-// $rbac->Permissions->addPath('/delete_users/edit_users/view_users', $perm_descriptions);
-//
-// $role_descriptions = array(
-//     'Forum Administrator',
-//     'Forum Moderator',
-//     'Registered Forum Member'
-// );
-//
-// $rbac->Roles->addPath('/admin/forum_moderator/forum_member', $role_descriptions);
-
-//use Nette\Utils\Random;
-
-//echo Random::generate(10); // '6zq3a1nl8n'
-//echo Random::generate(5, 'A-Z'); // 'HLKUR'
+echo Output_base::load('list');
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">

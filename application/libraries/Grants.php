@@ -1198,23 +1198,25 @@ function center_start_date(int $center_id): String {
  */
 function list_output(){
 
-  $table = $this->controller;
+  // $table = $this->controller;
 
-  $this->mandatory_fields($table);
+  // $this->mandatory_fields($table);
 
-  $result = $this->list_query();
-  $keys = $this->CI->grants_model->list_select_columns();
-  $has_details = $this->check_if_table_has_detail_table();
-  $show_add_button = $this->show_add_button();
+  // $result = $this->list_query();
+  // $keys = $this->CI->grants_model->list_select_columns();
+  // //$has_details = $this->check_if_table_has_detail_table();
+  // $show_add_button = $this->show_add_button();
 
-  return array(
-    'keys'=> $keys,
-    'table_body'=>$result,
-    'table_name'=> $table,
-    'has_details_table' => $this->check_if_table_has_detail_table($table),
-    'has_details_listing' => $this->check_if_table_has_detail_listing($table),
-    'show_add_button'=>$show_add_button
-  );
+  // return array(
+  //   'keys'=> $keys,
+  //   'table_body'=>$result,
+  //   'table_name'=> $table,
+  //   'has_details_table' => $this->check_if_table_has_detail_table($table),
+  //   'has_details_listing' => $this->check_if_table_has_detail_listing($table),
+  //   'show_add_button'=>$show_add_button
+  // );
+
+  return Output_base::load('list');
 }
 
 /**
