@@ -1,5 +1,7 @@
 <?php
 
+require_once('Output_template.php');
+
 class Output_base{
 
     private $CI = null;
@@ -8,7 +10,6 @@ class Output_base{
 
     function __construct(){
         $this->CI =& get_instance();
-
     }
 
 

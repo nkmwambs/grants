@@ -324,72 +324,118 @@ function edit(String $id):String{
     return array_combine($ids_array,$value_array);
   }
 
-
   /**
-   * list_select_columns
-   * 
-   * A method that returns an array of columns to be used as keys list_output method in the grants library.
-   * It checks if the feature model has defined the list_table_visble_columns (Wrapped via grants library) 
-   * or gets an array of all fields of the active table and
-   * if finds any, adds to the fields array the name columns of the lookup tables as defined in the feature model
-   * (Wrapped via grants library)
-   *  Finally implements checking field access permissions 
-   * 
-   * @return Array : An array of columns to be used in the list method
-   */
-  public function list_select_columns(){
+ * mandatory_fields
+ * 
+ * This method adds mandatory fields in a table. All tables should contain the following fields:
+ * xxxx_created_date, xxxx_created_by, xxxx_last_modified_date, xxxx_last_modified_by, fk_approval_id and
+ * fk_status_id
+ * 
+ * Again the approve_item table should contain the name of the table as approvable item and create a default 
+ * new status of this table in the status table. Give this new status an status_approval_sequence of 1
+ * 
+ * @param $table String : The selected table
+ * 
+ * @return void
+ */
 
-    // Check if the table has list_table_visible_columns not empty
-    $list_table_visible_columns = $this->grants->list_table_visible_columns();
-    $lookup_tables = $this->grants->lookup_tables();
+function mandatory_fields(String $table): Void{
 
-    $get_all_table_fields = $this->get_all_table_fields();
+  if($table!=='approval'){
+      //Mandatory Fields: created_by, created_date,last_modified_by,last_modified_date,fk_approval_id,fk_status_id
+      $mandatory_fields = array($table.'_created_date',$table.'_created_by',$table.'_last_modified_by',
+      $table.'_last_modified_date','fk_approval_id','fk_status_id');
 
+      // Check if the table is in the approveable items table if not create it
+      $approve_items = $this->db->get_where('approve_item',array('approve_item_name'=>$table));
 
-    foreach ($get_all_table_fields as $get_all_table_field) {
+      $approve_item_id = 0;
 
-      //Unset foreign keys columns, created_by and last_modified_by columns
+      if($approve_items->num_rows() == 0){
+        $data['approve_item_name'] = $table;
+        $data['approve_item_is_active'] = 0;
+        $data['approve_item_created_date'] = date('Y-m-d');
+        $data['approve_item_created_by'] = $this->session->user_id;
+        $data['approve_item_last_modified_by'] = $this->session->user_id;
 
-      if( substr($get_all_table_field,0,3) == 'fk_' ||
-          $this->grants->is_history_tracking_field($this->controller,$get_all_table_field,'created_by') ||
-           $this->grants->is_history_tracking_field($this->controller,$get_all_table_field,'last_modified_by') ||
-           $this->grants->is_history_tracking_field($this->controller,$get_all_table_field,'deleted_at')
-        ){
+        $this->db->insert('approve_item',$data);
 
-        unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
-      
+        $approve_item_id = $this->db->insert_id();
+
+      }else{
+        $approve_item_id = $approve_items->row()->approve_item_id;
       }
-    }
 
-    $visible_columns = $get_all_table_fields;
-    $lookup_columns = array();
+      // Check is the the table has a status with status_approval_sequence 1 if not create it with status name
 
-    if(is_array($list_table_visible_columns) && count($list_table_visible_columns) > 0 ){
-      $visible_columns = $list_table_visible_columns;
-    }else{
-      if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-        foreach ($lookup_tables as $lookup_table) {
+      $status = $this->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
 
-          $lookup_table_columns = $this->get_all_table_fields($lookup_table);
+      $status_id = 0;
 
-          foreach ($lookup_table_columns as $lookup_table_column) {
-            // Only include the name field of the look up table in the select columns
-            if($this->grants->is_name_field($lookup_table,$lookup_table_column)){
-              array_push($visible_columns,$lookup_table_column);
-            }
+      if($status->num_rows() == 0){
+        $status_data['status_name'] = get_phrase('new');
+        $status_data['status_action_label'] = "";
+        $status_data['fk_approve_item_id'] = $approve_item_id;
+        $status_data['status_approval_sequence'] = 1;
+        $status_data['status_approval_direction'] = 1;
+        $status_data['status_is_requiring_approver_action'] = 0;
+        $status_data['fk_role_id'] = $this->session->role_id;
+        $status_data['status_created_date'] =  date('Y-m-d');
+        $status_data['status_created_by'] = $this->session->user_id;
+        $status_data['status_last_modified_by']  = $this->session->user_id;
 
+        $this->db->insert('status',$status_data);
+
+        $status_id = $this->db->insert_id();
+
+      }
+
+      // Check if the mandatory fields exists in the listed table and if not alter the table by 
+      // adding a column with default value as the newly inserted status_id
+
+      $fields_to_add = array();
+
+      $table_fields = $this->get_all_table_fields($table);
+
+      foreach ($mandatory_fields as $mandatory_field) {
+        if(!in_array($mandatory_field,$table_fields)) {
+
+          if(substr($mandatory_field,0,3) == 'fk_' || substr($mandatory_field,-3,3) == '_by'){
+            $fields_to_add[$mandatory_field]['type'] = 'INT';
+            $fields_to_add[$mandatory_field]['constraint'] = '100';
+          }elseif(strpos($mandatory_field,'_date') == true){
+            $fields_to_add[$mandatory_field]['type'] = 'date';
+            //$fields_to_add[$mandatory_field]['constraint'] = '100';
+          }else{
+            $fields_to_add[$mandatory_field]['type'] = 'varchar';
+            $fields_to_add[$mandatory_field]['constraint'] = '100';
           }
+
         }
       }
-    }
 
-    return $this->control_column_visibility($this->controller,$visible_columns,'read');
+      if(count($fields_to_add) > 0){
+        $this->load->dbforge();
+        $this->dbforge->add_column($table, $fields_to_add);
+      }
   }
+}
 
-  function list($lookup_tables){
+/**
+ * run_query
+ * 
+ * Runs an SQL query. Example used in the List_output class in the Output API
+ * 
+ * @param String $table - Selected table
+ * @param Array $select_columns - Columns to be used in the select SQL portion
+ * @param Array $lookup_tables - To be used to prepare a join statement
+ * 
+ * @return Array - Database result
+ */
+public function run_query($table, $selected_columns, $lookup_tables): Array {
     $table = $this->controller;
     // Run column selector
-    $this->db->select($this->list_select_columns());
+    $this->db->select($selected_columns);
 
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
@@ -399,8 +445,7 @@ function edit(String $id):String{
     }
 
     return $this->grants_get($table);
-
-  }
+} 
 
   /**
    * master_view_select_columns
@@ -482,6 +527,7 @@ function edit(String $id):String{
    * control_column_visibility
    * 
    * This method checks if a field/column has permission to with a create label
+   * @todo this method doesn't interact with the database thus needs to meove to an API or Lib/ Has been moved to Access_base class
    * @param $table String : Selected table
    * @param $visible_columns Array : Array of visible/ selected columns/ fields
    * @param $permission_label String : Can be create, update or read
