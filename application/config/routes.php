@@ -61,10 +61,4 @@ spl_autoload_register(function($classname){
         require(FCPATH.'application/interfaces/'.$classname.'.php');
     }
 
-    // Autoloading API classes
-
-    if(strpos($classname,'base') == true){
-        require(FCPATH.'application/api/'.$classname.'.php');
-    }
-
 });

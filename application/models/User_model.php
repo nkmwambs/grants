@@ -269,4 +269,10 @@ class User_model extends MY_Model
 
   }
 
+  function detail_multi_form_add_visible_columns(){
+
+  }
+
+  
+
 }

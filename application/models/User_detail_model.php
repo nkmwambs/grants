@@ -40,4 +40,8 @@ class User_detail_model extends MY_Model implements CrudModelInterface, TableRel
 
   }
 
+  function detail_multi_form_add_visible_columns(){
+
+  }
+
 }

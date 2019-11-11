@@ -85,11 +85,11 @@ $(".edit, .edit_continue").on('click',function(ev){
     success:function(response){
       alert(response);
 
-      if($(this).hasClass('back')){
-			  window.history.back(1);        
-      } else {
-        window.location.reload();
-      }
+      // if($(this).hasClass('back')){
+			//   window.history.back(1);        
+      // } else {
+      //   window.location.reload();
+      // }
       on_record_post();
     },
     error:function(){
