@@ -57,7 +57,26 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (179,	'APAL-8602',	'Approval Ticket # APAL-8602',	29,	1,	'2019-11-08',	'2019-11-08 12:18:44',	1),
 (180,	'APAL-42378',	'Approval Ticket # APAL-42378',	29,	1,	'2019-11-08',	'2019-11-08 12:23:24',	1),
 (181,	'APAL-28521',	'Approval Ticket # APAL-28521',	29,	1,	'2019-11-08',	'2019-11-08 12:24:18',	1),
-(182,	'APAL-76538',	'Approval Ticket # APAL-76538',	29,	1,	'2019-11-08',	'2019-11-08 12:26:22',	1);
+(182,	'APAL-76538',	'Approval Ticket # APAL-76538',	29,	1,	'2019-11-08',	'2019-11-08 12:26:22',	1),
+(185,	'APAL-67074',	'Approval Ticket # APAL-67074',	22,	1,	'2019-11-08',	'2019-11-08 12:35:17',	1),
+(186,	'APAL-89308',	'Approval Ticket # APAL-89308',	22,	1,	'2019-11-08',	'2019-11-08 12:37:51',	1),
+(187,	'APAL-54182',	'Approval Ticket # APAL-54182',	23,	1,	'2019-11-08',	'2019-11-08 12:39:25',	1),
+(188,	'APAL-61432',	'Approval Ticket # APAL-61432',	22,	1,	'2019-11-08',	'2019-11-08 12:43:11',	1),
+(189,	'APAL-43136',	'Approval Ticket # APAL-43136',	22,	1,	'2019-11-08',	'2019-11-08 12:47:29',	1),
+(190,	'APAL-6496',	'Approval Ticket # APAL-6496',	23,	1,	'2019-11-08',	'2019-11-08 12:48:05',	1),
+(191,	'APAL-62132',	'Approval Ticket # APAL-62132',	23,	1,	'2019-11-08',	'2019-11-08 12:48:32',	1),
+(192,	'APAL-78015',	'Approval Ticket # APAL-78015',	22,	1,	'2019-11-08',	'2019-11-08 13:30:17',	1),
+(193,	'APAL-78908',	'Approval Ticket # APAL-78908',	23,	1,	'2019-11-08',	'2019-11-08 13:31:03',	1),
+(194,	'APAL-6342',	'Approval Ticket # APAL-6342',	23,	1,	'2019-11-08',	'2019-11-08 14:17:53',	1),
+(195,	'APAL-82116',	'Approval Ticket # APAL-82116',	23,	1,	'2019-11-08',	'2019-11-08 14:18:12',	1),
+(196,	'APAL-65833',	'Approval Ticket # APAL-65833',	2,	2,	'2019-11-08',	'2019-11-08 15:43:40',	2),
+(197,	'APAL-54353',	'Approval Ticket # APAL-54353',	22,	1,	'2019-11-08',	'2019-11-08 17:26:32',	1),
+(198,	'APAL-85692',	'Approval Ticket # APAL-85692',	23,	1,	'2019-11-08',	'2019-11-08 17:28:08',	1),
+(199,	'APAL-40108',	'Approval Ticket # APAL-40108',	22,	1,	'2019-11-08',	'2019-11-08 17:29:44',	1),
+(200,	'APAL-69287',	'Approval Ticket # APAL-69287',	23,	1,	'2019-11-08',	'2019-11-08 17:31:28',	1),
+(201,	'APAL-13425',	'Approval Ticket # APAL-13425',	23,	1,	'2019-11-08',	'2019-11-08 17:31:49',	1),
+(203,	'APAL-63537',	'Approval Ticket # APAL-63537',	2,	1,	'2019-11-11',	'2019-11-11 07:43:19',	1),
+(204,	'APAL-48936',	'Approval Ticket # APAL-48936',	3,	1,	'2019-11-11',	'2019-11-11 07:54:25',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -136,7 +155,7 @@ CREATE TABLE `bank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the banks for centers';
 
 INSERT INTO `bank` (`bank_id`, `bank_track_number`, `bank_name`, `bank_swift_code`, `bank_is_active`, `bank_created_date`, `bank_created_by`, `bank_last_modified_date`, `bank_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'BAK-87365',	'Commercial Bank of Kenya',	'2365',	1,	'2019-11-07',	1,	'2019-11-06 15:28:30',	1,	152,	51),
+(1,	'BAK-87365',	'Commercial Bank of Kenya',	'23700',	1,	'2019-11-07',	1,	'2019-11-06 15:28:30',	1,	152,	51),
 (2,	'BANK-3124',	'Chess Bank',	'65783',	1,	'2019-11-08',	2,	'2019-11-08 11:03:07',	2,	170,	51);
 
 DROP TABLE IF EXISTS `bank_branch`;
@@ -713,7 +732,30 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (687,	2,	399,	1,	20,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
 (688,	2,	400,	1,	21,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
 (689,	2,	401,	1,	22,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(690,	2,	402,	1,	23,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL);
+(690,	2,	402,	1,	23,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
+(691,	5,	380,	1,	1,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(692,	5,	381,	1,	2,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(693,	5,	382,	1,	3,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(694,	5,	383,	1,	4,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(695,	5,	384,	1,	5,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(696,	5,	385,	1,	6,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(697,	5,	386,	1,	7,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(698,	5,	387,	1,	8,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(699,	5,	388,	1,	9,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(700,	5,	389,	1,	10,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(701,	5,	390,	1,	11,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(702,	5,	391,	1,	12,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(703,	5,	392,	1,	13,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(704,	5,	393,	1,	14,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(705,	5,	394,	1,	15,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(706,	5,	395,	1,	16,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(707,	5,	396,	1,	17,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(708,	5,	397,	1,	18,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(709,	5,	398,	1,	19,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(710,	5,	399,	1,	20,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(711,	5,	400,	1,	21,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(712,	5,	401,	1,	22,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
+(713,	5,	402,	1,	23,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -804,9 +846,15 @@ INSERT INTO `permission` (`permission_id`, `permission_track_number`, `permissio
 (18,	'PEM-41448',	'show_bank',	'Show a list of bank records',	1,	2,	1,	'',	381,	146,	47,	'2019-11-07',	1,	NULL,	'2019-11-07 11:34:49',	1),
 (19,	'PEM-34619',	'add_bank',	'Add a new bank record',	1,	1,	1,	'',	381,	148,	47,	'2019-11-07',	1,	NULL,	'2019-11-07 12:03:32',	1),
 (20,	'PEON-46617',	'delete_bank',	'Deleting a bank',	1,	4,	1,	'',	381,	157,	47,	'2019-11-07',	1,	NULL,	'2019-11-07 14:06:25',	1),
-(21,	'PEON-47240',	'show_bank_is_active',	'Show Bank Is Active Field ',	1,	1,	2,	'bank_is_active',	381,	165,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 09:35:12',	1),
+(21,	'PEON-47240',	'insert_bank_is_active',	'Show Bank Is Active Field on create',	1,	1,	2,	'bank_is_active',	381,	165,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 09:35:12',	1),
 (22,	'PEON-77845',	'show_request',	'Show a list of requests',	1,	2,	1,	'',	392,	171,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 11:32:48',	1),
-(23,	'PEON-53472',	'add_request',	'Add a new request',	1,	1,	1,	'',	392,	172,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 11:33:33',	1);
+(23,	'PEON-53472',	'add_request',	'Add a new request',	1,	1,	1,	'',	392,	172,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 11:33:33',	1),
+(25,	'PEON-83225',	'show_center_name',	'Show center name field of the voucher form',	1,	1,	2,	'center_name',	397,	186,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 12:37:51',	1),
+(26,	'PEON-16620',	'show_voucher',	'Show a list of vouchers',	1,	2,	1,	'',	397,	188,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 12:43:11',	1),
+(27,	'PEON-21271',	'add_voucher',	'Add new voucher record',	1,	1,	1,	'',	397,	189,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 12:47:29',	1),
+(28,	'PEON-65200',	'show_voucher_detail_description',	'Show the voucher detail description',	1,	1,	2,	'voucher_detail_description',	397,	192,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 13:30:17',	1),
+(29,	'PEON-32089',	'update_bank_is_active',	'Show the bank is active field on update',	1,	3,	2,	'bank_is_active',	381,	197,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 17:26:32',	1),
+(30,	'PEON-2742',	'edit_bank',	'Editing a bank record',	1,	3,	1,	'',	381,	199,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 17:29:44',	1);
 
 DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
@@ -959,7 +1007,8 @@ CREATE TABLE `request` (
 
 INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_status_id`, `fk_center_id`, `fk_approval_id`, `request_date`, `request_description`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
 (84,	'REQ-15134',	'Test Request',	14,	9,	155,	'2019-11-07',	'Test Request',	'2019-11-07',	'1',	'1',	'2019-11-07 13:38:01',	NULL),
-(85,	'REST-84293',	'Another request',	14,	9,	159,	'2019-11-07',	'Another request',	'2019-11-07',	'1',	'1',	'2019-11-07 17:23:55',	NULL);
+(85,	'REST-84293',	'Another request',	14,	9,	159,	'2019-11-07',	'Another request',	'2019-11-07',	'1',	'1',	'2019-11-07 17:23:55',	NULL),
+(86,	'REST-35895',	'Tested',	14,	9,	204,	'2019-11-11',	'Tested',	'2019-11-11',	'1',	'1',	'2019-11-11 07:54:25',	NULL);
 
 DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
@@ -989,7 +1038,8 @@ CREATE TABLE `request_detail` (
 INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
 (104,	'RQD-67934',	84,	'Test ',	50,	1200.00,	60000.00,	1,	2,	1,	NULL,	'2019-11-07',	1,	1,	'2019-11-07 13:38:01'),
 (105,	'REIL-9736',	85,	'Test 2',	100,	600.00,	6000.00,	2,	3,	1,	NULL,	'2019-11-07',	1,	1,	'2019-11-07 17:23:55'),
-(106,	'REIL-63352',	85,	'Test 3',	150,	650.00,	97500.00,	1,	2,	1,	NULL,	'2019-11-07',	1,	1,	'2019-11-07 17:23:55');
+(106,	'REIL-63352',	85,	'Test 3',	150,	650.00,	97500.00,	1,	2,	1,	NULL,	'2019-11-07',	1,	1,	'2019-11-07 17:23:55'),
+(107,	'REIL-61548',	86,	'Tested',	115,	255.00,	29325.00,	1,	2,	1,	NULL,	'2019-11-11',	1,	1,	'2019-11-11 07:54:25');
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
@@ -1042,7 +1092,16 @@ INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_numb
 (4,	'ROON-88427',	'Finance Director listing banks',	1,	2,	18,	168,	48,	'2019-11-08',	1,	'2019-11-08 10:09:04',	1),
 (5,	'ROON-85843',	'Finance Director Adding banks',	1,	2,	19,	169,	48,	'2019-11-08',	1,	'2019-11-08 10:09:34',	1),
 (6,	'ROON-44018',	'List requests for Finance director',	1,	2,	22,	173,	48,	'2019-11-08',	1,	'2019-11-08 11:34:43',	1),
-(7,	'ROON-9358',	'Add requests by Finance director',	1,	2,	23,	174,	48,	'2019-11-08',	1,	'2019-11-08 11:35:07',	1);
+(7,	'ROON-9358',	'Add requests by Finance director',	1,	2,	23,	174,	48,	'2019-11-08',	1,	'2019-11-08 11:35:07',	1),
+(8,	'ROON-30396',	'Finance Director can see the center name when adding a voucher on behalf of a center',	1,	2,	25,	187,	48,	'2019-11-08',	1,	'2019-11-08 12:39:25',	1),
+(9,	'ROON-41670',	'List vouchers to Center Accountant',	1,	3,	26,	190,	48,	'2019-11-08',	1,	'2019-11-08 12:48:05',	1),
+(10,	'ROON-77186',	'Allow center accountant to add a voucher',	1,	3,	27,	191,	48,	'2019-11-08',	1,	'2019-11-08 12:48:32',	1),
+(11,	'ROON-72193',	'Show the voucher detail description field',	1,	2,	28,	193,	48,	'2019-11-08',	1,	'2019-11-08 13:31:03',	1),
+(12,	'ROON-40527',	'Show voucher list to Finance Director',	1,	2,	26,	194,	48,	'2019-11-08',	1,	'2019-11-08 14:17:53',	1),
+(13,	'ROON-58711',	'Add a voucher by Finance Director',	1,	2,	27,	195,	48,	'2019-11-08',	1,	'2019-11-08 14:18:12',	1),
+(14,	'ROON-38943',	'Department manager able to update bank status',	1,	1,	29,	198,	48,	'2019-11-08',	1,	'2019-11-08 17:28:08',	1),
+(15,	'ROON-76668',	'Department Manager editing a bank',	1,	1,	30,	200,	48,	'2019-11-08',	1,	'2019-11-08 17:31:28',	1),
+(16,	'ROON-28987',	'Finance director editing a bank',	1,	2,	30,	201,	48,	'2019-11-08',	1,	'2019-11-08 17:31:49',	1);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -1322,6 +1381,9 @@ CREATE TABLE `voucher` (
   CONSTRAINT `fk_voucher_voucher_type1` FOREIGN KEY (`fk_voucher_type_id`) REFERENCES `voucher_type` (`voucher_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
+INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `voucher_number`, `fk_center_id`, `voucher_date`, `fk_voucher_type_id`, `fk_approval_id`, `fk_status_id`, `voucher_cheque_number`, `voucher_transaction_cleared_date`, `voucher_transaction_cleared_month`, `voucher_vendor`, `voucher_description`, `voucher_allow_edit`, `voucher_created_by`, `voucher_created_date`, `voucher_last_modified_date`, `voucher_last_modified_by`) VALUES
+(1,	'VOER-81182',	'Voucher # VOER-81182',	191101,	9,	'2019-11-08',	2,	196,	10,	0,	'0000-00-00',	'0000-00-00',	'Testing',	'Testing',	0,	2,	'2019-11-08',	'2019-11-08 15:43:40',	2),
+(3,	'VOER-81997',	'Voucher # VOER-81997',	191102,	9,	'2019-11-11',	2,	203,	10,	0,	'0000-00-00',	'0000-00-00',	'Test',	'Test',	0,	1,	'2019-11-11',	'2019-11-11 07:43:19',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
@@ -1333,7 +1395,7 @@ CREATE TABLE `voucher_detail` (
   `voucher_detail_unit_cost` decimal(10,2) DEFAULT NULL,
   `voucher_detail_total_cost` decimal(10,2) DEFAULT NULL,
   `fk_expense_account_id` int(100) DEFAULT NULL COMMENT 'Can be income_account_id or expense_account_id depending on the selected voucher type',
-  `fk_income_account_id` int(100) DEFAULT NULL,
+  `fk_income_account_id` int(100) NOT NULL DEFAULT '0',
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   `fk_project_allocation_id` int(100) DEFAULT NULL,
@@ -1348,6 +1410,9 @@ CREATE TABLE `voucher_detail` (
   CONSTRAINT `voucher_detail_ibfk_3` FOREIGN KEY (`fk_voucher_id`) REFERENCES `voucher` (`voucher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`, `fk_voucher_id`, `voucher_detail_description`, `voucher_detail_quantity`, `voucher_detail_unit_cost`, `voucher_detail_total_cost`, `fk_expense_account_id`, `fk_income_account_id`, `fk_approval_id`, `fk_status_id`, `fk_project_allocation_id`, `voucher_detail_last_modified_date`, `voucher_detail_last_modified_by`, `voucher_detail_created_by`, `voucher_detail_created_date`) VALUES
+(1,	'VOIL-16222',	1,	'Testing',	100,	1500.00,	150000.00,	2,	0,	NULL,	39,	2,	NULL,	'2',	2,	'2019-11-08'),
+(2,	'VOIL-62288',	3,	'Trial',	25,	2500.00,	62500.00,	2,	0,	NULL,	39,	3,	NULL,	'1',	1,	'2019-11-11');
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -1389,4 +1454,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-11-08 12:32:24
+-- 2019-11-11 08:13:01
