@@ -222,6 +222,28 @@ public $single_form_add_visible_columns = [];
     return $this->db->field_data($table);
   }
 
+  /**
+   * table_exists
+   * 
+   * A wrapper method table_exists CI DB object 
+   * 
+   * @param String : Selected table to check if exists
+   * 
+   * @return Boolean
+   */
+  public function table_exists(String $table_name = ""):bool{
+    
+    $table = $table_name == ""?$this->controller:$table_name;
+
+    $table_exists = false;
+
+    if($this->db->table_exists($table)){
+      $table_exists = true;
+    }
+
+    return $table_exists;
+  }
+
   function lookup_values($table){
 
     $result = $this->db->get($table)->result_array();
