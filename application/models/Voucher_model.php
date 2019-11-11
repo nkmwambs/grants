@@ -60,8 +60,8 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function list_table_visible_columns(){
 
-    // return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    // 'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
+    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
   
   }
 
@@ -80,7 +80,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
     /**Local methods**/
-  function highest_voucher_number($center_id = 1){
+  function highest_voucher_number($center_id){
 
     // Get max voucher number for center
     return $this->db->select_max("voucher_number")->get_where('voucher',

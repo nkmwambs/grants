@@ -628,13 +628,15 @@ public $single_form_add_visible_columns = [];
   function detail_list_query($table){
 
     $lookup_tables = $this->grants->lookup_tables($table);
-    
+
     // Run column selector
     $this->db->select($this->detail_list_select_columns($table));
 
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $this->grants->primary_key_field($lookup_table);
+          //echo $lookup_table_id;
+          //exit();
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
     }
@@ -700,7 +702,7 @@ public $single_form_add_visible_columns = [];
 
       //Get the name of the last record modifier
       $last_modified_by = $data[$this->grants->history_tracking_field($table,'last_modified_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
-      array('user_id'=>$data[$this->grants->history_tracking_field($table,'_last_modified_by')]))->row()->user_name:get_phrase('modifier_user_not_set');
+      array('user_id'=>$data[$this->grants->history_tracking_field($table,'last_modified_by')]))->row()->user_name:get_phrase('modifier_user_not_set');
 
       $data['last_modified_by'] = $last_modified_by;
 

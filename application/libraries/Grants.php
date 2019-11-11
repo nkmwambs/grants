@@ -596,7 +596,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    */  
   function detail_row_fields(Array $fields_array): Array {
 
-      $this->set_change_field_type($this->dependant_table($this->controller));
+      $this->set_change_field_type($this->controller);
 
       $fields = array();
 

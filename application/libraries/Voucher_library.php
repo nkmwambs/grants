@@ -23,10 +23,11 @@ class Voucher_library extends Grants
   }
 
   function voucher_number_default_field_value(){
-    // Not yet factoring if the books of the month has been closed or new center
-    $highest_voucher_number = $this->CI->voucher_model->highest_voucher_number();
 
     $center_id = $this->CI->session->center_id;
+
+    // Not yet factoring if the books of the month has been closed or new center
+    $highest_voucher_number = $this->CI->voucher_model->highest_voucher_number($center_id);
 
     $center_start_date = $this->center_start_date($center_id);
 
