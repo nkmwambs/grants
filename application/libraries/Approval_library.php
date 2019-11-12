@@ -13,6 +13,8 @@ class Approval_library extends Grants
 
   private $CI;
 
+  public $menu_icon = 'fa fa-check';
+
   function __construct(){
     parent::__construct();
     $this->CI =& get_instance();

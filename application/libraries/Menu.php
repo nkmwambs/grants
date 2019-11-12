@@ -245,9 +245,21 @@ class Menu {
 
       foreach ($menus as $menu => $items) {
         if($this->CI->user_model->check_role_has_permissions($menu,'read')){
+           // Intended to show an icon but didn't work
+          //$library = $menu.'_library'; 
+          
+          //$this->CI->load->library($menu.'_library');
+
+          $menu_icon = '';
+
+          // if(property_exists($this->CI->$library,'menu_icon')){
+          //   $menu_icon = $this->CI->$library->menu_icon;
+          // }
+
           $nav .= '
           <li class="">
               <a href="'.base_url().strtolower($menu).'/list">
+                  <i class="'.$menu_icon.'"></i>
                   <span>'.get_phrase($items['menu_name']).'</span>
               </a>
           </li>

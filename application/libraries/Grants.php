@@ -69,20 +69,6 @@ private $table;
  */
 private $false_keys_model_method = 'false_keys';
 
-
-/**
- * master_table_visible_columns holds the selected fields of the master part of the master-detail view action pages
- * @var Array 
- */
-private $master_table_visible_columns = [];
-
-
-/**
- * detail_list_table_visible_columns holds the selected fields of the detail part of the master-detail view action pages
- * @var Array
- */
-private $detail_list_table_visible_columns = [];
-
 /**
  * detail_multi_form_add_visible_columns holds the selected fields of the detail part of the 
  * multi_form_add action pages
@@ -97,13 +83,6 @@ private $detail_multi_form_add_visible_columns = [];
  */
 private $master_multi_form_add_visible_columns = [];
 
-
-/**
- * detail_list_query holds the query result of the detail part of the master-detail view action pages
- * @var Array
- */
-private $detail_list_query = [];
-
 /**
  * Look up tables of the active table
  * @var Array
@@ -116,11 +95,6 @@ private $lookup_tables = [];
  */
 private $detail_tables = [];
 
-/**
- * Query result for the master part of the master-detail of view action page
- * @var Array
- */
-private $master_view = [];
 
 /**
  * Selected columns of the edit action page with database results
@@ -518,7 +492,7 @@ function add_default_hidden_columns(Array $default_hidden_columns,Array $columns
  * get_all_table_fields
  * 
  * The method returns all fields names of the selected table. It's a wrapper method from grants model
- * 
+ *  
  * @param $table_name String : The selected table
  * 
  * @return Array
@@ -578,6 +552,11 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
       return $has_detail_table;
     }
+
+/**
+ * THE BELOW METHODS ARE TO MOVE TO THE OUTPUT API CLASSES
+ */
+
 
   /**
    * detail_row_fields
@@ -766,62 +745,6 @@ function edit_form_fields(Array $visible_columns_array): Array {
 
 
   
-// Visible Columns methods
-
-/**
- * detail_list_table_visible_columns
- * 
- * Returns an array of columns to be selected in a listing table in a master-detail view action page
- * 
- * @param $table String : Selected detail table
- * 
- * @return Array
- */
-function detail_list_table_visible_columns(String $table) {
-
-  $model = $this->load_detail_model($table);
-
-  if(method_exists($this->CI->$model,'detail_list_table_visible_columns') && 
-      is_array($this->CI->$model->detail_list_table_visible_columns())
-  ){
-    $this->detail_list_table_visible_columns = $this->CI->$model->detail_list_table_visible_columns();
-
-    //Add the table id columns if does not exist in $columns
-    if(is_array($this->detail_list_table_visible_columns) && !in_array($table.'_id',$this->detail_list_table_visible_columns)){
-      array_unshift($this->detail_list_table_visible_columns,$this->primary_key_field($table));
-    }
-
-  }
-
-  return $this->detail_list_table_visible_columns;
-}
-
-/**
- * master_table_visible_columns
- * 
- * Returns an array of selected fields in the master part of the master-detail view action pages
- * @todo - Needs to be worked out to allow only selecting name fields for lookups without their ids. Currently you need both.
- * @return Array
- */
-function master_table_visible_columns(){
-  $model = $this->current_model;
-
-  if(method_exists($this->CI->$model,'master_table_visible_columns') &&
-  is_array($this->CI->$model->master_table_visible_columns())
-  ){
-    $this->master_table_visible_columns = $this->CI->$model->master_table_visible_columns();
-
-    //Add the table id columns if does not exist in $columns
-    if(is_array($this->master_table_visible_columns) && 
-    !in_array($this->primary_key_field($this->controller),$this->master_table_visible_columns)){
-      array_unshift($this->master_table_visible_columns,$this->primary_key_field($this->controller));
-    }
-
-  }
-
-  return $this->master_table_visible_columns;
-}
-
 /**
  * detail_multi_form_add_visible_columns
  * 
@@ -965,31 +888,6 @@ function show_add_button(String $table = ""): Bool {
 
 // Query result for list tables
 
-/**
- * detail_list_query
- * 
- * This is query result of the detail table. The result of this method will be used in the view_output
- * to create the detail list
- * 
- * @param $table String : The selected table
- * 
- * @return array
- * 
- */
-function detail_list_query(String $table): Array {
-  $model = $this->load_detail_model($table);
-
-  if(method_exists($this->CI->$model,'detail_list_query') && 
-      is_array($this->CI->$model->detail_list_query()) &&
-      count($this->CI->$model->detail_list_query()) > 0
-    ){
-      $this->detail_list_query = $this->CI->$model->detail_list_query(); // A full user defined query result
-  } else{
-      $this->detail_list_query = $this->CI->grants_model->detail_list_query($table); // System generated query result
-  }
-
-  return $this->detail_list_query;
-}
 
 
 /**
@@ -1027,79 +925,6 @@ function center_start_date(int $center_id): String {
 // The output methods below are the entry points for all loading pages in this framework
 // We have the following _output methods: list_output, view_output, single_form_add_output 
 // and multi_form_add_output
-
-
-/**
- * detail_list_view
- * 
- * This method creates an array to be used in the view_output. It used to construct the table array_result
- * of each detail table
- * 
- * @param $table String : Selected table
- * 
- * @return array
- * 
- */
-function detail_list_view(String $table): Array {
-
-  // Query result of the detail table
-  $result = $this->detail_list_query($table);
-
-  // Selected column of the detail table
-  $keys = $this->CI->grants_model->detail_list_select_columns($table);
-
-  // Check if the detail table has also other detail tables. 
-  // It makes its track number a link in the view if true
-  $has_details = $this->check_if_table_has_detail_table($table);
-
-  // It check if the detail table is approveable so as to show the approval links in the status action
-  $is_approveable_item = $this->approveable_item($table);
-
-  // Check if the add button is allowed to be shown
-  $show_add_button = $this->show_add_button($table);
-
-  // Checks if the detail table has a detail table to it
-  $has_details_listing = $this->check_if_table_has_detail_listing($table);
-
-  return array(
-    'keys'=> $keys,
-    'table_body'=>$result,
-    'table_name'=> $table,
-    'has_details_table' => $has_details,
-    'has_details_listing' => $has_details_listing,
-    'is_approveable_item' => $is_approveable_item,
-    'show_add_button'=>$show_add_button
-  );
-}
-
-/**
- * master_view
- * 
- * This method provide the value of the table_body key of the master outer key of the view_output method
- * 
- * @return array
- *  
- */
-
-function master_view(): Array {
-  $model = $this->current_model;
-
-  // Get result from grants model if feature model list returns empty
-
-  if(method_exists($this->CI->$model,'master_view') &&
-      is_array($this->CI->$model->master_view()) && 
-      count($this->CI->$model->master_view()) > 0 
-  ){
-    
-    $this->master_view = $this->CI->$model->master_view();
-  
-  }else{
-    $this->master_view = $this->CI->grants_model->master_view();
-  }
-
-
-  return $this->master_view;
-}
 
 
 /**
@@ -1246,7 +1071,7 @@ function edit_query($table){
  * It helps to check if the logged user has permission to acccess a controlled field
  * Any field that has been flagged in the permission table is referred to as a controlled field
  * 
- * @todo - has been moved to access_base
+ * @todo - has been moved to access_base/ Delete it from here after all Output code moves to Output API
  * 
  * @param String $table - Selected table
  * @param String $permission_label - Can be 1 or 2

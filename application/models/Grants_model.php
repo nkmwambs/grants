@@ -432,11 +432,16 @@ function mandatory_fields(String $table): Void{
  * 
  * @return Array - Database result
  */
-public function run_query($table, $selected_columns, $lookup_tables): Array {
-    $table = $this->controller;
+public function run_list_query($table, $selected_columns, $lookup_tables, 
+  $lib_where_method = "list_table_where", $filter_where_array = array() ): Array {
+
     // Run column selector
     $this->db->select($selected_columns);
 
+    // echo $table;
+    // print_r($selected_columns);
+    // exit();
+
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $lookup_table.'_id';
@@ -444,268 +449,37 @@ public function run_query($table, $selected_columns, $lookup_tables): Array {
       }
     }
 
-    return $this->grants_get($table);
+    $library = $table.'_library';
+
+    $this->load->library($library);
+
+    // A condition supplied from the Output API class
+    if(count($filter_where_array) > 0 && is_array($filter_where_array) ){
+      $this->db->where($filter_where_array);
+    }
+
+    if(method_exists($this->$library,$lib_where_method) && 
+        is_array($this->$library->$lib_where_method()) && 
+          count($this->$library->$lib_where_method()) > 0
+      ){
+      $this->db->where($this->$library->$lib_where_method());
+    }
+
+    return $this->db->get($table)->result_array();
 } 
 
-  /**
-   * master_view_select_columns
-   * 
-   * This method creates an array of selected columns to be used in the master_view method in this model.
-   * The master_view method of this model is used to implement the grants master_view method which finally feeds
-   * to the view_output method.
-   * 
-   * This methods utilizes a feature model wrapper method master_table_visible_columns from grant library which
-   * checks if the feature model has specified columns to be used in the query of the master table of a view action page
-   * or If not specified, it uses all fields from the selected table, ensuring that the foreign keys in this case are unset
-   * In both cases above, it ensures that the name fields of the lookup tables are added to this array
-   * 
-   * It finally implements the fields access permission checks and returns the final array
-   * 
-   * @return Array - Select columns
-   */
-  private function master_view_select_columns(){
 
-    // Check if the table has list_table_visible_columns not empty
-    $master_table_visible_columns = $this->grants->master_table_visible_columns();
-    $lookup_tables = $this->grants->lookup_tables();
+function run_master_view_query($table,$selected_columns,$lookup_tables){
 
-    $get_all_table_fields = $this->get_all_table_fields();
+  $this->db->select($selected_columns); 
 
-
-    foreach ($get_all_table_fields as $get_all_table_field) {
-      //Unset foreign keys columns
-      if( substr($get_all_table_field,0,3) == 'fk_'){
-        unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
-      }
+  if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
+    foreach ($lookup_tables as $lookup_table) {
+        //Create table joins
+        $lookup_table_id = $this->grants->primary_key_field($lookup_table);
+        $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
     }
-
-    $visible_columns = $get_all_table_fields;
-    $lookup_columns = array();
-
-    if(is_array($master_table_visible_columns) && count($master_table_visible_columns) > 0 ){
-      $visible_columns = $master_table_visible_columns;
-
-        if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-          foreach ($lookup_tables as $lookup_table) {
-            
-            // Add primary_keys for the lookup tables in the visible columns array
-            $lookup_table_fields_data = $this->db->field_data($lookup_table);
-            
-            foreach($lookup_table_fields_data as $field_data){
-              if($field_data->primary_key == 1){
-                array_push($visible_columns,$field_data->name);
-              }
-            }
-
-          }
-        }    
-
-    }else{
-      if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-        foreach ($lookup_tables as $lookup_table) {
-
-          $lookup_table_columns = $this->get_all_table_fields($lookup_table);
-
-          foreach ($lookup_table_columns as $lookup_table_column) {
-            // Only include the name field of the look up table in the select columns
-            if(
-              $lookup_table_column == $this->grants->primary_key_field($lookup_table) || $lookup_table_column == $this->grants->name_field($lookup_table)
-            ){
-              array_push($visible_columns,$lookup_table_column);
-            }
-
-          }
-        }
-      }
-    }
-
-    return $this->control_column_visibility($this->controller,$visible_columns,'read');
-
   }
-
-    /**
-   * control_column_visibility
-   * 
-   * This method checks if a field/column has permission to with a create label
-   * @todo this method doesn't interact with the database thus needs to meove to an API or Lib/ Has been moved to Access_base class
-   * @param $table String : Selected table
-   * @param $visible_columns Array : Array of visible/ selected columns/ fields
-   * @param $permission_label String : Can be create, update or read
-   * 
-   * @return Array
-   */
-  function control_column_visibility(String $table, Array $visible_columns, String $permission_label = 'create'): Array{
-    $controlled_visible_columns = array();
-
-    foreach($visible_columns as $column){
-      if($this->grants->check_role_has_field_permission($table,$permission_label,$column)){
-        $controlled_visible_columns[] = $column;
-      }  
-    }
-
-    return $controlled_visible_columns;
-  }
-
-  function detail_list_select_columns($table){
-
-    // Check if the table has list_table_visible_columns not empty
-    $detail_list_table_visible_columns = $this->grants->detail_list_table_visible_columns($table);
-    $lookup_tables = $this->grants->lookup_tables($table);
-
-    $get_all_table_fields = $this->get_all_table_fields($table);
-
-    foreach ($get_all_table_fields as $get_all_table_field) {
-
-      //Unset foreign keys columns, created_by and last_modified_by columns
-
-      if( substr($get_all_table_field,0,3) == 'fk_' ||
-          strpos($get_all_table_field,'_created_by') == true ||
-           strpos($get_all_table_field,'_last_modified_by') == true ||
-           strpos($get_all_table_field,'_deleted_at') == true
-        ){
-        unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
-      }
-
-
-    }
-
-
-    $visible_columns = $get_all_table_fields;
-    $lookup_columns = array();
-
-    if(is_array($detail_list_table_visible_columns) && count($detail_list_table_visible_columns) > 0 ){
-      $visible_columns = $detail_list_table_visible_columns;
-    }else{
-      if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-        foreach ($lookup_tables as $lookup_table) {
-
-          $lookup_table_columns = $this->get_all_table_fields($lookup_table);
-
-          foreach ($lookup_table_columns as $lookup_table_column) {
-            // Only include the name field of the look up table in the select columns
-            if(strpos($lookup_table_column,'_name') == true){
-              array_push($visible_columns,$lookup_table_column);
-            }
-
-          }
-        }
-      }
-    }
-
-    return $this->control_column_visibility($table,$visible_columns);
-
-  }
-
-
-  function master_select_columns(){
-
-    $table = $this->controller;
-
-    // Check if the table has list_table_visible_columns not empty
-    $master_table_visible_columns = $this->grants->master_table_visible_columns($table);
-    $lookup_tables = $this->grants->lookup_tables($table);
-
-    $get_all_table_fields = $this->get_all_table_fields($table);
-
-
-    foreach ($get_all_table_fields as $get_all_table_field) {
-
-      //Unset foreign keys columns, created_by and last_modified_by columns
-
-      if( substr($get_all_table_field,0,3) == 'fk_' ||
-           strpos($get_all_table_field,'_deleted_at') == true
-        ){
-        unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
-      }
-
-
-    }
-
-
-    $visible_columns = $get_all_table_fields;
-    $lookup_columns = array();
-
-    if(is_array($master_table_visible_columns) && count($master_table_visible_columns) > 0 ){
-      $visible_columns = $master_table_visible_columns;
-    }else{
-      if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-        foreach ($lookup_tables as $lookup_table) {
-
-          $lookup_table_columns = $this->get_all_table_fields($lookup_table);
-
-          foreach ($lookup_table_columns as $lookup_table_column) {
-            // Only include the name field of the look up table in the select columns
-            if(strpos($lookup_table_column,'_name') == true){
-              array_push($visible_columns,$lookup_table_column);
-            }
-
-          }
-        }
-      }
-    }
-
-    return $this->control_column_visibility($table,$visible_columns,'read');
-
-  }
-
-
-  function detail_list_query($table){
-
-    $lookup_tables = $this->grants->lookup_tables($table);
-    //echo $table.'</br>';
-    //print_r($lookup_tables);
-    //exit();
-    // Run column selector
-    $this->db->select($this->detail_list_select_columns($table));
-    //print_r($this->detail_list_select_columns($table));
-    //exit();
-    if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-      foreach ($lookup_tables as $lookup_table) {
-          $lookup_table_id = $lookup_table.'_id';
-          $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
-      }
-    }
-    //print_r(array('fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode')));
-    //exit();
-    $this->db->where(array($table.'.fk_'.$this->controller.'_id'=> hash_id($this->uri->segment(3,0),'decode') ));
-    //print_r($this->db->get($table)->result_array());
-    //echo $this->controller;
-    //exit();
-    //print_r($this->grants_get($table));
-    //exit;
-    return $this->grants_get($table);
-  }
-
-
-  function master_view(){
-
-    $table = strtolower($this->controller);
-  
-    $model = $this->current_model;
-
-    $select_columns = $this->master_view_select_columns();
-
-    // Add created_by and last_modified_by fields if noe exists in columns selected
-    if( !in_array($this->grants->history_tracking_field($table,'created_by'),$select_columns) || 
-        !in_array($this->grants->history_tracking_field($table,'last_modified_by'),$select_columns)
-      ){
-      array_push($select_columns,$this->grants->history_tracking_field($table,'created_by'),
-      $this->grants->history_tracking_field($table,'last_modified_by')); 
-    }
-
-    $this->db->select($select_columns);
-
-    $lookup_tables = $this->grants->lookup_tables($table);
-    //echo implode(',',$this->master_view_select_columns());
-    //exit();
-
-    if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
-      foreach ($lookup_tables as $lookup_table) {
-          //Create table joins
-          $lookup_table_id = $this->grants->primary_key_field($lookup_table);
-          $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
-      }
-    }
 
 
     $data = array();
@@ -714,11 +488,11 @@ public function run_query($table, $selected_columns, $lookup_tables): Array {
 
     $this->load->library($library);
 
-    if( method_exists($this->$library,'list_table_where') && 
-        is_array($this->$library->list_table_where()) &&
-        count($this->$library->list_table_where()) > 0
-      ){
-      $this->db->where($this->$library->list_table_where());
+    if( method_exists($this->$library,'master_view_table_where') && 
+        is_array($this->$library->master_view_table_where()) &&
+        count($this->$library->master_view_table_where()) > 0
+    ){
+    $this->db->where($this->$library->master_view_table_where());
     }
 
     $data = (array)$this->db->get_where($table,array($this->grants->primary_key_field($table) => hash_id($this->uri->segment(3,0),'decode') ) )->row();
@@ -737,6 +511,32 @@ public function run_query($table, $selected_columns, $lookup_tables): Array {
 
     return $data;
 }
+
+
+    /**
+   * control_column_visibility
+   * 
+   * This method checks if a field/column has permission to with a create label
+   * @todo this method doesn't interact with the database thus needs to meove to an API or Lib/ 
+   * Has been moved to Access_base class/ Remove it after all Output API code is moved
+   * @param $table String : Selected table
+   * @param $visible_columns Array : Array of visible/ selected columns/ fields
+   * @param $permission_label String : Can be create, update or read
+   * 
+   * @return Array
+   */
+  function control_column_visibility(String $table, Array $visible_columns, String $permission_label = 'create'): Array{
+    $controlled_visible_columns = array();
+
+    foreach($visible_columns as $column){
+      if($this->grants->check_role_has_field_permission($table,$permission_label,$column)){
+        $controlled_visible_columns[] = $column;
+      }  
+    }
+
+    return $controlled_visible_columns;
+  }
+
 
   function grants_get($table){
 
@@ -1102,15 +902,5 @@ function center_start_date($center_id){
    return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
 }
 
-// function role_fields_permission(){
-//   $permission = array();
-
-//   // Permission type 2 = Field Access, 1 = Pages Acess
-
-//   //$permission['departmentmanager']['Bank']['bank_swift_code'] = 1550;
-//   $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
-//   $this->db->get_where('role_permission',
-//   array('fk_role_id'=>$this->session->role_id,'permission.permission_type'=>2));
-// }
 
 }

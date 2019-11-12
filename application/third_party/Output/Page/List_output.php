@@ -130,7 +130,7 @@ function feature_model_list_table_visible_columns(): Array {
     function list_internal_query_results(Array $lookup_tables):Array {
         $table = $this->controller;
 
-        return $this->CI->grants_model->run_query($table,$this->toggle_list_select_columns(),$lookup_tables);
+        return $this->CI->grants_model->run_list_query($table,$this->toggle_list_select_columns(),$lookup_tables);
 
     }
 

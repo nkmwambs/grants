@@ -23,8 +23,8 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   }
 
   function detail_tables(){
-    //return array('request','budget','voucher','center','bank','permission','role_permission','role');
-    return array('request','budget','voucher','center','bank','permission','role_permission','project_allocation');
+    //,'budget','voucher','center','bank','permission','role_permission','project_allocation'
+    return array('request');
   }
 
 
