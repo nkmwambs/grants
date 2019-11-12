@@ -12,7 +12,13 @@ unset($keys[array_search($this->controller.'_id',$keys)]);
 $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
 ?>
-
+<div class="row">
+  <div class="col-xs-12">
+      <?php 
+        include "widgets/comment.php";;
+      ?>
+  </div>
+</div>
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-striped">
@@ -20,12 +26,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?>
             <?=get_phrase('master_record');?>
-            <i title="<?=get_phrase('attachments(s)');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-paperclip pull-left"></i>
-            <i title="<?=get_phrase('message(s)');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-comments-o pull-left"></i>
-            <i title="<?=get_phrase('print');?>" style="font-size:15pt;cursor:pointer;" class="fa fa-print pull-right"></i>
           </th>
         </tr>
-        
+
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
               <div class="btn btn-default"><?=get_phrase('edit');?></div>

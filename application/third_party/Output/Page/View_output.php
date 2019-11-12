@@ -116,6 +116,7 @@ class View_output extends Output_template{
         // Add created_by and last_modified_by fields if not exists in columns selected
         if( !in_array($this->CI->grants->history_tracking_field($this->controller,'created_by'),$visible_columns) || 
             !in_array($this->CI->grants->history_tracking_field($this->controller,'last_modified_by'),$visible_columns)
+                
         ){
             array_push($visible_columns,$this->CI->grants->history_tracking_field($table,'created_by'),
             $this->CI->grants->history_tracking_field($this->controller,'last_modified_by')); 

@@ -19,7 +19,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    return array('center','approval');
+    return array('center','approval','status');
   }
 
   public function detail_tables(){
