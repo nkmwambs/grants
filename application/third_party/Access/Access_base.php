@@ -1,8 +1,37 @@
 <?php 
 
+/**
+* The Access_base class is part of the system APIs that controls the access permission for users.
+*
+* @author Nicodemus Karisa
+* @package Grants Management System
+* @copyright Compassion International Kenya
+* @license https://compassion-africa.org/lisences.html
+*
+*/
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+/**
+* The Access_base class is part of the system APIs that controls the access permission for users.
+*
+* @author Nicodemus Karisa
+* @package Grants Management System
+* @copyright Compassion International Kenya
+* @license https://compassion-africa.org/lisences.html
+*
+*/
 class Access_base{
+
+    /**
+     * @var Object $CI - Holds CodeIgniter singleton object
+     */
     private $CI = null;  
 
+    /**
+     * __construct
+     * 
+     * This is the class construct
+     */
     function __construct(){
         $this->CI =& get_instance();
     }
@@ -11,8 +40,9 @@ class Access_base{
     * control_column_visibility
     * 
     * This method checks if a field/column has permission to with a create label
-    * @param $visible_columns Array : Array of visible/ selected columns/ fields
-    * @param $permission_label String : Can be create, update or read
+    * @param String $table - Selected table
+    * @param Array $visible_columns : Array of visible/ selected columns/ fields
+    * @param String $permission_label : Can be create, update or read
     * 
     * @return Array
     */

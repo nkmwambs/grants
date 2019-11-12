@@ -1,25 +1,62 @@
 <?php
 
-$path_parts = pathinfo(__FILE__);
+/**
+  *This class computes the output of the list action pages. It tries to check if the feature library has
+  * any list of columns set to be used by the SQL select portion. If it misses this, the class makes a step
+  * of using all the fields of the selectd tables but escapes/ unsets the created_by, last_modified_by and 
+  * deleted_at columns.
+  * 
+  * The class checks if the feature model has defined a result query if not it used the internal run_query 
+  * grants model method to get the results.
+  * 
+  * Finally the query results are used to populate the list_output return which is packs an array to be 
+  * dispatched to the load method (See in Output_template class) to MY_Controller
+  *
+  * @author Nicodemus Karisa
+  * @package Grants Management System
+  * @copyright Compassion International Kenya
+  * @license https://compassion-africa.org/lisences.html
+  *
+  */
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+  /**
+   * Getting the path of the current file
+   */
+  $path_parts = pathinfo(__FILE__);
 
 /**
- * This class computes the output of the list action pages. It tries to check if the feature library has
- * any list of columns set to be used by the SQL select portion. If it misses this, the class makes a step
- * of using all the fields of the selectd tables but escapes/ unsets the created_by, last_modified_by and 
- * deleted_at columns.
- * 
- * The class checks if the feature model has defined a result query if not it used the internal run_query 
- * grants model method to get the results.
- * 
- * Finally the query results are used to populate the list_output return which is packs an array to be 
- * dispatched to the load method (See in Output_template class) to MY_Controller
- */
+  * This class computes the output of the list action pages. It tries to check if the feature library has
+  * any list of columns set to be used by the SQL select portion. If it misses this, the class makes a step
+  * of using all the fields of the selectd tables but escapes/ unsets the created_by, last_modified_by and 
+  * deleted_at columns.
+  * 
+  * The class checks if the feature model has defined a result query if not it used the internal run_query 
+  * grants model method to get the results.
+  * 
+  * Finally the query results are used to populate the list_output return which is packs an array to be 
+  * dispatched to the load method (See in Output_template class) to MY_Controller
+  *
+  * @author Nicodemus Karisa
+  * @package Grants Management System
+  * @copyright Compassion International Kenya
+  * @license https://compassion-africa.org/licences.html
+  *
+  */
+
 class List_output extends Output_template{
-
-    function __construct(){
-        parent::__construct();
-    }
-
+ 
+  /**
+   * __construct
+   * 
+   * Class constructor
+   * 
+   * @return void
+   */
+  function __construct(){
+      parent::__construct();
+  }
 
  /**
  * feature_model_list_table_visible_columns
@@ -171,12 +208,12 @@ function feature_model_list_table_visible_columns(): Array {
   }
 
 
-  /**
-     * list oputput
+    /**
+     * _output
      * 
      * This method returns the output of the list action views
      * 
-     * @return array 
+     * @return array - Array to be render to the page via MY_Controller
      */
 
     function _output(){

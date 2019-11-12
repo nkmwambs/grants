@@ -29,7 +29,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    return array('center','voucher_type');
+    return array('center','voucher_type','approval','status');
   }
 
   public function detail_tables(){

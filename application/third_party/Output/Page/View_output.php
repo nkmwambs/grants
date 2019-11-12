@@ -122,6 +122,18 @@ class View_output extends Output_template{
             $this->CI->grants->history_tracking_field($this->controller,'last_modified_by')); 
         }
 
+        //Check if controller is not approval and find if status field is present and 
+        //it has status in the lookup table
+
+        if($this->controller !== "approval"){
+             if(
+                 in_array('status',$this->CI->grants->lookup_tables($this->controller)) && 
+                 !in_array('status_name',$visible_columns)   
+            ){
+                array_push($visible_columns,'status_name');
+             }   
+        }
+
         return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
 
     }
