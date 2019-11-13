@@ -127,6 +127,9 @@ function __construct(){
   // Instantiate the name of the current running object/ main controller
   $this->controller = $this->CI->uri->segment(1, 'approval');
 
+  //Create missing library and models files for the loading object/ controller
+  $this->create_missing_system_files();
+
   // Instantiate the name of the current running object library/ main controller library
   $current_library = $this->controller.'_library';
 
@@ -146,6 +149,134 @@ function __construct(){
   $this->CI->load->library($this->current_library);
 }
 
+function create_missing_system_files(){
+  
+  $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
+
+  $specs_array = yaml_parse($raw_specs,0);
+  
+  $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
+  $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+
+  foreach($specs_array['tables'] as $table_name => $setup){
+    if(!file_exists($controllers_path.$table_name.'.php')){
+      $this->create_missing_controller($table_name,$assets_temp_path);
+      $this->create_missing_model($table_name,$assets_temp_path,$setup);
+      $this->create_missing_library($table_name,$assets_temp_path);
+    }
+  }
+
+}
+
+function create_missing_controller($table, $assets_temp_path){
+
+  $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+
+     // Check if the library file is available, if not create it
+     if(!file_exists($controllers_path.$table.'.php')){
+      // Create the file   
+      $controller = fopen($controllers_path.ucfirst($table).'.php', "w") or die("Unable to open file!");
+
+      // Add the PHP opening tag to the file 
+        $php_tag = '<?php';
+        fwrite($controller, $php_tag);
+
+      // Copy contents of assets/temp_library to the created file after the tag above
+        $replaceables = array("%controller%"=>ucfirst($table),'%library%'=>$table.'_library');
+
+        $replacefrom = array_keys($replaceables);
+
+        $replacedto = array_values($replaceables);
+
+        $file_raw_contents = file_get_contents($assets_temp_path.'temp_controller.php');
+
+        $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
+
+        $file_code = "\n".$file_contents;
+        
+        fwrite($controller, $file_code);
+  }
+}
+
+function create_missing_library($table, $assets_temp_path){
+ 
+  $libararies_path = APPPATH.'libraries'.DIRECTORY_SEPARATOR; 
+   // Check if the library file is available, if not create it
+    if(!file_exists($libararies_path.$table.'_library.php')){
+      // Create the file   
+      $library = fopen($libararies_path.ucfirst($table).'_library.php', "w") or die("Unable to open file!");
+
+      // Add the PHP opening tag to the file 
+        $php_tag = '<?php';
+        fwrite($library, $php_tag);
+
+      // Copy contents of assets/temp_library to the created file after the tag above
+        $replaceables = array("%library%"=>ucfirst($table).'_library');
+
+        $replacefrom = array_keys($replaceables);
+
+        $replacedto = array_values($replaceables);
+
+        $file_raw_contents = file_get_contents($assets_temp_path.'temp_library.php');
+
+        $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
+
+        $file_code = "\n".$file_contents;
+        
+        fwrite($library, $file_code);
+  }
+}
+
+function create_missing_model($table, $assets_temp_path, $table_specs){
+  $models_path = APPPATH.'models'.DIRECTORY_SEPARATOR;
+  // Check if model is available and if not create the file
+    if(!file_exists($models_path.$table.'_model.php')){
+
+      // Create the file   
+      $model = fopen($models_path.ucfirst($table).'_model.php', "w") or die("Unable to open file!");
+ 
+      // Add the PHP opening tag to the file 
+       $php_tag = '<?php';
+       fwrite($model, $php_tag);
+ 
+      // Copy contents of assets/temp_model to the created file after the tag above
+      $lookup_tables = "";
+      if(array_key_exists('lookup_tables',$table_specs)){
+        $specs = $table_specs['lookup_tables'];
+
+        $lookup_tables = implode(',', array_map(array($this,'quote_array_elements'),$specs) );
+      
+      }
+       $replaceables = array(
+         "%model%"=>ucfirst($table).'_model',
+         "%table%"=>$table,
+         '%dependant_table%'=> '',
+         '%name%'=>$table.'_name',
+         '%created_date%'=>$table.'_created_date',
+         '%created_by%'=>$table.'_created_by',
+         '%last_modified_date%'=>$table.'_last_modified_date',
+         '%last_modified_by%'=>$table.'_last_modified_by',
+         '%deleted_at%'=>$table.'_deleted_at',
+         '%lookup_tables%'=>$lookup_tables
+       );
+ 
+       $replacefrom = array_keys($replaceables);
+       $replacedto = array_values($replaceables);
+ 
+       $file_raw_contents = file_get_contents($assets_temp_path.'temp_model.php');
+ 
+       $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
+ 
+       $file_code = "\n".$file_contents;
+       
+       fwrite($model, $file_code);
+   }
+ 
+}
+
+function quote_array_elements($elem){
+  return ("'$elem'");
+}
 
 /**
  * load_detail_model

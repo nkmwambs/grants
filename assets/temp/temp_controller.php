@@ -1,4 +1,5 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -9,20 +10,16 @@
  */
 
 
-class Menu extends MY_Controller
+class %controller% extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('role_library');
+    $this->load->library('%library%');
   }
 
   function index(){}
 
-  //function list(){}
-
-  // static function get_menu_list(){
-   
-  // }
+  static function get_menu_list(){}
 
 }

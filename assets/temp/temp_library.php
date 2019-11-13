@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -8,21 +10,16 @@
  *	NKarisa@ke.ci.org
  */
 
-
-class Menu extends MY_Controller
+class %library% extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->load->library('role_library');
+    $this->CI =& get_instance();
   }
 
   function index(){}
 
-  //function list(){}
-
-  // static function get_menu_list(){
-   
-  // }
-
-}
+} 

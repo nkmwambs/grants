@@ -1,0 +1,11 @@
+tables:
+  center_group:
+    lookup_tables:
+      - center_group_hierarchy
+
+  center_group_link:
+    lookup_tables:
+      - center
+      - center_group
+
+  center_group_hierarchy:

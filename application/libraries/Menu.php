@@ -129,7 +129,7 @@ class Menu {
         }
       }
         // Forcefully add Menu controller to menu table
-        $top_menu_items['Menu'] = array();
+        //$top_menu_items['Menu'] = array();
         
         return $top_menu_items;
         //return array('Approval'=>[],'Bank'=>[],'Budget'=>[],'Center'=>[],'Workplan'=>[],'Voucher'=>[]);

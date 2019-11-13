@@ -94,8 +94,34 @@ class View_output extends Output_template{
             }    
 
         }else{
-        if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-            foreach ($lookup_tables as $lookup_table) {
+            if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+                $this->add_lookup_name_fields_to_visible_columns($visible_columns, $lookup_tables);
+            }
+        }
+
+        // Add created_by and last_modified_by fields if not exists in columns selected
+        $this->insert_history_tracking_fields_to_master_view($visible_columns);
+
+        //Check if controller is not approval and find if status field is present and 
+        //it has status in the lookup table
+        $this->insert_status_column_to_master_view($visible_columns);
+
+        return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
+
+    }
+
+    /**
+     * add_lookup_name_fields_to_visible_columns
+     * 
+     * This method adds name columns of the look up tables to the selected columns
+     * 
+     * @param Array $visible_columns - Selected columns
+     * @param Array $lookup_table - Look up tables
+     * 
+     * @return Array - Update visible columns array
+     */
+    function add_lookup_name_fields_to_visible_columns(Array $visible_columns, Array $lookup_tables):Array {
+        foreach ($lookup_tables as $lookup_table) {
 
             $lookup_table_columns = $this->CI->grants_model->get_all_table_fields($lookup_table);
 
@@ -109,11 +135,20 @@ class View_output extends Output_template{
                 }
 
             }
-            }
-        }
         }
 
-        // Add created_by and last_modified_by fields if not exists in columns selected
+        return $visible_columns;
+    }
+
+    /**
+     * insert_history_tracking_fields_to_master_view
+     * 
+     * This method inserts the created by and last modified by columns if not found in the selected columns
+     * 
+     * @param Array $visible_columns - Selected columns
+     * @return Array - Update selected columns
+     */
+    function insert_history_tracking_fields_to_master_view(Array $visible_columns):Array{
         if( !in_array($this->CI->grants->history_tracking_field($this->controller,'created_by'),$visible_columns) || 
             !in_array($this->CI->grants->history_tracking_field($this->controller,'last_modified_by'),$visible_columns)
                 
@@ -122,20 +157,34 @@ class View_output extends Output_template{
             $this->CI->grants->history_tracking_field($this->controller,'last_modified_by')); 
         }
 
-        //Check if controller is not approval and find if status field is present and 
-        //it has status in the lookup table
+        return $visible_columns;
+    }
+
+    /**
+     * insert_status_column_to_master_view
+     * 
+     * Inserts a status name column if doesn't exist in the selceted/visible columns.
+     * This is only done to tables other than approval and the status tbale should be listed
+     * as a lookup table in the feature model
+     * 
+     * @param Array $visible_columns - Original selected columns
+     * 
+     * @return Array - Update selected columns array for the master view
+     */
+    function insert_status_column_to_master_view(Array $visible_columns): Array {
+        
+        $status_name_field =  $this->CI->grants->name_field('status');
 
         if($this->controller !== "approval"){
-             if(
-                 in_array('status',$this->CI->grants->lookup_tables($this->controller)) && 
-                 !in_array('status_name',$visible_columns)   
-            ){
-                array_push($visible_columns,'status_name');
-             }   
-        }
+            if(
+                in_array('status',$this->CI->grants->lookup_tables($this->controller)) && 
+                !in_array($status_name_field,$visible_columns)   
+           ){
+               array_push($visible_columns,$status_name_field);
+            }   
+       }
 
-        return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
-
+       return $visible_columns;
     }
 
     /**

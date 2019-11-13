@@ -66,7 +66,10 @@ function upsert_user_menu(){
 
     if($sizeOfUserMenuItems !== $sizeOfMenuItemsByDatabase){
 
-      $order = $this->db->get_where('menu_user_order',array('fk_user_id'=>$this->session->user_id))->num_rows();
+      $menu_user_order_items = $this->db->get_where('menu_user_order',
+      array('fk_user_id'=>$this->session->user_id));
+
+      $order = $menu_user_order_items->num_rows();
 
       foreach ($menu_ids as $menu_id) {
         // This allows making one of the menu items be of order 0
@@ -86,11 +89,13 @@ function upsert_user_menu(){
         if($this->db->get_where('menu_user_order',
         array('fk_user_id'=>$this->session->user_id,'fk_menu_id'=>$menu_id))->num_rows() == 0){
             $this->db->insert('menu_user_order',$user_menu_data);
-
-        }else{
-          $this->db->where(array('fk_user_id'=>$this->session->user_id,'fk_menu_id'=>$menu_id));
-          $this->db->update('menu_user_order',$user_menu_data);
+        
         }
+        
+        // else{
+        //   $this->db->where(array('fk_user_id'=>$this->session->user_id,'fk_menu_id'=>$menu_id));
+        //   $this->db->update('menu_user_order',$user_menu_data);
+        // }
 
       }
     }

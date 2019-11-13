@@ -1,6 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//echo Output_base::load('list');
+
+// $yaml= file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
+
+// $data = yaml_parse($yaml,0);
+
+// print_r($data);
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
