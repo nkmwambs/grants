@@ -21,13 +21,20 @@ public $auth;
         parent::__construct();
         $this->load->database();
         $this->load->model('user_model');
+
+       
     }
 
     //Default function, redirects to logged in user area
     public function index() {
 
-        if ($this->session->userdata('user_login') == 1)
-          redirect(base_url().strtolower($this->session->default_launch_page).'/list');
+        if ($this->session->userdata('user_login') == 1){
+             //Create missing library and models files for the loading object/ controller
+            $this->create_missing_system_files(); 
+            
+            redirect(base_url().strtolower($this->session->default_launch_page).'/list');
+        }
+          
 
         $this->load->view('general/login');
 
@@ -71,7 +78,7 @@ public $auth;
         
         $default_launch_page = $this->user_model->default_launch_page($row->user_id);
         $this->session->set_userdata('default_launch_page',$default_launch_page);
-        
+          
         
 		return 'success';
 	}
@@ -83,8 +90,9 @@ public $auth;
         $query = $this->db->get_where('user', $credential);
 
         if ($query->num_rows() > 0) {
-			        $row = $query->row();
-		  	      return $this->create_user_session($row);
+                $row = $query->row();
+                 
+		  	    return $this->create_user_session($row);
 
         }
 
@@ -143,5 +151,113 @@ public $auth;
         redirect(base_url(), 'refresh');
 
     }
+
+
+    
+function create_missing_system_files(){
+  
+    $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
+  
+    $specs_array = yaml_parse($raw_specs,0);
+    
+    $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
+    $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+  
+    foreach($specs_array['tables'] as $table_name => $setup){
+      if(!file_exists($controllers_path.$table_name.'.php')){
+        $this->create_missing_controller($table_name,$assets_temp_path);
+        $this->create_missing_model($table_name,$assets_temp_path,$setup);
+        $this->create_missing_library($table_name,$assets_temp_path);
+      }
+    }
+  
+  }
+  
+  function create_missing_controller($table, $assets_temp_path){
+  
+    $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+  
+    // Copy contents of assets/temp_library to the created file after the tag above
+    $replaceables = array("%controller%"=>ucfirst($table),'%library%'=>$table.'_library');
+  
+    $this->write_file_contents($table, $controllers_path ,$assets_temp_path, $replaceables, 'controller');
+  
+  }
+  
+  function create_missing_library($table, $assets_temp_path){
+   
+    $libararies_path = APPPATH.'libraries'.DIRECTORY_SEPARATOR; 
+  
+    // Copy contents of assets/temp_library to the created file after the tag above
+    $replaceables = array("%library%"=>ucfirst($table).'_library');
+  
+    $this->write_file_contents($table, $libararies_path ,$assets_temp_path, $replaceables, 'library');
+  }
+  
+  function create_missing_model($table, $assets_temp_path, $table_specs){
+  
+    $models_path = APPPATH.'models'.DIRECTORY_SEPARATOR;
+   
+        // Copy contents of assets/temp_model to the created file after the tag above
+        $lookup_tables = "";
+        if(array_key_exists('lookup_tables',$table_specs)){
+          $specs = $table_specs['lookup_tables'];
+  
+          $lookup_tables = implode(',', array_map(array($this,'quote_array_elements'),$specs) );
+        
+        }
+         $replaceables = array(
+           "%model%"=>ucfirst($table).'_model',
+           "%table%"=>$table,
+           '%dependant_table%'=> '',
+           '%name%'=>$table.'_name',
+           '%created_date%'=>$table.'_created_date',
+           '%created_by%'=>$table.'_created_by',
+           '%last_modified_date%'=>$table.'_last_modified_date',
+           '%last_modified_by%'=>$table.'_last_modified_by',
+           '%deleted_at%'=>$table.'_deleted_at',
+           '%lookup_tables%'=>$lookup_tables
+         );
+   
+     $this->write_file_contents($table, $models_path ,$assets_temp_path, $replaceables, 'model');
+   
+  }
+  
+  function write_file_contents($table, $sys_file_path ,$assets_temp_path, $replaceables, $temp_type = 'controller'){
+  
+    // Check if model is available and if not create the file
+    if(!file_exists($sys_file_path.$table.'_'.$temp_type.'.php')){
+  
+        // Create the file  
+        $handle = null;
+  
+        if($temp_type == 'model' || $temp_type == 'library'){
+          $handle = fopen($sys_file_path.ucfirst($table).'_'.$temp_type.'.php', "w") or die("Unable to open file!");  
+        }else{
+          $handle = fopen($sys_file_path.ucfirst($table).'.php', "w") or die("Unable to open file!");
+        }
+          
+        // Add the PHP opening tag to the file 
+        $php_tag = '<?php';
+        fwrite($handle, $php_tag);
+  
+        $replacefrom = array_keys($replaceables);
+        
+        $replacedto = array_values($replaceables);
+      
+        $file_raw_contents = file_get_contents($assets_temp_path.'temp_'.$temp_type.'.php');
+      
+        $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
+      
+        $file_code = "\n".$file_contents;
+            
+        fwrite($handle, $file_code);
+    }
+    
+  }
+  
+  function quote_array_elements($elem){
+    return ("'$elem'");
+  }
 
 }

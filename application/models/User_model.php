@@ -37,11 +37,11 @@ class User_model extends MY_Model
    * @return Array : Table's foreign tables
    */
   function detail_table():Array {
-    return array('user_detail');
+    
   }
 
   function lookup_tables(){
-    return array('language','role');
+    return array('language','role','center_group');
   }
 
   /**
@@ -65,7 +65,7 @@ class User_model extends MY_Model
    */
   function list_table_visible_columns(): Array {
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','user_is_active');
+    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
   }
 
   /**
@@ -78,7 +78,12 @@ class User_model extends MY_Model
 
   function single_form_add_visible_columns(): Array {
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_system_admin','user_password','language_name','role_name');
+    'user_system_admin','user_password','language_name','role_name','center_group_name','user_is_center_group_manager');
+  }
+
+  function edit_visible_columns(): Array {
+    return array('user_name','user_firstname','user_lastname','user_email',
+    'user_system_admin','language_name','role_name','center_group_name','user_is_center_group_manager');
   }
 
   /**
