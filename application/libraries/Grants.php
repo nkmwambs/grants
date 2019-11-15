@@ -153,18 +153,22 @@ function create_missing_system_files(){
   
   $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
 
-  $specs_array = yaml_parse($raw_specs,0);
-  
-  $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
-  $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
 
-  foreach($specs_array['tables'] as $table_name => $setup){
-    if(!file_exists($controllers_path.$table_name.'.php')){
-      $this->create_missing_controller($table_name,$assets_temp_path);
-      $this->create_missing_model($table_name,$assets_temp_path,$setup);
-      $this->create_missing_library($table_name,$assets_temp_path);
+  if(function_exists('yaml_parse')){
+    $specs_array = yaml_parse($raw_specs,0);
+  
+    $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
+    $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+  
+    foreach($specs_array['tables'] as $table_name => $setup){
+      if(!file_exists($controllers_path.$table_name.'.php')){
+        $this->create_missing_controller($table_name,$assets_temp_path);
+        $this->create_missing_model($table_name,$assets_temp_path,$setup);
+        $this->create_missing_library($table_name,$assets_temp_path);
+      }
     }
   }
+
 
 }
 
