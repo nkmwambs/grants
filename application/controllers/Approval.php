@@ -20,7 +20,7 @@ class Approval extends MY_Controller
 
   }
 
-  function page_title(){
+  function page_title():String{
     return "Listing";
   }
 

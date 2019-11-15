@@ -32,11 +32,11 @@ public $auth;
     }
 
 
-    function page_name(){
+    function page_name():String{
       return 'dashboard';
     }
 
-    function page_title(){
+    function page_title():String{
       return "Dashboard";
     }
 

@@ -23,11 +23,11 @@ class Journal extends MY_Controller
 
   }
 
-  function page_name(){
+  function page_name():String{
     return "journal";
   }
 
-  function page_title(){
+  function page_title():String{
     return "Journal";
   }
 
