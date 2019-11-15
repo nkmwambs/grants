@@ -38,3 +38,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 ## PHPDOC documentation files
 /docs
+/index.php
