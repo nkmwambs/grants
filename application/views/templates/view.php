@@ -15,7 +15,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 <div class="row">
   <div class="col-xs-12">
       <?php 
-        include "widgets/comment.php";;
+        Widget_base::load('comment');
       ?>
   </div>
 </div>

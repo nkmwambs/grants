@@ -16,8 +16,8 @@ class Output_base{
     static function load($page_action = 'view'){
 
         $class_filename  = ucfirst($page_action).'_output';
-        
-        require_once(__DIR__.DIRECTORY_SEPARATOR.'Page'.DIRECTORY_SEPARATOR.$class_filename.'.php');
+
+        require_once(__DIR__.DIRECTORY_SEPARATOR.ucfirst($page_action).DIRECTORY_SEPARATOR.$class_filename.'.php');
         
         return self::$output;
     }
