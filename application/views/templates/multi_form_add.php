@@ -18,8 +18,13 @@
             </div>
 			         <div class="panel-body">
 
-              <?php echo form_open(base_url().$this->controller.'/'.$this->action , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
-
+              <?php echo form_open(base_url().$this->controller.'/'.$this->action , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));?>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                      <?=Widget_base::load('position','position_4');?>
+                    </div>
+                  </div>
+              <?php                  
                   foreach ($fields as $column => $field) {
 
                     if( strpos($column,'_id') == true ||
@@ -56,6 +61,12 @@
                    </div>
                  </div>
 
+                 <div class="form-group">
+                    <div class="col-xs-12">
+                      <?=Widget_base::load('position','position_5');?>
+                    </div>
+                  </div>
+
                 <div class="form-group">
                   <div class="col-xs-12">
                     <table class="table table-bordered detail">
@@ -85,11 +96,10 @@
                 </div>
 
                 <div class="form-group">
-                  <div class="col-xs-12">
-                    <label class=""><?=get_phrase('attach_a_file(s)');?></label>
-                    <input type="file" name="attachments" multiple />
+                    <div class="col-xs-12">
+                      <?=Widget_base::load('position','position_6');?>
+                    </div>
                   </div>
-              </div>
 
 
                 <div class="form-group">

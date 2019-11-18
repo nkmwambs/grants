@@ -14,9 +14,16 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 ?>
 <div class="row">
   <div class="col-xs-12">
+      <?=Widget_base::load('comment');?>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
       <?=Widget_base::load('position','position_1');?>
   </div>
 </div>
+
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-striped">
@@ -89,13 +96,14 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
           <?php
             }
           ?>
-          <tr>
-            <td colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
-            <?=Widget_base::load('position','position_3');?>
-            </td>
-          </tr>
+          
       </tbody>
     </table>
+    <div class="row">
+      <div class="col-xs-12">
+        <?=Widget_base::load('position','position_3');?>
+      </div>
+    </div>
     <?php
 
     if( isset($result['detail']) && count($result['detail']) > 0){

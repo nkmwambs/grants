@@ -32,13 +32,13 @@ class Request_library extends Grants
   
   function page_position(){
 
-    $widgets['position_1'][] = Widget_base::load('comment');
+    //$widgets['position_1'][] = Widget_base::load('comment');
 
     //$widgets['position_2'][] = Widget_base::load('button',get_phrase('edit'),$this->CI->controller.'/edit/'.$this->CI->id);
     $widgets['position_2'][] = Widget_base::load('button',get_phrase('clone'),$this->CI->controller.'/clone/'.$this->CI->id);
     //$widgets['position_2'][] = Widget_base::load('button',get_phrase('delete'),$this->CI->controller.'/delete/'.$this->CI->id);
           
-    $widgets['position_3'][] = "Here is main position two widgets";
+    //$widgets['position_3'][] = "Here is main position two widgets";
 
     return $widgets;
   }
