@@ -19,6 +19,10 @@ class Request extends MY_Controller
 
   function index(){}
 
+  function test(){
+    echo "Done well!";
+  }
+
 
   static function get_menu_list(){
 

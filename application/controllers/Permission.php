@@ -21,8 +21,8 @@ class Permission extends MY_Controller
 
   //function list(){}
 
-  static function get_menu_list(){
-    return array('list_banks'=>array('view','arg1','arg2','arg3'));
-  }
+  // static function get_menu_list(){
+  //   return array('list_banks'=>array('view','arg1','arg2','arg3'));
+  // }
 
 }

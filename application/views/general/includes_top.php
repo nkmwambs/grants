@@ -32,26 +32,39 @@
 <script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 <script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
 
-<link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/font-icons/entypo/css/entypo.css">
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-core.css">
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-theme.css">
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-forms.css">
 
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/custom.css">
 
 <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
 
 <!--Local Scripts -->
-<link rel="stylesheet" href="<?=base_url();?>assets/css/bootstrap.css">
-<script src="<?=base_url();?>assets/js/jquery-1.11.0.min.js"></script>
+<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/font-icons/entypo/css/entypo.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic"> -->
 
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-core.css">
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-theme.css">
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-forms.css">
+
+<!-- <link rel="stylesheet" href="<?=base_url();?>assets/js/datatables/datatables.css">
+<link rel="stylesheet" href="<?=base_url();?>assets/js/select2/select2-bootstrap.css">
+<link rel="stylesheet" href="<?=base_url();?>assets/js/select2/select2.css"> -->
+
+<!-- <link rel="stylesheet" href="<?=base_url();?>assets/css/bootstrap.css">
+<script src="<?=base_url();?>assets/js/jquery-1.11.0.min.js"></script>
+<script src="<?=base_url();?>assets/js/bootstrap.js"></script> -->
+
+<script src="<?=base_url();?>assets/js/neon-api.js"></script>
+
+<!-- <script src="assets/js/datatables/datatables.js"></script>
+<script src="assets/js/select2/select2.min.js"></script> -->
+
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 
 <?php
@@ -85,20 +98,6 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-
-<!--Amcharts-->
-<script src="<?php echo base_url();?>assets/js/amcharts/amcharts.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/pie.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/serial.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/gauge.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/funnel.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/radar.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/exporting/amexport.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/exporting/rgbcolor.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/exporting/canvg.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/exporting/jspdf.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/exporting/filesaver.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>assets/js/amcharts/exporting/jspdf.plugin.addimage.js" type="text/javascript"></script>
 
 <style>
   .datepicker{z-index:1151 !important;}

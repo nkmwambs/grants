@@ -4,7 +4,7 @@
 
 class Widget_base extends Output_base{
     
-    //public static $output = null;
+    public static $output = null;
 
     function __construct(){
         parent::__construct();
@@ -14,8 +14,8 @@ class Widget_base extends Output_base{
 
     }
 
-    static function load($widget = 'comment'){
-        //return Output_base::load($widget);
+    static function load($widget,...$args){
+        //Widget example: Comment
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.ucfirst($widget).DIRECTORY_SEPARATOR.ucfirst($widget).'_output.php');
 

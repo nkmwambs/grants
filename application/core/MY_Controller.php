@@ -15,9 +15,13 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   public $master_table = null;
   public $has_permission = false;
 
+  //public $widget = null;
+
   function __construct(){
 
     parent::__construct();
+
+    //$this->widget = new Widget_base();
 
     $segment = $this->uri->segment(1, 'approval');
     $action = $this->uri->segment(2, 'list');
@@ -154,7 +158,9 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function detail_row(){
     $fields = $this->input->post('fields');
 
-    $lib = $this->controller."_detail_library";
+    //$lib = $this->controller."_detail_library";
+
+    $lib = $this->grants->dependant_table($this->controller).'_library';
 
     $this->load->library($lib);
 

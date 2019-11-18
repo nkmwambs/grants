@@ -29,5 +29,13 @@ class Request_library extends Grants
   function list_table_where(){
     //return array('request_date'=>'2019-10-22');
   }
+  
+  function page_position($position_title){
+
+    //$widgets['main_position'] = "Here is main position widgets";
+    //$widgets['main_position_2'] = "Here is main position two widgets";
+
+    return $position_title;
+  }
 
 }

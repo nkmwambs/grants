@@ -13,7 +13,7 @@ class Output_base{
     }
 
 
-    static function load($page_action = 'view'){
+    static function load($page_action,...$args){
 
         $class_filename  = ucfirst($page_action).'_output';
 

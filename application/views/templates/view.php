@@ -15,7 +15,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 <div class="row">
   <div class="col-xs-12">
       <?php 
-        Widget_base::load('comment');
+        //Widget_base::load('comment');
       ?>
   </div>
 </div>
@@ -31,9 +31,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
-              <div class="btn btn-default"><?=get_phrase('edit');?></div>
-              <div class="btn btn-default"><?=get_phrase('clone');?></div>
-              <div class="btn btn-default"><?=get_phrase('delete');?></div>
+              <?=Widget_base::load('button',get_phrase('edit'),$this->controller.'/test');?>
+              <?=Widget_base::load('button',get_phrase('clone'),$this->controller.'/test');?>
+              <?=Widget_base::load('button',get_phrase('delete'),$this->controller.'/test');?>
           </th>
         </tr>
       </thead>
@@ -77,6 +77,8 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                         //echo $primary_table_name;
                         $lookup_table_id = $table_body[$primary_table_name.'_id'];
                         echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.$column_value.'</a>';
+                    }elseif($this->grants->is_name_field($this->controller,$column)){
+                        echo ucwords(str_replace('_',' ',$column_value));
                     }else{
                       echo $column_value;
                     }
@@ -147,6 +149,8 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
+                            }elseif(strpos($column,'_') == true){ 
+                               echo ucwords(str_replace('_',' ',$row[$column]));
                             }else{
                                 echo ucfirst($row[$column]);
                             }
