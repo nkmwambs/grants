@@ -1,7 +1,5 @@
 <?php
 
-$path_parts = pathinfo(__FILE__);
-
 class Button_output{
     
     function __construct(){
@@ -41,9 +39,3 @@ class Button_output{
         ';
     }
 }
-
-$class = $path_parts['filename'];
-
-$obj = new $class();
-
-self::$output = $obj->output(...$args);

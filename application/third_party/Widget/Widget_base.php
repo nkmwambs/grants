@@ -17,8 +17,12 @@ class Widget_base extends Output_base{
     static function load($widget,...$args){
         //Widget example: Comment
 
-        require_once(__DIR__.DIRECTORY_SEPARATOR.ucfirst($widget).DIRECTORY_SEPARATOR.ucfirst($widget).'_output.php');
+        $widget_output_class = $widget.'_output';
 
-        return self::$output;
+        require_once(__DIR__.DIRECTORY_SEPARATOR.ucfirst($widget).DIRECTORY_SEPARATOR.ucfirst($widget).'_output.php');
+        
+        $class  = new $widget_output_class();
+
+        return $class->output(...$args);
     }
 }
