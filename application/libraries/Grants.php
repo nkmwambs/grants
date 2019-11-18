@@ -1137,10 +1137,6 @@ function action_after_insert($post_array,$approval_id,$header_id): bool {
    return $status;
 }
 
-function page_position($position_title){
-  return "";
-}
-
 // These are methods that require review
 
 

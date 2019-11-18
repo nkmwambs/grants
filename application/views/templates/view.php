@@ -14,9 +14,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 ?>
 <div class="row">
   <div class="col-xs-12">
-      <?php 
-        //Widget_base::load('comment');
-      ?>
+      <?=Widget_base::load('position','position_1');?>
   </div>
 </div>
 <div class="row">
@@ -31,9 +29,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
-              <?=Widget_base::load('button',get_phrase('edit'),$this->controller.'/test');?>
-              <?=Widget_base::load('button',get_phrase('clone'),$this->controller.'/test');?>
-              <?=Widget_base::load('button',get_phrase('delete'),$this->controller.'/test');?>
+              <?=Widget_base::load('button',get_phrase('edit'),$this->controller.'/edit/'.$this->id);?>
+              <?=Widget_base::load('button',get_phrase('delete'),$this->controller.'/delete/'.$this->id);?>
+              <?=Widget_base::load('position','position_2');?>
           </th>
         </tr>
       </thead>
@@ -91,7 +89,11 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
           <?php
             }
           ?>
-
+          <tr>
+            <td colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
+            <?=Widget_base::load('position','position_3');?>
+            </td>
+          </tr>
       </tbody>
     </table>
     <?php

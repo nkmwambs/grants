@@ -30,12 +30,17 @@ class Request_library extends Grants
     //return array('request_date'=>'2019-10-22');
   }
   
-  function page_position($position_title){
+  function page_position(){
 
-    //$widgets['main_position'] = "Here is main position widgets";
-    //$widgets['main_position_2'] = "Here is main position two widgets";
+    $widgets['position_1'][] = Widget_base::load('comment');
 
-    return $position_title;
+    //$widgets['position_2'][] = Widget_base::load('button',get_phrase('edit'),$this->CI->controller.'/edit/'.$this->CI->id);
+    $widgets['position_2'][] = Widget_base::load('button',get_phrase('clone'),$this->CI->controller.'/clone/'.$this->CI->id);
+    //$widgets['position_2'][] = Widget_base::load('button',get_phrase('delete'),$this->CI->controller.'/delete/'.$this->CI->id);
+          
+    $widgets['position_3'][] = "Here is main position two widgets";
+
+    return $widgets;
   }
 
 }
