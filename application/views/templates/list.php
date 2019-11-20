@@ -89,10 +89,8 @@ extract($result);
                               echo '<a href="'.base_url().strtolower($this->controller).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            }elseif($this->grants->is_name_field($this->controller,$column)){
-                              echo ucfirst(str_replace("_"," ",$row[$column]));
                             }else{
-                              echo $row[$column];
+                              echo ucfirst(str_replace("_"," ",$row[$column]));
                             }
 
                            ?>
