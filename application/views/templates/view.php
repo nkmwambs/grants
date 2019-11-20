@@ -4,7 +4,7 @@ extract($result['master']);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 
 //Remove the primary key field from the master table
-print_r($table_body);
+//print_r($table_body);
 $master_primary_key = $table_body[$this->controller.'_id'];
 unset($table_body[$this->controller.'_id']);
 unset($keys[array_search($this->controller.'_id',$keys)]);

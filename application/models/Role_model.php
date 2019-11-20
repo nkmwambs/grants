@@ -41,4 +41,8 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+  // function master_table_visible_columns(){
+  //   return array('role_name');
+  // }
+
 }

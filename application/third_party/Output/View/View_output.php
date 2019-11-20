@@ -93,10 +93,8 @@ class View_output extends Output_template{
             }
             }    
 
-        }else{
-            if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-                $this->add_lookup_name_fields_to_visible_columns($visible_columns, $lookup_tables);
-            }
+        }elseif(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+            $visible_columns = $this->add_lookup_name_fields_to_visible_columns($visible_columns, $lookup_tables);
         }
 
         // Add created_by and last_modified_by fields if not exists in columns selected
@@ -128,10 +126,11 @@ class View_output extends Output_template{
             foreach ($lookup_table_columns as $lookup_table_column) {
                 // Only include the name field of the look up table in the select columns
                 if(
-                    $lookup_table_column == $this->CI->grants->primary_key_field($lookup_table) || 
-                    $lookup_table_column == $this->CI->grants->name_field($lookup_table)
+                    $this->CI->grants->is_primary_key_field($lookup_table,$lookup_table_column) || 
+                    $this->CI->grants->is_name_field($lookup_table,$lookup_table_column)
                 ){
                     array_push($visible_columns,$lookup_table_column);
+               
                 }
 
             }
