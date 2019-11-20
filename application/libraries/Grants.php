@@ -242,6 +242,21 @@ public function primary_key_field(String $table_name):String {
   return $primary_key_field;
 }
 
+function is_primary_key_field($table_name, $field){
+  
+  $is_primary_key_field = false;
+
+  $metadata = $this->CI->grants_model->table_fields_metadata($table_name);
+
+  foreach($metadata as $data){
+    if($data->primary_key == 1 && $data->name == $field){
+      $is_primary_key_field = true;
+    }
+  }
+
+   return $is_primary_key_field; 
+}
+
 /**
  * name_field
  * 
@@ -334,6 +349,7 @@ public function is_history_tracking_field(String $table_name, String $column, St
   return $is_history_tracking_field;
 
 }
+
 
 /**
  * is_name_field

@@ -87,7 +87,7 @@ class View_output extends Output_template{
                 foreach($lookup_table_fields_data as $field_data){
                 if($field_data->primary_key == 1){
                     array_push($visible_columns,$field_data->name);
-                }
+                 }
                 }
 
             }
