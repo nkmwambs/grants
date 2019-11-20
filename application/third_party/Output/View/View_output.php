@@ -100,13 +100,13 @@ class View_output extends Output_template{
         }
 
         // Add created_by and last_modified_by fields if not exists in columns selected
-        $this->insert_history_tracking_fields_to_master_view($visible_columns);
+        $history_tracking_fields = $this->insert_history_tracking_fields_to_master_view($visible_columns);
 
         //Check if controller is not approval and find if status field is present and 
         //it has status in the lookup table
-        $this->insert_status_column_to_master_view($visible_columns);
-
-        return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
+        $status_column = $this->insert_status_column_to_master_view($history_tracking_fields);
+     
+        return $this->access->control_column_visibility($this->controller,$status_column,'read');
 
     }
 

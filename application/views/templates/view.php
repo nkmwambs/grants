@@ -81,7 +81,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                         $primary_table_name = substr($column,0,-5);
                         //echo $primary_table_name;
                         $lookup_table_id = $table_body[$primary_table_name.'_id'];
-                        echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.$column_value.'</a>';
+                        echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
                     }elseif($this->grants->is_name_field($this->controller,$column)){
                         echo ucwords(str_replace('_',' ',$column_value));
                     }else{
