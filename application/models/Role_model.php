@@ -11,7 +11,7 @@
 class Role_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'role'; // you MUST mention the table name
-  public $dependant_table = "role_permission";
+  //public $dependant_table = "role_permission";
 
 
   function __construct(){
@@ -34,7 +34,7 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function detail_tables(){
-    
+    return ['role_permission','user'];
   }
 
   function view(){

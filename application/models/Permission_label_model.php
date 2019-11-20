@@ -41,4 +41,8 @@ class Permission_label_model extends MY_Model implements CrudModelInterface, Tab
 
   }
 
+  function show_add_button(){
+    return false;
+  }
+
 }

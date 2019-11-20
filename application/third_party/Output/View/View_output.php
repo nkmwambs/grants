@@ -153,7 +153,7 @@ class View_output extends Output_template{
             !in_array($this->CI->grants->history_tracking_field($this->controller,'last_modified_by'),$visible_columns)
                 
         ){
-            array_push($visible_columns,$this->CI->grants->history_tracking_field($table,'created_by'),
+            array_push($visible_columns,$this->CI->grants->history_tracking_field($this->controller,'created_by'),
             $this->CI->grants->history_tracking_field($this->controller,'last_modified_by')); 
         }
 
