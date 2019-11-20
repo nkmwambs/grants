@@ -80,7 +80,7 @@ if( ! function_exists('render_list_table_header') ){
 		$string = '<tr><th>'.get_phrase("action").'</th>';
 
 		foreach ($header_array as $th_value) {
-			if(strpos($th_value,'key') == true || $th_value == $table_name."_id"  ) {
+			if(strpos($th_value,'key') == true || strpos($th_value,'_id') ==true  ) {
 				continue;
 			}
 

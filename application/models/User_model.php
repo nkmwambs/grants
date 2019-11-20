@@ -76,8 +76,7 @@ class User_model extends MY_Model
 
   function master_table_visible_columns(){
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name',
-    'user_created_by','user_last_modified_by');
+    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
   }
 
   /**

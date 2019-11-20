@@ -143,10 +143,22 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                       ?>
                   </td>
                   <?php
+                      
                       $primary_key = 0;
+                      
+                      $column_key = 0;
 
+                      $lookup_table = "";
+                      
                       foreach ($keys as $column){
-                        $primary_key = $row[$primary_key_column]
+                        $primary_key = $row[$primary_key_column];
+                        
+                        if(strpos($column,'_id') == true){
+                          $column_key = $row[$column];
+                          // Remove the id suffix
+                          $lookup_table = substr($column,0,-3);
+                          continue;
+                        }
 
                   ?>
                         <td>
@@ -159,8 +171,8 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
-                            }elseif(strpos($column,'_') == true){ 
-                               echo ucwords(str_replace('_',' ',$row[$column]));
+                            }elseif($column_key > 0){ 
+                               echo '<a href="'.base_url().strtolower($lookup_table).'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
                             }else{
                                 echo ucfirst($row[$column]);
                             }

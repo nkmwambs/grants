@@ -267,7 +267,8 @@ class View_output extends Output_template{
               foreach ($lookup_table_columns as $lookup_table_column) {
                 // Only include the name field of the look up table in the select columns
                 if($this->CI->grants->is_name_field($lookup_table,$lookup_table_column)){
-                  array_push($visible_columns,$lookup_table_column);
+                    array_push($visible_columns,$lookup_table.'_id');
+                    array_push($visible_columns,$lookup_table_column);
                 }
     
               }
@@ -335,7 +336,7 @@ class View_output extends Output_template{
     
         $model = $this->current_model;
 
-        $select_columns = $this->toggle_master_view_select_columns();    
+        $select_columns = $this->toggle_master_view_select_columns();  
 
         $lookup_tables = $this->CI->grants->lookup_tables($table);
         
