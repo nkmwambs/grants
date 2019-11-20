@@ -370,6 +370,42 @@ public function is_history_tracking_field(String $table_name, String $column, St
 
 }
 
+function unset_lookup_tables_ids(&$keys,$table_name = ""){
+  
+  $model = $this->load_detail_model($table_name);
+  $lookup_tables = $this->CI->$model->lookup_tables();
+
+    // Unset the lookup id keys
+    $unset_fields = [];
+    if(is_array($lookup_tables) && count($lookup_tables) > 0){
+      foreach($lookup_tables as $table){
+        if($field = $this->primary_key_field($table)){
+          array_push($unset_fields, $field);
+        }
+      }
+    }
+
+    $this->default_unset_columns($keys,$unset_fields);
+}
+
+/**
+ * tables_name_fields
+ * 
+ * Get name fields of the supplied tables
+ * @param Array $tables - Tables to get name fields for
+ * @return Array - Name fields array
+ */
+function tables_name_fields(Array $tables):Array{
+  $table_name_fields = [];
+  if(is_array($tables) && count($tables) > 0){
+    foreach($tables as $table){
+      array_push($table_name_fields,$this->CI->grants->name_field($table));
+    }
+  }
+
+  return $table_name_fields;
+}
+
 
 /**
  * is_name_field

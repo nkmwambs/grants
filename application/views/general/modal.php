@@ -170,15 +170,51 @@
     <!--Bootstrap select intitialization-->
 
 	<script>
-		$('.selectpicker').selectpicker();
 
-		function go_back(){
+    $('.datatable').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
+        "pagingType": "full_numbers"
+      });
+
+      $('.datatable_details').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: 'Export in Excel',
+                className: 'btn btn-default',
+                exportOptions: {
+                columns: 'th:not(:first-child)'
+                }
+            },
+            {
+                extend:'pdfHtml5',
+                className: 'btn btn-default',
+                text:'Export in PDF',
+                orientation: 'landscape',
+                exportOptions:{
+                    columns: 'th:not(:first-child)'
+                }
+            }
+        ],
+        "pagingType": "full_numbers"
+      });
+
+	$('.selectpicker').selectpicker();
+
+	function go_back(){
 			window.history.back();
-		}
+	}
 
-		function go_forward() {
-		  window.history.forward();
-		}
+	function go_forward() {
+	  window.history.forward();
+	}
 
    $(document).ready(function(){
    			if (location.hash) {
@@ -193,30 +229,12 @@
 			    $("a[href='" + anchor + "']").tab("show");
 
 		});
+
+
+        
 	});
 
 
-
-  $(document).ready(function() {
-      $('.datatable').DataTables({
-        dom: 'lBfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ],
-        "pagingType": "full_numbers"
-      });
-
-      $('.datatable_details').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'excelHtml5'
-        ],
-        "pagingType": "full_numbers"
-      });
-  } );
 
   $(".list_delete_link").click(function(ev){
     var cnf = confirm('Are you sure you want to delete this record');

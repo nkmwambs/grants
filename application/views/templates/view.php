@@ -1,28 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 extract($result['master']);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 
-$model = $this->current_model;
-$lookup_tables = $this->$model->lookup_tables();
-
-//Remove the primary key field from the master table
-//print_r($table_body);
-$master_primary_key = $table_body[$this->controller.'_id'];
-unset($table_body[$this->controller.'_id']);
-unset($keys[array_search($this->controller.'_id',$keys)]);
-
-
-// Unset the lookup id keys
-$unset_fields = [];
-
-foreach($lookup_tables as $table){
-  if($field = $this->grants->primary_key_field($table)){
-    array_push($unset_fields, $field);
-  }
-}
-
-$this->grants->default_unset_columns($keys,$unset_fields);
+$this->grants->unset_lookup_tables_ids($keys);
 
 // Make the master detail table have columns as per the config
 $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
@@ -91,15 +71,12 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     if(strpos($column,'is_active')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');
 
-                    }elseif(strpos($column,'_name') && substr($column,0,-5) !== $table_name ){
+                    }elseif(in_array($column,$lookup_name_fields) ){
                         $primary_table_name = substr($column,0,-5);
-                        //echo $primary_table_name;
                         $lookup_table_id = $table_body[$primary_table_name.'_id'];
                         echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
-                    }elseif($this->grants->is_name_field($this->controller,$column)){
-                        echo ucwords(str_replace('_',' ',$column_value));
                     }else{
-                      echo $column_value;
+                        echo ucwords(str_replace('_',' ',$column_value));
                     }
                   ?>
                 </td>
@@ -210,3 +187,4 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
     ?>
   </div>
 </div>
+

@@ -107,11 +107,13 @@ class View_output extends Output_template{
         //it has status in the lookup table
         $status_column = $this->insert_status_column_to_master_view($history_tracking_fields);
         
-        // Unset the lookup id keys - To be implemented in the Output API
+        // Unset deleted at field
         $unset_fields = [$this->CI->grants->history_tracking_field($this->controller,'deleted_at')];
-
         $this->CI->grants->default_unset_columns($status_column,$unset_fields);
 
+        //Remove the primary key field from the master table
+        unset($status_column[array_search($this->CI->grants->primary_key_field($this->CI->controller),$status_column)]);
+        
         return $this->access->control_column_visibility($this->controller,$status_column,'read');
 
     }
@@ -430,6 +432,7 @@ function detail_list_output(String $table): Array {
   }
   
 
+
     /**
      * view_output
      * 
@@ -445,9 +448,15 @@ function detail_list_output(String $table): Array {
         $this->CI->grants_model->mandatory_fields($table);
     
         $query_output = $this->toggle_master_view_query_result();
+        
         $keys = $this->toggle_master_view_select_columns();
+        
         $has_details = $this->CI->grants->check_if_table_has_detail_table($table);
         $is_approveable_item = $this->CI->grants->approveable_item();
+
+        $look_tables_name_fields = $this->CI->grants->tables_name_fields(
+            $this->CI->grants->lookup_tables()
+        );
     
         $result['master'] = array(
             'keys'=> $keys,
@@ -455,6 +464,7 @@ function detail_list_output(String $table): Array {
             'table_name'=> $table,
             'has_details_table' => $has_details,
             'is_approveable_item' => $is_approveable_item,
+            'lookup_name_fields' => $look_tables_name_fields,
             //'action_labels'=>$this->CI->grants->action_labels($table,hash_id($this->CI->uri->segment(3,0),'decode'))
         );
     
