@@ -1,11 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-
-// $yaml= file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
-
-// $data = yaml_parse($yaml,0);
-
-// print_r($data);
+//print_r($this->user_model->get_user_permissions(4));
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">

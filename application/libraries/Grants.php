@@ -841,14 +841,25 @@ function update_query_result_for_fields_changed_to_select_type(String $table, Ar
     //Get changed columns 
     $changed_fields = array_keys($this->set_field_type);
 
-    foreach($query_result as $index => $row){
-
+    if(!array_key_exists(0,$query_result)){
+      // Used for single record pages e.g Master section 
       foreach($changed_fields as $changed_field){
-        if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
-          $query_result[$index][$changed_field] = $this->set_field_type[$changed_field]['options'][$row[$changed_field]];
+        if(array_key_exists($changed_field,$query_result) && in_array('select',$this->set_field_type[$changed_field]) ){
+          $query_result[$changed_field] = $this->set_field_type[$changed_field]['options'][$query_result[$changed_field]];
+        }
+      }
+    }else{
+      // Used for multi row data e.g. list and details sections
+      foreach($query_result as $index => $row){
+
+        foreach($changed_fields as $changed_field){
+          if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
+            $query_result[$index][$changed_field] = $this->set_field_type[$changed_field]['options'][$row[$changed_field]];
+          }
         }
       }
     }
+    
 
   }
 

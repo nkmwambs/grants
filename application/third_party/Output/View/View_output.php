@@ -338,8 +338,11 @@ class View_output extends Output_template{
         $select_columns = $this->toggle_master_view_select_columns();    
 
         $lookup_tables = $this->CI->grants->lookup_tables($table);
-
-        return $this->CI->grants_model->run_master_view_query($table,$select_columns,$lookup_tables);
+        
+        $master_view_query_result = $this->CI->grants_model->run_master_view_query($table,$select_columns,$lookup_tables);
+        
+        return $this->CI->grants->update_query_result_for_fields_changed_to_select_type($this->controller,$master_view_query_result);
+        
     }
   
 
@@ -370,7 +373,7 @@ class View_output extends Output_template{
             $master_view = $this->CI->$model->master_view();
         
         }
-  
+        
     return $master_view;
   }
 

@@ -37,7 +37,7 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
   }
 
   function detail_tables(){
-
+    return array('role_permission');
   }
 
   function view(){
