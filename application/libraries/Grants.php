@@ -84,12 +84,6 @@ private $detail_multi_form_add_visible_columns = [];
 private $master_multi_form_add_visible_columns = [];
 
 /**
- * Look up tables of the active table
- * @var Array
- */
-private $lookup_tables = [];
-
-/**
  * Details tables array of the active table
  * @var Array
  */
@@ -194,12 +188,15 @@ function load_detail_model(String $table_name = ""): String{
 function lookup_tables(String $table_name = ""): Array{
   $model = $this->load_detail_model($table_name);
 
+  $lookup_tables =  array();
+
   if(method_exists($this->CI->$model,'lookup_tables') && 
       is_array($this->CI->$model->lookup_tables())
     ){
-    $this->lookup_tables = $this->CI->$model->lookup_tables();
+    $lookup_tables = $this->CI->$model->lookup_tables();
   }
-  return $this->lookup_tables;
+
+  return $lookup_tables;
 }
 
 /**

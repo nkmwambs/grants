@@ -438,10 +438,6 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
     // Run column selector
     $this->db->select($selected_columns);
 
-    // echo $table;
-    // print_r($selected_columns);
-    // exit();
-
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $lookup_table.'_id';
