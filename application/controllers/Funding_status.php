@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Project extends MY_Controller
+class Funding_status extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('project_library');
+    $this->load->library('funding_status_library');
   }
 
   function index(){}
