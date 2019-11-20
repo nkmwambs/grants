@@ -90,6 +90,7 @@ class View_output extends Output_template{
                  }
                 }
 
+                //$visible_columns = $this->CI->grants->default_unset_columns($visible_columns,array($lookup_table.'_id'));
             }
             }    
 
@@ -97,13 +98,20 @@ class View_output extends Output_template{
             $visible_columns = $this->add_lookup_name_fields_to_visible_columns($visible_columns, $lookup_tables);
         }
 
+        //$default_unset_columns = $this->CI->grants->default_unset_columns($visible_columns,array($this->CI->controller.'_deleted_at'));
+
         // Add created_by and last_modified_by fields if not exists in columns selected
         $history_tracking_fields = $this->insert_history_tracking_fields_to_master_view($visible_columns);
 
         //Check if controller is not approval and find if status field is present and 
         //it has status in the lookup table
         $status_column = $this->insert_status_column_to_master_view($history_tracking_fields);
-     
+        
+        // Unset the lookup id keys - To be implemented in the Output API
+        $unset_fields = [$this->CI->grants->history_tracking_field($this->controller,'deleted_at')];
+
+        $this->CI->grants->default_unset_columns($status_column,$unset_fields);
+
         return $this->access->control_column_visibility($this->controller,$status_column,'read');
 
     }

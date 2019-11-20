@@ -242,7 +242,27 @@ public function primary_key_field(String $table_name):String {
   return $primary_key_field;
 }
 
-function is_primary_key_field($table_name, $field){
+function default_unset_columns(&$visible_columns, $fields_to_unset){
+  
+  foreach($fields_to_unset as $field){
+    if(in_array($field, $visible_columns)){
+      unset($visible_columns[array_search($field,$visible_columns)]);
+    }
+  }
+
+  return $visible_columns;
+}
+
+/**
+ * is_primary_key_field
+ * 
+ * Check if a supplied field for a table is a primary key field
+ * @param String $table_name - The name of a table to check
+ * @param String $field - Field to check from the table
+ * 
+ * @return Bool - True if Primary Key field else false
+ */
+function is_primary_key_field(String $table_name, String $field):Bool{
   
   $is_primary_key_field = false;
 

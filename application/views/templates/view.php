@@ -3,11 +3,26 @@
 extract($result['master']);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 
+$model = $this->current_model;
+$lookup_tables = $this->$model->lookup_tables();
+
 //Remove the primary key field from the master table
 //print_r($table_body);
 $master_primary_key = $table_body[$this->controller.'_id'];
 unset($table_body[$this->controller.'_id']);
 unset($keys[array_search($this->controller.'_id',$keys)]);
+
+
+// Unset the lookup id keys
+$unset_fields = [];
+
+foreach($lookup_tables as $table){
+  if($field = $this->grants->primary_key_field($table)){
+    array_push($unset_fields, $field);
+  }
+}
+
+$this->grants->default_unset_columns($keys,$unset_fields);
 
 // Make the master detail table have columns as per the config
 $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
@@ -55,9 +70,10 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               //$primary_table_name = "";
               foreach ($row as $column) {
                 $column_value = $table_body[$column];
-                //$lookup_table_primary_key = "";
-                // Do not show deleted at column
-                if( strpos($column,'_deleted_at') == true) continue;
+                
+                // Implement these skips in the before Output
+                //if( strpos($column,'_deleted_at') == true) continue;
+              
 
                 if(strpos($column,'_created_by') == true){
                     $column_value = $table_body['created_by'];
@@ -67,9 +83,6 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     $column_value = $table_body['last_modified_by'];
                 }
 
-                if(strpos($column,'_id') == true ){
-                    continue;
-                }
 
           ?>
                 <td>
