@@ -242,6 +242,11 @@ class View_output extends Output_template{
 
         // Check if the table has list_table_visible_columns not empty
         $detail_list_table_visible_columns = $this->feature_model_detail_list_table_visible_columns($table);
+        if($this->CI->controller == 'approval'){
+            $model = $this->CI->grants->load_detail_model($table);
+            $detail_list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+            array_unshift($detail_list_table_visible_columns,$this->CI->grants->primary_key_field($table));
+        }
         $lookup_tables = $this->CI->grants->lookup_tables($table);
     
         $get_all_table_fields = $this->CI->grants_model->get_all_table_fields($table);
