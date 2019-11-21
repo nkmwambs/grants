@@ -157,11 +157,7 @@ function edit(String $id):String{
       $header_columns['fk_'.$this->session->master_table.'_id'] = hash_id($this->id,'decode');
     }
 
-    //if($header_record_requires_approval){
-      $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
-    //}else{
-      //$header_columns['fk_status_id'] = 0;
-    //}
+    $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
 
     $header_columns['fk_approval_id'] = $approval_id;
 

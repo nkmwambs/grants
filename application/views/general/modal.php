@@ -184,6 +184,7 @@
 
       $('.datatable_details, .datatable').DataTable({
         dom: 'Bfrtip',
+        fixedHeader: true,
         buttons: [
             {
                 extend: 'excelHtml5',

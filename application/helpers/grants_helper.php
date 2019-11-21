@@ -148,7 +148,7 @@ if( ! function_exists('create_breadcrumb') ){
 
 		$CI =& get_instance();
 
-		$CI->menu->create_breadcrumb();
+		$CI->menu_library->create_breadcrumb();
 
 		$breadcrumb_list = $CI->session->breadcrumb_list;
 

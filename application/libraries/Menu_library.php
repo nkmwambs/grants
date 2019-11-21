@@ -17,7 +17,7 @@
  * @author Peter Prins
  */
 
-class Menu {
+class Menu_library {
 
     /**
      * Codeigniter reference

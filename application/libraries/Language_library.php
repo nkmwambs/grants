@@ -8,21 +8,18 @@
  *	NKarisa@ke.ci.org
  */
 
-
-class Menu extends MY_Controller
+class Language_library extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->load->library('menu_library');
+    $this->CI =& get_instance();
   }
 
-  function index(){}
+  function index(){
 
-  //function list(){}
-
-  // static function get_menu_list(){
-   
-  // }
+  }
 
 }
