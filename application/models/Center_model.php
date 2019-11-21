@@ -22,14 +22,19 @@ class Center_model extends MY_Model implements CrudModelInterface, TableRelation
   function index(){}
 
   public function lookup_tables(){
-    return array('approval','status');
+    return array('approval','status','group_cluster');
   }
 
   public function detail_tables(){
-    return array('budget','reconciliation','center_bank','project_allocation','request');
+    return array('center_user','budget','reconciliation','center_bank','project_allocation','request');
   }
 
-  public function master_table_visible_columns(){}
+  public function master_table_visible_columns(){
+    // return array(
+    //   'center_track_number','center_name','center_code','center_start_date',
+    //   'center_end_date','center_is_active','group_cluster_name','approval_name','status_name'
+    // );
+  }
 
   public function master_table_hidden_columns(){}
 
@@ -52,6 +57,10 @@ class Center_model extends MY_Model implements CrudModelInterface, TableRelation
   public function master_multi_form_add_hidden_columns(){}
 
   public function detail_multi_form_add_hidden_columns(){}
+
+  function single_form_add_visible_columns(){
+    return array('center_name','center_code','center_start_date','center_is_active','group_cluster_name');
+  }
 
   //function detail_list_query(){}
 

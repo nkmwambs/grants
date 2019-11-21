@@ -209,6 +209,8 @@
 
 	$('.selectpicker').selectpicker();
 
+    
+
 	function go_back(){
 			window.history.back();
 	}
@@ -218,6 +220,7 @@
 	}
 
    $(document).ready(function(){
+            //$('select').select2();
    			if (location.hash) {
 			        $("a[href='" + location.hash + "']").tab("show");
 			    }

@@ -1,4 +1,7 @@
-	
+
+	<!--Select 2 JS-->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/js/select2/select2-bootstrap.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/js/select2/select2.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/js/selectboxit/jquery.selectBoxIt.css">

@@ -20,8 +20,8 @@ class Language extends MY_Controller implements CrudModelInterface
   function index(){}
 
 
-  static function get_menu_list(){
+  // static function get_menu_list(){
 
-  }
+  // }
 
 }

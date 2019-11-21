@@ -41,7 +41,7 @@ class User_model extends MY_Model
   }
 
   function lookup_tables(){
-    return array('language','role','center_group');
+    return array('language','role','center_group_hierarchy');
   }
 
   /**
@@ -65,7 +65,7 @@ class User_model extends MY_Model
    */
   function list_table_visible_columns(): Array {
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
+    'user_lastname','user_email','user_system_admin','user_is_active','center_group_hierarchy_name');
   
   }
 
@@ -75,8 +75,8 @@ class User_model extends MY_Model
   }
 
   function master_table_visible_columns(){
-    return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
+    return array('user_track_number','user_name','user_firstname',
+    'user_lastname','user_email','user_system_admin','role_name','user_is_active');
   }
 
   /**
@@ -289,6 +289,18 @@ class User_model extends MY_Model
 
   }
 
+  function get_user_centers($user_id){
+    // // Get user center_group
+    // $center_group_id = $this->db->get_where('user',
+    // array('user_id'=>$user_id))->row()->fk_center_group_id;
+
+    // //Get centers in the group
+    // $this->db->select(array('fk_center_id'));
+    // $centers = $this->db->get_where('center_group_link',
+    // array('fk_center_group_id'=>$center_group_id))->result_array();
+
+    // return $centers;
+  }
   
 
 }

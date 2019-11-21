@@ -28,7 +28,9 @@
                         strpos($column,'_created_date') == true ||
                         strpos($column,'_last_modified_date') == true ||
                         strpos($column,'_created_by') == true ||
-                        strpos($column,'_last_modified_by') == true
+                        strpos($column,'_last_modified_by') == true ||
+                        $column == 'approval_name' ||
+                        $column == 'status_name' 
                     ){
                       continue;
                     }
@@ -98,4 +100,5 @@ $(".save, .save_new").on('click',function(ev){
   post_record_post();
   ev.preventDefault();
 });
+
 </script>
