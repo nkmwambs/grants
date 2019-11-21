@@ -36,8 +36,17 @@ class User_model extends MY_Model
    * 
    * @return Array : Table's foreign tables
    */
-  function detail_table():Array {
-    
+  function detail_tables():Array {
+    $center_group_user_table = "";
+
+    if($this->action == 'view'){
+
+      $user_id = hash_id($this->uri->segment(3),'decode');
+
+      $center_group_user_table = $this->get_center_group_hierarchy_user_table_name($user_id);
+    }
+
+    return array($center_group_user_table,'department_user');
   }
 
   function lookup_tables(){
@@ -70,8 +79,9 @@ class User_model extends MY_Model
   }
 
   function detail_list_table_visible_columns(){
-    return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
+    // return array('user_id','user_track_number','user_name','user_firstname',
+    // 'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
+ 
   }
 
   function master_table_visible_columns(){
@@ -94,7 +104,8 @@ class User_model extends MY_Model
 
   function edit_visible_columns(): Array {
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_system_admin','language_name','role_name','center_group_name','user_is_center_group_manager');
+    'user_system_admin','language_name','role_name','center_group_hierarchy_name',
+    'user_is_center_group_manager');
   }
 
   /**
@@ -123,6 +134,148 @@ class User_model extends MY_Model
     $this->email_model->user_registration_email($post_array);
     return true;
   }
+
+  /**
+   * user_department
+   * 
+   * Check if a logged user has a department association if not return empty array
+   * A user can be associated to multiple departments
+   * 
+   * @param int $user_id - Queried user
+   * @return Array - Array of department ids associated to the use
+   */
+
+   function user_department(int $user_id):Array{
+
+      $this->db->select(array('fk_department_id'));
+      $user_department = $this->db->get_where('department_user',
+      array('fk_user_id'=>$user_id))->result_array();
+
+      return array_column($user_department,'fk_department_id');
+   }
+
+   /**
+    * get_center_group_table_name
+    * Gets the name of the center group hierarchy
+    * @param int $user_id
+    * @return String - Name of the the hierarchy e.g Cluster
+    */
+   function get_center_group_table_name(int $user_id):String{
+
+    $this->db->join('user','user.fk_center_group_hierarchy_id=center_group_hierarchy.center_group_hierarchy_id');
+    $center_group_name = $this->db->get_where('center_group_hierarchy',
+    array('user_id'=>$user_id))->row()->center_group_hierarchy_name;
+
+    return $center_group_name;
+  }
+
+  function get_center_group_hierarchy_user_table_name($user_id){
+    
+    $center_group_user_table = "";
+
+    $center_group_name = $this->get_center_group_table_name($user_id);// E.g. group_cluster
+
+    $center_group_user_table = strtolower($center_group_name).'_user';// E.g. center_user
+
+    if(strtolower($center_group_name) !== 'center'){
+      $center_group_user_table = 'group_'.strtolower($center_group_name).'_user';// E.g. group_cluster_user
+    }
+
+    return $center_group_user_table;
+  }
+
+   /**
+    * get_user_center_group_association
+    * A user can only be a signed 1 center group hierarchy but withing the hierarchy he/she can
+    * have multiple associations E.g. A PF in 2 clusters
+    * The output array has 3 keys each row: fk_user_id, fk_xxx_id 
+    * where xxx is the hierachy table and fk_designation_id
+    * @param int $user_id
+    * @return Array - Center group hierarchy Associations for the user
+    */
+
+    function get_user_center_group_hierarchy_associations(int $user_id):Array {
+
+      $associations_array = array();
+
+      $center_group_hierarchy_user_table_name = $this->get_center_group_hierarchy_user_table_name($user_id);
+      $center_group_table_name = strtolower($this->get_center_group_table_name($user_id));
+
+      //$this->db->select(array('fk_user_id','fk_'.$center_group_table_name.'_id','fk_designation_id'));
+      $associations = $this->db->get_where($center_group_hierarchy_user_table_name,
+      array('fk_user_id'=>$user_id));
+
+      if($associations->num_rows()>0){
+        $associations_array = $associations->result_array();
+      }
+
+      return $associations_array;
+    }
+
+    function get_center_group_hierarchy_info(int $center_group_hierarchy_id):Array{
+
+      return (Array)$this->db->get_where('center_group_hierarchy',
+      array('center_group_hierarchy_id'=>$center_group_hierarchy_id))->row();    
+    
+    }
+
+    function get_centers_in_center_group_hierarchy($user_id){
+
+      $associations = $this->get_user_center_group_hierarchy_associations($user_id);
+
+      $center_group_hierarchy_id = $this->db->get_where('user',
+      array('user_id'=>$user_id))->row()->fk_center_group_hierarchy_id;
+
+      $level = $this->get_center_group_hierarchy_info($center_group_hierarchy_id)
+      ['center_group_hierarchy_level'];
+
+      $list_of_centers = array();
+
+      if($level == 1){
+        $list_of_centers = array_column($associations,'fk_center_id');       
+      }else{
+
+          $hierarchy_table = strtolower($this->get_center_group_hierarchy_info($center_group_hierarchy_id)
+          ['center_group_hierarchy_name']);
+
+          $this->db->select(array('center_group_hierarchy_name'));
+          $center_group_hierarchy_level = $this->db->order_by('center_group_hierarchy_level', 'ASC')
+          ->get_where('center_group_hierarchy',
+          array('center_group_hierarchy_level<='=>$level));
+
+          $raw = $center_group_hierarchy_level->result_array();
+
+          //$center = array_shift($raw);
+
+          $center_group_tables = array_column($raw,'center_group_hierarchy_name');
+
+          //$str = '';
+
+          for($i=0;$i<count($center_group_tables);$i++){
+            
+            if(isset($center_group_tables[$i+1])){
+              $deep_table = strtolower($center_group_tables[$i]) !== 'center'?'group_'.strtolower($center_group_tables[$i]):strtolower($center_group_tables[$i]);
+              $joining_table = 'group_'.strtolower($center_group_tables[$i+1]);
+              
+              // $str .= $joining_table.','.$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id</br>';
+              $this->db->join($joining_table,$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id');
+            }
+            
+          }
+          
+          $associations_array = array_column($associations,'fk_group_'.$hierarchy_table.'_id');
+
+          $this->db->where("group_".$hierarchy_table."_id IN (".implode(',',$associations_array).")");
+
+          $this->db->select(array('center_id'));
+          
+          $list_of_centers = array_column($this->db->get('center')->result_array(),'center_id');
+     }  
+    
+      return $list_of_centers;
+      
+
+    }
 
   /**
    * default_launch_page

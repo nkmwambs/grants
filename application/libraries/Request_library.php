@@ -27,7 +27,8 @@ class Request_library extends Grants
   }
   
   function list_table_where(){
-    //return array('request_date'=>'2019-10-22');
+    
+
   }
   
   function page_position(){
@@ -42,5 +43,13 @@ class Request_library extends Grants
 
     return $widgets;
   }
+
+  function change_field_type(){
+    // $change_field_type['center_name']['field_type']='select';
+    // $change_field_type['center_name']['options'] = array('1'=>"One");
+
+    // return $change_field_type;
+  }
+
 
 }

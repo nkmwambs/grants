@@ -140,6 +140,9 @@ function __construct(){
   $this->CI->load->library($this->current_library);
 }
 
+function create_table_join_statement($table, $lookup_tables){
+  return $this->CI->grants_model->create_table_join_statement($table, $lookup_tables);
+}
 
 /**
  * load_detail_model

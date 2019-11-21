@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -9,20 +11,16 @@
  */
 
 
-class Menu_user_order extends MY_Controller
+class Group__user extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('menu_user_order_library');
+    $this->load->library('group__user_library');
   }
 
   function index(){}
 
-  //function list(){}
-
-  static function get_menu_list(){
-   
-  }
+  static function get_menu_list(){}
 
 }

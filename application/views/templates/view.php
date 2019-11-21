@@ -1,5 +1,5 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-
+//echo $user_id = hash_id($this->uri->segment(3),'decode');
 extract($result['master']);
 
 $this->grants->unset_lookup_tables_ids($keys);

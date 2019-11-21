@@ -68,6 +68,14 @@ public $auth;
 		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
         $this->session->set_userdata('role_id', $row->fk_role_id);
         $this->session->set_userdata('center_id',9);
+        $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
+        $this->session->set_userdata('departments',
+        $this->user_model->user_department($row->user_id));
+        $this->session->set_userdata('hierarchy_associations',
+        $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
+        $this->session->set_userdata('center_group_info',
+        $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
+        
 
         $this->session->set_userdata('breadcrumb_list',array());
 
