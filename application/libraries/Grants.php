@@ -511,6 +511,7 @@ function detail_tables(String $table_name = ""): Array {
     // items
     $id = $this->CI->uri->segment(3,0);
 
+    // This line needs to be moved to a model
     $this->CI->db->join('approve_item','approve_item.approve_item_id=approval.fk_approve_item_id');
     $detail_table = $this->CI->db->get_where('approval',
     array('approval_id'=>hash_id($id,'decode')))->row()->approve_item_name;
@@ -699,19 +700,11 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    * 
    * @param $column String : A column from a table
    * @param $field_value Mixed : Value of the field mainly from edit form
-   * 
+   * @param bool $show_only_selected_value
    * @return String
    */
     
-  function header_row_field(String $column, $field_value = ""): String {
-    //create, read, update
-    //  $field_permission = array('bank'=>array('bank_swift_code'=>array('read','write'))); 
-     
-    //  if(  array_key_exists($this->controller,$field_permission) && 
-    //       in_array($column,$field_permission[$this->controller]) 
-    //     ){
-
-    //  }
+  function header_row_field(String $column, String $field_value = "", bool $show_only_selected_value = false): String {
 
       $f = new Fields_base($column,$this->controller,true);
 
@@ -739,7 +732,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // $column has a _name suffix if is a foreign key in the table
         // This is converted from fk_xxxx_id where xxxx is the primary table name
         $lookup_table = strtolower(substr($column,0,-5));
-        return $f->$field($this->CI->grants_model->lookup_values($lookup_table), $field_value);
+        return $f->$field($this->CI->grants_model->lookup_values($lookup_table), $field_value,$show_only_selected_value);
       }elseif(strrpos($column,'_is_active') == true ){
         return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value);
       }else{
@@ -763,7 +756,18 @@ function add_form_fields(Array $visible_columns_array): Array {
   $fields = array();
 
   foreach ($visible_columns_array as $column) {
-    $fields[$column] = $this->header_row_field($column);
+    
+    // Used to set the default select value in a single_form_add name fields if the form has been opened from a 
+    // parent record
+    $field_value = '';
+    $show_only_selected_value = false;
+
+    if($this->CI->id != null  && hash_id($this->CI->id,'decode')>0 && $column == $this->CI->sub_action.'_name'){
+      $field_value = hash_id($this->CI->id,'decode');
+      $show_only_selected_value = true;
+    }
+    
+    $fields[$column] = $this->header_row_field($column,$field_value,$show_only_selected_value);
   }
 
   return $fields;  

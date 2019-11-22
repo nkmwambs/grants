@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  // print_r($this->user_model->get_user_permissions(1));
-
-  // echo $this->user_model->check_role_has_field_permission('Bank','create','bank_is_active');
+  //echo $this->id;
 
   extract($result);
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";

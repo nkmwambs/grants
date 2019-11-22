@@ -148,7 +148,7 @@ class Fields_base{
     return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
   }
 
-  function select_field($options, $selected_option = 0){
+  function select_field($options, $selected_option = 0, $show_only_selected_value = false){
 
     $id = "";
 
@@ -174,15 +174,21 @@ class Fields_base{
 
     $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
             <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
-
+            
             if(is_array($options) && count($options) > 0){
               foreach ($options as $option_value=>$option_html) {
                 $selected = "";
+                
+                if($show_only_selected_value && ($option_value != $selected_option)){
+                    continue;
+                }
+
                 if($option_value == $selected_option){
                     $selected = "selected='selected'";
                 }
                 $select .= "<option value='".$option_value."' ".$selected.">".get_phrase($option_html)."</option>";
               }
+              
             }
             
 
