@@ -17,7 +17,7 @@
  * @author Peter Prins
  */
 
-class Menu {
+class Menu_library {
 
     /**
      * Codeigniter reference
@@ -243,17 +243,17 @@ class Menu {
 
       $nav = "";
 
+      $lib = "";
+      $menu_icon = '';
       foreach ($menus as $menu => $items) {
         if($this->CI->user_model->check_role_has_permissions($menu,'read')){
            // Intended to show an icon but didn't work
-          //$library = $menu.'_library'; 
+          // $lib = $menu.'_library'; 
           
-          //$this->CI->load->library($menu.'_library');
+          // $this->CI->load->library($lib);
 
-          $menu_icon = '';
-
-          // if(property_exists($this->CI->$library,'menu_icon')){
-          //   $menu_icon = $this->CI->$library->menu_icon;
+          // if(property_exists($this->CI->$lib,'menu_icon')){
+          //   $menu_icon = $this->CI->$lib->menu_icon;
           // }
 
           $nav .= '
@@ -270,27 +270,11 @@ class Menu {
 
       if(count($this->CI->session->user_more_menu) > 0 ){
         $nav .= '
-          <li class="has-sub">
-              <a href="#">
+          <li class="">
+              <a href="'.base_url().'menu/list">
                   <span class="fa fa-plus"></span>
               </a>
-              <ul>
-                ';
-
-                  foreach ($this->CI->session->user_more_menu as $user_menu => $user_menu_item) {
-                    if($this->CI->user_model->check_role_has_permissions($user_menu,'read')){
-                      $nav .= '
-                        <li>
-                          <a href="'.base_url().strtolower($user_menu).'/list">
-                            <span class="title">'.get_phrase($user_menu).'</span>
-                          </a>
-                        </li>
-                      ';
-                    }
-                  }
-
-            $nav .='
-              </ul>
+             
           </li>
         ';
       }

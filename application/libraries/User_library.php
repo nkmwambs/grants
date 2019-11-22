@@ -32,6 +32,9 @@ class User_library extends Grants
 
     $change_field_type['user_email']['field_type'] = 'email';
 
+    $change_field_type['user_is_center_group_manager']['field_type'] = 'select';
+    $change_field_type['user_is_center_group_manager']['options'] = array(get_phrase('no'),get_phrase('yes'));
+
     return $change_field_type;
   }
 

@@ -52,7 +52,14 @@
 				<hr />
 				<div class="page-content">
 		           <!--Showing Progress GIF. Must be available in evert form-->
-					<?php include APPPATH."views/".$views_dir.'/'.$page_name.'.php';?>
+					<?php 
+						if(file_exists(APPPATH."views/".$views_dir.'/'.$page_name.'.php')){
+							include APPPATH."views/".$views_dir.'/'.$page_name.'.php';
+						}else{
+							include APPPATH."views/".$views_dir.'/error.php';
+						}
+						
+					?>
 				</div>
 			<?php include 'footer.php';?>
 
@@ -61,7 +68,7 @@
 
 	</div>
 		<?php include 'includes_bottom.php';?>
-    <?php include 'modal.php';?>
+    	<?php include 'modal.php';?>
 		<?php
 				if(file_exists(VIEWPATH.$this->controller.'\js_script.php')){
 						include VIEWPATH.$this->controller.'\js_script.php';

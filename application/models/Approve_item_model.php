@@ -11,6 +11,7 @@
 class Approve_item_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'approve_item'; // you MUST mention the table name
+  //public $dependant_table = "status";
 
 
   function __construct(){
@@ -33,11 +34,16 @@ class Approve_item_model extends MY_Model implements CrudModelInterface, TableRe
   }
 
   function detail_tables(){
-
+    return array('status');
   }
 
   function view(){
 
+  }
+
+  function show_add_button(){
+    // These items are automatically added by the system
+    return false;
   }
 
 }

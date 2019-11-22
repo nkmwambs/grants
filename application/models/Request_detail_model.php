@@ -44,6 +44,12 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
       'request_detail_total_cost','expense_account_name','project_allocation_name');
     }
 
+    function edit_visible_columns(){
+      
+      return array('request_detail_description','request_detail_quantity','request_detail_unit_cost',
+      'request_detail_total_cost','expense_account_name','project_allocation_name','request_detail_conversion_set');
+    }
+
     public function single_form_add_hidden_columns(){}
 
     public function master_multi_form_add_visible_columns(){}

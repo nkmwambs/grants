@@ -90,8 +90,7 @@ extract($result);
                             }elseif(strpos($column,'is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
-                              //echo str_replace("_"," ",$row[$column]);
-                              echo $row[$column];
+                              echo ucfirst(str_replace("_"," ",$row[$column]));
                             }
 
                            ?>
@@ -111,5 +110,5 @@ extract($result);
 </div>
 
 <script>
-  
+
 </script>

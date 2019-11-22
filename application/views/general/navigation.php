@@ -18,7 +18,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 			<ul class="navbar-nav">
 				<!-- DASHBOARD -->
-		        <?=$this->menu->navigation();?>
+		        <?=$this->menu_library->navigation();?>
 
 			</ul>
 

@@ -9,7 +9,69 @@ tables:
       - center_group
 
   center_group_hierarchy:
+
+  language:
+
+  group_global:
+
+  group_region:
+    lookup_tables:
+      - group_global
+
+  group_country:
+    lookup_tables:
+      - group_region
+
+  group_cohort:
+    lookup_tables:
+      - group_country
+
+  group_cluster:
+    lookup_tables:
+      - group_cohort   
+
+  center_user:
+    lookup_tables:
+      - center
+      - user 
+
+  group_cluster_user:
+    lookup_tables:
+      - user
+      - group_cluster
+
+  group_cohort_user:
+    lookup_tables:
+      - user
+      - group_cohort
+
+  group_country_user:
+    lookup_tables:
+      - user
+      - group_country
+
+  group_region_user:
+    lookup_tables:
+      - user
+      - group_region
+
+  group_global_user:
+    lookup_tables:
+      - user
+      - group_global   
+
+  department:
+    lookup_tables:
+      - approval
+      - status
+
+  department_user:
+    lookup_tables:
+      - user
+      - department
+      - approval
+      - status
   
-  test:
-  
- 
+  designation:
+    lookup_tables:
+      - center_group_hierarchy    

@@ -58,5 +58,17 @@ class Voucher_library extends Grants
     );
   }
 
+  function approved_unvouched_request_details(){
+    $data['result'] = $this->CI->voucher_model->get_approved_unvouched_request_details();
+    return $this->CI->load->view('voucher/unvouched_request_details',$data,true);
+  }
+
+  function page_position(){
+
+    $widget['position_5'][] = $this->approved_unvouched_request_details();
+
+    return $widget;
+  }
+
 
 }

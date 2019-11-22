@@ -1,12 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-//print_r($result['detail']);
+//echo $user_id = hash_id($this->uri->segment(3),'decode');
 extract($result['master']);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 
-//Remove the primary key field from the master table
-$master_primary_key = $table_body[$this->controller.'_id'];
-unset($table_body[$this->controller.'_id']);
-unset($keys[array_search($this->controller.'_id',$keys)]);
+$this->grants->unset_lookup_tables_ids($keys);
 
 // Make the master detail table have columns as per the config
 $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
@@ -14,11 +10,16 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 ?>
 <div class="row">
   <div class="col-xs-12">
-      <?php 
-        include "widgets/comment.php";;
-      ?>
+      <?=Widget_base::load('comment');?>
   </div>
 </div>
+
+<div class="row">
+  <div class="col-xs-12">
+      <?=Widget_base::load('position','position_1');?>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-striped">
@@ -31,9 +32,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
-              <div class="btn btn-default"><?=get_phrase('edit');?></div>
-              <div class="btn btn-default"><?=get_phrase('clone');?></div>
-              <div class="btn btn-default"><?=get_phrase('delete');?></div>
+              <?=Widget_base::load('button',get_phrase('edit'),$this->controller.'/edit/'.$this->id);?>
+              <?=Widget_base::load('button',get_phrase('delete'),$this->controller.'/delete/'.$this->id);?>
+              <?=Widget_base::load('position','position_2');?>
           </th>
         </tr>
       </thead>
@@ -49,9 +50,10 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               //$primary_table_name = "";
               foreach ($row as $column) {
                 $column_value = $table_body[$column];
-                //$lookup_table_primary_key = "";
-                // Do not show deleted at column
-                if( strpos($column,'_deleted_at') == true) continue;
+                
+                // Implement these skips in the before Output
+                //if( strpos($column,'_deleted_at') == true) continue;
+              
 
                 if(strpos($column,'_created_by') == true){
                     $column_value = $table_body['created_by'];
@@ -61,9 +63,6 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     $column_value = $table_body['last_modified_by'];
                 }
 
-                if(strpos($column,'_id') == true ){
-                    continue;
-                }
 
           ?>
                 <td>
@@ -72,13 +71,12 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     if(strpos($column,'is_active')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');
 
-                    }elseif(strpos($column,'_name') && substr($column,0,-5) !== $table_name ){
+                    }elseif(in_array($column,$lookup_name_fields) ){
                         $primary_table_name = substr($column,0,-5);
-                        //echo $primary_table_name;
                         $lookup_table_id = $table_body[$primary_table_name.'_id'];
-                        echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.$column_value.'</a>';
+                        echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
                     }else{
-                      echo $column_value;
+                        echo ucwords(str_replace('_',' ',$column_value));
                     }
                   ?>
                 </td>
@@ -89,9 +87,14 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
           <?php
             }
           ?>
-
+          
       </tbody>
     </table>
+    <div class="row">
+      <div class="col-xs-12">
+        <?=Widget_base::load('position','position_3');?>
+      </div>
+    </div>
     <?php
 
     if( isset($result['detail']) && count($result['detail']) > 0){
@@ -131,10 +134,22 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                       ?>
                   </td>
                   <?php
+                      
                       $primary_key = 0;
+                      
+                      $column_key = 0;
 
+                      $lookup_table = "";
+                      
                       foreach ($keys as $column){
-                        $primary_key = $row[$primary_key_column]
+                        $primary_key = $row[$primary_key_column];
+                        
+                        if(strpos($column,'_id') == true){
+                          $column_key = $row[$column];
+                          // Remove the id suffix
+                          $lookup_table = substr($column,0,-3);
+                          continue;
+                        }
 
                   ?>
                         <td>
@@ -147,6 +162,8 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
+                            }elseif($column_key > 0){ 
+                               echo '<a href="'.base_url().strtolower($lookup_table).'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
                             }else{
                                 echo ucfirst($row[$column]);
                             }
@@ -170,3 +187,4 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
     ?>
   </div>
 </div>
+

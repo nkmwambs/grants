@@ -157,11 +157,7 @@ function edit(String $id):String{
       $header_columns['fk_'.$this->session->master_table.'_id'] = hash_id($this->id,'decode');
     }
 
-    //if($header_record_requires_approval){
-      $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
-    //}else{
-      //$header_columns['fk_status_id'] = 0;
-    //}
+    $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
 
     $header_columns['fk_approval_id'] = $approval_id;
 
@@ -421,6 +417,24 @@ function mandatory_fields(String $table): Void{
   }
 }
 
+function create_table_join_statement($table,$lookup_tables){
+  if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+    foreach ($lookup_tables as $lookup_table) {
+        $lookup_table_id = $lookup_table.'_id';
+        $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
+    }
+  }
+
+}
+
+function centers_where_condition(){
+    // $centers_in_center_group_hierarchy = $this->user_model->
+    // get_centers_in_center_group_hierarchy($this->session->user_id);
+
+    // $sql = "fk_center_id IN (".implode(',',$centers_in_center_group_hierarchy).")";
+    // $this->db->where($sql);
+}
+
 /**
  * run_query
  * 
@@ -437,11 +451,7 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
 
     // Run column selector
     $this->db->select($selected_columns);
-
-    // echo $table;
-    // print_r($selected_columns);
-    // exit();
-
+    
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
           $lookup_table_id = $lookup_table.'_id';

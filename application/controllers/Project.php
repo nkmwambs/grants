@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -14,15 +16,11 @@ class Project extends MY_Controller
 
   function __construct(){
     parent::__construct();
+    $this->load->library('project_library');
   }
 
-  function index(){
+  function index(){}
 
-  }
-
-  function page_title():String{
-    return "Listing";
-  }
-
+  static function get_menu_list(){}
 
 }

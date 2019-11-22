@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -19,10 +21,6 @@ class Status extends MY_Controller
 
   function index(){}
 
-  //function list(){}
-
-  static function get_menu_list(){
-    return array('list_banks'=>array('view','arg1','arg2','arg3'));
-  }
+  static function get_menu_list(){}
 
 }

@@ -27,7 +27,30 @@ class Request_library extends Grants
   }
   
   function list_table_where(){
-    //return array('request_date'=>'2019-10-22');
+    
+
   }
+  
+  function page_position(){
+
+    //$widgets['position_1'][] = Widget_base::load('comment');
+
+    //$widgets['position_2'][] = Widget_base::load('button',get_phrase('edit'),$this->CI->controller.'/edit/'.$this->CI->id);
+    $widgets['position_2'][] = Widget_base::load('button',get_phrase('clone'),$this->CI->controller.'/clone/'.$this->CI->id);
+    //$widgets['position_2'][] = Widget_base::load('button',get_phrase('delete'),$this->CI->controller.'/delete/'.$this->CI->id);
+          
+    //$widgets['position_3'][] = "Here is main position two widgets";
+
+    return $widgets;
+  }
+
+
+  function change_field_type(){
+    $change_field_type['center_name']['field_type'] = 'select';
+    $change_field_type['center_name']['options'] = $this->CI->user_model->user_associated_centers_names($this->CI->session->user_id);
+
+    return $change_field_type;
+  }
+
 
 }

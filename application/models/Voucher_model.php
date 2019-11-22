@@ -36,6 +36,9 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array('voucher_detail');
   }
 
+  /**
+   * @todo not yet used
+   */
   public function detail_table_relationships(){
     $relationship['voucher_detail']['foreign_key'] = 'fk_voucher_id';
 
@@ -72,7 +75,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function master_table_visible_columns(){
     return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_by','voucher_last_modified_by','voucher_created_date');
+    'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_date');
   }
 
   public function edit_visible_columns(){
@@ -87,5 +90,19 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     array('fk_center_id'=>$center_id))->row()->voucher_number;
   }
 
+
+  function get_approved_unvouched_request_details(){
+
+    $this->db->select(array('request_detail_id','request_id','request_date','center_name','request_detail_track_number','request_detail_description',
+      'request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_allocation_name','status_name'));
+    
+    $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
+    $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
+    $this->db->join('status','status.status_id=request_detail.fk_status_id');
+    $this->db->join('request','request.request_id=request_detail.fk_request_id');    
+    $this->db->join('center','center.center_id=request.fk_center_id');  
+      
+    return $this->db->get('request_detail')->result_array();
+  }
   
 }

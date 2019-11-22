@@ -84,12 +84,6 @@ private $detail_multi_form_add_visible_columns = [];
 private $master_multi_form_add_visible_columns = [];
 
 /**
- * Look up tables of the active table
- * @var Array
- */
-private $lookup_tables = [];
-
-/**
  * Details tables array of the active table
  * @var Array
  */
@@ -127,9 +121,6 @@ function __construct(){
   // Instantiate the name of the current running object/ main controller
   $this->controller = $this->CI->uri->segment(1, 'approval');
 
-  //Create missing library and models files for the loading object/ controller
-  $this->create_missing_system_files();
-
   // Instantiate the name of the current running object library/ main controller library
   $current_library = $this->controller.'_library';
 
@@ -149,137 +140,12 @@ function __construct(){
   $this->CI->load->library($this->current_library);
 }
 
-function create_missing_system_files(){
-  
-  $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
-
-
-  if(function_exists('yaml_parse')){
-    $specs_array = yaml_parse($raw_specs,0);
-  
-    $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
-    $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
-  
-    foreach($specs_array['tables'] as $table_name => $setup){
-      if(!file_exists($controllers_path.$table_name.'.php')){
-        $this->create_missing_controller($table_name,$assets_temp_path);
-        $this->create_missing_model($table_name,$assets_temp_path,$setup);
-        $this->create_missing_library($table_name,$assets_temp_path);
-      }
-    }
-  }
-
-
+function create_table_join_statement($table, $lookup_tables){
+  return $this->CI->grants_model->create_table_join_statement($table, $lookup_tables);
 }
 
-function create_missing_controller($table, $assets_temp_path){
-
-  $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
-
-     // Check if the library file is available, if not create it
-     if(!file_exists($controllers_path.$table.'.php')){
-      // Create the file   
-      $controller = fopen($controllers_path.ucfirst($table).'.php', "w") or die("Unable to open file!");
-
-      // Add the PHP opening tag to the file 
-        $php_tag = '<?php';
-        fwrite($controller, $php_tag);
-
-      // Copy contents of assets/temp_library to the created file after the tag above
-        $replaceables = array("%controller%"=>ucfirst($table),'%library%'=>$table.'_library');
-
-        $replacefrom = array_keys($replaceables);
-
-        $replacedto = array_values($replaceables);
-
-        $file_raw_contents = file_get_contents($assets_temp_path.'temp_controller.php');
-
-        $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
-
-        $file_code = "\n".$file_contents;
-        
-        fwrite($controller, $file_code);
-  }
-}
-
-function create_missing_library($table, $assets_temp_path){
- 
-  $libararies_path = APPPATH.'libraries'.DIRECTORY_SEPARATOR; 
-   // Check if the library file is available, if not create it
-    if(!file_exists($libararies_path.$table.'_library.php')){
-      // Create the file   
-      $library = fopen($libararies_path.ucfirst($table).'_library.php', "w") or die("Unable to open file!");
-
-      // Add the PHP opening tag to the file 
-        $php_tag = '<?php';
-        fwrite($library, $php_tag);
-
-      // Copy contents of assets/temp_library to the created file after the tag above
-        $replaceables = array("%library%"=>ucfirst($table).'_library');
-
-        $replacefrom = array_keys($replaceables);
-
-        $replacedto = array_values($replaceables);
-
-        $file_raw_contents = file_get_contents($assets_temp_path.'temp_library.php');
-
-        $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
-
-        $file_code = "\n".$file_contents;
-        
-        fwrite($library, $file_code);
-  }
-}
-
-function create_missing_model($table, $assets_temp_path, $table_specs){
-  $models_path = APPPATH.'models'.DIRECTORY_SEPARATOR;
-  // Check if model is available and if not create the file
-    if(!file_exists($models_path.$table.'_model.php')){
-
-      // Create the file   
-      $model = fopen($models_path.ucfirst($table).'_model.php', "w") or die("Unable to open file!");
- 
-      // Add the PHP opening tag to the file 
-       $php_tag = '<?php';
-       fwrite($model, $php_tag);
- 
-      // Copy contents of assets/temp_model to the created file after the tag above
-      $lookup_tables = "";
-      if(array_key_exists('lookup_tables',$table_specs)){
-        $specs = $table_specs['lookup_tables'];
-
-        $lookup_tables = implode(',', array_map(array($this,'quote_array_elements'),$specs) );
-      
-      }
-       $replaceables = array(
-         "%model%"=>ucfirst($table).'_model',
-         "%table%"=>$table,
-         '%dependant_table%'=> '',
-         '%name%'=>$table.'_name',
-         '%created_date%'=>$table.'_created_date',
-         '%created_by%'=>$table.'_created_by',
-         '%last_modified_date%'=>$table.'_last_modified_date',
-         '%last_modified_by%'=>$table.'_last_modified_by',
-         '%deleted_at%'=>$table.'_deleted_at',
-         '%lookup_tables%'=>$lookup_tables
-       );
- 
-       $replacefrom = array_keys($replaceables);
-       $replacedto = array_values($replaceables);
- 
-       $file_raw_contents = file_get_contents($assets_temp_path.'temp_model.php');
- 
-       $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
- 
-       $file_code = "\n".$file_contents;
-       
-       fwrite($model, $file_code);
-   }
- 
-}
-
-function quote_array_elements($elem){
-  return ("'$elem'");
+function centers_where_condition(){
+  return $this->CI->grants_model->centers_where_condition();
 }
 
 /**
@@ -287,6 +153,7 @@ function quote_array_elements($elem){
  * 
  * This method helps to reload the detail table/ foreign table model. It can be used to toggle models
  * It returns the toggled model name
+ * It creates missing libs, models and controllers
  * 
  * @param $table_name String : The table to toggle a model to
  *  
@@ -296,6 +163,16 @@ function load_detail_model(String $table_name = ""): String{
   $model =  $this->current_model;
 
   if($table_name !== "" && !is_array($table_name)){
+    
+    if(!file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.$table_name.'.php')){
+      // Creates missing models, libraries or controllers based on a missing controller
+      $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
+      
+      $this->create_missing_model($table_name,$assets_temp_path,array('status','approval'));
+      $this->create_missing_library($table_name,$assets_temp_path);
+      $this->create_missing_controller($table_name,$assets_temp_path);   
+    }
+
     $model = $table_name.'_model';
     $this->CI->load->model($model);
   }
@@ -318,12 +195,15 @@ function load_detail_model(String $table_name = ""): String{
 function lookup_tables(String $table_name = ""): Array{
   $model = $this->load_detail_model($table_name);
 
+  $lookup_tables =  array();
+
   if(method_exists($this->CI->$model,'lookup_tables') && 
       is_array($this->CI->$model->lookup_tables())
     ){
-    $this->lookup_tables = $this->CI->$model->lookup_tables();
+    $lookup_tables = $this->CI->$model->lookup_tables();
   }
-  return $this->lookup_tables;
+
+  return $lookup_tables;
 }
 
 /**
@@ -375,6 +255,41 @@ public function primary_key_field(String $table_name):String {
   }
 
   return $primary_key_field;
+}
+
+function default_unset_columns(&$visible_columns, $fields_to_unset){
+  
+  foreach($fields_to_unset as $field){
+    if(in_array($field, $visible_columns)){
+      unset($visible_columns[array_search($field,$visible_columns)]);
+    }
+  }
+
+  return $visible_columns;
+}
+
+/**
+ * is_primary_key_field
+ * 
+ * Check if a supplied field for a table is a primary key field
+ * @param String $table_name - The name of a table to check
+ * @param String $field - Field to check from the table
+ * 
+ * @return Bool - True if Primary Key field else false
+ */
+function is_primary_key_field(String $table_name, String $field):Bool{
+  
+  $is_primary_key_field = false;
+
+  $metadata = $this->CI->grants_model->table_fields_metadata($table_name);
+
+  foreach($metadata as $data){
+    if($data->primary_key == 1 && $data->name == $field){
+      $is_primary_key_field = true;
+    }
+  }
+
+   return $is_primary_key_field; 
 }
 
 /**
@@ -469,6 +384,43 @@ public function is_history_tracking_field(String $table_name, String $column, St
   return $is_history_tracking_field;
 
 }
+
+function unset_lookup_tables_ids(&$keys,$table_name = ""){
+  
+  $model = $this->load_detail_model($table_name);
+  $lookup_tables = $this->CI->$model->lookup_tables();
+
+    // Unset the lookup id keys
+    $unset_fields = [];
+    if(is_array($lookup_tables) && count($lookup_tables) > 0){
+      foreach($lookup_tables as $table){
+        if($field = $this->primary_key_field($table)){
+          array_push($unset_fields, $field);
+        }
+      }
+    }
+
+    $this->default_unset_columns($keys,$unset_fields);
+}
+
+/**
+ * tables_name_fields
+ * 
+ * Get name fields of the supplied tables
+ * @param Array $tables - Tables to get name fields for
+ * @return Array - Name fields array
+ */
+function tables_name_fields(Array $tables):Array{
+  $table_name_fields = [];
+  if(is_array($tables) && count($tables) > 0){
+    foreach($tables as $table){
+      array_push($table_name_fields,$this->CI->grants->name_field($table));
+    }
+  }
+
+  return $table_name_fields;
+}
+
 
 /**
  * is_name_field
@@ -952,7 +904,19 @@ function edit_visible_columns(){
   return $this->edit_visible_columns;
 }
 
+function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
+  $options = array();
+    $result = $this->CI->user_model->get_users_with_center_group_hierarchy_name($center_group_hierarchy_name);
 
+    if(count($result)>0){
+      $user_ids = array_column($result,'user_id');
+      $user_names = array_column($result,'user_name');
+
+      $options =  array_combine($user_ids,$user_names);
+    }
+    
+    return $options;
+}
 
 /**
  * update_query_result_for_fields_changed_to_select_type
@@ -969,21 +933,34 @@ function edit_visible_columns(){
 
 function update_query_result_for_fields_changed_to_select_type(String $table, Array $query_result): Array {
   // Check if there is a change of field type set and update the results
-  $this->set_change_field_type($table);
+  $changed_field_type = $this->set_change_field_type($table);
   
   if(count($this->set_field_type) > 0){
 
     //Get changed columns 
     $changed_fields = array_keys($this->set_field_type);
 
-    foreach($query_result as $index => $row){
-
+    if(!array_key_exists(0,$query_result)){
+      // Used for single record pages e.g Master section 
       foreach($changed_fields as $changed_field){
-        if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
-          $query_result[$index][$changed_field] = $this->set_field_type[$changed_field]['options'][$row[$changed_field]];
+        if(array_key_exists($changed_field,$query_result) && in_array('select',$this->set_field_type[$changed_field]) ){
+          $query_result[$changed_field] = $this->set_field_type[$changed_field]['options'][$query_result[$changed_field]];
+        }
+      }
+    }else{
+      // Used for multi row data e.g. list and details sections
+      foreach($query_result as $index => $row){
+
+        foreach($changed_fields as $changed_field){
+          if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
+            // The isset check has been used to solve a problem where a field type of select is changed to the same select in order to alter the number of select options. 
+            // This workaround is crucial on the detail list of view action pages, Most notably when using the group_country_user lib change_field_type
+            $query_result[$index][$changed_field] = isset($this->set_field_type[$changed_field]['options'][$row[$changed_field]]) ? $this->set_field_type[$changed_field]['options'][$row[$changed_field]]:$row[$changed_field];
+          }
         }
       }
     }
+    
 
   }
 
@@ -1013,9 +990,12 @@ function show_add_button(String $table = ""): Bool {
   
   $show_add_button = true;
 
-  if(method_exists($this->CI->$model,'show_add_button') ){
+  $library = $this->controller.'_library';
+
+  if(method_exists($this->CI->$model,'show_add_button')){
     $show_add_button = $this->CI->$model->show_add_button();
   }
+
 
   return $show_add_button;
 }
@@ -1270,6 +1250,115 @@ function action_after_insert($post_array,$approval_id,$header_id): bool {
   }
 
    return $status;
+}
+
+
+// Auto create Model and Library fields if missing
+
+function create_missing_system_files(){
+  
+  $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
+
+  $specs_array = yaml_parse($raw_specs,0);
+  
+  $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
+  $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+
+  foreach($specs_array['tables'] as $table_name => $setup){
+    if(!file_exists($controllers_path.$table_name.'.php')){
+      $this->create_missing_controller($table_name,$assets_temp_path);
+      $this->create_missing_model($table_name,$assets_temp_path,$setup);
+      $this->create_missing_library($table_name,$assets_temp_path);
+    }
+  }
+
+}
+
+function create_missing_controller($table, $assets_temp_path){
+
+  $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+
+  // Copy contents of assets/temp_library to the created file after the tag above
+  $replaceables = array("%controller%"=>ucfirst($table),'%library%'=>$table.'_library');
+
+  $this->write_file_contents($table, $controllers_path ,$assets_temp_path, $replaceables, 'controller');
+
+}
+
+function create_missing_library($table, $assets_temp_path){
+ 
+  $libararies_path = APPPATH.'libraries'.DIRECTORY_SEPARATOR; 
+
+  // Copy contents of assets/temp_library to the created file after the tag above
+  $replaceables = array("%library%"=>ucfirst($table).'_library');
+
+  $this->write_file_contents($table, $libararies_path ,$assets_temp_path, $replaceables, 'library');
+}
+
+function create_missing_model($table, $assets_temp_path, $table_specs){
+
+  $models_path = APPPATH.'models'.DIRECTORY_SEPARATOR;
+ 
+      // Copy contents of assets/temp_model to the created file after the tag above
+      $lookup_tables = "";
+      if(array_key_exists('lookup_tables',$table_specs)){
+        $specs = $table_specs['lookup_tables'];
+
+        $lookup_tables = implode(',', array_map(array($this,'quote_array_elements'),$specs) );
+      
+      }
+       $replaceables = array(
+         "%model%"=>ucfirst($table).'_model',
+         "%table%"=>$table,
+         '%dependant_table%'=> '',
+         '%name%'=>$table.'_name',
+         '%created_date%'=>$table.'_created_date',
+         '%created_by%'=>$table.'_created_by',
+         '%last_modified_date%'=>$table.'_last_modified_date',
+         '%last_modified_by%'=>$table.'_last_modified_by',
+         '%deleted_at%'=>$table.'_deleted_at',
+         '%lookup_tables%'=>$lookup_tables
+       );
+ 
+   $this->write_file_contents($table, $models_path ,$assets_temp_path, $replaceables, 'model');
+ 
+}
+
+function write_file_contents($table, $sys_file_path ,$assets_temp_path, $replaceables, $temp_type = 'controller'){
+
+  // Check if model is available and if not create the file
+  if(!file_exists($sys_file_path.$table.'_'.$temp_type.'.php')){
+
+      // Create the file  
+      $handle = null;
+
+      if($temp_type == 'model' || $temp_type == 'library'){
+        $handle = fopen($sys_file_path.ucfirst($table).'_'.$temp_type.'.php', "w") or die("Unable to open file!");  
+      }else{
+        $handle = fopen($sys_file_path.ucfirst($table).'.php', "w") or die("Unable to open file!");
+      }
+        
+      // Add the PHP opening tag to the file 
+      $php_tag = '<?php';
+      fwrite($handle, $php_tag);
+
+      $replacefrom = array_keys($replaceables);
+      
+      $replacedto = array_values($replaceables);
+    
+      $file_raw_contents = file_get_contents($assets_temp_path.'temp_'.$temp_type.'.php');
+    
+      $file_contents = str_replace($replacefrom,$replacedto,$file_raw_contents);
+    
+      $file_code = "\n".$file_contents;
+          
+      fwrite($handle, $file_code);
+  }
+  
+}
+
+function quote_array_elements($elem){
+  return ("'$elem'");
 }
 
 

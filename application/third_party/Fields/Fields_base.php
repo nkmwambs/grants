@@ -175,13 +175,16 @@ class Fields_base{
     $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
             <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
 
-            foreach ($options as $option_value=>$option_html) {
-              $selected = "";
-              if($option_value == $selected_option){
-                  $selected = "selected='selected'";
+            if(is_array($options) && count($options) > 0){
+              foreach ($options as $option_value=>$option_html) {
+                $selected = "";
+                if($option_value == $selected_option){
+                    $selected = "selected='selected'";
+                }
+                $select .= "<option value='".$option_value."' ".$selected.">".get_phrase($option_html)."</option>";
               }
-              $select .= "<option value='".$option_value."' ".$selected.">".get_phrase($option_html)."</option>";
             }
+            
 
     $select .= "</select>";
 

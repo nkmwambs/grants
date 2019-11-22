@@ -87,26 +87,34 @@ class View_output extends Output_template{
                 foreach($lookup_table_fields_data as $field_data){
                 if($field_data->primary_key == 1){
                     array_push($visible_columns,$field_data->name);
-                }
+                 }
                 }
 
+                //$visible_columns = $this->CI->grants->default_unset_columns($visible_columns,array($lookup_table.'_id'));
             }
             }    
 
-        }else{
-            if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-                $this->add_lookup_name_fields_to_visible_columns($visible_columns, $lookup_tables);
-            }
+        }elseif(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+            $visible_columns = $this->add_lookup_name_fields_to_visible_columns($visible_columns, $lookup_tables);
         }
 
+        //$default_unset_columns = $this->CI->grants->default_unset_columns($visible_columns,array($this->CI->controller.'_deleted_at'));
+
         // Add created_by and last_modified_by fields if not exists in columns selected
-        $this->insert_history_tracking_fields_to_master_view($visible_columns);
+        $history_tracking_fields = $this->insert_history_tracking_fields_to_master_view($visible_columns);
 
         //Check if controller is not approval and find if status field is present and 
         //it has status in the lookup table
-        $this->insert_status_column_to_master_view($visible_columns);
+        $status_column = $this->insert_status_column_to_master_view($history_tracking_fields);
+        
+        // Unset deleted at field
+        $unset_fields = [$this->CI->grants->history_tracking_field($this->controller,'deleted_at')];
+        $this->CI->grants->default_unset_columns($status_column,$unset_fields);
 
-        return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
+        //Remove the primary key field from the master table
+        unset($status_column[array_search($this->CI->grants->primary_key_field($this->CI->controller),$status_column)]);
+        
+        return $this->access->control_column_visibility($this->controller,$status_column,'read');
 
     }
 
@@ -128,10 +136,11 @@ class View_output extends Output_template{
             foreach ($lookup_table_columns as $lookup_table_column) {
                 // Only include the name field of the look up table in the select columns
                 if(
-                    $lookup_table_column == $this->CI->grants->primary_key_field($lookup_table) || 
-                    $lookup_table_column == $this->CI->grants->name_field($lookup_table)
+                    $this->CI->grants->is_primary_key_field($lookup_table,$lookup_table_column) || 
+                    $this->CI->grants->is_name_field($lookup_table,$lookup_table_column)
                 ){
                     array_push($visible_columns,$lookup_table_column);
+               
                 }
 
             }
@@ -153,7 +162,7 @@ class View_output extends Output_template{
             !in_array($this->CI->grants->history_tracking_field($this->controller,'last_modified_by'),$visible_columns)
                 
         ){
-            array_push($visible_columns,$this->CI->grants->history_tracking_field($table,'created_by'),
+            array_push($visible_columns,$this->CI->grants->history_tracking_field($this->controller,'created_by'),
             $this->CI->grants->history_tracking_field($this->controller,'last_modified_by')); 
         }
 
@@ -233,9 +242,32 @@ class View_output extends Output_template{
 
         // Check if the table has list_table_visible_columns not empty
         $detail_list_table_visible_columns = $this->feature_model_detail_list_table_visible_columns($table);
+        
+        //Table lookup tables
         $lookup_tables = $this->CI->grants->lookup_tables($table);
     
         $get_all_table_fields = $this->CI->grants_model->get_all_table_fields($table);
+
+
+        // Replace the list visible columns if the current controller is approval
+        $list_visible_columns = array();
+            
+        $model = $this->CI->grants->load_detail_model($table);
+        
+        $list_visible_columns = [];
+        if(method_exists($this->CI->$model,'list_table_visible_columns')){
+            $list_visible_columns = $this->CI->$model->list_table_visible_columns();
+        }   
+       
+        if( $this->CI->controller == 'approval'){
+            if(is_array($list_visible_columns) && 
+            count($list_visible_columns) > 0){
+                array_unshift($list_visible_columns,$this->CI->grants->primary_key_field($table));
+
+                $detail_list_table_visible_columns = $list_visible_columns;
+            }
+            
+        }
     
         foreach ($get_all_table_fields as $get_all_table_field) {
     
@@ -267,7 +299,8 @@ class View_output extends Output_template{
               foreach ($lookup_table_columns as $lookup_table_column) {
                 // Only include the name field of the look up table in the select columns
                 if($this->CI->grants->is_name_field($lookup_table,$lookup_table_column)){
-                  array_push($visible_columns,$lookup_table_column);
+                    array_push($visible_columns,$lookup_table.'_id');
+                    array_push($visible_columns,$lookup_table_column);
                 }
     
               }
@@ -302,6 +335,12 @@ class View_output extends Output_template{
         ){
             $detail_list_query = $this->CI->$model->detail_list_query($table); // A full user defined query result
         } 
+
+        //print_r($detail_list_query);
+        //exit();
+
+        $detail_list_query = $this->CI->grants->update_query_result_for_fields_changed_to_select_type($table,$detail_list_query);
+  
     
         return $detail_list_query;
     }
@@ -332,11 +371,14 @@ class View_output extends Output_template{
     
         $model = $this->current_model;
 
-        $select_columns = $this->toggle_master_view_select_columns();    
+        $select_columns = $this->toggle_master_view_select_columns();  
 
         $lookup_tables = $this->CI->grants->lookup_tables($table);
-
-        return $this->CI->grants_model->run_master_view_query($table,$select_columns,$lookup_tables);
+        
+        $master_view_query_result = $this->CI->grants_model->run_master_view_query($table,$select_columns,$lookup_tables);
+        
+        return $this->CI->grants->update_query_result_for_fields_changed_to_select_type($this->controller,$master_view_query_result);
+        
     }
   
 
@@ -367,7 +409,7 @@ class View_output extends Output_template{
             $master_view = $this->CI->$model->master_view();
         
         }
-  
+        
     return $master_view;
   }
 
@@ -416,6 +458,7 @@ function detail_list_output(String $table): Array {
   }
   
 
+
     /**
      * view_output
      * 
@@ -431,9 +474,15 @@ function detail_list_output(String $table): Array {
         $this->CI->grants_model->mandatory_fields($table);
     
         $query_output = $this->toggle_master_view_query_result();
+        
         $keys = $this->toggle_master_view_select_columns();
+        
         $has_details = $this->CI->grants->check_if_table_has_detail_table($table);
         $is_approveable_item = $this->CI->grants->approveable_item();
+
+        $look_tables_name_fields = $this->CI->grants->tables_name_fields(
+            $this->CI->grants->lookup_tables()
+        );
     
         $result['master'] = array(
             'keys'=> $keys,
@@ -441,6 +490,7 @@ function detail_list_output(String $table): Array {
             'table_name'=> $table,
             'has_details_table' => $has_details,
             'is_approveable_item' => $is_approveable_item,
+            'lookup_name_fields' => $look_tables_name_fields,
             //'action_labels'=>$this->CI->grants->action_labels($table,hash_id($this->CI->uri->segment(3,0),'decode'))
         );
     
@@ -463,4 +513,4 @@ function detail_list_output(String $table): Array {
 
 }
 
-require_once(__DIR__.DIRECTORY_SEPARATOR.'create_instance.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'..\create_instance.php');

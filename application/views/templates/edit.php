@@ -47,12 +47,12 @@ extract($result);
                   }
                  ?>
 
-                 <div class="form-group">
+                 <!-- <div class="form-group">
                    <div class="col-xs-12">
                      <label class=""><?=get_phrase('attach_a_file(s)');?></label>
                      <input type="file" name="attachments" multiple />
                    </div>
-                </div>
+                </div> -->
 
 
                  <div class="form-group">

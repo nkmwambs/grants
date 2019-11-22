@@ -21,7 +21,9 @@ class Funder_model extends MY_Model implements CrudModelInterface, TableRelation
 
   function index(){}
 
-    public function lookup_tables(){}
+    public function lookup_tables(){
+      //return ['status','approval'];
+    }
 
     public function detail_tables(){
       return array('project');
