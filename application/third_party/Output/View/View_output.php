@@ -336,6 +336,9 @@ class View_output extends Output_template{
             $detail_list_query = $this->CI->$model->detail_list_query($table); // A full user defined query result
         } 
 
+        //print_r($detail_list_query);
+        //exit();
+
         $detail_list_query = $this->CI->grants->update_query_result_for_fields_changed_to_select_type($table,$detail_list_query);
   
     

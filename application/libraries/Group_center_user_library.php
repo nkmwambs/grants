@@ -23,4 +23,11 @@ class Group_center_user_library extends Grants
 
   function index(){}
 
+  function change_field_type(){
+    $change_field_type['user_name']['field_type'] = 'select';
+    $change_field_type['user_name']['options'] = $this->CI->grants->get_users_with_center_group_hierarchy_name('cluster');
+
+    return $change_field_type;
+  }
+
 } 

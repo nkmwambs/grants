@@ -42,9 +42,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function list(){
       
-    $centers_in_center_group_hierarchy = $this->user_model->get_centers_in_center_group_hierarchy($this->session->user_id);
-    $sql = "fk_center_id IN (".implode(',',$centers_in_center_group_hierarchy).")";
-    $this->db->where($sql);
+    $this->grants->centers_where_condition();
     
     $this->grants->create_table_join_statement($this->controller, $this->lookup_tables());
 

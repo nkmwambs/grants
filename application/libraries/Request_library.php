@@ -44,11 +44,12 @@ class Request_library extends Grants
     return $widgets;
   }
 
-  function change_field_type(){
-    // $change_field_type['center_name']['field_type']='select';
-    // $change_field_type['center_name']['options'] = array('1'=>"One");
 
-    // return $change_field_type;
+  function change_field_type(){
+    $change_field_type['center_name']['field_type'] = 'select';
+    $change_field_type['center_name']['options'] = $this->CI->user_model->user_associated_centers_names($this->CI->session->user_id);
+
+    return $change_field_type;
   }
 
 

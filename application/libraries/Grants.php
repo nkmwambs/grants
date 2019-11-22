@@ -144,6 +144,10 @@ function create_table_join_statement($table, $lookup_tables){
   return $this->CI->grants_model->create_table_join_statement($table, $lookup_tables);
 }
 
+function centers_where_condition(){
+  return $this->CI->grants_model->centers_where_condition();
+}
+
 /**
  * load_detail_model
  * 
@@ -900,7 +904,19 @@ function edit_visible_columns(){
   return $this->edit_visible_columns;
 }
 
+function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
+  $options = array();
+    $result = $this->CI->user_model->get_users_with_center_group_hierarchy_name($center_group_hierarchy_name);
 
+    if(count($result)>0){
+      $user_ids = array_column($result,'user_id');
+      $user_names = array_column($result,'user_name');
+
+      $options =  array_combine($user_ids,$user_names);
+    }
+    
+    return $options;
+}
 
 /**
  * update_query_result_for_fields_changed_to_select_type
@@ -917,7 +933,7 @@ function edit_visible_columns(){
 
 function update_query_result_for_fields_changed_to_select_type(String $table, Array $query_result): Array {
   // Check if there is a change of field type set and update the results
-  $this->set_change_field_type($table);
+  $changed_field_type = $this->set_change_field_type($table);
   
   if(count($this->set_field_type) > 0){
 
@@ -937,7 +953,9 @@ function update_query_result_for_fields_changed_to_select_type(String $table, Ar
 
         foreach($changed_fields as $changed_field){
           if(array_key_exists($changed_field,$row) && in_array('select',$this->set_field_type[$changed_field]) ){
-            $query_result[$index][$changed_field] = $this->set_field_type[$changed_field]['options'][$row[$changed_field]];
+            // The isset check has been used to solve a problem where a field type of select is changed to the same select in order to alter the number of select options. 
+            // This workaround is crucial on the detail list of view action pages, Most notably when using the group_country_user lib change_field_type
+            $query_result[$index][$changed_field] = isset($this->set_field_type[$changed_field]['options'][$row[$changed_field]]) ? $this->set_field_type[$changed_field]['options'][$row[$changed_field]]:$row[$changed_field];
           }
         }
       }
@@ -972,9 +990,12 @@ function show_add_button(String $table = ""): Bool {
   
   $show_add_button = true;
 
-  if(method_exists($this->CI->$model,'show_add_button') ){
+  $library = $this->controller.'_library';
+
+  if(method_exists($this->CI->$model,'show_add_button')){
     $show_add_button = $this->CI->$model->show_add_button();
   }
+
 
   return $show_add_button;
 }

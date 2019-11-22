@@ -79,8 +79,8 @@ class User_model extends MY_Model
   }
 
   function detail_list_table_visible_columns(){
-    // return array('user_id','user_track_number','user_name','user_firstname',
-    // 'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_name');
+    return array('user_id','user_track_number','user_name','user_firstname',
+    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_hierarchy_name');
  
   }
 
@@ -103,8 +103,10 @@ class User_model extends MY_Model
   }
 
   function edit_visible_columns(): Array {
+    //center_group_hierarchy_name should not be added in this list since it should only be used when 
+    // creating a new user and its not editable.
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_system_admin','language_name','role_name','center_group_hierarchy_name',
+    'user_system_admin','language_name','role_name',
     'user_is_center_group_manager');
   }
 
@@ -219,6 +221,23 @@ class User_model extends MY_Model
     
     }
 
+    function user_associated_centers_names($user_id){
+      $user_associated_centers = $this->get_centers_in_center_group_hierarchy($user_id);
+      
+      $options = array();
+
+      $this->db->select(array('center_id','center_name'));
+      $this->db->where_in('center_id',$user_associated_centers); 
+      $result = $this->db->get('center');
+      
+      if($result->num_rows()>0){
+        $center_id = array_column($result->result_array(),'center_id');
+        $center_name = array_column($result->result_array(),'center_name');
+        $options = array_combine($center_id,$center_name);
+      }
+      return $options;
+    }
+
     function get_centers_in_center_group_hierarchy($user_id){
 
       $associations = $this->get_user_center_group_hierarchy_associations($user_id);
@@ -275,6 +294,18 @@ class User_model extends MY_Model
       return $list_of_centers;
       
 
+    }
+
+    function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
+      $center_group_hierarchy_id = $this->db->get_where('center_group_hierarchy',
+      array('center_group_hierarchy_name'=>$center_group_hierarchy_name))->row()->center_group_hierarchy_id;
+
+      $this->db->select(array('user_id','user_name'));
+      $result = $this->db->get_where('user',
+      array('fk_center_group_hierarchy_id'=>$center_group_hierarchy_id))->result_array();
+
+      return $result;
+    
     }
 
   /**
@@ -380,7 +411,9 @@ class User_model extends MY_Model
 
       if( (array_key_exists($active_controller,$permission) && 
           array_key_exists($permission_type,$permission[$active_controller]) &&
-          array_key_exists($permission_label,$permission[$active_controller][$permission_type])) ||
+          array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
+          && count($this->get_user_center_group_hierarchy_associations($this->session->user_id)) > 0
+          ) ||
           $this->session->system_admin
         ){
           $has_permission = true;

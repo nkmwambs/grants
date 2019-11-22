@@ -33,6 +33,6 @@ class Group_cohort_model extends MY_Model{
     }
 
     public function detail_tables(){
-        return array('group_cluster_user','group_cluster');
+        return array('group_cohort_user','group_cluster');
     }
 }

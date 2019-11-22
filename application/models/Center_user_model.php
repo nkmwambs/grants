@@ -29,7 +29,7 @@ class Center_user_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('center','user','designation');
+        return array('user','designation','center');
     }
 
     public function detail_tables(){}
