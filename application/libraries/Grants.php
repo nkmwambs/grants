@@ -777,10 +777,13 @@ function add_form_fields(Array $visible_columns_array): Array {
 function edit_form_fields(Array $visible_columns_array): Array {
 
   $fields = array();
-  //print_r($visible_columns_array);
-  //exit();
+  
   foreach ($visible_columns_array as $column => $value) {
-    $fields[$column] = $this->header_row_field($column, $value);
+    // Preventing pass null values to avoid conflict with the header_row_field arg 2 which is string type
+    if($value != null){
+      $fields[$column] = $this->header_row_field($column, $value);
+    }
+    
   }
 
   return $fields;  
