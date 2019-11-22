@@ -18,7 +18,7 @@
             </div>
 			         <div class="panel-body">
 
-              <?php echo form_open(base_url().$this->controller.'/'.$this->action , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));?>
+              <?php echo form_open(base_url().$this->controller.'/'.$this->action , array('id'=>'add_form','class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));?>
                 <div class="form-group">
                     <div class="col-xs-12">
                       <?=Widget_base::load('position','position_4');?>
@@ -58,7 +58,7 @@
                    <div class="col-xs-12" style="text-align:center;">
                        <div class="btn btn-default insert_row"><?=get_phrase('insert_'.$this->controller.'_detail_row');?></div>
                        <div class="btn btn-default"><?=get_phrase('reset');?></div>
-                       <button class="btn btn-default save"><?=get_phrase('save');?></button>
+                       <button class="btn btn-default save back"><?=get_phrase('save');?></button>
                        <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
                    </div>
                  </div>
@@ -108,7 +108,7 @@
                   <div class="col-xs-12"  style="text-align:center;">
                     <div class="btn btn-default insert_row"><?=get_phrase('insert_'.$this->controller.'_detail_row');?></div>
                     <div class="btn btn-default"><?=get_phrase('reset');?></div>
-                    <button class="btn btn-default save"><?=get_phrase('save');?></button>
+                    <button class="btn btn-default save back"><?=get_phrase('save');?></button>
                     <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
                   </div>
                 </div>
@@ -215,6 +215,9 @@
   }
 
   $(".save, .save_new").on('click',function(ev){
+    
+    var elem = $(this);
+
     pre_record_post();
 
     var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>";
@@ -234,8 +237,16 @@
       },
       success:function(response){
         alert(response);
-        window.location.reload();
+        //window.location.reload();
         on_record_post();
+        //If Save , use the browser history and go back
+        if(elem.hasClass('back')){
+          window.history.back(1);        
+        } else{
+          document.getElementById('add_form').reset();
+          //Remove all rows of the detail table
+          $(".detail tbody").empty();
+        }
       },
       error:function(){
 

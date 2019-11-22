@@ -93,7 +93,7 @@ $(".save, .save_new").on('click',function(ev){
       //window.location.reload();
       on_record_post();
 
-      //If Edit and Continue, use the browser history and go back
+      //If Save , use the browser history and go back
       if(elem.hasClass('back')){
 			  window.history.back(1);        
       } else{

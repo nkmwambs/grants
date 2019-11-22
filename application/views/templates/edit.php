@@ -89,7 +89,7 @@ $(".edit, .edit_continue").on('click',function(ev){
       alert(response);
       on_record_post();
 
-      //If Edit and Continue, use the browser history and go back
+      //If Edit , use the browser history and go back
       if(elem.hasClass('back')){
 			  window.history.back(1);        
       } 
