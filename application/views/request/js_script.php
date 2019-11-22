@@ -4,7 +4,7 @@ function pre_record_post(){
 
   if($('.request_detail_total_cost').length == 0){
     alert('Add a detail row first');
-    exit;
+    return false;
   }
 
 }
