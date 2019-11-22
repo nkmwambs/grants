@@ -52,5 +52,9 @@ class Request_library extends Grants
     return $change_field_type;
   }
 
+  function default_field_value(){
+    return ['request_date'=>date('Y-m-d')];
+  }
+
 
 }

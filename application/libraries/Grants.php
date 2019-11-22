@@ -1069,9 +1069,9 @@ function single_form_add_output($table_name = ""){
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'add')){
-      $this->CI->$model->add();
+      echo $this->CI->$model->add();
     }else{
-      $this->CI->grants_model->add();
+      echo $this->CI->grants_model->add();
     }
   }else{
     // Adds mandatory fields if not present in the current table
@@ -1149,7 +1149,7 @@ function edit_output($id = ""){
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'edit')){
-      $this->CI->$model->edit($id);
+      echo $this->CI->$model->edit($id);
     }else{
       echo $this->CI->grants_model->edit($id);
     }
