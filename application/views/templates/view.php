@@ -25,8 +25,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
     <table class="table table-striped">
       <thead>
         <tr>
-          <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=ucwords(str_replace("_"," ",$this->uri->segment(1)));?>
-            <?=get_phrase('master_record');?>
+          <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=get_phrase($this->uri->segment(1).'_master_record');?>
           </th>
         </tr>
 
@@ -66,7 +65,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
           ?>
                 <td>
-                  <span style="font-weight:bold;"><?=ucwords(str_replace("_"," ",$column));?>:</span> &nbsp;
+                  <span style="font-weight:bold;"><?=get_phrase($column);?>:</span> &nbsp;
                   <?php
                     if(strpos($column,'is_active')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');

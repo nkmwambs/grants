@@ -135,7 +135,7 @@ if( ! function_exists('add_record_button') ){
 		$CI =& get_instance();
 
 		if($id !== null){
-			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'/'.$id.'/'.$CI->controller.'" class="btn btn-default">'.get_phrase('add').' '.ucwords(str_replace("_"," ",$table_controller)).'</a>';
+			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'/'.$id.'/'.$CI->controller.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}else{
 			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}

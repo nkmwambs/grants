@@ -110,42 +110,42 @@ class Fields_base{
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function text_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function email_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function password_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" value="'.$value.'" required="required" type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function longtext_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" >'.$value.'</textarea>';
+    return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" >'.$value.'</textarea>';
   }
 
   function date_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.ucwords(str_replace('_',' ',$this->column))).'" />';
+    return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function select_field($options, $selected_option = 0, $show_only_selected_value = false){
@@ -173,7 +173,7 @@ class Fields_base{
     $selected_option = ($selected_option == "" && $this->default_field_value !== 0 ) ? $this->default_field_value : $selected_option;
 
     $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
-            <option value='0'>".get_phrase('select_'.ucwords(str_replace('_',' ',$column_placeholder)))."</option>";
+            <option value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
               foreach ($options as $option_value=>$option_html) {
@@ -186,7 +186,7 @@ class Fields_base{
                 if($option_value == $selected_option){
                     $selected = "selected='selected'";
                 }
-                $select .= "<option value='".$option_value."' ".$selected.">".get_phrase($option_html)."</option>";
+                $select .= "<option value='".$option_value."' ".$selected.">".ucwords(str_replace("_"," ",$option_html))."</option>";
               }
               
             }

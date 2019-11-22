@@ -951,7 +951,7 @@ function update_query_result_for_fields_changed_to_select_type(String $table, Ar
       // Used for single record pages e.g Master section 
       foreach($changed_fields as $changed_field){
         if(array_key_exists($changed_field,$query_result) && in_array('select',$this->set_field_type[$changed_field]) ){
-          $query_result[$changed_field] = $this->set_field_type[$changed_field]['options'][$query_result[$changed_field]];
+          $query_result[$changed_field] = isset($this->set_field_type[$changed_field]['options'][$query_result[$changed_field]])?$this->set_field_type[$changed_field]['options'][$query_result[$changed_field]]:$query_result[$changed_field];
         }
       }
     }else{
