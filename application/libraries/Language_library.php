@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Language_library
+class Language_library extends Grants
 {
 
   private $CI;
@@ -18,6 +18,7 @@ class Language_library
   private $lang_strings = [];
 
   function __construct(){
+    parent::__construct();
     $this->CI =& get_instance();
   }
 
@@ -38,7 +39,15 @@ class Language_library
 	protected function load_language()
 	{
 		$lang = array();
-  
+    
+    if(!file_exists($this->default_language_path)){
+      mkdir($this->default_language_path);
+    }
+
+    if(!file_exists($this->default_language_path.$this->language)){
+      mkdir($this->default_language_path.$this->language);
+    }
+
     if(!file_exists($this->default_language_path.$this->language.DIRECTORY_SEPARATOR.$this->context.'.php')){
       $fp = fopen($this->default_language_path.$this->language.DIRECTORY_SEPARATOR.$this->context.'.php', 'a');
       fwrite($fp,'<?php '.PHP_EOL);

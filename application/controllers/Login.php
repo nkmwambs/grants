@@ -21,8 +21,7 @@ public $auth;
         parent::__construct();
         $this->load->database();
         $this->load->model('user_model');
-
-       
+        $this->load->library('Language_library');
     }
 
     //Default function, redirects to logged in user area

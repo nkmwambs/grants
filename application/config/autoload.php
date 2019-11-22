@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('Menu_library','Language_library','access','session','grants','CustomException');
+$autoload['libraries'] = array('Menu_library','access','session','grants','CustomException');
 
 /*
 | -------------------------------------------------------------------
