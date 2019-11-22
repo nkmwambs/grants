@@ -103,7 +103,7 @@ function edit(String $id):String{
     $detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
 
     // Start a transaction
-    //$this->db->trans_start();
+    $this->db->trans_begin();
 
     $approval = array();
 
@@ -219,21 +219,22 @@ function edit(String $id):String{
 
 
     // End the transaction and determine if successful
-    // if ($this->db->trans_status() === FALSE)
-    // {
-    //   echo get_phrase('insert_failed');
-    //   //echo json_encode($request);
-    // }else{
 
-        // This runs after post is successful. It is defined in feature model wrapped via grants model
-        if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
-          echo get_phrase('insert_successful');
-        }else{
-          echo get_phrase('insert_successful_without_post_action');
-        }
-        
-    //   //echo json_encode($detail);
-    // }
+    if ($this->db->trans_status() === FALSE)
+    {
+            $this->db->trans_rollback();
+            return "Insert not successful";
+    }
+    else
+    {
+            $this->db->trans_commit();
+            // This runs after post is successful. It is defined in feature model wrapped via grants model
+          //if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
+            return get_phrase('insert_successful');
+          //}else{
+            //return get_phrase('insert_successful_without_post_action');
+          //}
+    }
 
   }
 
