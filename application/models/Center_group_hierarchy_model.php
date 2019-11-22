@@ -35,4 +35,14 @@ class Center_group_hierarchy_model extends MY_Model{
     public function detail_tables(){
         return array('user');
     }
+
+    function show_add_button(){
+        return false;
+    }
+
+    function edit_visible_columns(){
+        //You can only edit the level since the name will conflict with table names and code when edited
+        // This needs to be worked on later to make it flexible
+        return array('center_group_hierarchy_level');
+    }
 }
