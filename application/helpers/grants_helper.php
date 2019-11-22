@@ -68,7 +68,7 @@ if ( ! function_exists('hash_id'))
 
 if( ! function_exists('camel_case_header_element')){
 	function camel_case_header_element($header_element){
-	     return  ucwords(str_replace('_',' ',$header_element));
+	     return  get_phrase($header_element);//ucwords(str_replace('_',' ',$header_element));
 	}
 }
 
@@ -137,7 +137,7 @@ if( ! function_exists('add_record_button') ){
 		if($id !== null){
 			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'/'.$id.'/'.$CI->controller.'" class="btn btn-default">'.get_phrase('add').' '.ucwords(str_replace("_"," ",$table_controller)).'</a>';
 		}else{
-			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add').' '.ucwords(str_replace("_"," ",$table_controller)).'</a>';
+			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}
 
 		return $link;

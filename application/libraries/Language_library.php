@@ -14,7 +14,7 @@ class Language_library extends Grants
   private $CI;
   private $language = 'en';
   private $default_language_path = APPPATH.'language'.DIRECTORY_SEPARATOR;
-  private $context = 'system';
+  //private $context = 'system';
   private $lang_strings = [];
 
   function __construct(){
@@ -31,10 +31,10 @@ class Language_library extends Grants
     return $this;
   }
 
-  function set_context($controller){
-    $this->context = $controller;
-    return $this;
-  }
+  // function set_context($controller){
+  //   $this->context = $controller;
+  //   return $this;
+  // }
 	
 	protected function load_language()
 	{
@@ -44,17 +44,13 @@ class Language_library extends Grants
       mkdir($this->default_language_path);
     }
 
-    if(!file_exists($this->default_language_path.$this->language)){
-      mkdir($this->default_language_path.$this->language);
-    }
-
-    if(!file_exists($this->default_language_path.$this->language.DIRECTORY_SEPARATOR.$this->context.'.php')){
-      $fp = fopen($this->default_language_path.$this->language.DIRECTORY_SEPARATOR.$this->context.'.php', 'a');
+    if(!file_exists($this->default_language_path.$this->language.'.php')){
+      $fp = fopen($this->default_language_path.$this->language.'.php', 'a');
       fwrite($fp,'<?php '.PHP_EOL);
     }
 
 
-		include($this->default_language_path.$this->language.DIRECTORY_SEPARATOR.$this->context.'.php');
+		include($this->default_language_path.$this->language.'.php');
     
       foreach($lang as $handle => $lang_string){
         if(!isset($this->lang_strings[$handle])){
@@ -81,7 +77,7 @@ class Language_library extends Grants
 			
 			//Add the new lang phrase to the language file
 			$new_lang_phrase = "	\$lang['".$handle."'] = '".$phrase."';".PHP_EOL;
-			$fp = fopen($this->default_language_path.$this->language.DIRECTORY_SEPARATOR.$this->context.'.php', 'a');
+			$fp = fopen($this->default_language_path.$this->language.'.php', 'a');
 			fwrite($fp, $new_lang_phrase);
 			fclose($fp);
 			

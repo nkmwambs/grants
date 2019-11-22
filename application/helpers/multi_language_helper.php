@@ -16,11 +16,11 @@
 
 if ( ! function_exists('get_phrase'))
 {
-	function get_phrase($phrase, $context = '') {
+	function get_phrase($phrase) {
 
 		$CI =& get_instance();
 
-		return $CI->language_library->language_phrase($phrase, $context);
+		return $CI->language_library->language_phrase($phrase);
 	}
 }
 

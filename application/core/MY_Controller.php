@@ -85,7 +85,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     
     //Set the Language Context
     $this->load->library('Language_library');
-    $this->language_library->set_context($this->controller);
+    //$this->language_library->set_context($this->controller);
     $this->language_library->set_language($this->session->user_locale);
 
   }

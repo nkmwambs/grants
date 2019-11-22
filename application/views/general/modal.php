@@ -188,7 +188,7 @@
         buttons: [
             {
                 extend: 'excelHtml5',
-                text: 'Export in Excel',
+                text: '<?=get_phrase('export_in_excel');?>',
                 className: 'btn btn-default',
                 exportOptions: {
                 columns: 'th:not(:first-child)'
@@ -197,7 +197,7 @@
             {
                 extend:'pdfHtml5',
                 className: 'btn btn-default',
-                text:'Export in PDF',
+                text:'<?=get_phrase('export_in_pdf');?>',
                 orientation: 'landscape',
                 exportOptions:{
                     columns: 'th:not(:first-child)'
