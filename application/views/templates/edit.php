@@ -57,8 +57,8 @@ extract($result);
 
                  <div class="form-group">
                    <div class="col-xs-12" style="text-align:center;">
-                     <button class="btn btn-default edit"><?=get_phrase('edit');?></button>
-                     <button class="btn btn-default edit_continue back"><?=get_phrase('edit_and_continue');?></button>
+                     <button class="btn btn-default edit back"><?=get_phrase('edit');?></button>
+                     <button class="btn btn-default edit_continue"><?=get_phrase('edit_and_continue');?></button>
                    </div>
                  </div>
                </form>  
