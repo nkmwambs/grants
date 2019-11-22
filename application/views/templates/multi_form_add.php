@@ -214,9 +214,26 @@
 
   }
 
+  $('.form-control').keydown(function(){
+    $(this).removeAttr('style');
+  });
+
   $(".save, .save_new").on('click',function(ev){
     
     var elem = $(this);
+
+      //Check if all required fields are filled
+  var empty_fields_count = 0;
+  $('.form-control').each(function(i,el){
+    if($(el).val() == ''){
+      $(el).css('border','1px solid red');
+      empty_fields_count++;
+    }
+  });
+
+  if(empty_fields_count>0){
+    alert('1 or more required fields are empty');
+  }else{
 
     pre_record_post();
 
@@ -254,6 +271,7 @@
     });
 
     post_record_post();
+  }  
     ev.preventDefault();
   });
 
