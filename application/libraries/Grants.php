@@ -1151,7 +1151,7 @@ function edit_output($id = ""){
     if(method_exists($this->CI->$model,'edit')){
       $this->CI->$model->edit($id);
     }else{
-      $this->CI->grants_model->edit($id);
+      echo $this->CI->grants_model->edit($id);
     }
   }else{
     $this->CI->grants_model->mandatory_fields($table);

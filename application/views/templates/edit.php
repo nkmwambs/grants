@@ -69,6 +69,9 @@ extract($result);
 
 <script>
 $(".edit, .edit_continue").on('click',function(ev){
+  
+  var elem = $(this);
+
   pre_record_post();
 
   var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
@@ -84,13 +87,13 @@ $(".edit, .edit_continue").on('click',function(ev){
     },
     success:function(response){
       alert(response);
-
-      // if($(this).hasClass('back')){
-			//   window.history.back(1);        
-      // } else {
-      //   window.location.reload();
-      // }
       on_record_post();
+
+      //If Edit and Continue, use the browser history and go back
+      if(elem.hasClass('back')){
+			  window.history.back(1);        
+      } 
+
     },
     error:function(){
 
