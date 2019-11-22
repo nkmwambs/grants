@@ -16,8 +16,11 @@
 
 if ( ! function_exists('get_phrase'))
 {
-	function get_phrase($phrase = '') {
-		return ucwords(str_replace('_',' ',$phrase));
+	function get_phrase($phrase, $context = '') {
+
+		$CI =& get_instance();
+
+		return $CI->language_library->language_phrase($phrase, $context);
 	}
 }
 

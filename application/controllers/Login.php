@@ -86,7 +86,13 @@ public $auth;
         
         $default_launch_page = $this->user_model->default_launch_page($row->user_id);
         $this->session->set_userdata('default_launch_page',$default_launch_page);
-          
+        
+        $this->db->select('language_code');
+		$this->db->join('language','language.language_id=user.fk_language_id');
+        $user_language = $this->db->get_where('user',
+        array('fk_language_id','user_id'=>$row->user_id))->row()->language_code;
+        
+        $this->session->set_userdata('user_locale',$user_language);
         
 		return 'success';
 	}

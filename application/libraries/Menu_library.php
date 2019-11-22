@@ -260,7 +260,7 @@ class Menu_library {
           <li class="">
               <a href="'.base_url().strtolower($menu).'/list">
                   <i class="'.$menu_icon.'"></i>
-                  <span>'.get_phrase($items['menu_name']).'</span>
+                  <span>'.get_phrase($items['menu_name'],'system').'</span>
               </a>
           </li>
           ';

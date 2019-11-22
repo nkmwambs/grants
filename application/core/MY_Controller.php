@@ -82,7 +82,10 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }elseif ($this->action == 'list') {
       $this->session->set_userdata('master_table',null);
     }
-    //$this->load->model('user_model');
+    
+    //Set the Language Context
+    $this->language_library->set_context($this->controller);
+    $this->language_library->set_language($this->session->user_locale);
 
   }
   /**
