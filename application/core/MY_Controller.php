@@ -50,19 +50,10 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     * to access the a particular page that you are trying to access. Action like edit point to apage
    */
   public $has_permission = false;
-  
-    /**
-   * __construct()
-	 * Description: 
-	 * -Loads parent contructs initialization i.e. from CI_controller
-	 * -Gets the value of 1st URI segment and assigns to $segment variable 
-	 * and gets the 2nd URI segment assigns to $action variable.
-	 * If uri segment 1st and 2nd have no value passed , it sets a default value of 'approval' 
-	 * and 'list' respective
-	 * -Initializes $current_library,$current_model,$controller,$action
-	 * -Loads the current library and model
-	 * -Sets the session of master table
-   */
+  public $sub_action;
+
+  //public $widget = null;
+
   function __construct(){
 
     parent::__construct();
@@ -76,7 +67,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->current_model = $segment.'_model';
     $this->controller = $segment;
     $this->action = $action;
-	$this->id = $this->uri->segment(3, 0);
+    $this->sub_action = $this->uri->segment(4, null);;
 
     $this->load->library($this->current_library);
     $this->load->model($this->current_model);

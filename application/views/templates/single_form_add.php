@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  // print_r($this->user_model->get_user_permissions(1));
-
-  // echo $this->user_model->check_role_has_field_permission('Bank','create','bank_is_active');
+  //echo $this->id;
 
   extract($result);
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
@@ -19,7 +17,7 @@
             </div>
 			         <div class="panel-body">
 
-              <?php echo form_open(base_url().$this->controller.'/add' , array('class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
+              <?php echo form_open(base_url().$this->controller.'/add' , array('id'=>'edit_form','class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 
                   foreach ($fields as $column => $field) {
 
@@ -58,7 +56,7 @@
                  <div class="form-group">
                    <div class="col-xs-12" style="text-align:center;">
                      <div class="btn btn-default"><?=get_phrase('reset');?></div>
-                     <button class="btn btn-default save"><?=get_phrase('save');?></button>
+                     <button class="btn btn-default save back"><?=get_phrase('save');?></button>
                      <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
                    </div>
                  </div>
@@ -70,6 +68,9 @@
 
 <script>
 $(".save, .save_new").on('click',function(ev){
+  
+  var elem = $(this);
+
   pre_record_post();
 
   var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>";
@@ -89,8 +90,16 @@ $(".save, .save_new").on('click',function(ev){
     },
     success:function(response){
       alert(response);
-      window.location.reload();
+      //window.location.reload();
       on_record_post();
+
+      //If Save , use the browser history and go back
+      if(elem.hasClass('back')){
+			  window.history.back(1);        
+      } else{
+        document.getElementById('edit_form').reset();
+      }
+
     },
     error:function(){
 

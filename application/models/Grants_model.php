@@ -66,12 +66,12 @@ function edit(String $id):String{
   if ($this->db->trans_status() === FALSE)
   {
           $this->db->trans_rollback();
-          echo "Update completed";
+          return "Update not successful";
   }
   else
   {
           $this->db->trans_commit();
-          echo "Update completed";
+          return "Update completed";
   }
 
 }
