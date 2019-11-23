@@ -82,11 +82,15 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }elseif ($this->action == 'list') {
       $this->session->set_userdata('master_table',null);
     }
+
+    $this->id = $this->uri->segment(3,null);
     
     //Set the Language Context
     $this->load->library('Language_library');
-    //$this->language_library->set_context($this->controller);
     $this->language_library->set_language($this->session->user_locale);
+
+    // Instantiate page view (page filters) 
+    $this->session->set_userdata($this->controller.'_active_page_view',0);
 
   }
   /**
@@ -117,9 +121,16 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
         $this->$lib->$action($id);
       }elseif($this->id !== null){
         $this->$lib->$action($this->id);
+      }elseif($this->action == 'list' || $this->action == 'view'){
+          // Just to test if the third party API are working for list output
+          // This is the way to go for all outputs. Move all outputs to the Output API  
+          // Applies when using page view: See View Widget
+          return Output_base::load($this->action);
       }else{
-        $this->$lib->$action();
+          $this->$lib->$action();
       }
+        
+      
         exit;
     }
 

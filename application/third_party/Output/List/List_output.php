@@ -196,7 +196,8 @@ function feature_model_list_table_visible_columns(): Array {
     
     if(method_exists($this->CI->$model,'list')){
       $feature_model_list_result = $this->CI->$model->list();
-      if(is_array($feature_model_list_result) && count($feature_model_list_result) > 0){
+      if(is_array($feature_model_list_result)){
+        // Allows empty result set
         $query_result = $feature_model_list_result; // A full user defined query result
       }
     }
@@ -217,6 +218,13 @@ function feature_model_list_table_visible_columns(): Array {
      */
 
     function _output(){
+
+        // Used when applying page view to a list: See View Widget
+        if($this->CI->input->post()){
+            //Controller dependant session, give it a value. This session has been initialized in MY_Controller
+            $this->CI->session->set_userdata($this->CI->controller.'_active_page_view',
+            $this->CI->input->post('page_view'));
+        }
 
         $table = $this->controller;
       

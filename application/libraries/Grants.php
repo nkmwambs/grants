@@ -91,12 +91,6 @@ private $detail_tables = [];
 
 
 /**
- * Selected columns of the edit action page with database results
- * @var Array
- */
-private $edit_visible_columns = [];
-
-/**
  * Holds the change field type array from the feature library
  * @var Array
  */
@@ -144,9 +138,20 @@ function create_table_join_statement($table, $lookup_tables){
   return $this->CI->grants_model->create_table_join_statement($table, $lookup_tables);
 }
 
-function centers_where_condition(){
-  return $this->CI->grants_model->centers_where_condition();
+function where_condition($condition_type,...$args){
+  // Currently works with centers and page_view args
+  $condition_method = $condition_type.'_where_condition';
+
+  return $this->CI->grants_model->$condition_method(...$args);
 }
+
+// function centers_where_condition(){
+//   return $this->CI->grants_model->centers_where_condition();
+// }
+
+// function page_view_condition(){
+//   return $this->CI->grants_model->page_view_condition();
+// }
 
 /**
  * load_detail_model
@@ -912,12 +917,14 @@ function single_form_add_visible_columns(){
 function edit_visible_columns(){
   $model = $this->current_model;
 
+  $edit_visible_columns = array();
+
   if(method_exists($this->CI->$model,'edit_visible_columns') && 
       is_array($this->CI->$model->edit_visible_columns())
   ){
-    $this->edit_visible_columns = $this->CI->$model->edit_visible_columns();
+    $edit_visible_columns = $this->CI->$model->edit_visible_columns();
   }
-  return $this->edit_visible_columns;
+  return $edit_visible_columns;
 }
 
 function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
@@ -1116,9 +1123,9 @@ function multi_form_add_output($table_name = ""){
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'add')){
-      $this->CI->$model->add();
+      echo $this->CI->$model->add();
     }else{
-      $this->CI->grants_model->add();
+      echo $this->CI->grants_model->add();
     }
   }else{
     $this->CI->grants_model->mandatory_fields($table);
@@ -1377,7 +1384,6 @@ function write_file_contents($table, $sys_file_path ,$assets_temp_path, $replace
 function quote_array_elements($elem){
   return ("'$elem'");
 }
-
 
 // These are methods that require review
 

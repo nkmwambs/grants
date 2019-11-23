@@ -21,17 +21,14 @@
 
                   foreach ($fields as $column => $field) {
 
-                    if( strpos($column,'_id') == true ||
-                        strpos($column,'_track_number') == true ||
-                        strpos($column,'_created_date') == true ||
-                        strpos($column,'_last_modified_date') == true ||
-                        strpos($column,'_created_by') == true ||
-                        strpos($column,'_last_modified_by') == true ||
+                    if( $this->grants->is_primary_key_field($this->controller,$column) == true ||
+                        $this->grants->is_history_tracking_field($this->controller,$column) ||
                         $column == 'approval_name' ||
-                        $column == 'status_name' 
+                        $column == 'status_name'
                     ){
                       continue;
                     }
+                    
                 ?>
                   <div class="form-group">
                     <label for="" class="control-label col-xs-3"><?=get_phrase($column);?></label>

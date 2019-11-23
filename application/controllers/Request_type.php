@@ -11,16 +11,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Page_view_detail extends MY_Controller
+class Request_type extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('page_view_detail_library');
+    $this->load->library('request_type_library');
   }
 
   function index(){}
 
-  // static function get_menu_list(){}
+  static function get_menu_list(){}
 
 }

@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-class Page_view_detail_library extends Grants
+class Request_type_library extends Grants
 {
 
   private $CI;
@@ -23,10 +23,4 @@ class Page_view_detail_library extends Grants
 
   function index(){}
 
-  function change_field_type(){
-    $change_field_type['page_view_detail_operator']['field_type'] = 'select';
-    $change_field_type['page_view_detail_operator']['options'] = condition_operators();
-
-    return $change_field_type;
-  }
 } 

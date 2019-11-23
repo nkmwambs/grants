@@ -78,10 +78,16 @@ tables:
 
   page_view:
     lookup_tables:
-      - role
       - menu
 
-  page_view_detail:
+  page_view_condition:
     lookup_tables:
       - page_view    
+  
+  page_view_role:
+    lookup_tables:
+      - role
+      - page_view    
 
+  request_type:
+  

@@ -271,7 +271,7 @@ class Menu_library {
       if(count($this->CI->session->user_more_menu) > 0 ){
         $nav .= '
           <li class="">
-              <a href="'.base_url().'menu/list">
+              <a href="'.base_url().'menu/view/'.hash_id(380,'encode').'">
                   <span class="fa fa-plus"></span>
               </a>
              
