@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Page_view_model extends MY_Model{
 
     public $table = 'page_view'; 
-    public $dependant_table = 'page_view_detail';
+    public $dependant_table = '';
     public $name_field = 'page_view_name';
     public $create_date_field = "page_view_created_date";
     public $created_by_field = "page_view_created_by";
@@ -29,11 +29,11 @@ class Page_view_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('role','menu');
+        return array('menu');
     }
 
     public function detail_tables(){
-        //return array();
+        return array('page_view_role','page_view_condition');
     }
 
     function detail_list_table_visible_columns(){

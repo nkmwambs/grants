@@ -2,6 +2,7 @@
     
     $this->CI->db->select(array('page_view_id','page_view_name'));
     $this->CI->db->join('menu','menu.menu_id=page_view.fk_menu_id');
+    $this->CI->db->join('page_view_role','page_view_role.fk_page_view_id=page_view.page_view_id');
     
     if(!$this->CI->session->system_admin){
         $this->CI->db->where(array('fk_role_id'=>$this->CI->session->role_id));

@@ -42,25 +42,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function list(){
       
-    $this->grants->centers_where_condition();
+    $this->grants->where_condition('centers');
     
-    if($this->session->request_active_page_view > 0){
-
-      //Page view conditions
-      $this->db->select(array('page_view_detail_field','page_view_detail_operator','page_view_detail_value'));
-      $this->db->join('page_view','page_view.page_view_id=page_view_detail.fk_page_view_id');
-      $page_view_raw_conditions = $this->db->get_where('page_view_detail',
-      array('page_view_id'=>$this->session->request_active_page_view));
-
-      if($page_view_raw_conditions->num_rows()>0){
-        $page_view_raw_conditions = $page_view_raw_conditions->result_object();
-
-        foreach($page_view_raw_conditions as $raw_condition){
-          $this->db->where(array('request.'.$raw_condition->page_view_detail_field=>$raw_condition->page_view_detail_value));
-        }
-      }
-
-    }  
+    $this->grants->where_condition('page_view','request');
 
     $this->grants->create_table_join_statement($this->controller, $this->lookup_tables());
 

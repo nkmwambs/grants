@@ -436,6 +436,32 @@ function centers_where_condition(){
     // $this->db->where($sql);
 }
 
+function page_view_where_condition(...$args){
+
+  $table = $args[0];
+
+  if($this->session->request_active_page_view > 0){
+
+    //Page view conditions
+    $this->db->select(array('page_view_condition_field','page_view_condition_operator',
+    'page_view_condition_value'));
+    $this->db->join('page_view','page_view.page_view_id=page_view_condition.fk_page_view_id');
+    $page_view_raw_conditions = $this->db->get_where('page_view_condition',
+    array('page_view_id'=>$this->session->request_active_page_view));
+
+    if($page_view_raw_conditions->num_rows()>0){
+      $page_view_raw_conditions = $page_view_raw_conditions->result_object();
+
+      //print_r($page_view_raw_conditions);exit();
+
+      foreach($page_view_raw_conditions as $raw_condition){
+        $this->db->where(array($table.'.'.$raw_condition->page_view_condition_field=>$raw_condition->page_view_condition_value));
+      }
+    }
+
+  }
+}
+
 /**
  * run_query
  * 

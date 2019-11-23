@@ -78,10 +78,13 @@ tables:
 
   page_view:
     lookup_tables:
-      - role
       - menu
 
   page_view_detail:
     lookup_tables:
       - page_view    
-
+  
+  page_view_role:
+    lookup_tables:
+      - role
+      - page_view    

@@ -144,9 +144,20 @@ function create_table_join_statement($table, $lookup_tables){
   return $this->CI->grants_model->create_table_join_statement($table, $lookup_tables);
 }
 
-function centers_where_condition(){
-  return $this->CI->grants_model->centers_where_condition();
+function where_condition($condition_type,...$args){
+  // Currently works with centers and page_view args
+  $condition_method = $condition_type.'_where_condition';
+
+  return $this->CI->grants_model->$condition_method(...$args);
 }
+
+// function centers_where_condition(){
+//   return $this->CI->grants_model->centers_where_condition();
+// }
+
+// function page_view_condition(){
+//   return $this->CI->grants_model->page_view_condition();
+// }
 
 /**
  * load_detail_model
