@@ -1,14 +1,16 @@
 <?php 
     
     // This code should move to either access api or user model
-
-    $this->CI->db->select(array('page_view_id','page_view_name','page_view_role_is_default'));
-    $this->CI->db->join('menu','menu.menu_id=page_view.fk_menu_id');
-    $this->CI->db->join('page_view_role','page_view_role.fk_page_view_id=page_view.page_view_id');
     
     if(!$this->CI->session->system_admin){
         $this->CI->db->where(array('fk_role_id'=>$this->CI->session->role_id));
+        $this->CI->db->select(array('page_view_id','page_view_name','page_view_role_is_default as page_view_is_default'));
+        $this->CI->db->join('page_view_role','page_view_role.fk_page_view_id=page_view.page_view_id');
+    }else{
+        $this->CI->db->select(array('page_view_id','page_view_name','page_view_is_default as page_view_is_default'));
     }
+    
+    $this->CI->db->join('menu','menu.menu_id=page_view.fk_menu_id');
     
     $views = $this->CI->db->get_where('page_view',array('menu_derivative_controller'=>$this->CI->controller));
 
@@ -40,7 +42,23 @@
 
                     foreach($list_of_views as $view){
                       ?>
-                        <option value="<?=$view->page_view_id;?>" <?php if (($default_option == $view->page_view_id) || $view->page_view_role_is_default == 1 ) echo "selected";?> ><?=$view->page_view_name;?></option>
+                        <option value="<?=$view->page_view_id;?>" 
+                        
+                        <?php 
+                            if (    
+                                    $default_option == $view->page_view_id || 
+                                    $view->page_view_is_default == 1
+                                         
+                                ) 
+                                {
+                                    echo "selected";
+                                }
+                                    
+                        ?> 
+                        
+                        >
+                        <?=$view->page_view_name;?>
+                        </option>
                       <?php  
                     }
                 }

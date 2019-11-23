@@ -28,6 +28,10 @@ class Menu_user_order_library extends Grants
     $change_field_type['menu_user_order_priority_item']['field_type'] = 'select';
     $change_field_type['menu_user_order_priority_item']['options'] = array(get_phrase('collapse'),get_phrase('expanded'));
 
+    $change_field_type['menu_user_order_level']['field_type'] = 'select';
+    $change_field_type['menu_user_order_level']['options'] = range(1,$this->CI->grants_model->max_number_of_menu_items());
+    
+
     return $change_field_type;
   }
 

@@ -21,8 +21,6 @@ class Menu extends MY_Controller
 
   //function list(){}
 
-  // static function get_menu_list(){
-   
-  // }
+  // static function get_menu_list(){}
 
 }

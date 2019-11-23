@@ -19,7 +19,7 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   function index(){}
 
   function lookup_tables(){
-    return array('approve_item');
+    return array('approve_item','status');
   }
 
   function detail_tables(){

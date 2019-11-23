@@ -452,27 +452,53 @@ function page_view_where_condition(...$args){
     array('page_view_id'=>$this->session->request_active_page_view));
 
   }else{
-    //Get the default page view
+    //Get the default page view (Non system admin)
     $this->db->select(array('page_view_condition_field','page_view_condition_operator',
     'page_view_condition_value'));
 
+    if(!$this->session->system_admin){
+      $this->db->join('page_view_role','page_view_role.fk_page_view_id=page_view.page_view_id');
+      $this->db->where(array('fk_role_id'=>$this->session->role_id,'page_view_role_is_default'=>1));
+    }else{
+      $this->db->where(array('page_view_is_default'=>1));
+    }
+
     $this->db->join('page_view','page_view.page_view_id=page_view_condition.fk_page_view_id');
-    $this->db->join('page_view_role','page_view_role.fk_page_view_id=page_view.page_view_id');
     
-    $page_view_raw_conditions = $this->db->get_where('page_view_condition',
-    array('fk_role_id'=>$this->session->role_id,'page_view_role_is_default'=>1));
+    $page_view_raw_conditions = $this->db->get('page_view_condition');
   }
 
   if($page_view_raw_conditions->num_rows()>0){
     $page_view_raw_conditions = $page_view_raw_conditions->result_object();
 
-    //print_r($page_view_raw_conditions);exit();
-
     foreach($page_view_raw_conditions as $raw_condition){
-      $this->db->where(array($table.'.'.$raw_condition->page_view_condition_field=>$raw_condition->page_view_condition_value));
+      
+      $value = $raw_condition->page_view_condition_value;
+      if($raw_condition->page_view_condition_value == 'USER'){
+        $value = $this->session->user_id;
+      }
+      
+       // If operator is equal, less than, greater than, equal or less, equal or greater
+      $query_condition = array($table.'.'.$raw_condition->page_view_condition_field=>$value);
+      
+      if($raw_condition->page_view_condition_operator == 'contains'){
+        //If operator is contains - Not yet tested
+        $query_condition = $table.'.'.$raw_condition->page_view_condition_field." LIKE %".$value."%";
+        
+      }elseif($raw_condition->page_view_condition_operator == 'between'){
+        //If operator is between - Not yet tested
+        $query_condition = $table.'.'.$raw_condition->page_view_condition_field."BETWEEN ".$value;
+      }
+      
+      $this->db->where($query_condition);
+
     }
   }
 
+}
+
+function max_number_of_menu_items(){
+  return $this->db->get('menu')->num_rows();
 }
 
 /**

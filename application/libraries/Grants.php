@@ -91,12 +91,6 @@ private $detail_tables = [];
 
 
 /**
- * Selected columns of the edit action page with database results
- * @var Array
- */
-private $edit_visible_columns = [];
-
-/**
  * Holds the change field type array from the feature library
  * @var Array
  */
@@ -923,12 +917,14 @@ function single_form_add_visible_columns(){
 function edit_visible_columns(){
   $model = $this->current_model;
 
+  $edit_visible_columns = array();
+
   if(method_exists($this->CI->$model,'edit_visible_columns') && 
       is_array($this->CI->$model->edit_visible_columns())
   ){
-    $this->edit_visible_columns = $this->CI->$model->edit_visible_columns();
+    $edit_visible_columns = $this->CI->$model->edit_visible_columns();
   }
-  return $this->edit_visible_columns;
+  return $edit_visible_columns;
 }
 
 function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){

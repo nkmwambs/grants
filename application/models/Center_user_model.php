@@ -33,4 +33,16 @@ class Center_user_model extends MY_Model{
     }
 
     public function detail_tables(){}
+
+    public function detail_list_table_visible_columns(){
+        return ['center_user_track_number','user_name','center_name','designation_name','center_user_created_date','center_user_last_modified_date'];
+    }
+
+    public function single_form_add_visible_columns(){
+        return ['user_name','center_name','designation_name'];
+    }
+
+    public function edit_visible_columns(){
+        //return ['user_name','center_name','designation_name'];
+    }
 }
