@@ -178,7 +178,33 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (304,	'APAL-4915',	'Approval Ticket # APAL-4915',	3,	1,	'2019-11-22',	'2019-11-22 18:09:23',	1),
 (305,	'APAL-13526',	'Approval Ticket # APAL-13526',	3,	1,	'2019-11-22',	'2019-11-22 18:12:54',	1),
 (306,	'APAL-27828',	'Approval Ticket # APAL-27828',	3,	1,	'2019-11-22',	'2019-11-22 18:13:20',	1),
-(307,	'APAL-50025',	'Approval Ticket # APAL-50025',	40,	1,	'2019-11-22',	'2019-11-22 21:18:48',	1);
+(307,	'APAL-50025',	'Approval Ticket # APAL-50025',	40,	1,	'2019-11-22',	'2019-11-22 21:18:48',	1),
+(310,	'APAL-34534',	'Approval Ticket # APAL-34534',	3,	1,	'2019-11-23',	'2019-11-23 09:58:59',	1),
+(312,	'APAL-27814',	'Approval Ticket # APAL-27814',	57,	1,	'2019-11-23',	'2019-11-23 10:04:46',	1),
+(313,	'APAL-23057',	'Approval Ticket # APAL-23057',	8,	1,	'2019-11-23',	'2019-11-23 10:05:58',	1),
+(317,	'APAL-69592',	'Approval Ticket # APAL-69592',	3,	1,	'2019-11-23',	'2019-11-23 10:18:15',	1),
+(323,	'APAL-84939',	'Approval Ticket # APAL-84939',	57,	1,	'2019-11-23',	'2019-11-23 10:48:12',	1),
+(324,	'APAL-66198',	'Approval Ticket # APAL-66198',	57,	1,	'2019-11-23',	'2019-11-23 11:14:54',	1),
+(325,	'APAL-30340',	'Approval Ticket # APAL-30340',	59,	1,	'2019-11-23',	'2019-11-23 14:18:13',	1),
+(326,	'APAL-37997',	'Approval Ticket # APAL-37997',	60,	1,	'2019-11-23',	'2019-11-23 14:37:14',	1),
+(327,	'APAL-26443',	'Approval Ticket # APAL-26443',	60,	1,	'2019-11-23',	'2019-11-23 14:37:52',	1),
+(328,	'APAL-17798',	'Approval Ticket # APAL-17798',	60,	1,	'2019-11-23',	'2019-11-23 14:38:04',	1),
+(329,	'APAL-35934',	'Approval Ticket # APAL-35934',	57,	1,	'2019-11-23',	'2019-11-23 15:45:57',	1),
+(330,	'APAL-38545',	'Approval Ticket # APAL-38545',	61,	1,	'2019-11-23',	'2019-11-23 15:46:36',	1),
+(331,	'APAL-61954',	'Approval Ticket # APAL-61954',	57,	1,	'2019-11-23',	'2019-11-23 15:49:09',	1),
+(332,	'APAL-63579',	'Approval Ticket # APAL-63579',	61,	1,	'2019-11-23',	'2019-11-23 15:49:42',	1),
+(333,	'APAL-19733',	'Approval Ticket # APAL-19733',	57,	1,	'2019-11-23',	'2019-11-23 15:50:36',	1),
+(334,	'APAL-44436',	'Approval Ticket # APAL-44436',	61,	1,	'2019-11-23',	'2019-11-23 15:51:40',	1),
+(335,	'APAL-19306',	'Approval Ticket # APAL-19306',	57,	1,	'2019-11-23',	'2019-11-23 15:52:20',	1),
+(336,	'APAL-48776',	'Approval Ticket # APAL-48776',	61,	1,	'2019-11-23',	'2019-11-23 15:53:05',	1),
+(337,	'APAL-26203',	'Approval Ticket # APAL-26203',	57,	1,	'2019-11-23',	'2019-11-23 15:53:54',	1),
+(338,	'APAL-46529',	'Approval Ticket # APAL-46529',	61,	1,	'2019-11-23',	'2019-11-23 15:54:20',	1),
+(339,	'APAL-51685',	'Approval Ticket # APAL-51685',	57,	1,	'2019-11-23',	'2019-11-23 15:54:58',	1),
+(340,	'APAL-12941',	'Approval Ticket # APAL-12941',	61,	1,	'2019-11-23',	'2019-11-23 15:55:24',	1),
+(341,	'APAL-33109',	'Approval Ticket # APAL-33109',	57,	1,	'2019-11-23',	'2019-11-23 15:56:00',	1),
+(342,	'APAL-85252',	'Approval Ticket # APAL-85252',	61,	1,	'2019-11-23',	'2019-11-23 15:56:48',	1),
+(343,	'APAL-55785',	'Approval Ticket # APAL-55785',	59,	1,	'2019-11-23',	'2019-11-23 15:59:55',	1),
+(344,	'APAL-4911',	'Approval Ticket # APAL-4911',	59,	1,	'2019-11-23',	'2019-11-23 16:00:34',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -259,7 +285,12 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (53,	'',	'group_cohort_user',	0,	'2019-11-22',	1,	'2019-11-22 07:52:16',	1,	NULL,	NULL),
 (54,	'',	'group_global_user',	0,	'2019-11-22',	1,	'2019-11-22 08:29:59',	1,	NULL,	NULL),
 (55,	'',	'group_region_user',	0,	'2019-11-22',	1,	'2019-11-22 08:35:26',	1,	NULL,	NULL),
-(56,	'',	'funding_status',	0,	'2019-11-22',	1,	'2019-11-22 22:07:30',	1,	NULL,	NULL);
+(56,	'',	'funding_status',	0,	'2019-11-22',	1,	'2019-11-22 22:07:30',	1,	NULL,	NULL),
+(57,	'',	'page_view',	0,	'2019-11-23',	1,	'2019-11-23 08:19:50',	1,	NULL,	NULL),
+(58,	'',	'page_view_detail',	0,	'2019-11-23',	1,	'2019-11-23 08:19:50',	1,	NULL,	NULL),
+(59,	'',	'page_view_role',	0,	'2019-11-23',	1,	'2019-11-23 14:11:51',	1,	NULL,	NULL),
+(60,	'',	'request_type',	0,	'2019-11-23',	1,	'2019-11-23 14:31:51',	1,	NULL,	NULL),
+(61,	'',	'page_view_condition',	0,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -749,7 +780,8 @@ INSERT INTO `funder` (`funder_id`, `funder_track_number`, `funder_name`, `funder
 (2,	'FDR-68477',	'SSDF',	'Social Security Granters',	'2019-10-07',	'2019-10-07',	NULL,	NULL,	NULL,	297,	33),
 (3,	'FUER-85778',	'Third funder',	'This is a test funder',	'2019-11-21',	NULL,	1,	1,	NULL,	226,	33),
 (7,	'FUER-23241',	'Test 1',	'Test 1',	'2019-11-22',	NULL,	1,	1,	NULL,	299,	33),
-(10,	'FUER-20097',	'Test funder 2',	'Test funder 2',	'2019-11-22',	NULL,	1,	1,	NULL,	302,	33);
+(10,	'FUER-20097',	'Test funder 2',	'Test funder 2',	'2019-11-22',	NULL,	1,	1,	NULL,	302,	33),
+(11,	'FUER-11852',	'Funder 100',	'Funder 100',	'2019-11-23',	NULL,	1,	1,	NULL,	313,	33);
 
 DROP TABLE IF EXISTS `funding_status`;
 CREATE TABLE `funding_status` (
@@ -1198,7 +1230,9 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (488,	'Group_global',	'Group_global',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (489,	'Group_region',	'Group_region',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (490,	'Project',	'Project',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(491,	'Reconciliation',	'Reconciliation',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
+(491,	'Reconciliation',	'Reconciliation',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(492,	'Page_view',	'Page_view',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(496,	'Request_type',	'Request_type',	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -1384,7 +1418,26 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (1005,	5,	488,	1,	48,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
 (1006,	5,	489,	1,	49,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
 (1007,	5,	490,	1,	50,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(1008,	5,	491,	1,	51,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL);
+(1008,	5,	491,	1,	51,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
+(1009,	1,	492,	1,	63,	0,	NULL,	'2019-11-23 08:19:43',	NULL,	NULL,	NULL,	NULL),
+(1011,	5,	492,	1,	63,	0,	NULL,	'2019-11-23 10:58:06',	NULL,	NULL,	NULL,	NULL),
+(1015,	1,	496,	1,	67,	0,	NULL,	'2019-11-23 14:31:44',	NULL,	NULL,	NULL,	NULL),
+(1016,	5,	496,	1,	65,	0,	NULL,	'2019-11-23 16:23:17',	NULL,	NULL,	NULL,	NULL),
+(1017,	4,	478,	1,	37,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1018,	4,	479,	1,	38,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1019,	4,	480,	1,	39,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1020,	4,	481,	1,	40,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1021,	4,	482,	1,	41,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1022,	4,	483,	1,	42,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1023,	4,	485,	1,	43,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1024,	4,	486,	1,	44,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1025,	4,	487,	1,	45,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1026,	4,	488,	1,	46,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1027,	4,	489,	1,	47,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1028,	4,	490,	1,	48,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1029,	4,	491,	1,	49,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1030,	4,	492,	1,	50,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
+(1031,	4,	496,	1,	51,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -1442,6 +1495,102 @@ INSERT INTO `month` (`month_id`, `month_track_number`, `month_number`, `month_na
 (1,	'',	1,	'January',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00',	NULL),
 (2,	'',	2,	'February',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00',	NULL),
 (3,	'MOTH-60467',	3,	'March',	0,	61,	1,	1,	'2019-11-21',	'0000-00-00',	225);
+
+DROP TABLE IF EXISTS `page_view`;
+CREATE TABLE `page_view` (
+  `page_view_id` int(100) NOT NULL AUTO_INCREMENT,
+  `page_view_track_number` varchar(100) NOT NULL,
+  `page_view_name` varchar(100) NOT NULL,
+  `page_view_description` longtext NOT NULL,
+  `fk_menu_id` int(100) NOT NULL,
+  `page_view_created_date` date NOT NULL,
+  `page_view_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `page_view_created_by` int(100) NOT NULL,
+  `page_view_last_modified_by` int(100) NOT NULL,
+  `fk_approval_id` int(11) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  PRIMARY KEY (`page_view_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  KEY `fk_menu_id` (`fk_menu_id`),
+  CONSTRAINT `page_view_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
+  CONSTRAINT `page_view_ibfk_2` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
+  CONSTRAINT `page_view_ibfk_3` FOREIGN KEY (`fk_menu_id`) REFERENCES `menu` (`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `page_view` (`page_view_id`, `page_view_track_number`, `page_view_name`, `page_view_description`, `fk_menu_id`, `page_view_created_date`, `page_view_last_modified_date`, `page_view_created_by`, `page_view_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(14,	'PAEW-5870',	'New requests',	'A list of  new requests',	392,	'2019-11-23',	'2019-11-23 10:48:12',	1,	1,	323,	82),
+(15,	'PAEW-78834',	'Requests submitted to head of department ',	'A list of all center submitted requests',	392,	'2019-11-23',	'2019-11-23 11:14:54',	1,	1,	324,	82),
+(16,	'PAEW-55574',	'Requests approved by Head of department',	'List all requests approved by head of department',	392,	'2019-11-23',	'2019-11-23 15:45:57',	1,	1,	329,	82),
+(17,	'PAEW-3009',	'Request declined by Head of Department',	'Request declined by Head of Department',	392,	'2019-11-23',	'2019-11-23 15:49:09',	1,	1,	331,	82),
+(18,	'PAEW-43710',	'Requests approved by finance director',	'Requests approved by finance director',	392,	'2019-11-23',	'2019-11-23 15:50:36',	1,	1,	333,	82),
+(19,	'PAEW-29222',	'Requests declined by finance director',	'Requests declined by finance director',	392,	'2019-11-23',	'2019-11-23 15:52:20',	1,	1,	335,	82),
+(20,	'PAEW-1180',	'Requests paid by the accountant',	'Requests paid by the accountant',	392,	'2019-11-23',	'2019-11-23 15:53:54',	1,	1,	337,	82),
+(21,	'PAEW-59679',	'Requests reinstated to head of department',	'Requests reinstated to head of department',	392,	'2019-11-23',	'2019-11-23 15:54:58',	1,	1,	339,	82),
+(22,	'PAEW-44027',	'Requests reinstated to finance director',	'Requests reinstated to finance director',	392,	'2019-11-23',	'2019-11-23 15:56:00',	1,	1,	341,	82);
+
+DROP TABLE IF EXISTS `page_view_condition`;
+CREATE TABLE `page_view_condition` (
+  `page_view_condition_id` int(100) NOT NULL AUTO_INCREMENT,
+  `page_view_condition_track_number` varchar(100) NOT NULL,
+  `page_view_condition_name` varchar(100) DEFAULT NULL,
+  `page_view_condition_field` varchar(100) NOT NULL,
+  `page_view_condition_operator` varchar(50) NOT NULL,
+  `page_view_condition_value` varchar(100) NOT NULL,
+  `fk_page_view_id` int(100) NOT NULL,
+  `page_view_condition_created_date` date NOT NULL,
+  `page_view_condition_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `page_view_condition_created_by` int(100) NOT NULL,
+  `page_view_condition_last_modified_by` int(100) NOT NULL,
+  `fk_approval_id` int(11) DEFAULT NULL,
+  `fk_status_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`page_view_condition_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  KEY `fk_page_view_id` (`fk_page_view_id`),
+  CONSTRAINT `page_view_condition_ibfk_3` FOREIGN KEY (`fk_page_view_id`) REFERENCES `page_view` (`page_view_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `page_view_condition` (`page_view_condition_id`, `page_view_condition_track_number`, `page_view_condition_name`, `page_view_condition_field`, `page_view_condition_operator`, `page_view_condition_value`, `fk_page_view_id`, `page_view_condition_created_date`, `page_view_condition_last_modified_date`, `page_view_condition_created_by`, `page_view_condition_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(12,	'PAIL-41326',	NULL,	'fk_status_id',	'equal',	'14',	14,	'2019-11-23',	'2019-11-23 10:48:12',	1,	1,	NULL,	83),
+(13,	'PAIL-80580',	NULL,	'fk_status_id',	'equal',	'15',	15,	'2019-11-23',	'2019-11-23 11:14:54',	1,	1,	NULL,	83),
+(14,	'PAON-31118',	'Page_view_condition # PAON-31118',	'fk_status_id',	'equal',	'16',	16,	'2019-11-23',	'2019-11-23 15:46:36',	1,	1,	330,	86),
+(15,	'PAON-45422',	'Page_view_condition # PAON-45422',	'fk_status_id',	'equal',	'17',	17,	'2019-11-23',	'2019-11-23 15:49:42',	1,	1,	332,	86),
+(16,	'PAON-63706',	'Page_view_condition # PAON-63706',	'fk_status_id',	'equal',	'18',	18,	'2019-11-23',	'2019-11-23 15:51:40',	1,	1,	334,	86),
+(17,	'PAON-20951',	'Page_view_condition # PAON-20951',	'fk_status_id',	'equal',	'19',	19,	'2019-11-23',	'2019-11-23 15:53:05',	1,	1,	336,	86),
+(18,	'PAON-64491',	'Page_view_condition # PAON-64491',	'fk_status_id',	'equal',	'20',	20,	'2019-11-23',	'2019-11-23 15:54:20',	1,	1,	338,	86),
+(19,	'PAON-36429',	'Page_view_condition # PAON-36429',	'fk_status_id',	'equal',	'21',	21,	'2019-11-23',	'2019-11-23 15:55:24',	1,	1,	340,	86),
+(20,	'PAON-86262',	'Page_view_condition # PAON-86262',	'fk_status_id',	'equal',	'22',	22,	'2019-11-23',	'2019-11-23 15:56:48',	1,	1,	342,	86);
+
+DROP TABLE IF EXISTS `page_view_role`;
+CREATE TABLE `page_view_role` (
+  `page_view_role_id` int(100) NOT NULL AUTO_INCREMENT,
+  `page_view_role_track_number` varchar(100) NOT NULL,
+  `page_view_role_name` varchar(100) DEFAULT NULL,
+  `page_view_role_is_default` int(5) DEFAULT '0',
+  `fk_page_view_id` int(100) DEFAULT NULL,
+  `fk_role_id` int(100) DEFAULT NULL,
+  `page_view_role_created_date` date NOT NULL,
+  `page_view_role_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `page_view_role_created_by` int(100) NOT NULL,
+  `page_view_role_last_modified_by` int(100) NOT NULL,
+  `fk_approval_id` int(11) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  PRIMARY KEY (`page_view_role_id`),
+  KEY `fk_page_view_id` (`fk_page_view_id`),
+  KEY `fk_role_id` (`fk_role_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  CONSTRAINT `page_view_role_ibfk_1` FOREIGN KEY (`fk_page_view_id`) REFERENCES `page_view` (`page_view_id`),
+  CONSTRAINT `page_view_role_ibfk_2` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`),
+  CONSTRAINT `page_view_role_ibfk_3` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
+  CONSTRAINT `page_view_role_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `page_view_role` (`page_view_role_id`, `page_view_role_track_number`, `page_view_role_name`, `page_view_role_is_default`, `fk_page_view_id`, `fk_role_id`, `page_view_role_created_date`, `page_view_role_last_modified_date`, `page_view_role_created_by`, `page_view_role_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'PALE-58330',	'Page_view_role # PALE-58330',	1,	14,	3,	'2019-11-23',	'2019-11-23 14:18:13',	1,	1,	325,	84),
+(2,	'PALE-17074',	'Page_view_role # PALE-17074',	0,	15,	3,	'2019-11-23',	'2019-11-23 15:59:55',	1,	1,	343,	84),
+(3,	'PALE-70773',	'Page_view_role # PALE-70773',	1,	15,	1,	'2019-11-23',	'2019-11-23 16:00:34',	1,	1,	344,	84);
 
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
@@ -1614,7 +1763,8 @@ CREATE TABLE `request` (
   `request_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_track_number` varchar(100) DEFAULT NULL,
   `request_name` varchar(100) DEFAULT NULL,
-  `fk_status_id` int(5) DEFAULT '0',
+  `fk_request_type_id` int(11) DEFAULT '1',
+  `fk_status_id` int(11) DEFAULT '0',
   `fk_center_id` int(100) DEFAULT NULL,
   `fk_approval_id` int(11) DEFAULT NULL,
   `request_date` date DEFAULT NULL,
@@ -1629,24 +1779,30 @@ CREATE TABLE `request` (
   KEY `fk_request_center2_idx` (`fk_center_id`),
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_department_id` (`fk_department_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  KEY `fk_requuest_type_id` (`fk_request_type_id`),
   CONSTRAINT `fk_request_center2` FOREIGN KEY (`fk_center_id`) REFERENCES `center` (`center_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `request_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`) ON DELETE CASCADE,
-  CONSTRAINT `request_ibfk_3` FOREIGN KEY (`fk_department_id`) REFERENCES `department` (`department_id`)
+  CONSTRAINT `request_ibfk_3` FOREIGN KEY (`fk_department_id`) REFERENCES `department` (`department_id`),
+  CONSTRAINT `request_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
+  CONSTRAINT `request_ibfk_5` FOREIGN KEY (`fk_request_type_id`) REFERENCES `request_type` (`request_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_status_id`, `fk_center_id`, `fk_approval_id`, `request_date`, `request_description`, `fk_department_id`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
-(84,	'REQ-15134',	'Test Request',	14,	9,	155,	'2019-11-07',	'Test Request',	1,	'2019-11-07',	'1',	'1',	'2019-11-21 17:03:17',	NULL),
-(85,	'REST-84293',	'Another request',	16,	10,	159,	'2019-11-07',	'Another request',	1,	'2019-11-07',	'1',	'1',	'2019-11-21 19:53:00',	NULL),
-(86,	'REST-35895',	'Tested',	14,	12,	204,	'2019-11-11',	'Tested',	1,	'2019-11-11',	'1',	'1',	'2019-11-21 22:31:54',	NULL),
-(87,	'REST-14973',	'Test 10',	14,	9,	289,	'2019-11-22',	'Test 10',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 16:42:41',	NULL),
-(88,	'REST-3905',	'Test 11',	14,	9,	290,	'2019-11-22',	'Test 11',	2,	'2019-11-22',	'1',	'1',	'2019-11-22 16:44:15',	NULL),
-(89,	'REST-70937',	'Test 12',	14,	9,	291,	'2019-11-22',	'Test 12',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 16:46:53',	NULL),
-(90,	'REST-6965',	'Test 13',	14,	9,	292,	'2019-11-22',	'Test 13',	2,	'2019-11-22',	'1',	'1',	'2019-11-22 16:47:44',	NULL),
-(91,	'REST-20616',	'Test 15',	14,	9,	293,	'2019-11-22',	'Test 15',	2,	'2019-11-22',	'1',	'1',	'2019-11-22 17:24:28',	NULL),
-(92,	'REST-34835',	'Test request 99',	14,	10,	294,	'2019-11-22',	'Test request 99',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 17:26:09',	NULL),
-(94,	'REST-39845',	'Test 35',	14,	9,	304,	'2019-11-22',	'Test 35',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 18:09:23',	NULL),
-(95,	'REST-16817',	'Test 50',	14,	9,	305,	'2019-11-22',	'Test 50',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 18:12:54',	NULL),
-(96,	'REST-35062',	'Test 50',	14,	9,	306,	'2019-11-22',	'Test 50',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 18:13:20',	NULL);
+INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_request_type_id`, `fk_status_id`, `fk_center_id`, `fk_approval_id`, `request_date`, `request_description`, `fk_department_id`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
+(84,	'REQ-15134',	'Test Request',	1,	14,	9,	155,	'2019-11-07',	'Test Request',	1,	'2019-11-07',	'1',	'1',	'2019-11-21 17:03:17',	NULL),
+(85,	'REST-84293',	'Another request',	1,	16,	10,	159,	'2019-11-07',	'Another request',	1,	'2019-11-07',	'1',	'1',	'2019-11-21 19:53:00',	NULL),
+(86,	'REST-35895',	'Tested',	1,	14,	12,	204,	'2019-11-11',	'Tested',	1,	'2019-11-11',	'1',	'1',	'2019-11-21 22:31:54',	NULL),
+(87,	'REST-14973',	'Test 10',	1,	14,	9,	289,	'2019-11-22',	'Test 10',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 16:42:41',	NULL),
+(88,	'REST-3905',	'Test 11',	1,	15,	9,	290,	'2019-11-22',	'Test 11',	2,	'2019-11-22',	'1',	'1',	'2019-11-23 16:33:28',	NULL),
+(89,	'REST-70937',	'Test 12',	1,	14,	9,	291,	'2019-11-22',	'Test 12',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 16:46:53',	NULL),
+(90,	'REST-6965',	'Test 13',	1,	14,	9,	292,	'2019-11-22',	'Test 13',	2,	'2019-11-22',	'1',	'1',	'2019-11-22 16:47:44',	NULL),
+(91,	'REST-20616',	'Test 15',	1,	15,	9,	293,	'2019-11-22',	'Test 15',	2,	'2019-11-22',	'1',	'1',	'2019-11-23 16:33:30',	NULL),
+(92,	'REST-34835',	'Test request 99',	1,	14,	10,	294,	'2019-11-22',	'Test request 99',	1,	'2019-11-22',	'1',	'1',	'2019-11-23 13:08:54',	NULL),
+(94,	'REST-39845',	'Test 35',	1,	14,	9,	304,	'2019-11-22',	'Test 35',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 18:09:23',	NULL),
+(95,	'REST-16817',	'Test 50',	1,	14,	9,	305,	'2019-11-22',	'Test 50',	1,	'2019-11-22',	'1',	'1',	'2019-11-22 18:12:54',	NULL),
+(96,	'REST-35062',	'Test 50',	1,	15,	9,	306,	'2019-11-22',	'Test 50',	1,	'2019-11-22',	'1',	'1',	'2019-11-23 16:33:33',	NULL),
+(97,	'REST-39510',	'Test 101',	1,	14,	10,	310,	'2019-11-23',	'Test 101',	1,	'2019-11-23',	'1',	'1',	'2019-11-23 09:58:59',	NULL),
+(98,	'REST-4723',	'Request 600',	1,	15,	11,	317,	'2019-11-23',	'Request 600',	1,	'2019-11-23',	'1',	'1',	'2019-11-23 16:33:52',	NULL);
 
 DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
@@ -1687,7 +1843,28 @@ INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`
 (112,	'REIL-7820',	90,	'Tst 131',	30,	2100.00,	63000.00,	1,	2,	1,	NULL,	0,	NULL,	'2019-11-22',	1,	1,	'2019-11-22 16:47:44'),
 (113,	'REIL-25685',	90,	'Test 131',	56,	5600.00,	313600.00,	2,	2,	1,	NULL,	0,	NULL,	'2019-11-22',	1,	1,	'2019-11-22 16:47:44'),
 (114,	'REIL-44002',	91,	'Test 15',	45,	1200.00,	54000.00,	2,	4,	1,	NULL,	0,	NULL,	'2019-11-22',	1,	1,	'2019-11-22 17:24:28'),
-(115,	'REIL-50224',	92,	'Request test',	10,	1600.00,	16000.00,	1,	4,	1,	NULL,	0,	NULL,	'2019-11-22',	1,	1,	'2019-11-22 17:26:09');
+(115,	'REIL-50224',	92,	'Request test',	10,	1600.00,	16000.00,	1,	4,	1,	NULL,	0,	NULL,	'2019-11-22',	1,	1,	'2019-11-22 17:26:09'),
+(116,	'REIL-49871',	97,	'Test 101',	50,	20.00,	1000.00,	1,	2,	1,	NULL,	0,	NULL,	'2019-11-23',	1,	1,	'2019-11-23 09:59:00'),
+(117,	'REIL-57757',	98,	'Request 600',	30,	500.00,	15000.00,	1,	2,	1,	NULL,	0,	NULL,	'2019-11-23',	1,	1,	'2019-11-23 10:18:15');
+
+DROP TABLE IF EXISTS `request_type`;
+CREATE TABLE `request_type` (
+  `request_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `request_type_track_number` varchar(100) NOT NULL,
+  `request_type_name` varchar(100) NOT NULL,
+  `request_type_created_date` date DEFAULT NULL,
+  `request_type_created_by` int(100) DEFAULT NULL,
+  `request_type_last_modified_by` int(100) DEFAULT NULL,
+  `request_type_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`request_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `request_type` (`request_type_id`, `request_type_track_number`, `request_type_name`, `request_type_created_date`, `request_type_created_by`, `request_type_last_modified_by`, `request_type_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'REPE-35675',	'General',	'2019-11-23',	1,	1,	'2019-11-23 14:37:14',	326,	85),
+(2,	'REPE-52210',	'Child Protection',	'2019-11-23',	1,	1,	'2019-11-23 14:37:52',	327,	85),
+(3,	'REPE-29451',	'Health',	'2019-11-23',	1,	1,	'2019-11-23 14:38:04',	328,	85);
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
@@ -1822,7 +1999,7 @@ INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `status
 (14,	'',	'New',	'',	3,	'1',	1,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (15,	'',	'Submitted',	'Submit',	3,	'2',	1,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (16,	'',	'Approved By Head of Department',	'Approve',	3,	'3',	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
-(17,	'',	'Declined Approved By Head of Department',	'Decline',	3,	'3',	-1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
+(17,	'',	'Declined By Head of Department',	'Decline',	3,	'3',	-1,	1,	1,	'0000-00-00',	0,	'2019-11-23 15:48:49',	0,	NULL,	NULL),
 (18,	'',	'Approved By Finance Director',	'Approve',	3,	'4',	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (19,	'',	'Declined By Finance Director',	'Decline',	3,	'4',	-1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (20,	'',	'Paid By Accountant',	'Pay',	3,	'5',	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
@@ -1872,7 +2049,12 @@ INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `status
 (78,	'',	'New',	'',	53,	'1',	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 07:52:16',	1,	NULL,	NULL),
 (79,	'',	'New',	'',	54,	'1',	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 08:29:59',	1,	NULL,	NULL),
 (80,	'',	'New',	'',	55,	'1',	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 08:35:26',	1,	NULL,	NULL),
-(81,	'',	'New',	'',	56,	'1',	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 22:07:30',	1,	NULL,	NULL);
+(81,	'',	'New',	'',	56,	'1',	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 22:07:30',	1,	NULL,	NULL),
+(82,	'',	'New',	'',	57,	'1',	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 08:19:50',	1,	NULL,	NULL),
+(83,	'',	'New',	'',	58,	'1',	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 08:19:50',	1,	NULL,	NULL),
+(84,	'',	'New',	'',	59,	'1',	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 14:11:51',	1,	NULL,	NULL),
+(85,	'',	'New',	'',	60,	'1',	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 14:31:51',	1,	NULL,	NULL),
+(86,	'',	'New',	'',	61,	'1',	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -2105,4 +2287,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-11-23 06:42:55
+-- 2019-11-23 16:38:06
