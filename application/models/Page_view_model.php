@@ -35,4 +35,8 @@ class Page_view_model extends MY_Model{
     public function detail_tables(){
         //return array();
     }
+
+    function detail_list_table_visible_columns(){
+        
+    }
 }

@@ -176,9 +176,12 @@ if(! function_exists('record_prefix')){
 if(!function_exists('condition_operators')){
 	function condition_operators(){
 		$operators = [
-			'='=> get_phrase('equal_to'),
-			'>'=> get_phrase('greater_than'),
-			'<'=> get_phrase('less_than'),
+			'equal'=> get_phrase('equal'),
+			'great_than'=> get_phrase('great_than'),
+			'less_than'=> get_phrase('less_than'),
+			'less_or_equal'=> get_phrase('less_or_equal'),
+			'great_or_equal'=> get_phrase('great_or_equal'),
+			'contains'=> get_phrase('contains'),
 		];
 
 		return $operators;

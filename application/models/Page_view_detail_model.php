@@ -35,6 +35,8 @@ class Page_view_detail_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){
-
+        return array('page_view_detail_field','page_view_detail_operator','page_view_detail_value');
     }
+
+    
 }

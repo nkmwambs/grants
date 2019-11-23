@@ -215,7 +215,7 @@ function edit(String $id):String{
 
     // Insert attachments - Not important since an alternative means has been thought
 
-    $this->upload_attachment($header_id);
+    //$this->upload_attachment($header_id);
 
 
     // End the transaction and determine if successful

@@ -1116,9 +1116,9 @@ function multi_form_add_output($table_name = ""){
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'add')){
-      $this->CI->$model->add();
+      echo $this->CI->$model->add();
     }else{
-      $this->CI->grants_model->add();
+      echo $this->CI->grants_model->add();
     }
   }else{
     $this->CI->grants_model->mandatory_fields($table);
@@ -1377,7 +1377,6 @@ function write_file_contents($table, $sys_file_path ,$assets_temp_path, $replace
 function quote_array_elements($elem){
   return ("'$elem'");
 }
-
 
 // These are methods that require review
 
