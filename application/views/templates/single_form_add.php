@@ -34,7 +34,7 @@
                     }
                 ?>
                   <div class="form-group">
-                    <label for="" class="control-label col-xs-3"><?=ucwords(str_replace("_"," ",$column));?></label>
+                    <label for="" class="control-label col-xs-3"><?=get_phrase($column);?></label>
                     <div class="col-xs-9">
                       <?php
                         echo $field;

@@ -32,4 +32,6 @@ class %model% extends MY_Model{
     }
 
     public function detail_tables(){}
+
+    public function detail_multi_form_add_visible_columns(){}
 }

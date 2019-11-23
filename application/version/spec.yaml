@@ -74,4 +74,14 @@ tables:
   
   designation:
     lookup_tables:
-      - center_group_hierarchy    
+      - center_group_hierarchy 
+
+  page_view:
+    lookup_tables:
+      - role
+      - menu
+
+  page_view_detail:
+    lookup_tables:
+      - page_view    
+

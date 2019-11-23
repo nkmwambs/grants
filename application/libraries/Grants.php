@@ -327,7 +327,7 @@ public function name_field(String $table_name = ""):String {
  * 
  * Checks for the field name of the history fields from the feature model property if it exists
  * 
- * History tracking fields are: deleted_at, created_date, last_modified_date, created_by and 
+ * History tracking fields are: track_number, deleted_at, created_date, last_modified_date, created_by and 
  * last_modified_by
  * 
  * It returns the legacy naming if the feature property doesn't exists, otherwise empty string
@@ -362,21 +362,28 @@ public function history_tracking_field(String $table_name,String $history_type):
 /**
  * 
  */
-public function is_history_tracking_field(String $table_name, String $column, String $history_type){
+public function is_history_tracking_field(String $table_name, String $column, String $history_type = ""){
 
   $is_history_tracking_field = false;
 
   //Helps to prevent the use of invalid history tracking fields
-  $template_history_types = array('created_date','created_by','last_modified_date','last_modified_by','deleted_at');
+  $template_history_types = array('track_number','created_date','created_by','last_modified_date','last_modified_by','deleted_at');
 
   //foreach($history_types as $history_type){
 
-    if(in_array($history_type,$template_history_types)){
+    if($history_type != "" && in_array($history_type,$template_history_types)){
       $history_tracking_field = $this->history_tracking_field($table_name,$history_type);
 
       if($column == $history_tracking_field){
         $is_history_tracking_field = true;
       }
+    }else{
+      // Used when type is not passed. Uses strict column naming
+        foreach($template_history_types as $template_history_type){
+          if($column == $table_name.'_'.$template_history_type){
+            $is_history_tracking_field = true;
+          }
+        }
     }
 
   //}
@@ -658,11 +665,13 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    */  
   function detail_row_fields(Array $fields_array): Array {
 
-      $this->set_change_field_type($this->controller);
+      // Field type changes for the dependant table
+      $this->set_change_field_type($this->dependant_table($this->controller));
 
       $fields = array();
 
       foreach ($fields_array as $key) {
+        
         $f = new Fields_base($key,$this->dependant_table($this->controller));
 
         $field_type = $f->field_type();
@@ -1127,7 +1136,8 @@ function multi_form_add_output($table_name = ""){
     return array(
       'fields'=>$fields,
       'detail_table'=>$detail_table_keys,
-      'detail_false_keys'=>$false_keys
+      'detail_false_keys'=>$false_keys,
+      'dependant_table'=>$this->dependant_table($this->controller)
     );
   }
 

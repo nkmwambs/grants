@@ -172,3 +172,15 @@ if(! function_exists('record_prefix')){
 		return strtoupper($lead_string.$trail_string);
 	}
 }
+
+if(!function_exists('condition_operators')){
+	function condition_operators(){
+		$operators = [
+			'='=> get_phrase('equal_to'),
+			'>'=> get_phrase('greater_than'),
+			'<'=> get_phrase('less_than'),
+		];
+
+		return $operators;
+	}
+}

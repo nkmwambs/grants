@@ -3,7 +3,7 @@
   //echo $this->grants->check_role_has_field_permission('Voucher_detail','create','voucher_detail_description');
   //print_r($this->user_model->get_user_permissions(2));
   extract($result);
-  //print_r($detail_table);
+  //echo $dependant_table;
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
 ?>
 
@@ -78,6 +78,13 @@
                         <?php
 
                           foreach ($detail_table as $detail_table_key) {
+                            if(
+                              $this->grants->is_primary_key_field($dependant_table,$detail_table_key) ||
+                              $this->grants->is_history_tracking_field($dependant_table,$detail_table_key) ||
+                              $this->grants->is_name_field($this->controller,$detail_table_key) ||
+                              $this->grants->is_name_field($dependant_table,$detail_table_key)
+                            ) 
+                              continue;
                         ?>
                             <th class="th_data" id="<?="th_".$detail_table_key;?>"><?=ucwords(str_replace("_"," ",$detail_table_key));?></th>
                         <?php
@@ -87,7 +94,7 @@
                       </thead>
 
                       <tbody></tbody>
-                      <tfoot>
+                      <tfoot class="hidden">
                           <tr>
                             <td colspan="<?=count($detail_table);?>"><?=get_phrase('grand_total')?></td>
                             <td><input type="number" readonly="readonly" class="form-control" id="grand_total" value="0" /></td>
