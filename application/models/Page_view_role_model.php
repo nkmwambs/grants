@@ -35,4 +35,8 @@ class Page_view_role_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    public function single_form_add_visible_columns(){
+        return ['page_view_role_is_default','role_name','page_view_name'];
+    }
 }

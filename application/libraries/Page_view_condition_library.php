@@ -23,4 +23,11 @@ class Page_view_condition_library extends Grants
 
   function index(){}
 
+  function change_field_type(){
+    $change_field_type['page_view_condition_operator']['field_type'] = 'select';
+    $change_field_type['page_view_condition_operator']['options'] = condition_operators();
+
+    return $change_field_type;
+  }
+
 } 

@@ -34,5 +34,11 @@ class Page_view_condition_model extends MY_Model{
 
     public function detail_tables(){}
 
-    public function detail_multi_form_add_visible_columns(){}
+    public function detail_multi_form_add_visible_columns(){
+        return array('page_view_condition_field','page_view_condition_operator','page_view_condition_value');
+    }
+
+    public function single_form_add_visible_columns(){
+        return array('page_view_condition_field','page_view_condition_operator','page_view_condition_value');
+    }
 }

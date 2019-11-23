@@ -58,6 +58,7 @@ if ( ! function_exists('hash_id'))
 		if($action == 'encode'){
 			return $hashids->encode($id);
 		}else{
+			//print_r($hashids->decode($id));exit();
 			return $hashids->decode($id)[0];
 		}
 
@@ -95,7 +96,7 @@ if( ! function_exists('render_list_table_header') ){
 if( ! function_exists('list_table_edit_action')){
 	function list_table_edit_action($table_controller,$primary_key){
 
-		$string = '<a class="list_edit_link" href="'.base_url().strtolower($table_controller).'/edit/'.hash_id($primary_key).'">'.get_phrase("edit").'</a>';
+		$string = '<a class="list_edit_link" href="'.base_url().strtolower($table_controller).'/edit/'.hash_id($primary_key,'encode').'">'.get_phrase("edit").'</a>';
 
 		return $string;
 	}
@@ -181,6 +182,7 @@ if(!function_exists('condition_operators')){
 			'less_than'=> get_phrase('less_than'),
 			'less_or_equal'=> get_phrase('less_or_equal'),
 			'great_or_equal'=> get_phrase('great_or_equal'),
+			'between'=> get_phrase('between'),
 			'contains'=> get_phrase('contains'),
 		];
 

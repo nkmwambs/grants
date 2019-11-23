@@ -80,7 +80,7 @@ tables:
     lookup_tables:
       - menu
 
-  page_view_detail:
+  page_view_condition:
     lookup_tables:
       - page_view    
   
@@ -88,3 +88,6 @@ tables:
     lookup_tables:
       - role
       - page_view    
+
+  request_type:
+  

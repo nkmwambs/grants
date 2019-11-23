@@ -23,4 +23,11 @@ class Page_view_role_library extends Grants
 
   function index(){}
 
+  function change_field_type(){
+    $change_field_type['page_view_role_is_default']['field_type'] = 'select';
+    $change_field_type['page_view_role_is_default']['options'] = array(get_phrase('no'),get_phrase('yes'));
+
+    return $change_field_type;
+  }
+
 } 
