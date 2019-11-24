@@ -1578,7 +1578,7 @@ function feature_model_list_table_visible_columns() {
       $output = array(
               "draw" => $_POST['draw'],
               "recordsTotal" => $this->CI->dt_model->count_all(),
-              //"recordsTotal" => $this->user->count_filtered(),
+              "recordsTotal" => $this->CI->dt_model->count_filtered(),
               "recordsFiltered" => $this->CI->dt_model->count_filtered(),
               "data" => $data,
           );

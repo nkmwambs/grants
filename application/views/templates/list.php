@@ -30,7 +30,7 @@ $show_add_button = $this->grants->show_add_button();
 
 		<div class="row">
 			<div class="col-xs-12">
-			<table id="ajax_table" class="table" width="100%" cellspacing="0">
+			<table id="ajax_table" class="table hover" width="100%" cellspacing="0">
 				<thead>
 					<tr>
 						<th><?=get_phrase('action');?></th>
@@ -59,8 +59,18 @@ $show_add_button = $this->grants->show_add_button();
 	$(document).ready(function(){ 
 		   
 		var datatable = $('#ajax_table').DataTable({
-		       dom: '<Bf><"col-sm-12"rt><ip>',
-		       //sDom:'r',
+		       dom: '<Blf><"col-sm-12"rt><ip>',
+			   lengthMenu: [
+					[ 10, 25, 50, 100, 150, 200, -1 ],
+					[ 
+						'10 <?=get_phrase('records');?>', 
+						'25 <?=get_phrase('records');?>', 
+						'50 <?=get_phrase('records');?>', 
+						'100 <?=get_phrase('records');?>', 
+						'150 <?=get_phrase('records');?>', 
+						'200 <?=get_phrase('records');?>', 
+						'<?=get_phrase('show_all');?>' ]
+					],
 		       pagingType: "full_numbers",
 			   buttons: [
 					{
