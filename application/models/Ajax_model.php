@@ -26,6 +26,10 @@ class Ajax_model extends CI_Model{
 
     private function _get_datatables_query()
 	{	
+		//Custom page view filters are applied here
+	
+		$this->grants->where_condition('page_view',$this->table,$this->input->post('page_view'));
+		//$this->db->where(array('request.fk_status_id'=>15));	
 		//This is a join statement
 		$this->grants->create_table_join_statement($this->table,$this->grants->lookup_tables($this->table));	
 

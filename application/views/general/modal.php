@@ -208,9 +208,6 @@
         ],
         "pagingType": "full_numbers"
       });
-
-	$('.selectpicker').selectpicker();
-
     
 
 	function go_back(){

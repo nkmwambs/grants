@@ -2,8 +2,8 @@
 <script src="<?php echo base_url();?>assets/js/jquery-1.11.0.min.js"></script>-->
 
 		<!-- Bootstrap CDN -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		 -->
 		<!--Datatables CSS CDNs-->
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css"/>
 		<!--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" /> -->
@@ -36,13 +36,8 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-theme.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-forms.css">
 
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/custom.css">
 
 <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
-
-
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/columns.css">
 
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
 

@@ -138,7 +138,7 @@ if( ! function_exists('add_record_button') ){
 		if($id !== null){
 			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'/'.$id.'/'.$CI->controller.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}else{
-			$link =  '<a style="margin-bottom:-80px;z-index:100;position:relative;" href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
+			$link =  '<a style="margin-bottom:-70px;z-index:100;position:relative;" href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}
 
 		return $link;

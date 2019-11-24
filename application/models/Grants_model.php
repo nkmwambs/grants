@@ -439,17 +439,20 @@ function centers_where_condition(){
 function page_view_where_condition(...$args){
 
   $table = $args[0];
+  
 
   $page_view_raw_conditions = array();
 
-  if($this->session->request_active_page_view > 0){
-
+  if(isset($args[1])){
+    
+    $page_view_id = $args[1];
+    
     //Page view conditions
     $this->db->select(array('page_view_condition_field','page_view_condition_operator',
     'page_view_condition_value'));
     $this->db->join('page_view','page_view.page_view_id=page_view_condition.fk_page_view_id');
     $page_view_raw_conditions = $this->db->get_where('page_view_condition',
-    array('page_view_id'=>$this->session->request_active_page_view));
+    array('page_view_id'=>$page_view_id));
 
   }else{
     //Get the default page view (Non system admin)

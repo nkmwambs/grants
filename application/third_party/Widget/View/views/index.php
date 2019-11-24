@@ -30,7 +30,6 @@
     }
    
 ?>
-<form method="POST" action="<?=base_url().$this->CI->controller;?>/list">
     
     <div class="col-xs-offset-3 col-xs-6">
         <select name="page_view" class="form-control select2">
@@ -65,6 +64,5 @@
         </select>
     </div>
     <div class="col-xs-3"> 
-        <button href="#" name="btn_page_view" value="btn_page_view" class="btn btn-default"><?=get_phrase('filter');?></button>
+        <button href="#" id="btn-filter" name="btn_page_view" value="btn_page_view" class="btn btn-default"><?=get_phrase('filter');?></button>
     </div>    
-</form>
