@@ -15,9 +15,9 @@ $show_add_button = $this->grants->show_add_button();
 			</div>
 		</div>
 
-		<hr/>
+	
 
-		<div class="row" style="margin-bottom:25px;">
+		<div class="row">
 			<div class="col-xs-12" style="text-align:center;">
 
 				<?php
@@ -30,7 +30,7 @@ $show_add_button = $this->grants->show_add_button();
 
 		<div class="row">
 			<div class="col-xs-12">
-			<table id="ajax_table" class="table hover" width="100%" cellspacing="0">
+			<table id="ajax_table" class="table table-bordered hover" width="100%" cellspacing="0">
 				<thead>
 					<tr>
 						<th><?=get_phrase('action');?></th>
@@ -39,6 +39,10 @@ $show_add_button = $this->grants->show_add_button();
 							foreach($columns as $column){
 								if($this->grants->is_primary_key_field($this->controller,$column)){
 									continue;
+								}
+
+								if(strpos($column,'_name') == true){
+									$column = str_replace("_name","",$column);
 								}
 							?>	
 								<th><?=get_phrase($column);?></th>
@@ -89,7 +93,14 @@ $show_add_button = $this->grants->show_add_button();
 						exportOptions:{
 							columns: 'th:not(:first-child)'
 						}
-					}
+					},
+					// {
+					// 	text: '<?=get_phrase('add_'.$this->controller)?>',
+					// 	className: 'btn btn-default',
+					// 	action: function ( e, dt, node, config ) {
+					// 		alert( 'Button not yet functional' );
+					// 	}
+					// }
 				],
 		       stateSave: true,
 		       oLanguage: {

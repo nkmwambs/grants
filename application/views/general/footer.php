@@ -1,6 +1,6 @@
 <!-- Footer -->
 <footer class="main">
-	&copy; 2018 <strong><?php echo $system_name;?></strong>.
+	&copy; <?=date('Y');?> <strong><?php echo $system_name;?></strong>.
     Developed by
 	<a href="https://techsysnow.com"
     	target="_blank">Techsys Kenya</a>

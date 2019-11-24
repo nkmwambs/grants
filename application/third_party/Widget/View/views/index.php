@@ -31,11 +31,10 @@
    
 ?>
 <form method="POST" action="<?=base_url().$this->CI->controller;?>/list">
-    <label for="" class="label-control col-xs-3" style="text-align:right;font-weight:bold;">
-    <?=get_phrase('views');?></label>
-    <div class="col-xs-6">
-        <select name="page_view" class="form-control">
-            <option><?=get_phrase('select_view');?></option>
+    
+    <div class="col-xs-offset-3 col-xs-6">
+        <select name="page_view" class="form-control select2">
+            <option><?=get_phrase('select_filter');?></option>
             <?php 
                 if($views->num_rows()>0){
                     $list_of_views = $views->result_object();
@@ -66,9 +65,6 @@
         </select>
     </div>
     <div class="col-xs-3"> 
-        <button href="#" name="btn_page_view" value="btn_page_view" class="btn btn-default"><?=get_phrase('go');?></button>
-        <!-- <a href="#"><?=get_phrase('create_view');?></a>  &nbsp; 
-        <a href="#"><?=get_phrase('edit_view');?></a> &nbsp; 
-        <a href="#"><?=get_phrase('clone_view');?></a></div> -->
+        <button href="#" name="btn_page_view" value="btn_page_view" class="btn btn-default"><?=get_phrase('filter');?></button>
     </div>    
 </form>
