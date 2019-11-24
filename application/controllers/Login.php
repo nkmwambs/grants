@@ -74,6 +74,8 @@ public $auth;
         $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
         $this->session->set_userdata('center_group_info',
         $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
+
+        $this->session->set_userdata('user_centers',$this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
         
 
         $this->session->set_userdata('breadcrumb_list',array());

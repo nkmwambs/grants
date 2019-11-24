@@ -389,6 +389,27 @@ class User_model extends MY_Model
         return $role_permission_array;
   }
 
+  function check_if_user_has_center_data_view_edit_permission(){
+    
+    $has_permission = true;
+    
+    if($this->action == 'view' || $this->action == 'edit'){
+      $lookup_tables = $this->grants->lookup_tables($this->controller);
+
+      if(in_array('center',$lookup_tables)){
+        $center_id = $this->db->get_where($this->controller,
+        array($this->grants->primary_key_field($this->controller)=>hash_id($this->id,'decode')))->row()->fk_center_id;
+        
+        if(!in_array($center_id,$this->get_centers_in_center_group_hierarchy($this->session->user_id))){
+          $has_permission = false;
+        }
+
+      }
+      
+    }
+
+    return $has_permission;
+  }
 
   /**
    * check_role_has_permissions
@@ -409,10 +430,13 @@ class User_model extends MY_Model
 
       $active_controller = ucfirst($active_controller);
 
+      $lookup_tables = $this->grants->lookup_tables($this->controller);
+
       if( (array_key_exists($active_controller,$permission) && 
           array_key_exists($permission_type,$permission[$active_controller]) &&
           array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
-          && count($this->get_user_center_group_hierarchy_associations($this->session->user_id)) > 0
+          && count($this->get_user_center_group_hierarchy_associations($this->session->user_id)) > 0 
+          && $this->check_if_user_has_center_data_view_edit_permission()
           ) ||
           $this->session->system_admin
         ){
@@ -475,18 +499,6 @@ class User_model extends MY_Model
 
   }
 
-  function get_user_centers($user_id){
-    // // Get user center_group
-    // $center_group_id = $this->db->get_where('user',
-    // array('user_id'=>$user_id))->row()->fk_center_group_id;
-
-    // //Get centers in the group
-    // $this->db->select(array('fk_center_id'));
-    // $centers = $this->db->get_where('center_group_link',
-    // array('fk_center_group_id'=>$center_group_id))->result_array();
-
-    // return $centers;
-  }
   
 
 }

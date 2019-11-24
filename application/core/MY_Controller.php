@@ -90,7 +90,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->language_library->set_language($this->session->user_locale);
 
     // Instantiate page view (page filters) 
-    $this->session->set_userdata($this->controller.'_active_page_view',0);
+    //$this->session->set_userdata($this->controller.'_active_page_view',0);
 
     $this->load->model('ajax_model','dt_model');
 

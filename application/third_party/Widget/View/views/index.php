@@ -33,7 +33,7 @@
     
     <div class="col-xs-offset-3 col-xs-6">
         <select name="page_view" class="form-control select2">
-            <option><?=get_phrase('select_filter');?></option>
+            <option value="0"><?=get_phrase('select_filter');?></option>
             <?php 
                 if($views->num_rows()>0){
                     $list_of_views = $views->result_object();

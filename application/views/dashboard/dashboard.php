@@ -4,8 +4,11 @@
 //print_r($this->session->center_group_info);
 //print_r($this->grants->get_users_with_center_group_hierarchy_name('center'));
 //echo hash_id('kE068JmNdP','decode')[0];
+//print_r($this->grants->lookup_tables('request'));
 
-echo get_phrase('my_dashboard','dashboard');
+//print_r($this->session->user_centers);
+
+
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">

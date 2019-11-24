@@ -428,12 +428,14 @@ function create_table_join_statement($table,$lookup_tables){
 
 }
 
-function centers_where_condition(){
-    // $centers_in_center_group_hierarchy = $this->user_model->
-    // get_centers_in_center_group_hierarchy($this->session->user_id);
 
-    // $sql = "fk_center_id IN (".implode(',',$centers_in_center_group_hierarchy).")";
-    // $this->db->where($sql);
+function center_where_condition(){
+  $lookup_tables = $this->grants->lookup_tables($this->controller);
+
+  if(in_array('center',$lookup_tables)){
+    $this->db->where_in($this->controller.'.fk_center_id',$this->session->user_centers);
+  }
+
 }
 
 function page_view_where_condition(...$args){

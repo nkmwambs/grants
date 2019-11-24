@@ -131,7 +131,7 @@ $show_add_button = $this->grants->show_add_button();
 						$.each(x, function(i, field){
 								data[field.name] = field.value;
 						});
-		           }
+				   }
 		       },
 			   
 		       

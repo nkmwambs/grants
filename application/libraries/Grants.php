@@ -145,6 +145,11 @@ function where_condition($condition_type,...$args){
   return $this->CI->grants_model->$condition_method(...$args);
 }
 
+function get_centers_in_center_group_hierarchy($user_id){
+  return $this->user_model->get_centers_in_center_group_hierarchy($user_id);
+
+}
+
 // function centers_where_condition(){
 //   return $this->CI->grants_model->centers_where_condition();
 // }

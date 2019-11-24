@@ -14,22 +14,22 @@ class Ajax_model extends CI_Model{
 		$this->load->database();   
 		
 		$this->column_order = $this->grants->toggle_list_select_columns();
-		//array(null,$this->table.'_track_number',$this->table.'_name',
-		//$this->table.'_created_date',$this->table.'_last_modified_date',$this->table.'_id','status_name'); //set column field database for datatable orderable
 		
 		$this->column_search = $this->grants->toggle_list_select_columns();
-		//array($this->table.'_track_number',$this->table.'_name',
-		//$this->table.'_created_date',$this->table.'_last_modified_date',$this->table.'_id','status_name'); //set column field database for datatable searchable 
 		
 		$this->order = array($this->table.'_id' => 'asc'); // default order 
+		
     }
 
     private function _get_datatables_query()
 	{	
-		//Custom page view filters are applied here
-	
+		
+		//Custom page view filters are applied here (Applies for status as at now - plan to expand it to other fields)
 		$this->grants->where_condition('page_view',$this->table,$this->input->post('page_view'));
-		//$this->db->where(array('request.fk_status_id'=>15));	
+
+		//Loading default center records
+		$this->grants->where_condition('center');
+		
 		//This is a join statement
 		$this->grants->create_table_join_statement($this->table,$this->grants->lookup_tables($this->table));	
 
@@ -74,16 +74,6 @@ class Ajax_model extends CI_Model{
 		$this->_get_datatables_query();
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
-		$query = $this->db->get();
-		return $query->result();
-	}
-	
-	function search_datatables($filter="")
-	{
-		$this->_get_datatables_query();
-		if($_POST['length'] != -1)
-		$this->db->limit($_POST['length'], $_POST['start']);
-		$this->db->where($filter);
 		$query = $this->db->get();
 		return $query->result();
 	}	
