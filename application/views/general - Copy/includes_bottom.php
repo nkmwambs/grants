@@ -1,4 +1,7 @@
-	
+
+	<!--Select 2 JS-->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/js/select2/select2-bootstrap.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/js/select2/select2.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/js/selectboxit/jquery.selectBoxIt.css">
@@ -25,7 +28,8 @@
 	<script src="<?php echo base_url();?>assets/js/neon-custom.js"></script>
 	<script src="<?php echo base_url();?>assets/js/neon-demo.js"></script>
 	
-
+	<!--Accounting JS-->
+	<script src="<?php echo base_url();?>assets/js/accounting.min.js"></script>
 	
 	<!--Font Awesome-->
 	
@@ -33,8 +37,11 @@
 	
 	<!-- Toggle Button -->
 	
-	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
+	
+	<!-- Bootstrap Switch -->
+	<script src="<?php echo base_url();?>assets/js/bootstrap-switch.min.js"></script>
 	
 		<!-- Monkey Modal Dialog  CSS / JS-->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.35.2/css/bootstrap-dialog.min.css">
@@ -53,14 +60,28 @@
 <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />	
 
+<!-- Bootstrap Date-Picker Plugin -->
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
+
+
 <!--Table Header Fixer-->
-<script src="<?php echo base_url();?>assets/js/tableHeadFixer.js"></script>
+<!-- <script src="<?php echo base_url();?>assets/js/tableHeadFixer.js"></script> -->
 
+<!--Print This JS-->
+<script src="<?php echo base_url();?>assets/js/printThis.js"></script>
 
-<!--Morris Charts-->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<!--my extension-->
+<!-- <script src="<?php echo base_url();?>assets/js/myExtension.js"></script> -->
+
+<script src="<?=base_url();?>assets/js/jquery.multi-select.js"></script>
 
 
 <!-- SHOW TOASTR NOTIFIVATION -->
@@ -94,6 +115,7 @@
 		    minWidth: 300
 		});
 		
-	});
+		
+	}); 
 		
 </script>

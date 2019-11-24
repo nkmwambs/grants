@@ -1419,4 +1419,182 @@ function initial_item_status(){
   return $this->CI->grants_model->initial_item_status();
 }
 
+
+
+
+/******************************************************************************************************
+ * 
+ * START OF LIST OUTPUT CODE - ONLY COLUMN SELECT METHODS HAVE BEEN MOVED HERE
+ * 
+ * These work has been moved from List_output to test server side loading databases
+ * 
+ * 
+ * ****************************************************************************************************
+ */
+
+  /**
+ * feature_model_list_table_visible_columns
+ * 
+ * Returns an array of selected fields for the list page tables as set from the feature model if
+ * existing. The feature model will use the list_table_visible_columns to set this array
+ * 
+ * @return Array 
+ * 
+ */
+function feature_model_list_table_visible_columns() {
+  $model = $this->current_model;
+
+  $list_table_visible_columns = [];
+  
+  if(method_exists($this->CI->$model,'list_table_visible_columns') &&
+    is_array($this->CI->$model->list_table_visible_columns())
+  ){
+    $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+
+     //Add the table id columns if does not exist in $columns
+    if(   is_array($list_table_visible_columns) && 
+          !in_array($this->primary_key_field($this->controller),
+              $list_table_visible_columns)
+      ){
+
+      array_unshift($list_table_visible_columns,
+      $this->primary_key_field($this->controller));
+    }
+  }
+
+  return $list_table_visible_columns;
+
+}
+
+/**
+ * toggle_list_select_columns
+ * 
+ * A method that returns an array of columns to be used as keys list_output method in the grants library.
+ * It checks if the feature model has defined the list_table_visble_columns (Wrapped via grants library) 
+ * or gets an array of all fields of the active table and
+ * if finds any, adds to the fields array the name columns of the lookup tables as defined in the feature model
+ * (Wrapped via grants library)
+ *  Finally implements checking field access permissions 
+ * 
+ * @return Array : An array of columns to be used in the list method
+ */
+
+ public function toggle_list_select_columns(){
+
+  // Check if the table has list_table_visible_columns not empty
+  $list_table_visible_columns = $this->feature_model_list_table_visible_columns();
+  $lookup_tables = $this->lookup_tables();
+
+  $get_all_table_fields = $this->CI->grants_model->get_all_table_fields();
+
+
+  foreach ($get_all_table_fields as $get_all_table_field) {
+
+    //Unset foreign keys columns, created_by and last_modified_by columns
+
+    if( substr($get_all_table_field,0,3) == 'fk_' ||
+        $this->is_history_tracking_field($this->controller,$get_all_table_field,'created_by') ||
+         $this->is_history_tracking_field($this->controller,$get_all_table_field,'last_modified_by') ||
+         $this->is_history_tracking_field($this->controller,$get_all_table_field,'deleted_at')
+      ){
+
+      unset($get_all_table_fields[array_search($get_all_table_field,$get_all_table_fields)]);
+    
+    }
+  }
+
+  $visible_columns = $get_all_table_fields;
+  $lookup_columns = array();
+
+  if(is_array($list_table_visible_columns) && count($list_table_visible_columns) > 0 ){
+    $visible_columns = $list_table_visible_columns;
+  }else{
+    if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+      foreach ($lookup_tables as $lookup_table) {
+
+        $lookup_table_columns = $this->CI->grants_model->get_all_table_fields($lookup_table);
+
+        foreach ($lookup_table_columns as $lookup_table_column) {
+          // Only include the name field of the look up table in the select columns
+          if($this->is_name_field($lookup_table,$lookup_table_column)){
+            array_push($visible_columns,$lookup_table_column);
+          }
+
+        }
+      }
+    }
+  }
+
+  return $visible_columns;//$this->CI->access->control_column_visibility($this->controller,$visible_columns,'read');
+}
+
+  /**
+   * _output
+   * 
+   * This method returns the output of the list action views
+   * 
+   * @return array - Array to be render to the page via MY_Controller
+   */
+
+  function list_ajax_output(){
+      $list = $this->CI->dt_model->get_datatables();
+      $data = array();
+      $no = $_POST['start'];
+      foreach ($list as $item) {
+
+        $this->CI->load->model('ajax_model','dt_model');
+
+        $row = array();
+
+        $id = $this->CI->controller.'_id';
+        $track_number = $this->CI->controller.'_track_number';
+        $name = $this->CI->controller.'_name';
+        $created_date = $this->CI->controller.'_created_date';
+        $last_modified_date = $this->CI->controller.'_last_modified_date';
+
+ 
+        $row[] = $this->CI->load->view('templates/list_action_button',array('primary_key'=>$item->$id),true);
+
+        $columns = $this->toggle_list_select_columns();
+
+        foreach($columns as $column){
+
+          if($this->is_primary_key_field($this->controller,$column)){
+            continue;
+          }
+
+          if($this->is_history_tracking_field($this->controller,$column,'track_number')){
+            $row[] = "<a href='".base_url()."/".$this->CI->controller."/view/".hash_id($item->$id,'encode')."' >".$item->$track_number."</a>";
+          }else{
+            $row[] = $item->$column;
+          }
+          
+          
+        }
+
+        $data[] = $row;
+      }
+
+      $output = array(
+              "draw" => $_POST['draw'],
+              "recordsTotal" => $this->CI->dt_model->count_all(),
+              //"recordsTotal" => $this->user->count_filtered(),
+              "recordsFiltered" => $this->CI->dt_model->count_filtered(),
+              "data" => $data,
+          );
+      //output to json format
+      return $output;
+      
+    }
+
+
+    /****************************************************************************************************
+     * 
+     * 
+     * END OF LIST OUTPUT CODE
+     * 
+     * 
+     * **************************************************************************************************
+     */
+
 }

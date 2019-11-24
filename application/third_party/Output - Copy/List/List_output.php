@@ -218,41 +218,30 @@ function feature_model_list_table_visible_columns(): Array {
      */
 
     function _output(){
-        $list = $this->CI->dt_model->get_datatables();
-        $data = array();
-        $no = $_POST['start'];
-        foreach ($list as $item) {
 
-          $this->CI->load->model('ajax_model','dt_model');
-
-          $row = array();
-
-          $id = $this->CI->controller.'_id';
-          $track_number = $this->CI->controller.'_track_number';
-          $name = $this->CI->controller.'_name';
-          $created_date = $this->CI->controller.'_created_date';
-          $last_modified_date = $this->CI->controller.'_last_modified_date';
-
-          $row[] = "<a href='".base_url()."/".$this->CI->controller."/edit/".hash_id($item->$id,'encode')."'>".get_phrase('edit')."</a> &nbsp;&nbsp;<a href='".base_url()."/".$this->CI->controller."/delete/".hash_id($item->$id,'encode')."'>".get_phrase('delete')."</a>";
-          $row[] = "<a href='".base_url()."/".$this->CI->controller."/view/".hash_id($item->$id,'encode')."' >".$item->$track_number."</a>";
-          $row[] = $item->$name;
-          $row[] = $item->status_name;
-          $row[] = $item->$created_date;
-          $row[] = $item->$last_modified_date;
-
-          $data[] = $row;
+        // Used when applying page view to a list: See View Widget
+        if($this->CI->input->post()){
+            //Controller dependant session, give it a value. This session has been initialized in MY_Controller
+            $this->CI->session->set_userdata($this->CI->controller.'_active_page_view',
+            $this->CI->input->post('page_view'));
         }
 
-        $output = array(
-                "draw" => $_POST['draw'],
-                "recordsTotal" => $this->CI->dt_model->count_all(),
-                //"recordsTotal" => $this->user->count_filtered(),
-                "recordsFiltered" => $this->CI->dt_model->count_filtered(),
-                "data" => $data,
-            );
-        //output to json format
-        return $output;
-        
+        $table = $this->controller;
+      
+        $this->CI->grants_model->mandatory_fields($table);
+      
+        $result = $this->toggle_list_query_results();
+        $keys = $this->toggle_list_select_columns();
+        $show_add_button = $this->CI->grants->show_add_button();
+      
+        return array(
+          'keys'=> $keys,
+          'table_body'=>$result,
+          'table_name'=> $table,
+          'has_details_table' => $this->CI->grants->check_if_table_has_detail_table($table),
+          'has_details_listing' => $this->CI->grants->check_if_table_has_detail_listing($table),
+          'show_add_button'=>$show_add_button
+        );
       }
 
 }

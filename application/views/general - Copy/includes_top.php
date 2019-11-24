@@ -31,7 +31,7 @@
 
 <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/font-icons/entypo/css/entypo.css">
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
+<!-- <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic"> -->
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-core.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-theme.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/neon-forms.css">
@@ -41,8 +41,9 @@
 <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
 
+<!-- <script src="<?php echo base_url();?>assets/js/accounting.min.js"></script>
 
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/columns.css">
+<link rel="stylesheet" href="<?php echo base_url();?>assets/css/columns.css"> -->
 
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
 
@@ -67,13 +68,19 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-<link rel="shortcut icon" href="<?php echo base_url();?>assets/images/favicon.png">
+<link rel="shortcut icon" href="<?php echo base_url();?>assets/images/favicon.ico">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/font-icons/font-awesome/css/font-awesome.min.css">
 
 <link rel="stylesheet" href="<?php echo base_url();?>assets/js/vertical-timeline/css/component.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/js/datatables/responsive/css/datatables.responsive.css">
 
 
+<script src="<?php echo base_url();?>assets/js/bootstrap-input-spinner.js"></script>
+
+<!--Morris Charts-->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
 <!--Amcharts-->
 <script src="<?php echo base_url();?>assets/js/amcharts/amcharts.js" type="text/javascript"></script>
@@ -89,6 +96,13 @@
 <script src="<?php echo base_url();?>assets/js/amcharts/exporting/filesaver.js" type="text/javascript"></script>
 <script src="<?php echo base_url();?>assets/js/amcharts/exporting/jspdf.plugin.addimage.js" type="text/javascript"></script>
 
+<!--Select 2 CSS-->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+  .datepicker{z-index:1151 !important;}
+</style>
+
 <script>
     function checkDelete()
     {
@@ -101,4 +115,6 @@
             return false;
         }
     }
+ 
+
 </script>

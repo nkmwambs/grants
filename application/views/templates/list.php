@@ -1,106 +1,110 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
- 
-//print_r($this->user_model->get_user_permissions(2));
+<?php
 
-extract($result);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
+$has_details_table = $this->grants->check_if_table_has_detail_table($this->controller);
+$has_details_listing = $this->grants->check_if_table_has_detail_listing($this->controller);
+$show_add_button = $this->grants->show_add_button();
 ?>
 
-<div class="row">
-  <div class="col-xs-12">
-    <?=Widget_base::load('view');?>
-  </div>
-</div>
 
-<hr/>
+<div class="">
+<?php echo form_open('' , array('id'=>'form-filter','class' => 'form-vertical form-groups-bordered validate', 'enctype' => 'multipart/form-data'));?>
 
-<div class="row" style="margin-bottom:25px;">
-  <div class="col-xs-12" style="text-align:center;">
+		<div class="row">
+			<div class="col-xs-12">
+				<?=Widget_base::load('view');?>
+			</div>
+		</div>
 
-    <?php
-    if($show_add_button){
-      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
-    }
-    ?>
-  </div>
-</div>
+		<hr/>
 
-<div class="row">
-  <div class="col-xs-12">
-    <table class="table table-striped datatable">
-      <thead><?=render_list_table_header($table_name,$keys);?></thead>
-      <tbody>
-        <?php
-          $primary_key = 0;
-          $primary_table = "";
-          if(isset($table_body)){
-            $primary_key = 0;
-            $primary_key_column = array_shift($keys);
+		<div class="row" style="margin-bottom:25px;">
+			<div class="col-xs-12" style="text-align:center;">
 
-          foreach ($table_body as $row) {
-            $primary_key = $row[$primary_key_column];
-        ?>
-          <tr>
-              <td>
-                <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                    <?=get_phrase('action');?>
-                  <span class="caret"></span></button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update')){ ?>
-                    <li><?=list_table_edit_action($this->controller,$primary_key);?></li>
-                    <li class="divider"></li>
-                    <?php }?>
-                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete')){ ?>
-                    <li><?=list_table_delete_action($this->controller,$primary_key);?></li>
-                    <?php }?>
+				<?php
+				if($show_add_button){
+				  echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
+				}
+				?>
+			</div>
+		</div>
 
-                    <?php if(
-                        !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'update') && 
-                        !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete')
+		<div class="row">
+			<div class="col-xs-12">
+			<table id="ajax_table" class="table" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<th><?=get_phrase('action');?></th>
+						<?php 
+							$columns = $this->grants->toggle_list_select_columns();
+							foreach($columns as $column){
+								if($this->grants->is_primary_key_field($this->controller,$column)){
+									continue;
+								}
+							?>	
+								<th><?=get_phrase($column);?></th>
+							<?php
+							}
+						?>
+					</tr>
+				</thead>
+			</table>		
+			</div>
+		</div>			
 
-                    ){ 
-                        echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
-                    }?>
+ </form>   
+    </div>
 
-                  </ul>
-                </div>
-              </td>
-              <?php
 
-                  foreach ($keys as $column) {
+    <script>
+	$(document).ready(function(){ 
+		   
+		var datatable = $('#ajax_table').DataTable({
+		       dom: '<Bf><"col-sm-12"rt><ip>',
+		       //sDom:'r',
+		       pagingType: "full_numbers",
+			   buttons: [
+					{
+						extend: 'excelHtml5',
+						text: '<?=get_phrase('export_in_excel');?>',
+						className: 'btn btn-default',
+						exportOptions: {
+						columns: 'th:not(:first-child)'
+						}
+					},
+					{
+						extend:'pdfHtml5',
+						className: 'btn btn-default',
+						text:'<?=get_phrase('export_in_PDF');?>',
+						orientation: 'landscape',
+						exportOptions:{
+							columns: 'th:not(:first-child)'
+						}
+					}
+				],
+		       stateSave: true,
+		       oLanguage: {
+			        sProcessing: "<img src='<?php echo base_url();?>assets/uploads/preloader4.gif'>"
+			    },
+			   processing: true, //Feature control the processing indicator.
+		       serverSide: true, //Feature control DataTables' server-side processing mode.
+		       order: [], //Initial no order.
+		
+		       // Load data for the table's content from an Ajax source
+		       "ajax": {
+		           "url": "<?php echo base_url();?><?=$this->controller;?>/list_ajax",
+		           "type": "POST",
+		           "data": function(data){
+		           		var x = $("#form-filter").serializeArray();
 
-                        if(strpos($column,'_key') == true){
-                          continue;
-                        }
-                ?>
-                        <td>
-                          <?php
+						$.each(x, function(i, field){
+								data[field.name] = field.value;
+						});
+		           }
+		       },
+			   
+		       
+		   });
 
-                            if(strpos($column,'track_number') == true ){
-                              echo '<a href="'.base_url().strtolower($this->controller).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
-                            }elseif(strpos($column,'is_active') == true){
-                                echo $row[$column] == 1?"Yes":"No";
-                            }else{
-                              echo ucfirst(str_replace("_"," ",$row[$column]));
-                            }
 
-                           ?>
-                        </td>
-                <?php }?>
-
-          </tr>
-
-        <?php
-              }
-          }
-        ?>
-
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<script>
-
+	});
 </script>

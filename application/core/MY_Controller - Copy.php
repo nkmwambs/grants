@@ -92,8 +92,6 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     // Instantiate page view (page filters) 
     $this->session->set_userdata($this->controller.'_active_page_view',0);
 
-    $this->load->model('ajax_model','dt_model');
-
   }
   /**
    * result() 
@@ -103,7 +101,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    * @todo {seperate the method that uses ajax to post from result methods}
    */
 
-  function result(String $id = ""){
+  function result(String $id){
 
     $action = $this->action.'_output';
 
@@ -123,9 +121,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
         $this->$lib->$action($id);
       }elseif($this->id !== null){
         $this->$lib->$action($this->id);
-      }elseif($this->action == 'list'){
-        //echo $this->list_ajax();
-      }elseif($this->action == 'view'){
+      }elseif($this->action == 'list' || $this->action == 'view'){
           // Just to test if the third party API are working for list output
           // This is the way to go for all outputs. Move all outputs to the Output API  
           // Applies when using page view: See View Widget
@@ -139,9 +135,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }
 
 
-    if($this->action == 'list'){
-      //echo $this->list_ajax();
-    }elseif($this->action == 'view'){
+    if($this->action == 'list' || $this->action == 'view'){
       // Just to test if the third party API are working for list output
       // This is the way to go for all outputs. Move all outputs to the Output API  
       $this->list_result = Output_base::load($this->action);
@@ -221,10 +215,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function list():Void{
     $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'read');
     $this->crud_views();
-    //echo json_encode($this->result());
   }
-
-
 /**
    * view() 
    * This method is an entry method for view action page. It loads user permission of the view page and assigns $has_permission
@@ -296,10 +287,6 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->library($lib);
 
     echo json_encode($this->$lib->detail_row_fields($fields));
-  }
-
-  function list_ajax(){
-    echo json_encode($this->grants->list_ajax_output());
   }
 
 }

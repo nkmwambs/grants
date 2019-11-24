@@ -170,18 +170,17 @@
     <!--Bootstrap select intitialization-->
 
 	<script>
-    
 
-    $('.datatable').DataTable({
-        dom: 'lBfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ],
-        "pagingType": "full_numbers"
-      });
+    // $('.datatable').DataTable({
+    //     dom: 'lBfrtip',
+    //     buttons: [
+    //         'copyHtml5',
+    //         'excelHtml5',
+    //         'csvHtml5',
+    //         'pdfHtml5'
+    //     ],
+    //     "pagingType": "full_numbers"
+    //   });
 
       $('.datatable_details, .datatable').DataTable({
         dom: 'Bfrtip',
