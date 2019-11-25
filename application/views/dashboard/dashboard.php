@@ -6,9 +6,7 @@
 //echo hash_id('kE068JmNdP','decode')[0];
 //print_r($this->grants->lookup_tables('request'));
 
-print_r($this->grants->action_labels('request',91));
-
-
+//print_r($this->grants->action_labels('request',91));
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">

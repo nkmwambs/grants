@@ -1562,11 +1562,11 @@ function feature_model_list_table_visible_columns() {
           }
 
           if($this->is_history_tracking_field($this->controller,$column,'track_number')){
-            $row[] = "<a href='".base_url()."/".$this->CI->controller."/view/".hash_id($item->$id,'encode')."' >".$item->$track_number."</a>";
+            $row[] = "<a href='".base_url().$this->CI->controller."/view/".hash_id($item->$id,'encode')."' >".$item->$track_number."</a>";
           }elseif(strpos($column,'_is_')){
             $row[] = $item->$column == 1? get_phrase('yes'): get_phrase('no');
           }else{
-            $row[] = $item->$column;
+            $row[] = ucfirst(str_replace("_"," ",$item->$column));
           }
           
           

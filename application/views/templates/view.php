@@ -37,7 +37,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               
               <?php 
                   $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
-                  if($action_labels['show_label_as_button']){
+                  if( isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){
               ?>  
                 <?=Widget_base::load('button',$action_labels['button_label'],$this->controller.'/approve/'.$this->id);?>
               

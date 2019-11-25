@@ -27,7 +27,7 @@ class Status_library extends Grants
     $change_field_type['status_approval_direction']['field_type'] = 'select';
     $change_field_type['status_approval_direction']['options'] = array(
     '-1'=>get_phrase('return_to_sender'),
-    '0'=>get_phrase('reinstate_to_last_approver'),
+    '0'=>get_phrase('reinstated_to_last_approver'),
     '1'=>get_phrase('send_to_next_approver'));
 
 
@@ -39,6 +39,21 @@ class Status_library extends Grants
 
     $change_field_type['status_approval_sequence']['field_type'] = 'select';
     $change_field_type['status_approval_sequence']['options'] = array(
+      '1'=>get_phrase('first_level'),
+      '2'=>get_phrase('second_level'),
+      '3'=>get_phrase('third_level'),
+      '4'=>get_phrase('fourth_level'),
+      '5'=>get_phrase('fifth_level'),
+      '6'=>get_phrase('sixth_level'),
+      '7'=>get_phrase('seventh_level'),
+      '8'=>get_phrase('eight_level'),
+      '9'=>get_phrase('nineth_level'),
+      '10'=>get_phrase('tenth_level'),
+    );
+
+    $change_field_type['status_backflow_sequence']['field_type'] = 'select';
+    $change_field_type['status_backflow_sequence']['options'] = array(
+      '0'=>get_phrase('none'),
       '1'=>get_phrase('first_level'),
       '2'=>get_phrase('second_level'),
       '3'=>get_phrase('third_level'),
