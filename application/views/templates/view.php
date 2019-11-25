@@ -34,6 +34,18 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
               <?=Widget_base::load('button',get_phrase('edit'),$this->controller.'/edit/'.$this->id);?>
               <?=Widget_base::load('button',get_phrase('delete'),$this->controller.'/delete/'.$this->id);?>
+              
+              <?php 
+                  $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+                  if($action_labels['show_label_as_button']){
+              ?>  
+                <?=Widget_base::load('button',$action_labels['button_label'],$this->controller.'/approve/'.$this->id);?>
+              
+              <?php 
+                  }
+               ?>     
+                   
+
               <?=Widget_base::load('position','position_2');?>
           </th>
         </tr>

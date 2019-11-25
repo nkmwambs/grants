@@ -752,7 +752,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // This is converted from fk_xxxx_id where xxxx is the primary table name
         $lookup_table = strtolower(substr($column,0,-5));
         return $f->$field($this->CI->grants_model->lookup_values($lookup_table), $field_value,$show_only_selected_value);
-      }elseif(strrpos($column,'_is_active') == true ){
+      }elseif(strrpos($column,'_is_') == true ){
         return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value);
       }else{
         return $f->$field($field_value);
@@ -1390,27 +1390,20 @@ function quote_array_elements($elem){
   return ("'$elem'");
 }
 
-// These are methods that require review
-
-
-function display_approver_status_action($status_id, $table = ""){
-  return $this->CI->grants_model->display_approver_status_action($status_id, $table);
+function get_table_record_center_id($table,$primary_key){
+  return $this->CI->grants_model->get_table_record_center_id($table,$primary_key);
 }
-
 
 
 function action_labels($table,$primary_key){
 
-  $label = array();
+  $this->load_detail_model('approval');
 
-  $status_id = $this->CI->grants_model->get_status_id($table,$primary_key);
+  return $this->CI->approval_model->display_approver_status_action($this->CI->session->role_id, $table, $primary_key);
 
-  if($status_id > 0){
-    $label =  $this->display_approver_status_action($status_id,$table);
-  }
-  return $label;
 }
 
+/** To be reviewed */
 function action_list($table,$primary_key,$is_approveable_item){
   $data['table'] = $table;
   $data['primary_key'] = $primary_key;
@@ -1553,9 +1546,9 @@ function feature_model_list_table_visible_columns() {
 
         $id = $this->CI->controller.'_id';
         $track_number = $this->CI->controller.'_track_number';
-        $name = $this->CI->controller.'_name';
-        $created_date = $this->CI->controller.'_created_date';
-        $last_modified_date = $this->CI->controller.'_last_modified_date';
+        // $name = $this->CI->controller.'_name';
+        // $created_date = $this->CI->controller.'_created_date';
+        // $last_modified_date = $this->CI->controller.'_last_modified_date';
 
  
         $row[] = $this->CI->load->view('templates/list_action_button',array('primary_key'=>$item->$id),true);
@@ -1570,6 +1563,8 @@ function feature_model_list_table_visible_columns() {
 
           if($this->is_history_tracking_field($this->controller,$column,'track_number')){
             $row[] = "<a href='".base_url()."/".$this->CI->controller."/view/".hash_id($item->$id,'encode')."' >".$item->$track_number."</a>";
+          }elseif(strpos($column,'_is_')){
+            $row[] = $item->$column == 1? get_phrase('yes'): get_phrase('no');
           }else{
             $row[] = $item->$column;
           }

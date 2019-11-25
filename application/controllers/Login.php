@@ -83,7 +83,7 @@ public $auth;
         $this->session->set_userdata('role_permissions',
         $this->user_model->get_user_permissions($row->fk_role_id));
 
-        $this->session->set_userdata('system_admin',$row->user_system_admin);
+        $this->session->set_userdata('system_admin',$row->user_is_system_admin);
         
         $default_launch_page = $this->user_model->default_launch_page($row->user_id);
         $this->session->set_userdata('default_launch_page',$default_launch_page);

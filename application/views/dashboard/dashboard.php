@@ -6,7 +6,7 @@
 //echo hash_id('kE068JmNdP','decode')[0];
 //print_r($this->grants->lookup_tables('request'));
 
-//print_r($this->session->user_centers);
+print_r($this->grants->action_labels('request',91));
 
 
 

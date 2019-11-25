@@ -376,7 +376,12 @@ function mandatory_fields(String $table): Void{
         $status_data['status_approval_sequence'] = 1;
         $status_data['status_approval_direction'] = 1;
         $status_data['status_is_requiring_approver_action'] = 0;
-        $status_data['fk_role_id'] = $this->session->role_id;
+        
+        // Get the new_status_role_id if set otherwise use the logged in user role id
+        $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
+        $role_id = $new_status_default_role->num_rows() > 1 ? $new_status_default_role->row()->role_is_new_status_default : $this->session->role_id;
+        
+        $status_data['fk_role_id'] = $role_id;
         $status_data['status_created_date'] =  date('Y-m-d');
         $status_data['status_created_by'] = $this->session->user_id;
         $status_data['status_last_modified_by']  = $this->session->user_id;
@@ -428,6 +433,19 @@ function create_table_join_statement($table,$lookup_tables){
 
 }
 
+function get_table_record_center_id($table,$primary_key){
+  $lookup_tables = $this->grants->lookup_tables($table);
+  $pk_field = $this->grants->primary_key_field($table);
+
+  $center_id = 0;
+
+  if(in_array('center',$lookup_tables)){
+    $center_id = $this->db->get_where($table,
+      array($pk_field=>$primary_key))->row()->fk_center_id;
+  }
+
+  return $center_id;
+}
 
 function center_where_condition(){
   $lookup_tables = $this->grants->lookup_tables($this->controller);
@@ -437,6 +455,8 @@ function center_where_condition(){
   }
 
 }
+
+
 
 function page_view_where_condition(...$args){
 
@@ -866,7 +886,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
     return $approveable_item_flag;
   }
 
-  // This give the initial approval status when inserting a record
+  // This give the initial approval status when inserting a record - To be taken to approval modal
 
   function initial_item_status($table_name = ""){
 
@@ -892,92 +912,9 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   }
 
-  function get_status_id($table,$primary_key){
-    $fk_status_id = 0;
-
-    $record_object = $this->db->get_where($table,array($table.'_id'=>$primary_key));
-
-    if($record_object->num_rows()>0 && array_key_exists('fk_status_id',(array)$record_object->row() ) ){
-     $fk_status_id = $this->db->get_where($table,array($table.'_id'=>$primary_key))->row()->fk_status_id;
-    }
-
-    return $fk_status_id;
-  }
-
-/**
-* The method produces an array of the valid approval status ids for the listed items
-*
-**/
-
-  function display_approver_status_action($item_status, $table_name = ""){
-
-    $user_role_id = $this->session->role_id;;
-
-    $table = $table_name == "" ? $this->controller : $table_name;
-
-    $approveable_item = $this->db->get_where('approve_item',
-    array('approve_item_name'=>$table,'approve_item_is_active'=>1));
-
-    //$label = array();
-    $raw_labels = array();
-
-    if($approveable_item->num_rows() > 0 ){
-      $approveable_item_id = $approveable_item->row()->approve_item_id;
-
-      $current_status_object = $this->db->get_where('status',array('status_id'=>$item_status));
-
-      if($current_status_object->num_rows()>0){
-          $current_status_approval_direction = $current_status_object->row()->status_approval_direction;
-          $current_status_approval_sequence = $current_status_object->row()->status_approval_sequence;
-
-          if($current_status_approval_direction == 1 || $current_status_approval_direction == 0){
-            //Point to the next status_action_label of status_approval_direction 1 or -1
-            $next_status_approval_sequence_object = $this->db->get_where('status',
-            array('fk_approve_item_id'=>$approveable_item_id,
-            'status_approval_sequence > '=>$current_status_approval_sequence));
-
-            if($next_status_approval_sequence_object->num_rows()>0){
-
-              $next_status_approval_sequence = $next_status_approval_sequence_object->row()->status_approval_sequence;
-
-              $this->db->where_in('status_approval_direction',array(1,-1));
-              $this->db->select(array('status_id','status_action_label'));
-              $this->db->join('status_role','status_role.fk_status_id=status.status_id');
-              $raw_labels = $this->db->get_where('status',
-              array('fk_approve_item_id'=>$approveable_item_id,
-              'status_approval_sequence'=>$next_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id))->result_array();
-
-            }
-
-          }elseif ($current_status_approval_direction == -1) {
-            //Remain at the same status but point to the status_action_label of status_approval_direction 0
-             $status_approval_sequence = $current_status_object->row()->status_approval_sequence;
-
-             $this->db->where(array('status_approval_direction'=>0));
-             $this->db->select(array('status_id','status_action_label'));
-             $this->db->join('status_role','status_role.fk_status_id=status.status_id');
-             $raw_labels = $this->db->get_where('status',
-             array('fk_approve_item_id'=>$approveable_item_id,
-             'status_approval_sequence'=>$current_status_approval_sequence,'status_role.fk_role_id'=>$user_role_id))->result_array();
-          }
-
-      }
-
-      $columned_labels = array();
-      // Finally filter the resultant array to only retain the correct status_action_label based on the user role id
-      if(is_array($raw_labels) && count($raw_labels) > 0){
-        $status_ids_array = array_column($raw_labels,'status_id');
-        $labels_array = array_column($raw_labels,'status_action_label');
-
-        $columned_labels = array_combine($status_ids_array,$labels_array);
-      }
-
-      return $columned_labels;
 
 
-    }
 
-  }
 
 function center_start_date($center_id){
    return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;

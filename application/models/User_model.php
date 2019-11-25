@@ -74,19 +74,19 @@ class User_model extends MY_Model
    */
   function list_table_visible_columns(): Array {
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','user_is_active','center_group_hierarchy_name');
+    'user_lastname','user_email','user_is_system_admin','user_is_active','center_group_hierarchy_name');
   
   }
 
   function detail_list_table_visible_columns(){
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','role_name','user_is_active','center_group_hierarchy_name');
+    'user_lastname','user_email','user_is_system_admin','role_name','user_is_active','center_group_hierarchy_name');
  
   }
 
   function master_table_visible_columns(){
     return array('user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_system_admin','role_name','user_is_active');
+    'user_lastname','user_email','user_is_system_admin','role_name','user_is_active');
   }
 
   /**
@@ -99,14 +99,15 @@ class User_model extends MY_Model
 
   function single_form_add_visible_columns(): Array {
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_system_admin','user_password','language_name','role_name','center_group_name','user_is_center_group_manager');
+    'user_is_system_admin','user_password','language_name','role_name','center_group_name',
+    'user_is_center_group_manager');
   }
 
   function edit_visible_columns(): Array {
     //center_group_hierarchy_name should not be added in this list since it should only be used when 
     // creating a new user and its not editable.
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_system_admin','language_name','role_name',
+    'user_is_system_admin','language_name','role_name',
     'user_is_center_group_manager');
   }
 
@@ -136,6 +137,16 @@ class User_model extends MY_Model
     $this->email_model->user_registration_email($post_array);
     return true;
   }
+
+
+  /***
+   * **********************************************************************************************************
+   * 
+   * THE CODE BELOW COMPOSES OF SYSTEM WIDE CODE, THEIR ALTERATION MAY CAUSE PERFORMANCE ISSUES TO THIS
+   * FRAMEWORK.
+   * 
+   * **********************************************************************************************************
+   */
 
   /**
    * user_department
