@@ -99,7 +99,7 @@ class User_model extends MY_Model
 
   function single_form_add_visible_columns(): Array {
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_is_system_admin','user_password','language_name','role_name','center_group_name',
+    'user_password','language_name','role_name','center_group_hierarchy_name',
     'user_is_center_group_manager');
   }
 
