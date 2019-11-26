@@ -66,6 +66,8 @@ public $auth;
 		$this->session->set_userdata('user_id', $row->user_id);
 		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
         $this->session->set_userdata('role_id', $row->fk_role_id);
+        
+        //Not used - Has to be removed
         $this->session->set_userdata('center_id',9);
         $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
         $this->session->set_userdata('departments',
