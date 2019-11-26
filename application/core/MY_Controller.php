@@ -302,4 +302,41 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     echo json_encode($this->grants->list_ajax_output());
   }
 
+  function update_config($config_name, $config_file = "config", $config_array_name = 'config'){
+    //Make this code for editing config items in the grants config
+  
+    $key = $this->input->post('key');
+    $phrase = $this->input->post('phrase');
+
+    //print_r($this->input->post());
+    //echo $config_name;
+    //exit();
+  
+    $reading = fopen(APPPATH.$config_name.'/'.$config_file.'.php', 'r');
+    $writing = fopen(APPPATH.$config_name.'/myfile.tmp', 'w');
+  
+    $replaced = false;
+  
+    while (!feof($reading)) {
+      $line = fgets($reading);
+      
+      if (stristr($line,$key)) {
+        $line = "\t$".$config_array_name."['".$key."'] = '".$phrase."';\n";
+        $replaced = true;
+      }
+  
+      fputs($writing, $line);
+    }
+    fclose($reading); fclose($writing);
+    // might as well not overwrite the file if we didn't replace anything
+    if ($replaced) 
+    {
+      rename(APPPATH.$config_name.'/myfile.tmp', APPPATH.$config_name.'/'.$config_file.'.php');
+    } else {
+      unlink(APPPATH.$config_name.'/myfile.tmp');
+    }
+  
+    //return $phrase;
+  }
+
 }

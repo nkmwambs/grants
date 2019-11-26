@@ -1281,6 +1281,16 @@ function action_after_insert($post_array,$approval_id,$header_id): bool {
    return $status;
 }
 
+function config_list($config_name, $config_file = "config", $config_array_name = 'config'){
+  $data = [
+            'config_name'=>$config_name,
+            'config_file'=>$config_file,
+            'config_array_name'=>$config_array_name
+          ];
+
+  return $this->CI->load->view('templates/config_list',$data,true);
+}
+
 
 // Auto create Model and Library fields if missing
 

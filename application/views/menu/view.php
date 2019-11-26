@@ -1,13 +1,13 @@
 <?php
 
-$chunk = array_chunk($this->session->user_more_menu,10,true);
+$chunk = array_chunk($this->session->user_more_menu,$this->config->item('extra_menu_item_columns'),true);
 ?>
 <div class='row'>
     <div class='col-xs-12'>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th colspan="10">More Menus</th>
+                <th colspan="<?=$this->config->item('extra_menu_item_columns');?>">More Menus</th>
             </tr>
         </thead>
         <tbody>
