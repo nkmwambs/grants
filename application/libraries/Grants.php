@@ -1423,6 +1423,11 @@ function action_list($table,$primary_key,$is_approveable_item){
   return $this->CI->load->view('general/action_list',$data,true);
 }
 
+function update_status(){
+  // Get status of current id
+  $this->CI->grants_model->update_status();
+}
+
 function initial_item_status(){
   return $this->CI->grants_model->initial_item_status();
 }
@@ -1581,7 +1586,9 @@ function feature_model_list_table_visible_columns() {
             if(is_array($changed_field_types) && 
               count($changed_field_types) > 0 && 
               array_key_exists($column,$changed_field_types) && 
-              $changed_field_types[$column]['field_type'] == 'select'
+              $changed_field_types[$column]['field_type'] == 'select' &&
+              array_key_exists($item->$column, $changed_field_types[$column]['options'])
+
               ){
                 
                 $item->$column = $changed_field_types[$column]['options'][$item->$column];

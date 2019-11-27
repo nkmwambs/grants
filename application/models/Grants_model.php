@@ -912,13 +912,18 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   }
 
-
-
-
-
 function center_start_date($center_id){
    return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
 }
 
+
+function update_status(){
+  // Get status of current id
+  $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+
+  $data['fk_status_id'] = $action_labels['next_approval_status'];
+  $this->db->where(array('request_id'=>hash_id($this->id,'decode')));
+  $this->db->update('request',$data);
+}
 
 }
