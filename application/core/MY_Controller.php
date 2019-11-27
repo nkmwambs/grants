@@ -339,32 +339,49 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     //return $phrase;
   }
 
+  function status_change($change_type = 'approve'){
+        // Get status of current id - to taken to grants_model
+        $master_action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+
+        //Update master record
+        $data['fk_status_id'] = $master_action_labels['next_approval_status'];
+        if($change_type == 'decline'){
+          $data['fk_status_id'] = $master_action_labels['next_decline_status'];
+        }
+        
+        $this->db->where(array('request_id'=>hash_id($this->id,'decode')));
+        $this->db->update('request',$data);
+    
+        //Update detail record
+        $detail_record = $this->grants->dependant_table($this->controller);
+    
+        //Get id of detail table
+        $detail_id = $detail_record.'_id';
+        $primary_table_id = 'fk_'.$this->controller.'_id';
+        
+        $detail_key = $this->db->get_where($detail_record,
+        array($primary_table_id=>hash_id($this->id,'decode')))->row()->$detail_id;
+    
+        $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
+        
+        $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+
+        if($change_type == 'decline'){
+          $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
+        }
+        
+        $this->db->where(array($primary_table_id=>hash_id($this->id,'decode')));
+        $this->db->update($detail_record,$detail_data);
+    
+        redirect(base_url() .$this->controller.'/view/'.$this->id, 'refresh');
+  }
+
   function approve(){
-    // Get status of current id - to taken to grants_model
-    $master_action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+    $this->status_change('approve');
+  }
 
-    //Update master record
-    $data['fk_status_id'] = $master_action_labels['next_approval_status'];
-    $this->db->where(array('request_id'=>hash_id($this->id,'decode')));
-    $this->db->update('request',$data);
-
-    //Update detail record
-    $detail_record = $this->grants->dependant_table($this->controller);
-
-    //Get id of detail table
-    $detail_id = $detail_record.'_id';
-    $primary_table_id = 'fk_'.$this->controller.'_id';
-    
-    $detail_key = $this->db->get_where($detail_record,
-    array($primary_table_id=>hash_id($this->id,'decode')))->row()->$detail_id;
-
-    $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
-    
-    $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
-    $this->db->where(array($primary_table_id=>hash_id($this->id,'decode')));
-    $this->db->update($detail_record,$detail_data);
-
-    redirect(base_url() .$this->controller.'/view/'.$this->id, 'refresh');
+  function decline(){
+    $this->status_change('decline');
   }
 
 }
