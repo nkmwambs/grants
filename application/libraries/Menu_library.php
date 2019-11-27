@@ -255,7 +255,8 @@ class Menu_library {
           // if(property_exists($this->CI->$lib,'menu_icon')){
           //   $menu_icon = $this->CI->$lib->menu_icon;
           // }
-
+          if($this->CI->db->get_where('menu',
+          array('menu_derivative_controller'=>ucfirst($menu),'menu_is_active'=>1))->num_rows()>0){
           $nav .= '
           <li class="">
               <a href="'.base_url().strtolower($menu).'/list">
@@ -264,6 +265,7 @@ class Menu_library {
               </a>
           </li>
           ';
+          }
         }
           
       }

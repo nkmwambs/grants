@@ -1571,6 +1571,24 @@ function feature_model_list_table_visible_columns() {
             continue;
           }
 
+          // Check if field is set for type change
+          $lib = $this->controller.'_library';
+
+          if(method_exists($this->CI->$lib,'change_field_type')){
+            
+            $changed_field_types =$this->CI->$lib->change_field_type();
+            
+            if(is_array($changed_field_types) && 
+              count($changed_field_types) > 0 && 
+              array_key_exists($column,$changed_field_types) && 
+              $changed_field_types[$column]['field_type'] == 'select'
+              ){
+                
+                $item->$column = $changed_field_types[$column]['options'][$item->$column];
+            }
+          }
+
+
           if($this->is_history_tracking_field($this->controller,$column,'track_number')){
             $row[] = "<a href='".base_url().$this->CI->controller."/view/".hash_id($item->$id,'encode')."' >".$item->$track_number."</a>";
           }elseif(strpos($column,'_is_')){
