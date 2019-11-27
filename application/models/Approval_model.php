@@ -235,6 +235,7 @@ function next_status($item_status){
   // //Get the status id
   $status_approval_sequence = $status_record->status_approval_sequence;
 
+  //Check if is not the last approval step
   if($status_approval_sequence < $range_of_status_approval_sequence){
     
     $next_approval_seq = $status_approval_sequence + 1;
@@ -251,9 +252,11 @@ function next_status($item_status){
   if($backflow_sequence > 0){
 
     $next_status_id = $this->db->get_where('status',
-    array('status_approval_sequence'=>$backflow_sequence,
-    'fk_approve_item_id'=>$approveable_item_id))->row()->status_id;
+    array('status_approval_sequence'=>$status_approval_sequence,
+    'fk_approve_item_id'=>$approveable_item_id,'status_approval_direction'=>0))->row()->status_id;
   }
+
+
 
   return $next_status_id;
 

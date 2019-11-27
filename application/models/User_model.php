@@ -175,9 +175,15 @@ class User_model extends MY_Model
     */
    function get_center_group_table_name(int $user_id):String{
 
+    $center_group_name = "";
+
     $this->db->join('user','user.fk_center_group_hierarchy_id=center_group_hierarchy.center_group_hierarchy_id');
-    $center_group_name = $this->db->get_where('center_group_hierarchy',
-    array('user_id'=>$user_id))->row()->center_group_hierarchy_name;
+    $center_group_name_obj = $this->db->get_where('center_group_hierarchy',
+    array('user_id'=>$user_id));
+
+    if($center_group_name_obj->num_rows()>0){
+      $center_group_name = $center_group_name_obj->row()->center_group_hierarchy_name;
+    }
 
     return $center_group_name;
   }

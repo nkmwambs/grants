@@ -34,7 +34,7 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function detail_tables(){
-    return ['role_permission','user'];
+    return ['role_permission','user','page_view_role'];
   }
 
   function view(){
