@@ -29,8 +29,16 @@ class Funding_status_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array();
+        //return array('status','approval');
     }
 
     public function detail_tables(){}
+
+    function single_form_add_visible_columns(){
+        //return ['funding_status_name','funding_status_is_active'];
+    }
+
+    function show_add_button(){
+        return false;
+    }
 }

@@ -8,10 +8,10 @@
  *	NKarisa@ke.ci.org
  */
 
-class Expense_account_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Income_account_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'expense_account'; // you MUST mention the table name
-  public $primary_key = 'expense_account_id'; // you MUST mention the primary key
+  public $table = 'income_account'; // you MUST mention the table name
+  public $primary_key = 'income_account_id'; // you MUST mention the primary key
 
 
   function __construct(){
@@ -25,11 +25,11 @@ class Expense_account_model extends MY_Model implements CrudModelInterface, Tabl
   }
 
   function lookup_tables(){
-    return ['income_account','status','approval'];
+    
   }
 
   function detail_tables(){
-    
+    return ['expense_account'];
   }
 
   function list(){
