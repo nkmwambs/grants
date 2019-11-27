@@ -58,6 +58,8 @@ function edit(String $id):String{
   extract($post_array);
   $id = hash_id($id,'decode');
   $data = $header;
+
+  $post_array = $this->grants->action_before_edit($post_array);
  
   $this->db->trans_begin();
   $this->db->where(array($this->grants->primary_key_field($this->controller) => $id));
@@ -917,6 +919,9 @@ function center_start_date($center_id){
 }
 
 
+
+//Not yet used 
+
 function update_status(){
   // Get status of current id
   $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
@@ -925,5 +930,6 @@ function update_status(){
   $this->db->where(array('request_id'=>hash_id($this->id,'decode')));
   $this->db->update('request',$data);
 }
+
 
 }

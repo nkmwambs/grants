@@ -7,6 +7,7 @@
 //print_r($this->grants->lookup_tables('request'));
 
 //print_r($this->grants->action_labels('request',91));
+//echo $this->user_model->get_center_group_table_name(13);
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">

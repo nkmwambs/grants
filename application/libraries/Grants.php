@@ -1253,6 +1253,21 @@ function action_before_insert($post_array): Array {
   return $updated_post_array;
 }
 
+function action_before_edit($post_array): Array {
+  
+  $model = $this->current_model;
+
+  $updated_post_array = array();
+
+  if(method_exists($this->CI->$model,'action_before_edit')){
+    $updated_post_array = $this->CI->$model->action_before_edit($post_array);
+  }else{
+    $updated_post_array = $post_array;
+  }
+
+  return $updated_post_array;
+}
+
 /**
  * action_after_insert
  * 
@@ -1272,6 +1287,22 @@ function action_after_insert($post_array,$approval_id,$header_id): bool {
 
   if(method_exists($this->CI->$model,'action_after_insert')){
     $status = $this->CI->$model->action_after_insert($post_array,$approval_id,$header_id);
+
+    // if(!is_bool($status)){
+    //   $status = true;
+    // }
+  }
+
+   return $status;
+}
+
+function action_after_edit($post_array,$approval_id,$header_id): bool {
+  $model = $this->current_model;
+
+  $status = true;
+
+  if(method_exists($this->CI->$model,'action_after_edit')){
+    $status = $this->CI->$model->action_after_edit($post_array,$approval_id,$header_id);
 
     // if(!is_bool($status)){
     //   $status = true;

@@ -174,18 +174,23 @@ class User_model extends MY_Model
     * @return String - Name of the the hierarchy e.g Cluster
     */
    function get_center_group_table_name(int $user_id):String{
+    $center_group_name = "";
 
     $this->db->join('user','user.fk_center_group_hierarchy_id=center_group_hierarchy.center_group_hierarchy_id');
-    $center_group_name = $this->db->get_where('center_group_hierarchy',
-    array('user_id'=>$user_id))->row()->center_group_hierarchy_name;
+    $center_group_name_obj = $this->db->get_where('center_group_hierarchy',
+    array('user_id'=>$user_id));
 
+    if($center_group_name_obj->num_rows() > 0){
+      $center_group_name =  $center_group_name_obj->row()->center_group_hierarchy_name;
+    }
+    
     return $center_group_name;
   }
 
   function get_center_group_hierarchy_user_table_name($user_id){
     
     $center_group_user_table = "";
-
+ 
     $center_group_name = $this->get_center_group_table_name($user_id);// E.g. group_cluster
 
     $center_group_user_table = strtolower($center_group_name).'_user';// E.g. center_user
@@ -193,7 +198,7 @@ class User_model extends MY_Model
     if(strtolower($center_group_name) !== 'center'){
       $center_group_user_table = 'group_'.strtolower($center_group_name).'_user';// E.g. group_cluster_user
     }
-
+    
     return $center_group_user_table;
   }
 

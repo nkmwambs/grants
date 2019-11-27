@@ -80,7 +80,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                 <td>
                   <span style="font-weight:bold;"><?=get_phrase($column);?>:</span> &nbsp;
                   <?php
-                    if(strpos($column,'is_active')){
+                    if(strpos($column,'_is_')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');
 
                     }elseif(in_array($column,$lookup_name_fields) ){
@@ -170,7 +170,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                           if(isset($row[$column]) && array_key_exists($column,$row) ){
                             if(strpos($column,'track_number') == true && $has_details_table == 1 ){
                               echo '<a href="'.base_url().strtolower($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
-                            }elseif(strpos($column,'is_active') == true){
+                            }elseif(strpos($column,'_is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
