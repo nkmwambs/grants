@@ -103,7 +103,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    * @todo {seperate the method that uses ajax to post from result methods}
    */
 
-  function result(String $id = ""){
+  function result($id = ""){
 
     $action = $this->action.'_output';
 
