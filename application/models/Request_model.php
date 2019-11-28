@@ -11,6 +11,7 @@
 class Request_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'request'; // you MUST mention the table name
+  public $dependant_table = "request_detail";
 
   function __construct(){
     parent::__construct();
