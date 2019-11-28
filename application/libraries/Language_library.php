@@ -49,9 +49,11 @@ class Language_library extends Grants
       fwrite($fp,'<?php '.PHP_EOL);
     }
 
-
+    ob_start();
 		include($this->default_language_path.$this->language.'.php');
-    
+    ob_get_contents();
+    ob_end_clean();
+
       foreach($lang as $handle => $lang_string){
         if(!isset($this->lang_strings[$handle])){
           $this->lang_strings[$handle] = $lang_string;
