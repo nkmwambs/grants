@@ -9,11 +9,6 @@
  * The library will scan the "controller" directory and (in case of) one (1) subdirectory level deep
  * for controllers
  *
- * Usage in one of your controllers:
- *
- * $this->load->library('controllerlist');
- * print_r($this->controllerlist->getControllers());
- *
  */
 
 class Menu_library {
