@@ -14,7 +14,6 @@
  * $this->load->library('controllerlist');
  * print_r($this->controllerlist->getControllers());
  *
- * @author Peter Prins
  */
 
 class Menu_library {
