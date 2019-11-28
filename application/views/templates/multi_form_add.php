@@ -181,7 +181,7 @@
         data:data,
         type:"POST",
         beforeSend:function(){
-
+          $('#overlay').removeClass('hide');
         },
         success:function(response){
             //alert(response);

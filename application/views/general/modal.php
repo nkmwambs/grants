@@ -284,3 +284,5 @@
 
 }
 </style>
+
+<div id="overlay" class="hide"><img src='<?php echo base_url()."uploads/preloader4.gif";?>'/></div>

@@ -178,9 +178,9 @@ function load_detail_model(String $table_name = ""): String{
       // Creates missing models, libraries or controllers based on a missing controller
       $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
       
-      $this->create_missing_model($table_name,$assets_temp_path,array('status','approval'));
-      $this->create_missing_library($table_name,$assets_temp_path);
-      $this->create_missing_controller($table_name,$assets_temp_path);   
+      $this->create_missing_model(ucfirst($table_name),$assets_temp_path,array('status','approval'));
+      $this->create_missing_library(ucfirst($table_name),$assets_temp_path);
+      $this->create_missing_controller(ucfirst($table_name),$assets_temp_path);   
     }
 
     $model = $table_name.'_model';
