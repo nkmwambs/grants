@@ -513,4 +513,4 @@ function detail_list_output(String $table): Array {
 
 }
 
-require_once(__DIR__.DIRECTORY_SEPARATOR.'..\create_instance.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'create_instance.php');
