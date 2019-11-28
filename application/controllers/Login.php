@@ -69,34 +69,34 @@ public $auth;
         $this->session->set_userdata('role_id', $row->fk_role_id);
         
         //Not used - Has to be removed
-        // $this->session->set_userdata('center_id',9);
-        // $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
-        // $this->session->set_userdata('departments',
-        // $this->user_model->user_department($row->user_id));
-        // $this->session->set_userdata('hierarchy_associations',
-        // $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
-        // $this->session->set_userdata('center_group_info',
-        // $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
+        $this->session->set_userdata('center_id',9);
+        $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
+        $this->session->set_userdata('departments',
+        $this->user_model->user_department($row->user_id));
+        $this->session->set_userdata('hierarchy_associations',
+        $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
+        $this->session->set_userdata('center_group_info',
+        $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
 
-        // $this->session->set_userdata('user_centers',$this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
+        $this->session->set_userdata('user_centers',$this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
         
 
-        // $this->session->set_userdata('breadcrumb_list',array());
+        $this->session->set_userdata('breadcrumb_list',array());
 
-        // $this->session->set_userdata('role_permissions',
-        // $this->user_model->get_user_permissions($row->fk_role_id));
+        $this->session->set_userdata('role_permissions',
+        $this->user_model->get_user_permissions($row->fk_role_id));
 
-        // $this->session->set_userdata('system_admin',$row->user_is_system_admin);
+        $this->session->set_userdata('system_admin',$row->user_is_system_admin);
         
-        // $default_launch_page = $this->user_model->default_launch_page($row->user_id);
-        // $this->session->set_userdata('default_launch_page',$default_launch_page);
+        $default_launch_page = $this->user_model->default_launch_page($row->user_id);
+        $this->session->set_userdata('default_launch_page',$default_launch_page);
         
-        // $this->db->select('language_code');
-		// $this->db->join('language','language.language_id=user.fk_language_id');
-        // $user_language = $this->db->get_where('user',
-        // array('fk_language_id','user_id'=>$row->user_id))->row()->language_code;
+        $this->db->select('language_code');
+		$this->db->join('language','language.language_id=user.fk_language_id');
+        $user_language = $this->db->get_where('user',
+        array('fk_language_id','user_id'=>$row->user_id))->row()->language_code;
         
-        // $this->session->set_userdata('user_locale',$user_language);
+        $this->session->set_userdata('user_locale',$user_language);
         
 		return 'success';
 	}
