@@ -185,12 +185,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   }
  /**
-   * load_template() 
+   * load_templates() 
    * This method returns object [this is a view object]
    * @param Array $page_data
    *@return Object
    */
-  private function load_template(Array $page_data):Object{
+  private function load_templates(Array $page_data):Object{
     return $this->load->view('general/index',$page_data);
   }
 /**
@@ -211,7 +211,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     // Can be overrode in a specific controller
     //$this->load->add_package_path(APPPATH.'workplan', FALSE);
-    $this->load_template($page_data);
+    $this->load_templates($page_data);
   }
 /**
    * list() 
