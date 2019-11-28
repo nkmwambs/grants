@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Request_type_model extends MY_Model{
 
     public $table = 'request_type'; 
-    public $dependant_table = '';
+    public $dependant_table = 'request_detail';
     public $name_field = 'request_type_name';
     public $create_date_field = "request_type_created_date";
     public $created_by_field = "request_type_created_by";
