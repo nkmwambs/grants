@@ -8,8 +8,6 @@
  *	NKarisa@ke.ci.org
  */
 
- require_once APPPATH.'core/MY_Model.php';
-
 class Approval_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'approval'; // you MUST mention the table name
