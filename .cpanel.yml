@@ -1,5 +1,5 @@
 ---
 deployment:
  tasks:
- - export DEPLOYPATH=/home/doorofho/public_html/
- - /bin/cp schoolapp $DEPLOYPATH
+ - export DEPLOYPATH=/home/emackeny/public_html/
+ - /bin/cp grants $DEPLOYPATH
