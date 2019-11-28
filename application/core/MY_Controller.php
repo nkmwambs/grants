@@ -286,7 +286,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
    *@return VOid
    */
-  function detail_row():Void{
+  function detail_row(){
     $fields = $this->input->post('fields');
 
     //$lib = $this->controller."_detail_library";
