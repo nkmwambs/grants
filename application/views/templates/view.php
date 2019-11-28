@@ -84,7 +84,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                 <td>
                   <span style="font-weight:bold;"><?=get_phrase($column);?>:</span> &nbsp;
                   <?php
-                    if(strpos($column,'_is_')){
+                    if(strpos($column,'is_')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');
 
                     }elseif(in_array($column,$lookup_name_fields) ){
