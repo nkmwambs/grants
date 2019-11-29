@@ -162,9 +162,15 @@ class User_model extends MY_Model
 
       $this->db->select(array('fk_department_id'));
       $user_department = $this->db->get_where('department_user',
-      array('fk_user_id'=>$user_id))->result_array();
+      array('fk_user_id'=>$user_id));
 
-      return array_column($user_department,'fk_department_id');
+      $department_ids = array();
+
+      if($user_department->num_rows()>0){
+        $department_ids = array_column($user_department->result_array(),'fk_department_id');
+      }
+
+      return $department_ids;
    }
 
    /**
@@ -220,8 +226,12 @@ class User_model extends MY_Model
 
       $center_group_hierarchy_user_table_name = $this->get_center_group_hierarchy_user_table_name($user_id);
       $center_group_table_name = strtolower($this->get_center_group_table_name($user_id));
+      
+      $center_group_hierarchy_table_name = $this->db->get_where('center_group_hierarchy',
+      array('center_group_hierarchy_name '=>$center_group_table_name))->row()->center_group_hierarchy_table_name ;
 
-      //$this->db->select(array('fk_user_id','fk_'.$center_group_table_name.'_id','fk_designation_id'));
+      $this->db->select(array($center_group_hierarchy_table_name.'_user_id','fk_user_id',
+      'fk_'.$center_group_hierarchy_table_name.'_id','fk_designation_id'));
       $associations = $this->db->get_where($center_group_hierarchy_user_table_name,
       array('fk_user_id'=>$user_id));
 
@@ -229,13 +239,13 @@ class User_model extends MY_Model
         $associations_array = $associations->result_array();
       }
 
-      return $associations_array;
+      return $associations_array; 
     }
 
     function get_center_group_hierarchy_info(int $center_group_hierarchy_id):Array{
 
-      return (Array)$this->db->get_where('center_group_hierarchy',
-      array('center_group_hierarchy_id'=>$center_group_hierarchy_id))->row();    
+      return  $this->db->get_where('center_group_hierarchy',
+      array('center_group_hierarchy_id'=>$center_group_hierarchy_id))->row_array();    
     
     }
 
@@ -256,6 +266,7 @@ class User_model extends MY_Model
       return $options;
     }
 
+    // This method is too long and unkept. It requires review though working.
     function get_centers_in_center_group_hierarchy($user_id){
 
       $associations = $this->get_user_center_group_hierarchy_associations($user_id);

@@ -45,4 +45,5 @@ class Center_group_hierarchy_model extends MY_Model{
         // This needs to be worked on later to make it flexible
         return array('center_group_hierarchy_level');
     }
+
 }

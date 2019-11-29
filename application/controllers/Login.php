@@ -22,6 +22,7 @@ public $auth;
         $this->load->database();
         $this->load->model('user_model');
         $this->load->library('Language_library');
+        $this->load->model('Language_model');
     }
 
     //Default function, redirects to logged in user area
@@ -29,9 +30,9 @@ public $auth;
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-            //  if (extension_loaded('php_yaml')) {
-            //     $this->grants->create_missing_system_files(); 
-            //  }
+             //if (extension_loaded('php_yaml')) {
+                $this->grants->create_missing_system_files(); 
+             //}
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
           
@@ -67,36 +68,48 @@ public $auth;
 		$this->session->set_userdata('user_id', $row->user_id);
 		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
         $this->session->set_userdata('role_id', $row->fk_role_id);
-        
-        //Not used - Has to be removed
-        $this->session->set_userdata('center_id',9);
-        $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
-        $this->session->set_userdata('departments',
-        $this->user_model->user_department($row->user_id));
-        $this->session->set_userdata('hierarchy_associations',
-        $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
-        $this->session->set_userdata('center_group_info',
-        $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
-
-        $this->session->set_userdata('user_centers',$this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
-        
-
-        $this->session->set_userdata('breadcrumb_list',array());
-
         $this->session->set_userdata('role_permissions',
-        $this->user_model->get_user_permissions($row->fk_role_id));
-
-        $this->session->set_userdata('system_admin',$row->user_is_system_admin);
+            $this->user_model->get_user_permissions($row->fk_role_id));
+        $this->session->set_userdata('system_admin',$row->user_is_system_admin); 
+        $this->session->set_userdata('user_locale',$this->db->get_where('language',
+            array('language_id'=>$row->fk_language_id))->row()->language_code);   
         
+
+        /**
+         * These are Center Group Hierarchy related sessions
+         */
+        
+         // This session carries the ids of the departments related to the current user.
+         // A user may or may not have a department. A user can have multiple departments
+        $this->session->set_userdata('departments',
+            $this->user_model->user_department($row->user_id));
+        
+        // This session carries all the center group heierachy association the 
+        // user has related to the user hierarchy level in the user profile
+        // i.e. If the user hierarchy level is Country, then these are the records in the group_country_user table
+        // and answers the question of how many regions, countries, cohorts, clusters or centers is the user associated to
+        // A user can lack an association and in this case cannot access any menu item
+        $this->session->set_userdata('hierarchy_associations',
+            $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
+        
+        // This carries the id of the center group hierachy
+        $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
+
+        // This session carries the name of the user Center Group Hierarchy Ex. Center, Cluster, Cohort, Country, Region or Global    
+        $this->session->set_userdata('center_group_info',
+            $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
+        
+        // This session carries an array of the center ids which the current user has a 
+        // scope to in the entire center group hierarchy   
+        $this->session->set_userdata('user_centers',
+            $this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
+        
+        /**
+         * Breadcrum and default page sessions
+         */  
+        $this->session->set_userdata('breadcrumb_list',array());        
         $default_launch_page = $this->user_model->default_launch_page($row->user_id);
         $this->session->set_userdata('default_launch_page',$default_launch_page);
-        
-        $this->db->select('language_code');
-		$this->db->join('language','language.language_id=user.fk_language_id');
-        $user_language = $this->db->get_where('user',
-        array('fk_language_id','user_id'=>$row->user_id))->row()->language_code;
-        
-        $this->session->set_userdata('user_locale',$user_language);
         
 		return 'success';
 	}

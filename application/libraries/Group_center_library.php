@@ -1,4 +1,7 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -8,7 +11,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class User_detail_library extends Grants
+class Group_center_library extends Grants
 {
 
   private $CI;
@@ -18,10 +21,6 @@ class User_detail_library extends Grants
     $this->CI =& get_instance();
   }
 
-  function index(){
+  function index(){}
 
-  }
-
-
-
-}
+} 

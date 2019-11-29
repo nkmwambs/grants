@@ -13,22 +13,27 @@ tables:
   language:
 
   group_global:
+    - center
 
   group_region:
     lookup_tables:
       - group_global
+      - center
 
   group_country:
     lookup_tables:
       - group_region
+      - center
 
   group_cohort:
     lookup_tables:
       - group_country
+      - center
 
   group_cluster:
     lookup_tables:
-      - group_cohort   
+      - group_cohort 
+      - center  
 
   center_user:
     lookup_tables:
@@ -90,4 +95,9 @@ tables:
       - page_view    
 
   request_type:
+
+  group_center:
+    lookup_tables:
+      - group_cluster
+      - center
   
