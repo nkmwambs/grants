@@ -3,7 +3,7 @@
 /*This autoloads all the classes in third_party folder subdirectories e.g. Output
   The third_party houses the reusable API or code systemwise
  */
-require_once APPPATH."third_party/autoload.php";
+require_once APPPATH."third_party/Api/autoload.php";
 
 class MY_Controller extends CI_Controller implements CrudModelInterface
 {
@@ -55,9 +55,11 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   //public $widget = null;
 
   function __construct(){
-
+    
     parent::__construct();
 
+    $this->load->add_package_path(APPPATH.'third_party/Packages/Core');
+    $this->load->add_package_path(APPPATH.'third_party/Packages/Grants');
     //$this->widget = new Widget_base();
 
     $segment = $this->uri->segment(1, 'approval');
@@ -93,6 +95,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     //$this->session->set_userdata($this->controller.'_active_page_view',0);
 
     $this->load->model('ajax_model','dt_model');
+
 
   }
   /**

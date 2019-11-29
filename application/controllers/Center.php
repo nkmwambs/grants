@@ -16,7 +16,7 @@ class Center extends MY_Controller
 
   function __construct(){
     parent::__construct();
-    $this->load->library('center_library');
+    //$this->load->library('center_library');
   }
 
   function index(){}

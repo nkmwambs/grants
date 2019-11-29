@@ -1,6 +1,6 @@
 <?php
 
-print_r($this->user_model->get_centers_in_center_group_hierarchy($this->session->user_id));
+//print_r($this->user_model->get_centers_in_center_group_hierarchy($this->session->user_id));
 
 $has_details_table = $this->grants->check_if_table_has_detail_table($this->controller);
 $has_details_listing = $this->grants->check_if_table_has_detail_listing($this->controller);

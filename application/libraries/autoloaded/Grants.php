@@ -112,6 +112,9 @@ function __construct(){
   // Instantiate Codeigniter Singleton class
   $this->CI =& get_instance();
 
+  $this->CI->load->add_package_path(APPPATH.'third_party/Packages/Core');
+  $this->CI->load->add_package_path(APPPATH.'third_party/Packages/Grants');
+
   // Instantiate the name of the current running object/ main controller
   $this->controller = $this->CI->uri->segment(1, 'approval');
 
@@ -128,7 +131,7 @@ function __construct(){
   $this->CI->load->model($this->current_model);
 
   //Loading system model (Grants_model). The autoloaded grants model does work in library context and has to loaded here
-  $this->CI->load->model('grants_model');
+  $this->CI->load->model('autoloaded/grants_model');
 
   // Loading the main feature library
   $this->CI->load->library($this->current_library);

@@ -39,7 +39,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |  $autoload['packages'] = array(APPPATH.'third_party', '/usr/local/shared');
 |
 */
-$autoload['packages'] = array();
+$autoload['packages'] = array('Request_pkg');
 
 /*
 | -------------------------------------------------------------------
@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('core/Menu_library','core/Access','Session','core/Grants','core/CustomException');
+$autoload['libraries'] = array('autoloaded/Menu_library','autoloaded/Access','Session','autoloaded/Grants','autoloaded/CustomException');
 
 /*
 | -------------------------------------------------------------------
@@ -132,7 +132,7 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('Grants_model','user_model','email_model');
+$autoload['model'] = array('autoloaded/Grants_model','autoloaded/user_model','autoloaded/menu_model');
 
 // spl_autoload_register(function($classname){
 //     if( strpos($classname,'Interface') !== false ){

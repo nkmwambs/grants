@@ -20,6 +20,8 @@ public $auth;
     function __construct() {
         parent::__construct();
         $this->load->database();
+
+        $this->load->add_package_path(APPPATH.'third_party/Packages/Core');
         $this->load->model('user_model');
         $this->load->library('Language_library');
         $this->load->model('Language_model');
