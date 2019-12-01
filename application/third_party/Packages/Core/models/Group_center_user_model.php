@@ -36,5 +36,8 @@ class Group_center_user_model extends MY_Model{
 
     public function detail_multi_form_add_visible_columns(){}
 
-    
+    public function detail_list_table_visible_columns(){
+        return ['group_center_user_name','user_name','designation_name','group_center_name',
+        'group_center_user_created_date','group_center_user_last_modified_date'];
+    }
 }

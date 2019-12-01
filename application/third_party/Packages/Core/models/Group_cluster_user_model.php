@@ -32,5 +32,6 @@ class Group_cluster_user_model extends MY_Model{
         return array('user','group_cluster','designation');
     }
 
+
     public function detail_tables(){}
 }

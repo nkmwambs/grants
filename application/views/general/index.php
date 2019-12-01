@@ -31,14 +31,14 @@
 			<?php include 'header.php';?>
 
 					<div class="row">
-						<div class="col-xs-6">
+						<div class="col-xs-12">
 							<h5 style="" class="pull-left">
 						       <i class="entypo-right-circled"></i>
 									<?php include 'breadcrumb.php'?>
 						    </h5>
 						  </div>
 
-						  <div class="col-xs-6 pull-right;">
+						  <div class="col-xs-12 pull-right;">
 
 						  		<div class="btn-group pull-right">
 						  			<button class="btn btn-default" title="<?=get_phrase('back');?>" onclick="javascript:go_back();"><i class="fa fa-backward"></i></button>
