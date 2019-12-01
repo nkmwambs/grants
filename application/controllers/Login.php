@@ -112,6 +112,9 @@ public $auth;
         $this->session->set_userdata('breadcrumb_list',array());        
         $default_launch_page = $this->user_model->default_launch_page($row->user_id);
         $this->session->set_userdata('default_launch_page',$default_launch_page);
+
+        // This is a testing session. By default set to empty array
+        $this->session->set_userdata('testing',array());
         
 		return 'success';
 	}

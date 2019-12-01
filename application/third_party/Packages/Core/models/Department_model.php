@@ -35,4 +35,6 @@ class Department_model extends MY_Model{
     public function detail_tables(){
         return array('department_user');
     }
+
+    
 }

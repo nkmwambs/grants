@@ -33,6 +33,6 @@ class Group_cluster_model extends MY_Model{
     }
 
     public function detail_tables(){
-        return array('group_cluster_user','center');
+        return array('group_cluster_user','group_center');
     }
 }

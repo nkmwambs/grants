@@ -185,7 +185,7 @@ function load_detail_model(String $table_name = ""): String{
       $this->create_missing_library(ucfirst($table_name),$assets_temp_path);
       $this->create_missing_controller(ucfirst($table_name),$assets_temp_path);   
     }
-
+    
     $model = $table_name.'_model';
     $this->CI->load->model($model);
   }
@@ -1665,5 +1665,27 @@ function feature_model_list_table_visible_columns() {
      * 
      * **************************************************************************************************
      */
+     //public $testing = array(); 
+     //public $tested = array('begin_test');
+
+     function lookup_values_where($table){
+      
+      //array_push($this->testing,$table);
+      
+      $model = $table.'_model';//$this->load_detail_model($table);
+      $this->CI->load->model($model);
+
+      
+      if(  
+            method_exists($this->CI->$model,'lookup_values_where') 
+            && is_array($this->CI->$model->lookup_values_where($table)) 
+            && count($this->CI->$model->lookup_values_where($table)) > 0  
+        )
+      {
+          //array_push($this->tested,$this->CI->$model->lookup_values_where($table));
+          return $this->CI->$model->lookup_values_where($table);
+      }
+
+    }
 
 }

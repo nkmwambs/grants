@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  //echo $this->id;
+  //print_r($this->grants->tested);
 
   extract($result);
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";

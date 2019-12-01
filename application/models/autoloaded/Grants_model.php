@@ -315,6 +315,13 @@ function edit(String $id):String{
    */
   function lookup_values(String $table) {
 
+    if( is_array($this->grants->lookup_values_where($table)) && 
+        count($this->grants->lookup_values_where($table)) > 0)
+    {
+      $this->create_table_join_statement($this->controller,$table);
+      $this->db->where($this->grants->lookup_values_where($table));
+    }
+
     $result = $this->db->get($table)->result_array();
 
     $ids_array = array_column($result,$this->grants->primary_key_field($table));

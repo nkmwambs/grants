@@ -100,4 +100,11 @@ tables:
     lookup_tables:
       - group_cluster
       - center
+
+  group_center_user:
+    - user
+    - group_center
+    - designation
+
+
   

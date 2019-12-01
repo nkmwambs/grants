@@ -32,7 +32,9 @@ class Group_center_model extends MY_Model{
         return array('group_cluster','center');
     }
 
-    public function detail_tables(){}
+    public function detail_tables(){
+        return ['group_center_user'];
+    }
 
     public function detail_multi_form_add_visible_columns(){}
 }
