@@ -704,7 +704,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
         }elseif($field_type == 'select'){
           $lookup_table = strtolower(substr($key,0,-5));
-          $fields[$key] = $f->$field($this->CI->grants_model->lookup_values($lookup_table));
+          $fields[$key] = $f->$field($this->lookup_values($lookup_table));
         }else{
           $fields[$key] = $f->$field();
         }
@@ -754,7 +754,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // $column has a _name suffix if is a foreign key in the table
         // This is converted from fk_xxxx_id where xxxx is the primary table name
         $lookup_table = strtolower(substr($column,0,-5));
-        return $f->$field($this->CI->grants_model->lookup_values($lookup_table), $field_value,$show_only_selected_value);
+        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value);
       }elseif(strrpos($column,'_is_') == true ){
         return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value);
       }else{
@@ -1686,6 +1686,38 @@ function feature_model_list_table_visible_columns() {
           return $this->CI->$model->lookup_values_where($table);
       }
 
+    }
+
+    function lookup_values($table){
+      
+      $lookup_values = array();
+
+      $model = $table.'_model';
+
+      $this->CI->load->model($model);
+
+      if( method_exists($this->CI->$model,'lookup_values') && 
+          is_array($this->CI->$model->lookup_values()) && 
+          count($this->CI->$model->lookup_values()) > 0
+        ){
+
+        $result = $this->CI->$model->lookup_values();
+
+        $ids_array = array_column($result,$this->primary_key_field($table));
+        $value_array = array_column($result,$this->name_field($table));
+
+        $lookup_values =  array_combine($ids_array,$value_array);
+
+      }else{
+        $lookup_values = $this->CI->grants_model->lookup_values($table);
+      }
+
+      return $lookup_values;
+    }
+
+    function check_if_center_has_any_hierarchy_association($center_id){
+      $this->CI->load->model('center_model');
+      return $this->CI->center_model->check_if_center_has_any_hierarchy_association($center_id);
     }
 
 }

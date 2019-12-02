@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  //print_r($this->grants->tested);
+  //print_r($this->grants->check_if_center_has_any_hierarchy_association(13));
 
   extract($result);
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";

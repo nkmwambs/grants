@@ -30,7 +30,7 @@ class Menu_library {
         $this->CI =& get_instance();
         $this->CI->EXT = ".php";
 
-        //$this->CI->load->model('autoloaded/menu_model');
+        $this->CI->load->model('autoloaded/menu_model');
 
         // Get all controllers
         $this->setControllers();
