@@ -10,15 +10,17 @@
                          <li class="divider"></li>
                          <?php
                            if($is_approveable_item) {
-                             if(is_array($action_labels) && count($action_labels) > 0){
-                               foreach ($action_labels as $next_status_id => $action_label) {
-                             ?>
-                                <li><a href="#"><?=get_phrase($action_label);?></a></li>
-                                <li class="divider"></li>
-                             <?php
-                           }
 
-                             }
+                             if( isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){
+              
+                              echo Widget_base::load('button',$action_labels['button_label'],$table.'/approve/'.hash_id($primary_key,'encode'));
+                                        
+                              if($action_labels['show_decline_button']){
+                                echo Widget_base::load('button',get_phrase('decline'),$table.'/decline/'.hash_id($primary_key,'encode'));
+                          
+                              }
+
+                              }
 
 
                            }

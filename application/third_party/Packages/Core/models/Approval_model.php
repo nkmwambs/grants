@@ -160,8 +160,16 @@ function get_status_name($item_status){
 }
 
 function get_role_name($role_id){
-  return $this->db->get_where('role',
-  array('role_id'=>$role_id))->row()->role_name;
+  $role_name = "";
+ 
+  $role = $this->db->get_where('role', array('role_id'=>$role_id));
+  
+  if($role->num_rows()>0){
+    $role_name = $role->row()->role_name;
+  }
+
+  return $role_name;
+
 }
 
 function user_action_label($item_status,$role_id){

@@ -54,5 +54,17 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function view(){}
 
+  function lookup_values($table){
+    
+    $lookup_values = [];
+
+    if($table == 'center'){
+      
+      $lookup_values['center'] = $this->db->get_where('center',array('fk_center_group_hierarchy_id'=>8))->result_array();  
+    }
+
+    return $lookup_values;
+  }
+
 
 }

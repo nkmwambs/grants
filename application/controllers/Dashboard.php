@@ -21,24 +21,7 @@ public $auth;
     }
 
 
-    public function index(){
-      //$this->access->getAccess(__METHOD__);
-
-      $page_data['page_name'] = "dashboard";
-      $page_data['page_title'] = "Dashboard";
-      $page_data['views_dir'] = "dashboard";
-
-      $this->load->view('general/index',$page_data);
-    }
-
-
-    function page_name():String{
-      return 'dashboard';
-    }
-
-    function page_title():String{
-      return "Dashboard";
-    }
+    public function index(){}
 
 
     static function get_menu_list(){

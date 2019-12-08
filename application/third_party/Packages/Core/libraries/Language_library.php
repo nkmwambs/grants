@@ -30,11 +30,6 @@ class Language_library extends Grants
     $this->language = $locale;
     return $this;
   }
-
-  // function set_context($controller){
-  //   $this->context = $controller;
-  //   return $this;
-  // }
 	
 	protected function load_language()
 	{
@@ -54,25 +49,16 @@ class Language_library extends Grants
     ob_get_contents();
     ob_end_clean();
 
-      foreach($lang as $handle => $lang_string){
-        if(!isset($this->lang_strings[$handle])){
-          $this->lang_strings[$handle] = $lang_string;
-        }  
-      } 
-
+    $this->lang_strings = $lang;
 
 	}
 	
 	
-	function language_phrase($handle, $context = ''){
-
-    if($context != ''){
-      $this->context = $context;
-    }
+	function language_phrase($handle){
 
     $this->load_language();
 
-		if(!array_key_exists($handle, $this->lang_strings))
+		if(strlen($handle) > 1  && !array_key_exists($handle, $this->lang_strings) && !is_numeric($handle))
 		{
 				
 			$phrase = ucwords(implode(" ",explode("_", $handle)));
@@ -86,7 +72,7 @@ class Language_library extends Grants
 			$this->lang_strings[$handle] = $phrase;
 		}
 			
-    return $this->lang_strings[$handle];
+    return isset($this->lang_strings[$handle])?$this->lang_strings[$handle]:"";
 	}	
 	
 	

@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-class Center_user_library extends Grants
+class Group_center_unit_library extends Grants
 {
 
   private $CI;
@@ -22,12 +22,5 @@ class Center_user_library extends Grants
   }
 
   function index(){}
-
-  function change_field_type(){
-    $change_field_type['user_name']['field_type'] = 'select';
-    $change_field_type['user_name']['options'] = $this->CI->grants->get_users_with_center_group_hierarchy_name('center');
-
-    return $change_field_type;
-  }
 
 } 

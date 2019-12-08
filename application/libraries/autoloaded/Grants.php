@@ -1696,10 +1696,28 @@ function feature_model_list_table_visible_columns() {
 
       $this->CI->load->model($model);
 
-      if( method_exists($this->CI->$model,'lookup_values') && 
-          is_array($this->CI->$model->lookup_values()) && 
-          count($this->CI->$model->lookup_values()) > 0
-        ){
+      $current_model = $this->current_model;
+      
+      if(
+        (
+          method_exists($this->CI->$current_model,'lookup_values') && 
+          is_array($this->CI->$current_model->lookup_values($table)) &&
+          array_key_exists($table,$this->CI->$current_model->lookup_values($table))
+        ) 
+      ){  
+          $result = $this->CI->$current_model->lookup_values($table)[$table];
+
+          $ids_array = array_column($result,$this->primary_key_field($table));
+          $value_array = array_column($result,$this->name_field($table));
+
+          $lookup_values =  array_combine($ids_array,$value_array);
+      }
+      elseif(         
+        (
+          method_exists($this->CI->$model,'lookup_values') && 
+          is_array($this->CI->$model->lookup_values())
+        )
+      ){
 
         $result = $this->CI->$model->lookup_values();
 
@@ -1707,7 +1725,7 @@ function feature_model_list_table_visible_columns() {
         $value_array = array_column($result,$this->name_field($table));
 
         $lookup_values =  array_combine($ids_array,$value_array);
-
+        
       }else{
         $lookup_values = $this->CI->grants_model->lookup_values($table);
       }
@@ -1718,6 +1736,11 @@ function feature_model_list_table_visible_columns() {
     function check_if_center_has_any_hierarchy_association($center_id){
       $this->CI->load->model('center_model');
       return $this->CI->center_model->check_if_center_has_any_hierarchy_association($center_id);
+    }
+
+    function get_center_hierarchy_association_group($center_id){
+      $this->CI->load->model('center_model');
+      return $this->CI->center_model->get_center_hierarchy_association_group($center_id);
     }
 
 }

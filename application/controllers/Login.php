@@ -95,19 +95,19 @@ public $auth;
             $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
         
         // This carries the id of the center group hierachy
-        $this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
+        //$this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
 
-        // This session carries the name of the user Center Group Hierarchy Ex. Center, Cluster, Cohort, Country, Region or Global    
+        // This session carries the full array of the center group hierarchy  
         $this->session->set_userdata('center_group_info',
-            $this->user_model->get_center_group_hierarchy_info($this->session->center_group));
+            $this->user_model->get_center_group_hierarchy_information($this->session->user_id));
         
         // This session carries an array of the center ids which the current user has a 
         // scope to in the entire center group hierarchy   
-        $this->session->set_userdata('user_centers',
-            $this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
+        //$this->session->set_userdata('user_centers',
+          //  $this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
         
         /**
-         * Breadcrum and default page sessions
+         * Breadcrumb and default page sessions
          */  
         $this->session->set_userdata('breadcrumb_list',array());        
         $default_launch_page = $this->user_model->default_launch_page($row->user_id);

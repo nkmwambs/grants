@@ -33,7 +33,7 @@ class Group_center_model extends MY_Model{
     }
 
     public function detail_tables(){
-        return ['group_center_user'];
+        return ['group_center_user','group_center_unit'];
     }
 
     public function detail_multi_form_add_visible_columns(){}

@@ -45,16 +45,17 @@ class Request_library extends Grants
   }
 
 
-  function change_field_type(){
-    $change_field_type['center_name']['field_type'] = 'select';
-    $change_field_type['center_name']['options'] = $this->CI->user_model->user_associated_centers_names($this->CI->session->user_id);
+  // function change_field_type(){
+  //   $change_field_type['center_name']['field_type'] = 'select';
+  //   $change_field_type['center_name']['options'] = $this->CI->user_model->user_associated_centers_names($this->CI->session->user_id);
 
-    return $change_field_type;
-  }
+  //   return $change_field_type;
+  // }
 
   function default_field_value(){
     return ['request_date'=>date('Y-m-d')];
   }
+
 
 
 }

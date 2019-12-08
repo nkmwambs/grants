@@ -29,10 +29,10 @@ class Group_cohort_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('group_country');
+        return array('group_country','approval','status');
     }
 
     public function detail_tables(){
-        return array('group_cohort_user','group_cluster');
+        return array('group_cohort_user','group_cluster','group_cohort_unit');
     }
 }

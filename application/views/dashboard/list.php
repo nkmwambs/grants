@@ -1,7 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r($this->user_model->get_centers_in_center_group_hierarchy($this->session->user_id));
-//print_r($this->session->center_group_info);
+print_r($this->user_model->get_centers_in_center_group_hierarchy(1));
+//print_r($this->session->hierarchy_associations);
+//print_r($this->session->user_centers);
 //print_r($this->grants->get_users_with_center_group_hierarchy_name('center'));
 //echo hash_id('kE068JmNdP','decode')[0];
 //print_r($this->grants->lookup_tables('request'));

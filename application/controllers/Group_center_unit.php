@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Center_user extends MY_Controller
+class Group_center_unit extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('center_user_library');
+    $this->load->library('Group_center_unit_library');
   }
 
   function index(){}

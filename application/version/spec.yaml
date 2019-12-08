@@ -1,13 +1,4 @@
 tables:
-  center_group:
-    lookup_tables:
-      - center_group_hierarchy
-
-  center_group_link:
-    lookup_tables:
-      - center
-      - center_group
-
   center_group_hierarchy:
 
   language:
@@ -34,11 +25,6 @@ tables:
     lookup_tables:
       - group_cohort 
       - center  
-
-  center_user:
-    lookup_tables:
-      - center
-      - user 
 
   group_cluster_user:
     lookup_tables:
@@ -99,12 +85,35 @@ tables:
   group_center:
     lookup_tables:
       - group_cluster
-      - center
 
   group_center_user:
     - user
     - group_center
     - designation
+
+  group_cluster_unit:
+    - center
+    - group_cluster
+
+  group_cohort_unit:
+    - center
+    - group_cohort
+    
+  group_country_unit:
+    - center
+    - group_country
+  
+  group_region_unit:
+    - center
+    - group_region
+  
+  group_global_unit:
+    - center
+    - group_global  
+
+  group_center_unit:
+    - center  
+
 
 
   
