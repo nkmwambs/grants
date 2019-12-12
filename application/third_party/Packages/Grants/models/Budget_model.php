@@ -20,7 +20,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
   function index(){}
 
   public function lookup_tables(){
-    return array('center');
+    return array('office');
   }
 
   public function detail_tables(){
@@ -44,7 +44,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
   //public function single_form_add_hidden_columns(){}
 
   public function master_multi_form_add_visible_columns(){
-    return array('budget_name','budget_year','center_name');
+    return array('budget_name','budget_year','office_name');
   }
 
   public function detail_multi_form_add_visible_columns(){
@@ -56,7 +56,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
   public function detail_multi_form_add_hidden_columns(){}
 
   public function single_form_add_visible_columns(){
-    return array('budget_name','budget_year','center_name');
+    return array('budget_name','budget_year','office_name');
   }
 
   public function single_form_add_hidden_columns(){}

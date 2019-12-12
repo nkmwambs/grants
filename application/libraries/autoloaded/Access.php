@@ -39,28 +39,6 @@ class Access{
     //$this->CI->load->database();
   }
 
-  /**
-  * getAccess
-  *
-  * Get users controller methods access abilities
-  * @param $controller_method String : Name of the controller seeking it's access abilities for a logged in user
-  * @return void 
-  */
-
-  function getAccess($controller_method){
-
-    $user_id = $this->CI->session->user_id;
-
-    //Check if the the method access is available user_access_level
-    $data['controller_method'] = strtolower($controller_method);
-    $this->CI->db->insert('user_access_level',$data);
-
-    $user_priviledges = $this->CI->session->user_priviledges;
-
-    if( !in_array(strtolower($controller_method),$user_priviledges) ){
-        redirect(base_url()."login/access_denied_error", 'refresh');
-    }
-
-  }
+  
 
 }

@@ -83,23 +83,26 @@ public $auth;
         
          // This session carries the ids of the departments related to the current user.
          // A user may or may not have a department. A user can have multiple departments
-        $this->session->set_userdata('departments',
-            $this->user_model->user_department($row->user_id));
+        
+        // $this->session->set_userdata('departments',
+          //  $this->user_model->user_department($row->user_id));
         
         // This session carries all the center group heierachy association the 
         // user has related to the user hierarchy level in the user profile
         // i.e. If the user hierarchy level is Country, then these are the records in the group_country_user table
         // and answers the question of how many regions, countries, cohorts, clusters or centers is the user associated to
         // A user can lack an association and in this case cannot access any menu item
-        $this->session->set_userdata('hierarchy_associations',
-            $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
+        
+        //$this->session->set_userdata('hierarchy_associations',
+          //  $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
         
         // This carries the id of the center group hierachy
         //$this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
 
         // This session carries the full array of the center group hierarchy  
-        $this->session->set_userdata('center_group_info',
-            $this->user_model->get_center_group_hierarchy_information($this->session->user_id));
+        
+        //$this->session->set_userdata('center_group_info',
+          //  $this->user_model->get_center_group_hierarchy_information($this->session->user_id));
         
         // This session carries an array of the center ids which the current user has a 
         // scope to in the entire center group hierarchy   
@@ -114,7 +117,7 @@ public $auth;
         $this->session->set_userdata('default_launch_page',$default_launch_page);
 
         // This is a testing session. By default set to empty array
-        $this->session->set_userdata('testing',array());
+        //$this->session->set_userdata('testing',array());
         
 		return 'success';
 	}

@@ -20,7 +20,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    return array('approval','status','department','request_type','center');
+    return array('approval','status','department','request_type','office');
   }
 
   public function detail_tables(){
@@ -28,7 +28,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
   function master_multi_form_add_visible_columns(){
-    return array('request_name','request_date','request_type_name','request_description','center_name','department_name');
+    return array('request_name','request_date','request_type_name','request_description','office_name','department_name');
   }
 
   function detail_list(){}
@@ -37,33 +37,33 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function list_table_visible_columns(){
     return array('request_id','request_track_number','request_name','request_type_name','request_description',
-    'request_date','request_created_date','center_name','department_name',
+    'request_date','request_created_date','office_name','department_name',
     'approval_name','status_name');
   }
 
   public function list(){
       
-    $this->grants->where_condition('centers');
+    // $this->grants->where_condition('centers');
     
-    $this->grants->where_condition('page_view','request');
+    // $this->grants->where_condition('page_view','request');
 
-    $this->grants->create_table_join_statement($this->controller, $this->lookup_tables());
+    // $this->grants->create_table_join_statement($this->controller, $this->lookup_tables());
 
-    return $this->db->get('request')->result_array();
+    // return $this->db->get('request')->result_array();
   }
 
   public function view(){}
 
   function lookup_values($table){
     
-    $lookup_values = [];
+    // $lookup_values = [];
 
-    if($table == 'center'){
+    // if($table == 'center'){
       
-      $lookup_values['center'] = $this->db->get_where('center',array('fk_center_group_hierarchy_id'=>8))->result_array();  
-    }
+    //   $lookup_values['center'] = $this->db->get_where('center',array('fk_center_group_hierarchy_id'=>8))->result_array();  
+    // }
 
-    return $lookup_values;
+    // return $lookup_values;
   }
 
 

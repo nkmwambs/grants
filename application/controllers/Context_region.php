@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Center_bank extends MY_Controller
+class Context_region extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('Center_bank_library');
+    $this->load->library('context_region_library');
   }
 
   function index(){}

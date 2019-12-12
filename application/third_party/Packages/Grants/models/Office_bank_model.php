@@ -8,9 +8,9 @@
  *	NKarisa@ke.ci.org
  */
 
-class Reconciliation_model extends MY_Model
+class Office_bank_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
-  public $table = 'reconciliation'; // you MUST mention the table name
+  public $table = 'office_bank'; // you MUST mention the table name
 
 
   function __construct(){
@@ -20,7 +20,7 @@ class Reconciliation_model extends MY_Model
   function index(){}
 
   public function lookup_tables(){
-    return array('office','status');
+    return array('office','bank_branch');
   }
 
   public function detail_tables(){}

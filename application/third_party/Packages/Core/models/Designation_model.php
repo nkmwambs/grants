@@ -29,23 +29,23 @@ class Designation_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('center_group_hierarchy');
+        return array('context_definition');
     }
 
     public function detail_tables(){}
 
-    function lookup_values_where($table){
+    // function lookup_values_where($table){
         
-        $query_condition_array = array();
+    //     $query_condition_array = array();
 
-        if($this->uri->segment(4)){
-            $hierarchy_id = $this->db->get_where('center_group_hierarchy',
-            array('center_group_hierarchy_table_name'=>$this->uri->segment(4,'group_center')))->row()->center_group_hierarchy_id;
+    //     if($this->uri->segment(4)){
+    //         $hierarchy_id = $this->db->get_where('context_definition',
+    //         array('center_group_hierarchy_table_name'=>$this->uri->segment(4,'group_center')))->row()->center_group_hierarchy_id;
             
-            $query_condition_array = array('fk_center_group_hierarchy_id'=>$hierarchy_id);
-        }
+    //         $query_condition_array = array('fk_center_group_hierarchy_id'=>$hierarchy_id);
+    //     }
 
         
-        return $query_condition_array;
-    }
+    //     return $query_condition_array;
+    // }
 }

@@ -1,55 +1,56 @@
 tables:
-  center_group_hierarchy:
+  context_definition:
 
   language:
 
-  group_global:
-    - center
+  context_global:
+    lookup_tables:
+      - office
 
-  group_region:
+  context_region:
     lookup_tables:
       - group_global
-      - center
+      - office
 
-  group_country:
+  context_country:
     lookup_tables:
       - group_region
-      - center
+      - office
 
-  group_cohort:
+  context_cohort:
     lookup_tables:
-      - group_country
-      - center
+      - context_country
+      - office
 
-  group_cluster:
+  context_cluster:
     lookup_tables:
-      - group_cohort 
-      - center  
+      - context_cohort 
+      - office  
 
-  group_cluster_user:
-    lookup_tables:
-      - user
-      - group_cluster
-
-  group_cohort_user:
+  context_cluster_user:
     lookup_tables:
       - user
-      - group_cohort
+      - context_cluster
 
-  group_country_user:
+  context_cohort_user:
     lookup_tables:
       - user
-      - group_country
+      - context_cohort
 
-  group_region_user:
+  context_country_user:
     lookup_tables:
       - user
-      - group_region
+      - context_country
 
-  group_global_user:
+  context_region_user:
     lookup_tables:
       - user
-      - group_global   
+      - context_region
+
+  context_global_user:
+    lookup_tables:
+      - user
+      - context_global   
 
   department:
     lookup_tables:
@@ -65,7 +66,7 @@ tables:
   
   designation:
     lookup_tables:
-      - center_group_hierarchy 
+      - context_definition 
 
   page_view:
     lookup_tables:
@@ -82,37 +83,15 @@ tables:
 
   request_type:
 
-  group_center:
+  context_center:
     lookup_tables:
-      - group_cluster
+      - context_cluster
 
-  group_center_user:
+  context_center_user:
     - user
-    - group_center
+    - context_center
     - designation
 
-  group_cluster_unit:
-    - center
-    - group_cluster
-
-  group_cohort_unit:
-    - center
-    - group_cohort
-    
-  group_country_unit:
-    - center
-    - group_country
-  
-  group_region_unit:
-    - center
-    - group_region
-  
-  group_global_unit:
-    - center
-    - group_global  
-
-  group_center_unit:
-    - center  
 
 
 

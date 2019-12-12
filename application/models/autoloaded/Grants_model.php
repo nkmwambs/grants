@@ -442,18 +442,18 @@ function create_table_join_statement($table,$lookup_tables){
 
 }
 
-function get_table_record_center_id($table,$primary_key){
+function get_record_office_id($table,$primary_key){
   $lookup_tables = $this->grants->lookup_tables($table);
   $pk_field = $this->grants->primary_key_field($table);
 
-  $center_id = 0;
+  $office_id = 0;
 
-  if(in_array('center',$lookup_tables)){
-    $center_id = $this->db->get_where($table,
-      array($pk_field=>$primary_key))->row()->fk_center_id;
+  if(in_array('office',$lookup_tables)){
+    $office_id = $this->db->get_where($table,
+      array($pk_field=>$primary_key))->row()->fk_office_id;
   }
 
-  return $center_id;
+  return $office_id;
 }
 
 function center_where_condition(){
@@ -554,6 +554,11 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
     
     if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
       foreach ($lookup_tables as $lookup_table) {
+        // Catch errors of missing lookup_tables in models
+        if(!$this->db->table_exists($lookup_table)){
+          $message = "The table ".$lookup_table." doesn't exist in the database. Check the lookup_tables function in the ".$table."_model";
+          show_error($message,500,'An Error Was Encountered');
+        }
           $lookup_table_id = $lookup_table.'_id';
           $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
       }
@@ -575,7 +580,16 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
       $this->db->where($this->$library->$lib_where_method());
     }
 
-    return $this->db->get($table)->result_array();
+    //print_r($this->db->get($table)->result_array());
+
+    if(!$this->db->get($table)){
+      $error = $this->db->error();
+      $message = 'You have a database error code '.$error['code'].'. '.$error['message'];
+      show_error($message,500,'An Error Was Encountered');
+    }else{
+      return $this->db->get($table)->result_array();
+    }
+    
 } 
 
 

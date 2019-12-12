@@ -1,5 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+//print_r($result['detail']['project_allocation']);
 
 extract($result['master']);
 
@@ -160,8 +161,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                       foreach ($keys as $column){
                         $primary_key = $row[$primary_key_column];
                         
-                        if(strpos($column,'_id') == true){
-                          $column_key = $row[$column];
+                        if(strpos($column,'_id') == true && 
+                            !$this->grants->is_primary_key_field($detail_table_name,$column)){
+                          $column_key = $row['fk_'.$column];
                           // Remove the id suffix
                           $lookup_table = substr($column,0,-3);
                           continue;
@@ -183,7 +185,8 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                             }else{
                                 echo ucfirst($row[$column]);
                             }
-                          }else{
+                          }
+                          else{
                             echo get_phrase('value_not_set');
                           }
                           ?>

@@ -20,7 +20,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
   function index(){}
 
   public function lookup_tables(){
-    return array('center','project');
+    return array('office','project');
   }
 
   public function detail_tables(){}
@@ -41,7 +41,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     public function single_form_add_hidden_columns(){}
 
     public function master_multi_form_add_visible_columns(){
-      return array('project_allocation_name','project_allocation_amount','center_name','project_name');
+      return array('project_allocation_name','project_allocation_amount','office_name','project_name');
     }
 
     public function detail_multi_form_add_visible_columns(){}

@@ -50,7 +50,7 @@ class User_model extends MY_Model
   }
 
   function lookup_tables(){
-    return array('language','role','center_group_hierarchy');
+    return array('language','role','context_definition');
   }
 
   /**
@@ -74,13 +74,13 @@ class User_model extends MY_Model
    */
   function list_table_visible_columns(): Array {
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_is_system_admin','user_is_active','center_group_hierarchy_name');
+    'user_lastname','user_email','user_is_system_admin','user_is_active','context_definition_name');
   
   }
 
   function detail_list_table_visible_columns(){
     return array('user_id','user_track_number','user_name','user_firstname',
-    'user_lastname','user_email','user_is_system_admin','role_name','user_is_active','center_group_hierarchy_name');
+    'user_lastname','user_email','user_is_system_admin','role_name','user_is_active','context_definition_name');
  
   }
 
@@ -99,8 +99,8 @@ class User_model extends MY_Model
 
   function single_form_add_visible_columns(): Array {
     return array('user_name','user_firstname','user_lastname','user_email',
-    'user_password','language_name','role_name','center_group_hierarchy_name',
-    'user_is_center_group_manager');
+    'user_password','language_name','role_name','context_definition_name',
+    'user_is_context_manager');
   }
 
   function edit_visible_columns(): Array {
@@ -108,7 +108,7 @@ class User_model extends MY_Model
     // creating a new user and its not editable.
     return array('user_name','user_firstname','user_lastname','user_email',
     'user_is_system_admin','language_name','role_name',
-    'user_is_center_group_manager');
+    'user_is_context_manager');
   }
 
   /**
@@ -179,16 +179,15 @@ class User_model extends MY_Model
     * @param int $user_id
     * @return Array - Array of the center group hierarchy record
     */
-   function get_center_group_hierarchy_information(int $user_id):Array{
+   function get_user_context_definition(int $user_id):Array{
 
     $center_group_hierarchy_record = "";
 
-    $this->db->select(array('center_group_hierarchy_id','center_group_hierarchy_name',
-    'center_group_hierarchy_table_name','center_group_hierarchy_user_table_name',
-    'center_group_hierarchy_unit_table_name','center_group_hierarchy_level','center_group_hierarchy_is_active'));
+    $this->db->select(array('context_definition_id','context_definition_name',
+    'context_definition_level','context_definition_is_active'));
     
-    $this->db->join('user','user.fk_center_group_hierarchy_id=center_group_hierarchy.center_group_hierarchy_id');
-    $center_group_obj = $this->db->get_where('center_group_hierarchy',
+    $this->db->join('user','user.fk_context_definition_id=context_definition.context_definition_id');
+    $center_group_obj = $this->db->get_where('context_definition',
     array('user_id'=>$user_id));
 
     if($center_group_obj->num_rows() > 0){
@@ -214,30 +213,28 @@ class User_model extends MY_Model
   // }
 
    /**
-    * get_user_center_group_association
-    * A user can only be a signed 1 center group hierarchy but withing the hierarchy he/she can
-    * have multiple associations E.g. A PF in 2 clusters
-    * The output array has 3 keys each row: fk_user_id, fk_xxx_id 
-    * where xxx is the hierachy table and fk_designation_id
+    * get_user_context_association
+    *
+    * This method retrieves an array of context records related to a certain user
+    * 
     * @param int $user_id
-    * @return Array - Center group hierarchy Associations for the user
+    * @return Array - A user's context records
     */
 
-    function get_user_center_group_hierarchy_associations(int $user_id):Array {
+    function get_user_context_association(int $user_id):Array {
 
       $associations_array = array();
 
-      $center_group_hierarchy_user_table_name = $this->get_center_group_hierarchy_information($user_id)['center_group_hierarchy_user_table_name'];
-      //$center_group_hierarchy_table_name = $this->get_center_group_hierarchy_information($user_id)['center_group_hierarchy_table_name'];
-      
-      $center_group_hierarchy_table_name = $this->get_center_group_hierarchy_information($user_id)['center_group_hierarchy_table_name'];
-      
-      //$this->db->get_where('center_group_hierarchy',
-      //array('center_group_hierarchy_name '=>$center_group_table_name))->row()->center_group_hierarchy_table_name;
+      $context_definition = $this->get_user_context_definition($user_id);
+      $context_table = 'context_'.strtolower($context_definition['context_definition_name']);
+      $context_users_table = 'context_'.strtolower($context_definition['context_definition_name']).'_user';
+      $context_users_table_id = $this->grants->primary_key_field($context_users_table);
 
-      $this->db->select(array($center_group_hierarchy_user_table_name.'_id','fk_user_id',
-      'fk_'.$center_group_hierarchy_table_name.'_id','fk_designation_id'));
-      $associations = $this->db->get_where($center_group_hierarchy_user_table_name,
+     
+      $this->db->select(array($context_users_table_id,'fk_user_id',
+      'fk_'.$context_table.'_id','fk_designation_id'));
+      
+      $associations = $this->db->get_where($context_users_table,
       array('fk_user_id'=>$user_id));
 
       if($associations->num_rows()>0){
@@ -287,7 +284,7 @@ class User_model extends MY_Model
 
       //$hierarchy_table = strtolower($hierarchy_info['center_group_hierarchy_name']);
 
-      //$associations = $this->get_user_center_group_hierarchy_associations($user_id);
+      //$associations = $this->get_user_context_association($user_id);
       //$this->db->select(array('fk_center_id',''));
       $this->db->join($hierarchy_table_name,$hierarchy_table_name.'.'.$hierarchy_table_name.'_id='.$hierarchy_user_table_name.'.fk_'.$hierarchy_table_name.'_id');
       $associations = $this->db->get_where($hierarchy_user_table_name)->result_array();
@@ -505,7 +502,7 @@ class User_model extends MY_Model
       if( (array_key_exists($active_controller,$permission) && 
           array_key_exists($permission_type,$permission[$active_controller]) &&
           array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
-          && count($this->get_user_center_group_hierarchy_associations($this->session->user_id)) > 0 
+          && count($this->get_user_context_association($this->session->user_id)) > 0 
           && $this->check_if_user_has_center_data_view_edit_permission()
           ) ||
           $this->session->system_admin

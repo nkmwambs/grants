@@ -8,4 +8,3 @@
 	$config['max_priority_menu_items'] = 10;
 	$config['default_launch_page'] = "Dashboard";
 
-

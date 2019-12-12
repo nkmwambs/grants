@@ -189,3 +189,17 @@ if(!function_exists('condition_operators')){
 		return $operators;
 	}
 }
+
+if ( ! function_exists('model_exists')){
+    function model_exists($name){
+        $CI = &get_instance();
+		foreach($CI->config->_config_paths as $config_path){
+			if(file_exists(FCPATH . $config_path . 'models/' . $name . '.php')){
+				return true;
+			}else{
+				return false;
+			}
+		}
+        
+    }
+}

@@ -107,6 +107,11 @@ private $set_field_type = [];
  * 
  * @return Void
  */
+
+//public static $context_table = 'center_group_hierarchy';
+//public static $office_table = 'center';
+
+
 function __construct(){
 
   // Instantiate Codeigniter Singleton class
@@ -177,8 +182,10 @@ function load_detail_model(String $table_name = ""): String{
 
   if($table_name !== "" && !is_array($table_name)){
     
-    if(!file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.$table_name.'.php')){
-      // Creates missing models, libraries or controllers based on a missing controller
+    if(!file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.$table_name.'.php') && 
+      $this->CI->grants_model->table_exists($table_name)){
+      // Creates missing models, libraries or controllers based on a missing controller 
+      // but only when the database table exists
       $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
       
       $this->create_missing_model(ucfirst($table_name),$assets_temp_path,array('status','approval'));
@@ -187,7 +194,16 @@ function load_detail_model(String $table_name = ""): String{
     }
     
     $model = $table_name.'_model';
-    $this->CI->load->model($model);
+    
+    try{
+      $this->CI->load->model($model);
+    }catch(Exception $e){
+      $message = "Unabled to load the specified model ".$model." in Grants Library as indicated in the detail_tables function of the ".$this->controller."_model </br>";
+      $message .= "Verify if the table ".$table_name." exists and if the file ".$model." is present in the third_party Packages Core or Grants models";
+      show_error($message,500,'An Error Was Encountered');
+    }
+    
+    
   }
 
   return $model;
@@ -1434,8 +1450,8 @@ function quote_array_elements($elem){
   return ("'$elem'");
 }
 
-function get_table_record_center_id($table,$primary_key){
-  return $this->CI->grants_model->get_table_record_center_id($table,$primary_key);
+function get_record_office_id($table,$primary_key){
+  return $this->CI->grants_model->get_record_office_id($table,$primary_key);
 }
 
 
@@ -1506,6 +1522,19 @@ function feature_model_list_table_visible_columns() {
 
       array_unshift($list_table_visible_columns,
       $this->primary_key_field($this->controller));
+
+      // Throw error when a column doesn't exists to avoid Datatable server side loading error
+      foreach($list_table_visible_columns as $_column){
+        $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
+
+        if(!in_array($_column,$all_fields)){
+          $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
+          $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
+          show_error($message,500,'An Error As Encountered');
+          //unset($list_table_visible_columns[array_search($_column,$list_table_visible_columns)]);
+        }
+
+      }
     }
   }
 

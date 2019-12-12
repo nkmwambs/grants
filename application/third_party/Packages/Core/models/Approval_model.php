@@ -296,12 +296,12 @@ function decline_status($item_status){
 function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
   $current_approval_actor = $this->current_approval_actor($item_status);
   $logged_user_centers = $this->session->user_centers;
-  $record_center_id = $this->grants->get_table_record_center_id($table,$primary_key);
+  $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
 
   $show_label_as_button = false; 
   
-  if($logged_role_id == $current_approval_actor && 
+  if( is_array($logged_user_centers) && $logged_role_id == $current_approval_actor && 
       in_array($record_center_id,$logged_user_centers) &&
       $is_approveable_item){
     $show_label_as_button = true;
