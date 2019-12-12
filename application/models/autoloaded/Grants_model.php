@@ -432,10 +432,21 @@ function mandatory_fields(String $table): Void{
   }
 }
 
-function create_table_join_statement($table,$lookup_tables){
+/**
+ * create_table_join_statement
+ * 
+ * This method creates join statements of a CI query. It uses the primary tbale as first arg
+ * and an array of its Secondary tables as derived from the primary table model
+ * 
+ * @param String $table - This is the primary table
+ * @param Array $lookup_tables - This is an array of secondary tables
+ * 
+ * @return Mixed 
+ */
+function create_table_join_statement(String $table,Array $lookup_tables){
   if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
     foreach ($lookup_tables as $lookup_table) {
-        $lookup_table_id = $lookup_table.'_id';
+        $lookup_table_id = $this->grants->primary_key_field($lookup_table);
         $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
     }
   }

@@ -142,6 +142,17 @@ function __construct(){
   $this->CI->load->library($this->current_library);
 }
 
+/**
+ * create_table_join_statement
+ * 
+ * This method creates join statements of a CI query. It uses the primary tbale as first arg
+ * and an array of its Secondary tables as derived from the primary table model
+ * 
+ * @param String $table - This is the primary table
+ * @param Array $lookup_tables - This is an array of secondary tables
+ * 
+ * @return Mixed 
+ */
 function create_table_join_statement($table, $lookup_tables){
   return $this->CI->grants_model->create_table_join_statement($table, $lookup_tables);
 }
