@@ -297,7 +297,15 @@ public function primary_key_field(String $table_name):String {
   return $primary_key_field;
 }
 
-function default_unset_columns(&$visible_columns, $fields_to_unset){
+/**
+ * default_unset_columns
+ * 
+ * This method unset selected columns/fields from an array of visible columns 
+ * @param Array $visible_columns
+ * @param Array $field_to_unset
+ * @return Array 
+ */
+function default_unset_columns(Array &$visible_columns, Array $fields_to_unset):Array{
   
   foreach($fields_to_unset as $field){
     if(in_array($field, $visible_columns)){
@@ -400,7 +408,17 @@ public function history_tracking_field(String $table_name,String $history_type):
 }
 
 /**
+ * is_history_tracking_field
  * 
+ * This method checks if the field in a tracking field
+ * History tracking fields are: track_number, deleted_at, created_date, last_modified_date, created_by and 
+ * last_modified_by
+ * 
+ * @param String $table_name
+ * @param String $column
+ * @param String $history_type
+ * 
+ * @return Bool
  */
 public function is_history_tracking_field(String $table_name, String $column, String $history_type = ""){
 
@@ -478,7 +496,7 @@ function tables_name_fields(Array $tables):Array{
  * @param String $column - Column to check if name field
  * @return Boolean - True if name field else false
  */
-public function is_name_field($table,$column){
+public function is_name_field(String $table,String $column):Bool{
   
   $table_name_field = $this->name_field($table);
   
@@ -513,7 +531,7 @@ public function is_lookup_tables_name_field($master_table,$column, $return_looku
   $is_name_field = false;
   
   $table_to_return = null;
-
+  // Refactor the use of bool - consider using tje is_name_field
   if( is_array($lookup_tables) && count($lookup_tables) > 0 ){
     foreach($lookup_tables as $lookup_table){
       if($this->is_name_field($lookup_table,$column)){
@@ -556,6 +574,7 @@ function detail_tables(String $table_name = ""): Array {
   if($this->controller == 'approval' && $this->action == 'view'){
     // This is specific to approval view, only to list the detail listing of the select approveable 
     // items
+    // This prevents the approval from list the details tables instead of a specific approveable item
     $id = $this->CI->uri->segment(3,0);
 
     // This line needs to be moved to a model
@@ -566,6 +585,7 @@ function detail_tables(String $table_name = ""): Array {
     $this->detail_tables = array($detail_table);
 
   }elseif($this->dependant_table($table_name) !== "" ){
+    
     // If dependant_table exists, you can't have more than one detail table. This piece nullifies the use
     // of the detail_tables feature model if is set
     $this->detail_tables[] = $this->dependant_table($table_name);
