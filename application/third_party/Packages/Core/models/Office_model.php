@@ -108,10 +108,18 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   }
 
+  /**
+   * 
+   * get_office_context_association
+   * 
+   * Get the context record for the office. The return array has a key of the context definition name
+   * of the office
+   * 
+   * @param int $center
+   * @return Array 
+   *  */  
 
-  function get_office_context_association($center_id){
-    //Get the center group hierarchy association table as key to an array then the assoc
-    // record as element value
+  function get_office_context_association(int $center_id):Array{
 
     $this->db->join('office','office.fk_context_definition_id=context_definition.context_definition_id');
     $this->db->select(array('context_definition_name'));
@@ -121,13 +129,14 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
     $association_table = '';
 
     if($association_table_obj->num_rows() > 0){
-        $association_table = 'context_'.$association_table_obj->row()->context_definition_name;
-
+        $context_definition_name = $association_table_obj->row()->context_definition_name;
+        $association_table = 'context_'.$context_definition_name;
+        
         $association_obj = $this->db->get_where($association_table,
              array('fk_office_id'=>$center_id));
 
              if($association_obj->num_rows()>0){
-              $association_return[$association_table] = $association_obj->row();
+              $association_return[$context_definition_name] = $association_obj->row();
              }
 
       
