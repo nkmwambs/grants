@@ -29,7 +29,7 @@ class Context_country_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_region','approval','status');
+        return array('context_region','office');
     }
 
     public function detail_tables(){

@@ -29,7 +29,7 @@ class Context_cohort_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_country','approval','status');
+        return array('context_country','office');
     }
 
     public function detail_tables(){

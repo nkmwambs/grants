@@ -73,47 +73,32 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   public function view(){}
   
+  /**
+   * check_if_office_has_any_context_association
+   * 
+   * This method checks if an office has a context association. An office can only be associated to 
+   * only 1 context once.
+   * 
+   * @param Int $office_id - Primary ID of the office
+   * @return Bool - True if has association, False if not
+   */
 
-  function check_if_center_has_center_association(){
-
-  }
-
-  function check_if_center_has_cluster_association(){
-    
-  }
-
-  function check_if_center_has_cohort_association(){
-    
-  }
-
-  function check_if_center_has_country_association(){
-    
-  }
-
-  function check_if_center_has_region_association(){
-    
-  }
-
-  function check_if_center_has_global_association(){
-    
-  }
-
-  function check_if_office_has_any_context_association($center_id){
-    // Just check if this center has any hierarchy association 
+  function check_if_office_has_any_context_association(int $office_id):Bool{
+    // Just check if this office has any hierarchy association 
 
     $this->db->select(array('context_definition_name'));
-    $association_tables = $this->db->get('context_definition')->result_array();
+    $context_definition_names = $this->db->get('context_definition')->result_array();
 
     $has_association = false;
+    
 
+    foreach(array_column($context_definition_names,'context_definition_name') as $context_definition_name){
+        $context_table = 'context_'.$context_definition_name;
 
-    foreach(array_column($association_tables,'context_definition_name') as $association_table){
-        $context_table = 'context_'.$association_table;
+        $office_count = $this->db->get_where($context_table,
+        array('fk_office_id'=>$office_id))->num_rows();
 
-        $assoc_count = $this->db->get_where($context_table,
-        array('fk_office_id'=>$center_id))->num_rows();
-
-        if($assoc_count > 0){
+        if($office_count > 0){
           $has_association = true;
           break;
         }
