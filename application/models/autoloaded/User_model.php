@@ -197,21 +197,6 @@ class User_model extends MY_Model
     return $center_group_hierarchy_record;
   }
 
-  // function get_center_group_hierarchy_user_table_name($user_id){
-    
-  //   $center_group_user_table = "";
- 
-  //   //$center_group_name = $this->get_center_group_table_name($user_id);// E.g. group_cluster
-
-  //   $center_group_user_table = strtolower($this->get_center_group_table_name($user_id));// E.g. center_user
-
-  //   if(strtolower($center_group_name) !== 'center'){
-  //     $center_group_user_table = 'group_'.strtolower($center_group_name).'_user';// E.g. group_cluster_user
-  //   }
-    
-  //   return $center_group_user_table;
-  // }
-
    /**
     * get_user_context_association
     *
@@ -244,9 +229,82 @@ class User_model extends MY_Model
       return $associations_array; 
     }
 
+    /**
+     * get_user_context_offices
+     * 
+     * This method returns offices the user has an association with in his/her context
+     * 
+     * @param int $user_id 
+     * @return Array - Office ids
+     */
+
+    function get_user_context_offices(int $user_id):Array{
+
+      $context_defs = $this->grants->context_definitions();
+           
+      // User context
+      $user_context_name = strtolower($this->get_user_context_definition($user_id)['context_definition_name']);
+          
+      // User context user table
+      $context_table = $context_defs[$user_context_name]['context_table'];
+      $context_user_table = $context_defs[$user_context_name]['context_user_table'];
+
+      $this->db->select(array('fk_office_id'));
+      $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_user_table.'.fk_'.$context_table.'_id');
+      $user_context_obj = $this->db->get_where($context_user_table,array('fk_user_id'=>$user_id));
+      
+      $user_offices =  array();    
+
+      if($user_context_obj->num_rows()>0){
+        $user_offices = array_column($user_context_obj->result_array(),'fk_office_id'); 
+      }
+      
+      return $user_offices;
+    }
+
+    function user_hierarchy_offices($user_id){
+           
+      // User context
+      $user_context_level = strtolower($this->get_user_context_definition($user_id)['context_definition_level']);
+          
+      //User context hierarchy
+      $this->db->select(array('context_definition_name'));
+      $context_definition_level_obj = $this->db->order_by('context_definition_level','ASC')
+      ->get_where('context_definition',array('context_definition_level<='=>$user_context_level));
+      
+      $hierarchy_offices = array();
+
+      if($context_definition_level_obj->num_rows() > 0){
+        $context_hierarchy = array_column($context_definition_level_obj->result_array(),'context_definition_name');
+        
+        //$user_context = array_pop($context_hierarchy);
+
+        for($i=0;$i<count($context_hierarchy);$i++){
+            
+          if(isset($context_hierarchy[$i+1])){
+            $deep_table = 'context_'.strtolower($context_hierarchy[$i]);
+            $joining_table = 'context_'.strtolower($context_hierarchy[$i+1]);
+            
+            //$this->db->join($joining_table,$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id');
+          }
+          
+        }
+
+        $context_table = 'context_'.array_pop($context_hierarchy);
+        $context_user_table = $context_table.'_user';
+
+        $this->db->select(array('fk_office_id'));
+        $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_user_table.'.fk_'.$context_table.'_id');
+        $hierarchy_offices = $this->db->get_where($context_table,array('fk_user_id'=>$user_id));
+
+      }
+
+      return $hierarchy_offices;
+
+    }
     
 
-    function user_associated_centers_names($user_id){
+    function user_associated_office_names($user_id){
       $user_associated_centers = $this->get_centers_in_center_group_hierarchy($user_id);
 
       $options = array();
@@ -333,46 +391,16 @@ class User_model extends MY_Model
 
     }
 
-      // function get_centers_in_center_group_hierarchy($user_id){
-      //   // Get user hierarchy level
-      //   $this->db->join('center_group_hierarchy','center_group_hierarchy_id=user.fk_center_group_hierarchy_id');
-      //   $user_hierarchy_level = $this->db->get_where('user',array('user_id'=>$user_id))->row()->center_group_hierarchy_level;
-
-      //   // Get the unit tables from the above level in desc order
-
-      //   $this->db->select(array('center_group_hierarchy_table_name'));
-      //   $units_obj = $this->db->order_by('center_group_hierarchy_level','DESC')->get_where('center_group_hierarchy',array('center_group_hierarchy_level<='=>$user_hierarchy_level));
-      //   //print_r($units_obj->result_array());exit();
-
-      //   // Loop the unit tables and get the center_id values
-      //   $user_units = array();
-      //   if($units_obj->num_rows() > 0) {
-      //     //$user_units = array_column($units_obj->result_array(),'fk_center_id');
-      //     foreach($units_obj->result_array() as $unit_table){
-      //       $this->db->select(array('fk_center_id'));
-      //       $units = $this->db->get($unit_table);
-      //       if($units->num_rows()>0){
-      //         $user_units[] = $units->result_array();
-      //       }
-      //     }
-      //     $user_units = array_column(array_column($user_units,0),'fk_center_id');
-      //   }
-
-      //   //print_r(array_column(array_column($user_units,0),'fk_center_id'));exit();
-      //   return $user_units;
-
-      // }
-
     function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
-      $center_group_hierarchy_id = $this->db->get_where('center_group_hierarchy',
-      array('center_group_hierarchy_name'=>$center_group_hierarchy_name))->row()->center_group_hierarchy_id;
+      // $center_group_hierarchy_id = $this->db->get_where('center_group_hierarchy',
+      // array('center_group_hierarchy_name'=>$center_group_hierarchy_name))->row()->center_group_hierarchy_id;
 
-      $this->db->select(array('user_id','user_name'));
-      $result = $this->db->get_where('user',
-      array('fk_center_group_hierarchy_id'=>$center_group_hierarchy_id))->result_array();
+      // $this->db->select(array('user_id','user_name'));
+      // $result = $this->db->get_where('user',
+      // array('fk_center_group_hierarchy_id'=>$center_group_hierarchy_id))->result_array();
 
-      return $result;
-    
+      //return $result;
+      return [1,'nkarisa'];
     }
 
   /**
@@ -566,20 +594,20 @@ class User_model extends MY_Model
 
   }
 
-
+//To be implemented in the primary table model rather than in the secondary table model
   function lookup_values_where($table){
         
-    $query_condition_array = array();
+    // $query_condition_array = array();
 
-    if($this->uri->segment(4)){
-        $hierarchy_id = $this->db->get_where('center_group_hierarchy',
-        array('center_group_hierarchy_table_name'=>$this->uri->segment(4,'group_center')))->row()->center_group_hierarchy_id;
+    // if($this->uri->segment(4)){
+    //     $hierarchy_id = $this->db->get_where('center_group_hierarchy',
+    //     array('center_group_hierarchy_table_name'=>$this->uri->segment(4,'group_center')))->row()->center_group_hierarchy_id;
         
-        $query_condition_array = array('fk_center_group_hierarchy_id'=>$hierarchy_id);
-    }
+    //     $query_condition_array = array('fk_center_group_hierarchy_id'=>$hierarchy_id);
+    // }
 
     
-    return $query_condition_array;
+    // return $query_condition_array;
 }
   
 

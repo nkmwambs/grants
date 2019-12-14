@@ -1803,4 +1803,18 @@ function feature_model_list_table_visible_columns() {
       return $this->CI->center_model->get_center_hierarchy_association_group($center_id);
     }
 
+
+    function context_definitions(){
+      // List all context foreign keys name and with their tables
+      return [
+        'center'=>['context_table'=>'context_center','context_user_table'=>'context_center_user','fk'=>'fk_context_center_id'],
+        'cluster'=>['context_table'=>'context_cluster','context_user_table'=>'context_cluster_user','fk'=>'fk_context_cluster_id'],
+        'cohort'=>['context_table'=>'context_cohort','context_user_table'=>'context_cohort_user','fk'=>'fk_context_cohort_id'],
+        'country'=>['context_table'=>'context_country','context_user_table'=>'context_country_user','fk'=>'fk_context_country_id'],
+        'region'=>['context_table'=>'context_region','context_user_table'=>'context_region_user','fk'=>'fk_context_region_id'],
+        'global'=>['context_table'=>'context_global','context_user_table'=>'context_global_user','fk'=>'fk_context_global_id']
+      
+      ];
+    }
+
 }

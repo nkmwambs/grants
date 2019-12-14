@@ -96,6 +96,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $this->load->model('ajax_model','dt_model');
 
+    //Temporary, should be done on login
+    $this->load->model('office_model');
 
   }
   /**

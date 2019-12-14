@@ -29,7 +29,7 @@ class Context_global_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array();
+        return array('office');
     }
 
     public function detail_tables(){
