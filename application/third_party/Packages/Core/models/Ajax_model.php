@@ -28,7 +28,7 @@ class Ajax_model extends CI_Model{
 		$this->grants->where_condition('page_view',$this->table,$this->input->post('page_view'));
 
 		//Loading default center records
-		$this->grants->where_condition('center');
+		$this->grants->list_table_where();
 		
 		//This is a join statement
 		$this->grants->create_table_join_statement($this->table,$this->grants->lookup_tables($this->table));	

@@ -26,10 +26,6 @@ class Request_library extends Grants
     return 1;
   }
   
-  function list_table_where(){
-    
-
-  }
   
   function page_position(){
 

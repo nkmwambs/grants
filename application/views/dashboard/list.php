@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-print_r($this->user_model->user_hierarchy_offices(1,true));
+print_r($this->session->hierarchy_offices);
 //print_r($this->session->hierarchy_associations);
 //print_r($this->session->user_centers);
 //print_r($this->grants->get_users_with_center_group_hierarchy_name('center'));
