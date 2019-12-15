@@ -266,7 +266,19 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (439,	'APAL-4619',	'Approval Ticket # APAL-4619',	20,	87,	1,	'2019-12-03',	'2019-12-03 16:35:56',	1),
 (441,	'APAL-49739',	'Approval Ticket # APAL-49739',	20,	87,	1,	'2019-12-03',	'2019-12-03 17:20:42',	1),
 (442,	'APAL-45850',	'Approval Ticket # APAL-45850',	20,	87,	1,	'2019-12-08',	'2019-12-08 12:46:56',	1),
-(443,	'APAL-89215',	'Approval Ticket # APAL-89215',	4,	87,	1,	'2019-12-08',	'2019-12-08 16:04:22',	1);
+(443,	'APAL-89215',	'Approval Ticket # APAL-89215',	4,	87,	1,	'2019-12-08',	'2019-12-08 16:04:22',	1),
+(446,	'APAL-82249',	'Approval Ticket # APAL-82249',	42,	87,	1,	'2019-12-13',	'2019-12-13 04:05:02',	1),
+(448,	'APAL-67896',	'Approval Ticket # APAL-67896',	20,	87,	1,	'2019-12-13',	'2019-12-13 04:09:20',	1),
+(449,	'APAL-3390',	'Approval Ticket # APAL-3390',	43,	87,	1,	'2019-12-13',	'2019-12-13 04:10:04',	1),
+(450,	'APAL-78692',	'Approval Ticket # APAL-78692',	44,	87,	1,	'2019-12-13',	'2019-12-13 04:11:04',	1),
+(451,	'APAL-77524',	'Approval Ticket # APAL-77524',	45,	87,	1,	'2019-12-13',	'2019-12-13 04:12:02',	1),
+(452,	'APAL-28598',	'Approval Ticket # APAL-28598',	20,	87,	1,	'2019-12-13',	'2019-12-13 04:13:18',	1),
+(453,	'APAL-61567',	'Approval Ticket # APAL-61567',	41,	87,	1,	'2019-12-13',	'2019-12-13 04:14:01',	1),
+(454,	'APAL-78852',	'Approval Ticket # APAL-78852',	33,	87,	1,	'2019-12-13',	'2019-12-13 04:14:52',	1),
+(455,	'APAL-73086',	'Approval Ticket # APAL-73086',	51,	87,	1,	'2019-12-13',	'2019-12-13 16:14:20',	1),
+(456,	'APAL-46322',	'Approval Ticket # APAL-46322',	52,	87,	1,	'2019-12-13',	'2019-12-13 16:15:08',	1),
+(457,	'APAL-49743',	'Approval Ticket # APAL-49743',	45,	87,	1,	'2019-12-14',	'2019-12-14 04:28:21',	1),
+(458,	'APAL-85536',	'Approval Ticket # APAL-85536',	41,	87,	1,	'2019-12-14',	'2019-12-14 04:41:24',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -369,7 +381,8 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (61,	'',	'page_view_condition',	0,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
 (62,	'',	'approval',	0,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
 (63,	'',	'income_account',	0,	'2019-11-27',	1,	'2019-11-27 12:58:11',	1,	NULL,	NULL),
-(65,	'',	'context_center_user',	0,	'2019-11-30',	1,	'2019-12-08 08:45:49',	1,	NULL,	NULL);
+(65,	'',	'context_center_user',	0,	'2019-11-30',	1,	'2019-12-08 08:45:49',	1,	NULL,	NULL),
+(66,	'',	'context_definition',	0,	'2019-12-15',	1,	'2019-12-15 06:51:08',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -535,6 +548,26 @@ CREATE TABLE `ci_sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+DROP TABLE IF EXISTS `context`;
+CREATE TABLE `context` (
+  `context_id` int(100) NOT NULL AUTO_INCREMENT,
+  `context_track_number` varchar(100) NOT NULL,
+  `context_name` varchar(100) NOT NULL,
+  `context_description` longtext NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
+  `context_created_date` date NOT NULL,
+  `context_created_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `context_created_by` int(11) NOT NULL,
+  `context_last_modified_by` int(11) NOT NULL,
+  `context_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`context_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
+  CONSTRAINT `context_ibfk_1` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `context_center`;
 CREATE TABLE `context_center` (
   `context_center_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -542,6 +575,7 @@ CREATE TABLE `context_center` (
   `context_center_name` varchar(100) NOT NULL,
   `context_center_description` varchar(100) NOT NULL,
   `fk_context_cluster_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
   `fk_office_id` int(100) NOT NULL,
   `context_center_created_date` date DEFAULT NULL,
   `context_center_created_by` int(100) DEFAULT NULL,
@@ -552,11 +586,15 @@ CREATE TABLE `context_center` (
   PRIMARY KEY (`context_center_id`),
   UNIQUE KEY `fk_office_id` (`fk_office_id`),
   KEY `fk_context_cluster_id` (`fk_context_cluster_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
   CONSTRAINT `context_center_ibfk_1` FOREIGN KEY (`fk_context_cluster_id`) REFERENCES `context_cluster` (`context_cluster_id`),
   CONSTRAINT `context_center_ibfk_2` FOREIGN KEY (`fk_context_cluster_id`) REFERENCES `context_cluster` (`context_cluster_id`),
-  CONSTRAINT `context_center_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
+  CONSTRAINT `context_center_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `context_center_ibfk_4` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_center` (`context_center_id`, `context_center_track_number`, `context_center_name`, `context_center_description`, `fk_context_cluster_id`, `fk_context_definition_id`, `fk_office_id`, `context_center_created_date`, `context_center_created_by`, `context_center_last_modified_by`, `context_center_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'COER-53990',	'GRC Shingila',	'This is GRC Shingila',	1,	13,	9,	'2019-12-13',	1,	1,	NULL,	454,	58);
 
 DROP TABLE IF EXISTS `context_center_user`;
 CREATE TABLE `context_center_user` (
@@ -590,6 +628,7 @@ CREATE TABLE `context_cluster` (
   `context_cluster_description` longtext NOT NULL,
   `fk_office_id` int(100) NOT NULL,
   `fk_context_cohort_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
   `context_cluster_created_date` date NOT NULL,
   `context_cluster_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_cluster_created_by` int(100) NOT NULL,
@@ -601,13 +640,18 @@ CREATE TABLE `context_cluster` (
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_context_cohort_id` (`fk_context_cohort_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
   CONSTRAINT `context_cluster_ibfk_1` FOREIGN KEY (`fk_context_cohort_id`) REFERENCES `context_cohort` (`context_cohort_id`),
   CONSTRAINT `context_cluster_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `context_cluster_ibfk_3` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `context_cluster_ibfk_5` FOREIGN KEY (`fk_context_cohort_id`) REFERENCES `context_cohort` (`context_cohort_id`),
-  CONSTRAINT `context_cluster_ibfk_6` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
+  CONSTRAINT `context_cluster_ibfk_6` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `context_cluster_ibfk_7` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_cluster` (`context_cluster_id`, `context_cluster_track_number`, `context_cluster_name`, `context_cluster_description`, `fk_office_id`, `fk_context_cohort_id`, `fk_context_definition_id`, `context_cluster_created_date`, `context_cluster_last_modified_date`, `context_cluster_created_by`, `context_cluster_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'COER-25606',	'Malindi Cluster',	'This is Malindi cluster',	23,	1,	8,	'2019-12-13',	'2019-12-13 04:14:01',	1,	1,	453,	66),
+(2,	'COER-83909',	'Kaloleni Cluster',	'This is a Kaloleni Cluster',	19,	2,	8,	'2019-12-14',	'2019-12-14 04:41:24',	1,	1,	458,	66);
 
 DROP TABLE IF EXISTS `context_cluster_user`;
 CREATE TABLE `context_cluster_user` (
@@ -645,6 +689,7 @@ CREATE TABLE `context_cohort` (
   `context_cohort_description` longtext NOT NULL,
   `fk_office_id` int(100) NOT NULL,
   `fk_context_country_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
   `context_cohort_created_date` date NOT NULL,
   `context_cohort_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_cohort_created_by` int(100) NOT NULL,
@@ -656,13 +701,18 @@ CREATE TABLE `context_cohort` (
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_context_country_id` (`fk_context_country_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
   CONSTRAINT `context_cohort_ibfk_1` FOREIGN KEY (`fk_context_country_id`) REFERENCES `context_country` (`context_country_id`),
   CONSTRAINT `context_cohort_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `context_cohort_ibfk_3` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `context_cohort_ibfk_4` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
-  CONSTRAINT `context_cohort_ibfk_5` FOREIGN KEY (`fk_context_country_id`) REFERENCES `context_country` (`context_country_id`)
+  CONSTRAINT `context_cohort_ibfk_5` FOREIGN KEY (`fk_context_country_id`) REFERENCES `context_country` (`context_country_id`),
+  CONSTRAINT `context_cohort_ibfk_6` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_cohort` (`context_cohort_id`, `context_cohort_track_number`, `context_cohort_name`, `context_cohort_description`, `fk_office_id`, `fk_context_country_id`, `fk_context_definition_id`, `context_cohort_created_date`, `context_cohort_last_modified_date`, `context_cohort_created_by`, `context_cohort_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'CORT-53318',	'Coast and Lower Eastern Cohort',	'This is Coast and Lower Eastern Cohort',	20,	1,	9,	'2019-12-13',	'2019-12-13 04:12:02',	1,	1,	451,	70),
+(2,	'CORT-19622',	'Nairobi Area Cohort',	'This is a Nairobi Area Cohort',	15,	1,	9,	'2019-12-14',	'2019-12-14 04:28:21',	1,	1,	457,	70);
 
 DROP TABLE IF EXISTS `context_cohort_user`;
 CREATE TABLE `context_cohort_user` (
@@ -700,6 +750,7 @@ CREATE TABLE `context_country` (
   `context_country_description` longtext NOT NULL,
   `fk_office_id` int(100) NOT NULL,
   `fk_context_region_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
   `context_country_created_date` date NOT NULL,
   `context_country_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_country_created_by` int(100) NOT NULL,
@@ -711,13 +762,17 @@ CREATE TABLE `context_country` (
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_context_region_id` (`fk_context_region_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
   CONSTRAINT `context_country_ibfk_1` FOREIGN KEY (`fk_context_region_id`) REFERENCES `context_region` (`context_region_id`),
   CONSTRAINT `context_country_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `context_country_ibfk_3` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `context_country_ibfk_4` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
-  CONSTRAINT `context_country_ibfk_5` FOREIGN KEY (`fk_context_region_id`) REFERENCES `context_region` (`context_region_id`)
+  CONSTRAINT `context_country_ibfk_5` FOREIGN KEY (`fk_context_region_id`) REFERENCES `context_region` (`context_region_id`),
+  CONSTRAINT `context_country_ibfk_6` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_country` (`context_country_id`, `context_country_track_number`, `context_country_name`, `context_country_description`, `fk_office_id`, `fk_context_region_id`, `fk_context_definition_id`, `context_country_created_date`, `context_country_last_modified_date`, `context_country_created_by`, `context_country_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'CORY-56399',	'Kenya Country Office',	'This is Kenya Country Office',	18,	2,	10,	'2019-12-13',	'2019-12-13 04:11:04',	1,	1,	450,	69);
 
 DROP TABLE IF EXISTS `context_country_user`;
 CREATE TABLE `context_country_user` (
@@ -746,6 +801,8 @@ CREATE TABLE `context_country_user` (
   CONSTRAINT `context_country_user_ibfk_5` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_country_user` (`context_country_user_id`, `context_country_user_track_number`, `context_country_user_name`, `fk_user_id`, `fk_context_country_id`, `fk_designation_id`, `context_country_user_created_date`, `context_country_user_last_modified_date`, `context_country_user_created_by`, `context_country_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'COER-3908',	'Nicodemus Karisa - System Admin',	1,	1,	7,	'2019-12-13',	'2019-12-13 16:15:08',	1,	1,	456,	77);
 
 DROP TABLE IF EXISTS `context_definition`;
 CREATE TABLE `context_definition` (
@@ -780,6 +837,7 @@ CREATE TABLE `context_global` (
   `context_global_name` varchar(100) NOT NULL,
   `context_global_description` longtext NOT NULL,
   `fk_office_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
   `context_global_created_date` date NOT NULL,
   `context_global_created_by` int(100) NOT NULL,
   `context_global_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -790,11 +848,15 @@ CREATE TABLE `context_global` (
   UNIQUE KEY `fk_office_id` (`fk_office_id`),
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
   CONSTRAINT `context_global_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `context_global_ibfk_2` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `context_global_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
+  CONSTRAINT `context_global_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `context_global_ibfk_4` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_global` (`context_global_id`, `context_global_track_number`, `context_global_name`, `context_global_description`, `fk_office_id`, `fk_context_definition_id`, `context_global_created_date`, `context_global_created_by`, `context_global_last_modified_date`, `context_global_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(3,	'COAL-61677',	'International Office',	'This is the international office',	21,	12,	'2019-12-13',	1,	'2019-12-13 04:05:02',	1,	446,	67);
 
 DROP TABLE IF EXISTS `context_global_user`;
 CREATE TABLE `context_global_user` (
@@ -832,6 +894,7 @@ CREATE TABLE `context_region` (
   `context_region_description` longtext NOT NULL,
   `fk_office_id` int(100) NOT NULL,
   `fk_context_global_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
   `context_region_created_date` date NOT NULL,
   `context_region_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_region_created_by` int(100) NOT NULL,
@@ -843,13 +906,17 @@ CREATE TABLE `context_region` (
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_context_global_id` (`fk_context_global_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
   CONSTRAINT `context_region_ibfk_1` FOREIGN KEY (`fk_context_global_id`) REFERENCES `context_global` (`context_global_id`),
   CONSTRAINT `context_region_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `context_region_ibfk_3` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `context_region_ibfk_4` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
-  CONSTRAINT `context_region_ibfk_5` FOREIGN KEY (`fk_context_global_id`) REFERENCES `context_global` (`context_global_id`)
+  CONSTRAINT `context_region_ibfk_5` FOREIGN KEY (`fk_context_global_id`) REFERENCES `context_global` (`context_global_id`),
+  CONSTRAINT `context_region_ibfk_6` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_region` (`context_region_id`, `context_region_track_number`, `context_region_name`, `context_region_description`, `fk_office_id`, `fk_context_global_id`, `fk_context_definition_id`, `context_region_created_date`, `context_region_last_modified_date`, `context_region_created_by`, `context_region_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(2,	'COON-65080',	'Africa Region Office',	'This is Africa Region',	22,	3,	11,	'2019-12-13',	'2019-12-13 04:10:04',	1,	1,	449,	68);
 
 DROP TABLE IF EXISTS `context_region_user`;
 CREATE TABLE `context_region_user` (
@@ -874,6 +941,25 @@ CREATE TABLE `context_region_user` (
   CONSTRAINT `context_region_user_ibfk_2` FOREIGN KEY (`fk_context_region_id`) REFERENCES `context_region` (`context_region_id`),
   CONSTRAINT `context_region_user_ibfk_3` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `context_region_user_ibfk_5` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `context_user`;
+CREATE TABLE `context_user` (
+  `context_user_id` int(100) NOT NULL AUTO_INCREMENT,
+  `context_user_track_number` varchar(100) NOT NULL,
+  `context_user_name` varchar(100) NOT NULL,
+  `fk_user_id` int(100) NOT NULL,
+  `fk_context_id` int(100) NOT NULL,
+  `context_user_created_date` date NOT NULL,
+  `context_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `context_user_created_by` int(11) NOT NULL,
+  `context_user_last_modified_by` int(11) NOT NULL,
+  PRIMARY KEY (`context_user_id`),
+  KEY `fk_user_id` (`fk_user_id`),
+  KEY `fk_context_id` (`fk_context_id`),
+  CONSTRAINT `context_user_ibfk_1` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `context_user_ibfk_2` FOREIGN KEY (`fk_context_id`) REFERENCES `context` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1047,7 +1133,8 @@ INSERT INTO `designation` (`designation_id`, `designation_track_number`, `design
 (3,	'DEON-85720',	'Project Accountant ',	13,	'2019-11-21',	'2019-11-21 16:40:59',	1,	1,	268,	76),
 (4,	'DEON-32456',	'Partnership Facilitator',	8,	'2019-11-21',	'2019-11-21 16:41:23',	1,	1,	269,	76),
 (5,	'DEON-63399',	'Manager of Partnership',	9,	'2019-11-21',	'2019-11-21 16:41:40',	1,	1,	270,	76),
-(6,	'DEON-8049',	'Health Specialist',	10,	'2019-11-21',	'2019-11-21 16:41:58',	1,	1,	271,	76);
+(6,	'DEON-8049',	'Health Specialist',	10,	'2019-11-21',	'2019-11-21 16:41:58',	1,	1,	271,	76),
+(7,	'DEON-68629',	'Country System Admin',	10,	'2019-12-13',	'2019-12-13 16:14:20',	1,	1,	455,	76);
 
 DROP TABLE IF EXISTS `expense_account`;
 CREATE TABLE `expense_account` (
@@ -1250,12 +1337,6 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (497,	'Language',	'Language',	1,	NULL,	'2019-11-26 20:45:56',	NULL,	NULL,	NULL,	NULL),
 (498,	'Setting',	'Setting',	1,	NULL,	'2019-11-26 22:05:45',	NULL,	NULL,	NULL,	NULL),
 (500,	'Income_account',	'Income_account',	1,	NULL,	'2019-11-27 13:24:36',	NULL,	NULL,	NULL,	NULL),
-(503,	'Context_center',	'Context_center',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(504,	'Context_cluster',	'Context_cluster',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(505,	'Context_cohort',	'Context_cohort',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(506,	'Context_country',	'Context_country',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(507,	'Context_global',	'Context_global',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(508,	'Context_region',	'Context_region',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (521,	'Office',	'Office',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (522,	'Office_bank',	'Office_bank',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (523,	'Context_definition',	'Context_definition',	1,	NULL,	'2019-12-08 12:20:29',	NULL,	NULL,	NULL,	NULL),
@@ -1620,12 +1701,6 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (1273,	18,	497,	1,	34,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
 (1274,	18,	498,	1,	35,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
 (1275,	18,	500,	1,	36,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1279,	1,	503,	1,	72,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1280,	1,	504,	1,	73,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1281,	1,	505,	1,	74,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1282,	1,	506,	1,	75,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1283,	1,	507,	1,	76,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1284,	1,	508,	1,	77,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1297,	1,	521,	1,	90,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1298,	1,	522,	1,	91,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1299,	1,	523,	1,	75,	0,	NULL,	'2019-12-08 12:20:30',	NULL,	NULL,	NULL,	NULL),
@@ -1727,7 +1802,9 @@ INSERT INTO `office` (`office_id`, `office_track_number`, `office_name`, `office
 (18,	'CEER-5952',	'Kenya Head Office',	'',	'',	10,	'1979-10-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	433,	45),
 (19,	'CEER-29652',	'Kaloleni Cluster Unit',	'',	'',	8,	'2019-06-26',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	439,	45),
 (20,	'CEER-80112',	'Cohort 1 Unit',	'',	'',	9,	'2009-02-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	441,	45),
-(21,	'OFCE-10254',	'Global Office ',	'',	'G001',	12,	'1990-10-11',	'0000-00-00',	1,	1,	'2019-12-08',	'0000-00-00',	1,	442,	45);
+(21,	'OFCE-10254',	'Global Office ',	'',	'G001',	12,	'1990-10-11',	'0000-00-00',	1,	1,	'2019-12-08',	'0000-00-00',	1,	442,	45),
+(22,	'OFCE-18309',	'Africa Region Office',	'',	'AFR',	11,	'1979-06-06',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	448,	45),
+(23,	'OFCE-7255',	'Malindi Cluster',	'',	'MLD',	8,	'2008-07-31',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	452,	45);
 
 DROP TABLE IF EXISTS `office_bank`;
 CREATE TABLE `office_bank` (
@@ -2534,4 +2611,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-12-12 17:22:21
+-- 2019-12-15 07:48:35
