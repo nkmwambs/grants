@@ -37,16 +37,17 @@ class User_model extends MY_Model
    * @return Array : Table's foreign tables
    */
   function detail_tables():Array {
-    $center_group_user_table = "";
+    // $center_group_user_table = "";
 
-    if($this->action == 'view'){
+    // if($this->action == 'view'){
 
-      $user_id = hash_id($this->uri->segment(3),'decode');
+    //   $user_id = hash_id($this->uri->segment(3),'decode');
 
-      $center_group_user_table = $this->get_center_group_hierarchy_user_table_name($user_id);
-    }
+    //   $center_group_user_table = $this->get_center_group_hierarchy_user_table_name($user_id);
+    // }
 
-    return array($center_group_user_table,'department_user');
+    // return array($center_group_user_table,'department_user');
+    return array();
   }
 
   function lookup_tables(){
@@ -197,37 +198,6 @@ class User_model extends MY_Model
     return $center_group_hierarchy_record;
   }
 
-   /**
-    * get_user_context_association
-    *
-    * This method retrieves an array of context records related to a certain user
-    * 
-    * @param int $user_id
-    * @return Array - A user's context records
-    */
-
-    function get_user_context_association(int $user_id):Array {
-
-      $associations_array = array();
-
-      $context_definition = $this->get_user_context_definition($user_id);
-      $context_table = 'context_'.strtolower($context_definition['context_definition_name']);
-      $context_users_table = 'context_'.strtolower($context_definition['context_definition_name']).'_user';
-      $context_users_table_id = $this->grants->primary_key_field($context_users_table);
-
-     
-      $this->db->select(array($context_users_table_id,'fk_user_id',
-      'fk_'.$context_table.'_id','fk_designation_id'));
-      
-      $associations = $this->db->get_where($context_users_table,
-      array('fk_user_id'=>$user_id));
-
-      if($associations->num_rows()>0){
-        $associations_array = $associations->result_array();
-      }
-      
-      return $associations_array; 
-    }
 
     /**
      * get_user_context_offices
@@ -262,47 +232,119 @@ class User_model extends MY_Model
       return $user_offices;
     }
 
-    function user_hierarchy_offices($user_id){
-           
-      // User context
-      $user_context_level = strtolower($this->get_user_context_definition($user_id)['context_definition_level']);
-          
-      //User context hierarchy
-      $this->db->select(array('context_definition_name'));
-      $context_definition_level_obj = $this->db->order_by('context_definition_level','ASC')
-      ->get_where('context_definition',array('context_definition_level<='=>$user_context_level));
+       /**
+    * get_user_context_association
+    *
+    * This method retrieves an array of context records related to a certain user
+    * 
+    * @param int $user_id
+    * @return Array - A user's context records
+    */
+
+    function get_user_context_association(int $user_id):Array {
+
+      $associations_array = array();
+
+      $context_definition = $this->get_user_context_definition($user_id);
+      $context_table = 'context_'.strtolower($context_definition['context_definition_name']);
+      $context_users_table = 'context_'.strtolower($context_definition['context_definition_name']).'_user';
+      $context_users_table_id = $this->grants->primary_key_field($context_users_table);
+
+     
+      $this->db->select(array($context_users_table_id,'fk_user_id',
+      $context_table.'_id','fk_designation_id'));
       
-      $hierarchy_offices = array();
+      //$this->db->join('context_definition','context_definition.context_definition_id=');
+      $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_users_table.'.fk_'.$context_table.'_id');
+      $associations = $this->db->get_where($context_users_table,
+      array('fk_user_id'=>$user_id));
 
-      if($context_definition_level_obj->num_rows() > 0){
-        $context_hierarchy = array_column($context_definition_level_obj->result_array(),'context_definition_name');
+      if($associations->num_rows()>0){
+        $associations_array = $associations->result_array();
+      }
+      
+      return $associations_array; 
+    }
+
+    function user_hierarchy_offices($user_id,$show_context = false){
+      
+      $user_context = 'country'; // Template variable
+
+      $context_definitions = $this->grants->context_definitions();
+      
+      $user_context_table = $context_definitions[$user_context]['context_table'];
+      $user_context_table_user = $context_definitions[$user_context]['context_user_table'];
+      
+      $user_context_level = $this->db->get_where('context_definition',array('context_definition_name'=>$user_context))->row()->context_definition_level;
+
+      $user_context_id = 1; // Template variable
+
+      $this->db->select(array('context_definition_name'));
+      $hierachy_context_obj = $this->db->order_by('context_definition_level','ASC')
+      ->get_where('context_definition',array('context_definition_level<='=>$user_context_level))->result_array();
+
+      $hierachy_contexts = array_column($hierachy_context_obj,'context_definition_name');
+      
+      $user_hierarchy_offices = array();
+
+      foreach($hierachy_contexts as $hierarchy_context){
+        if($show_context) 
+          $office_ids[$hierarchy_context] = $this->get_office_hierarchy($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
+        else
+          $office_ids = $this->get_office_hierarchy($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
         
-        //$user_context = array_pop($context_hierarchy);
+        $user_hierarchy_offices = array_merge($user_hierarchy_offices,$office_ids);
+      }
+      
+      return $user_hierarchy_offices;
+    }
+    
+    //Context can be global, region, country, cohort, cluster, center 
+    function get_office_hierarchy($user_context_table, $user_context_level, $user_context_id, $hierarchy_context){
 
-        for($i=0;$i<count($context_hierarchy);$i++){
-            
-          if(isset($context_hierarchy[$i+1])){
-            $deep_table = 'context_'.strtolower($context_hierarchy[$i]);
-            $joining_table = 'context_'.strtolower($context_hierarchy[$i+1]);
-            
-            //$this->db->join($joining_table,$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id');
-          }
-          
-        }
+      if($hierarchy_context == 'center'){
 
-        $context_table = 'context_'.array_pop($context_hierarchy);
-        $context_user_table = $context_table.'_user';
+        $this->db->select(array('context_center.fk_office_id as office_id'));
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
+        if($user_context_level > 1) $this->db->join('context_center','context_center.fk_context_cluster_id=context_cluster.context_cluster_id');  
+        
+      }elseif($hierarchy_context == 'cluster'){
 
-        $this->db->select(array('fk_office_id'));
-        $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_user_table.'.fk_'.$context_table.'_id');
-        $hierarchy_offices = $this->db->get_where($context_table,array('fk_user_id'=>$user_id));
+        $this->db->select(array('context_cluster.fk_office_id as office_id'));
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
+        
+      }elseif($hierarchy_context == 'cohort'){
+        
+        $this->db->select(array('context_cohort.fk_office_id as office_id'));
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+ 
+      }elseif($hierarchy_context == 'country'){
+        
+        $this->db->select(array('context_country.fk_office_id as office_id'));
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        
+      }elseif($hierarchy_context == 'region'){
+        
+        $this->db->select(array('context_region.fk_office_id as office_id'));
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
 
       }
 
-      return $hierarchy_offices;
+      $hierarchy_offices = $this->db->get_where($user_context_table,array($user_context_table.'_id'=>$user_context_id))->result_array();
+      
+      $hierarchy_offices_ids = array_column($hierarchy_offices,'office_id');
 
+      return $hierarchy_offices_ids;
     }
-    
 
     function user_associated_office_names($user_id){
       $user_associated_centers = $this->get_centers_in_center_group_hierarchy($user_id);

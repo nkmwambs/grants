@@ -33,7 +33,10 @@ class Context_definition_model extends MY_Model{
     }
 
     public function detail_tables(){
-        return array('user');
+        $context_definition_name =  $this->db->get_where('context_definition',
+        array("context_definition_id"=>hash_id($this->id,'decode')))->row()->context_definition_name;
+        
+        return array('user','context_'.$context_definition_name);
     }
 
     function show_add_button(){

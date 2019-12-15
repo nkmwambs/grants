@@ -1,5 +1,6 @@
 <?php
 
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -10,17 +11,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-
-class Context_cluster extends MY_Controller
+class Context_user_library extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->load->library('context_cluster_library');
+    $this->CI =& get_instance();
   }
 
   function index(){}
 
-  //static function get_menu_list(){}
-
-}
+} 
