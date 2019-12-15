@@ -132,11 +132,12 @@ function __construct(){
   // Get the default running actions
   $this->action = $this->CI->uri->segment(2,'list');
 
+  //Loading system model (Grants_model and User model). The autoloaded models do not work in the grants library context and has to loaded here
+  $this->CI->load->model('autoloaded/grants_model');
+  $this->CI->load->model('autoloaded/user_model');
+
   // Load the main/ feature controller model
   $this->CI->load->model($this->current_model);
-
-  //Loading system model (Grants_model). The autoloaded grants model does work in library context and has to loaded here
-  $this->CI->load->model('autoloaded/grants_model');
 
   // Loading the main feature library
   $this->CI->load->library($this->current_library);
