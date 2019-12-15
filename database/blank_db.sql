@@ -278,7 +278,12 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (455,	'APAL-73086',	'Approval Ticket # APAL-73086',	51,	87,	1,	'2019-12-13',	'2019-12-13 16:14:20',	1),
 (456,	'APAL-46322',	'Approval Ticket # APAL-46322',	52,	87,	1,	'2019-12-13',	'2019-12-13 16:15:08',	1),
 (457,	'APAL-49743',	'Approval Ticket # APAL-49743',	45,	87,	1,	'2019-12-14',	'2019-12-14 04:28:21',	1),
-(458,	'APAL-85536',	'Approval Ticket # APAL-85536',	41,	87,	1,	'2019-12-14',	'2019-12-14 04:41:24',	1);
+(458,	'APAL-85536',	'Approval Ticket # APAL-85536',	41,	87,	1,	'2019-12-14',	'2019-12-14 04:41:24',	1),
+(459,	'APAL-38176',	'Approval Ticket # APAL-38176',	20,	87,	1,	'2019-12-15',	'2019-12-15 08:16:59',	1),
+(460,	'APAL-80263',	'Approval Ticket # APAL-80263',	44,	87,	1,	'2019-12-15',	'2019-12-15 08:18:39',	1),
+(461,	'APAL-18863',	'Approval Ticket # APAL-18863',	52,	87,	1,	'2019-12-15',	'2019-12-15 08:23:05',	1),
+(462,	'APAL-35991',	'Approval Ticket # APAL-35991',	20,	87,	1,	'2019-12-15',	'2019-12-15 09:05:20',	1),
+(463,	'APAL-17664',	'Approval Ticket # APAL-17664',	45,	87,	1,	'2019-12-15',	'2019-12-15 09:06:40',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -604,6 +609,7 @@ CREATE TABLE `context_center_user` (
   `fk_user_id` int(100) NOT NULL,
   `fk_context_center_id` int(100) NOT NULL,
   `fk_designation_id` int(100) NOT NULL,
+  `context_center_user_is_active` int(5) NOT NULL DEFAULT '1',
   `context_center_user_created_date` date NOT NULL,
   `context_center_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_center_user_created_by` int(100) NOT NULL,
@@ -661,6 +667,7 @@ CREATE TABLE `context_cluster_user` (
   `fk_context_cluster_id` int(100) NOT NULL,
   `fk_user_id` int(100) NOT NULL,
   `fk_designation_id` int(100) NOT NULL,
+  `context_cluster_user_is_active` int(5) NOT NULL DEFAULT '1',
   `context_cluster_user_created_date` date NOT NULL,
   `context_cluster_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_cluster_user_created_by` int(100) NOT NULL,
@@ -712,7 +719,8 @@ CREATE TABLE `context_cohort` (
 
 INSERT INTO `context_cohort` (`context_cohort_id`, `context_cohort_track_number`, `context_cohort_name`, `context_cohort_description`, `fk_office_id`, `fk_context_country_id`, `fk_context_definition_id`, `context_cohort_created_date`, `context_cohort_last_modified_date`, `context_cohort_created_by`, `context_cohort_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'CORT-53318',	'Coast and Lower Eastern Cohort',	'This is Coast and Lower Eastern Cohort',	20,	1,	9,	'2019-12-13',	'2019-12-13 04:12:02',	1,	1,	451,	70),
-(2,	'CORT-19622',	'Nairobi Area Cohort',	'This is a Nairobi Area Cohort',	15,	1,	9,	'2019-12-14',	'2019-12-14 04:28:21',	1,	1,	457,	70);
+(2,	'CORT-19622',	'Nairobi Area Cohort',	'This is a Nairobi Area Cohort',	15,	1,	9,	'2019-12-14',	'2019-12-14 04:28:21',	1,	1,	457,	70),
+(3,	'CORT-57857',	'Uganda East Cohort Context',	'Uganda East Cohort Context',	25,	2,	9,	'2019-12-15',	'2019-12-15 09:06:40',	1,	1,	463,	70);
 
 DROP TABLE IF EXISTS `context_cohort_user`;
 CREATE TABLE `context_cohort_user` (
@@ -722,6 +730,7 @@ CREATE TABLE `context_cohort_user` (
   `fk_user_id` int(100) NOT NULL,
   `fk_context_cohort_id` int(100) NOT NULL,
   `fk_designation_id` int(100) NOT NULL,
+  `context_cohort_user_is_active` int(5) NOT NULL DEFAULT '1',
   `context_cohort_user_created_date` date NOT NULL,
   `context_cohort_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_cohort_user_created_by` int(100) NOT NULL,
@@ -772,7 +781,8 @@ CREATE TABLE `context_country` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `context_country` (`context_country_id`, `context_country_track_number`, `context_country_name`, `context_country_description`, `fk_office_id`, `fk_context_region_id`, `fk_context_definition_id`, `context_country_created_date`, `context_country_last_modified_date`, `context_country_created_by`, `context_country_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'CORY-56399',	'Kenya Country Office',	'This is Kenya Country Office',	18,	2,	10,	'2019-12-13',	'2019-12-13 04:11:04',	1,	1,	450,	69);
+(1,	'CORY-56399',	'Kenya Country Office',	'This is Kenya Country Office',	18,	2,	10,	'2019-12-13',	'2019-12-13 04:11:04',	1,	1,	450,	69),
+(2,	'CORY-88987',	'Uganda Country Office',	'Uganda Country Office',	24,	2,	10,	'2019-12-15',	'2019-12-15 08:18:39',	1,	1,	460,	69);
 
 DROP TABLE IF EXISTS `context_country_user`;
 CREATE TABLE `context_country_user` (
@@ -782,6 +792,7 @@ CREATE TABLE `context_country_user` (
   `fk_user_id` int(100) NOT NULL,
   `fk_context_country_id` int(100) NOT NULL,
   `fk_designation_id` int(100) NOT NULL,
+  `context_country_user_is_active` int(5) NOT NULL DEFAULT '1',
   `context_country_user_created_date` date NOT NULL,
   `context_country_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_country_user_created_by` int(100) NOT NULL,
@@ -801,8 +812,9 @@ CREATE TABLE `context_country_user` (
   CONSTRAINT `context_country_user_ibfk_5` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `context_country_user` (`context_country_user_id`, `context_country_user_track_number`, `context_country_user_name`, `fk_user_id`, `fk_context_country_id`, `fk_designation_id`, `context_country_user_created_date`, `context_country_user_last_modified_date`, `context_country_user_created_by`, `context_country_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'COER-3908',	'Nicodemus Karisa - System Admin',	1,	1,	7,	'2019-12-13',	'2019-12-13 16:15:08',	1,	1,	456,	77);
+INSERT INTO `context_country_user` (`context_country_user_id`, `context_country_user_track_number`, `context_country_user_name`, `fk_user_id`, `fk_context_country_id`, `fk_designation_id`, `context_country_user_is_active`, `context_country_user_created_date`, `context_country_user_last_modified_date`, `context_country_user_created_by`, `context_country_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'COER-3908',	'Nicodemus Karisa - System Admin',	1,	1,	7,	1,	'2019-12-13',	'2019-12-13 16:15:08',	1,	1,	456,	77),
+(2,	'COER-46484',	'Nicodemus Karisa for Uganda Sys Admin',	1,	2,	7,	1,	'2019-12-15',	'2019-12-15 08:23:05',	1,	1,	461,	77);
 
 DROP TABLE IF EXISTS `context_definition`;
 CREATE TABLE `context_definition` (
@@ -866,6 +878,7 @@ CREATE TABLE `context_global_user` (
   `fk_user_id` int(100) NOT NULL,
   `fk_context_global_id` int(100) NOT NULL,
   `fk_designation_id` int(100) NOT NULL,
+  `context_global_user_is_active` int(5) NOT NULL DEFAULT '1',
   `context_global_user_created_date` date NOT NULL,
   `context_global_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_global_user_created_by` int(100) NOT NULL,
@@ -926,6 +939,7 @@ CREATE TABLE `context_region_user` (
   `fk_user_id` int(100) NOT NULL,
   `fk_context_region_id` int(100) NOT NULL,
   `fk_designation_id` int(100) NOT NULL,
+  `context_region_user_is_active` int(5) NOT NULL DEFAULT '1',
   `context_region_user_created_date` date NOT NULL,
   `context_region_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `context_region_user_created_by` int(100) NOT NULL,
@@ -1804,7 +1818,9 @@ INSERT INTO `office` (`office_id`, `office_track_number`, `office_name`, `office
 (20,	'CEER-80112',	'Cohort 1 Unit',	'',	'',	9,	'2009-02-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	441,	45),
 (21,	'OFCE-10254',	'Global Office ',	'',	'G001',	12,	'1990-10-11',	'0000-00-00',	1,	1,	'2019-12-08',	'0000-00-00',	1,	442,	45),
 (22,	'OFCE-18309',	'Africa Region Office',	'',	'AFR',	11,	'1979-06-06',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	448,	45),
-(23,	'OFCE-7255',	'Malindi Cluster',	'',	'MLD',	8,	'2008-07-31',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	452,	45);
+(23,	'OFCE-7255',	'Malindi Cluster',	'',	'MLD',	8,	'2008-07-31',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	452,	45),
+(24,	'OFCE-76800',	'Uganda Country Office',	'',	'UG',	10,	'1990-07-10',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	459,	45),
+(25,	'OFCE-78129',	'Uganda East Cohort',	'',	'Uganda East Cohort',	9,	'1994-10-26',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	462,	45);
 
 DROP TABLE IF EXISTS `office_bank`;
 CREATE TABLE `office_bank` (
@@ -2611,4 +2627,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-12-15 07:48:35
+-- 2019-12-15 09:18:26
