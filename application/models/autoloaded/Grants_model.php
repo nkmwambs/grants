@@ -547,7 +547,7 @@ function max_number_of_menu_items(){
 }
 
 private function _run_list_query($table, $selected_columns, $lookup_tables, 
-$lib_where_method = "list_table_where", $filter_where_array = array() ){
+$model_where_method = "list_table_where", $filter_where_array = array() ){
 
   // Run column selector
   $this->db->select($selected_columns);
@@ -564,20 +564,17 @@ $lib_where_method = "list_table_where", $filter_where_array = array() ){
     }
   }
 
-  $library = $table.'_library';
-
-  $this->load->library($library);
-
-  // A condition supplied from the Output API class
-  if(count($filter_where_array) > 0 && is_array($filter_where_array) ){
+  //View OUTPUT API defined condition array
+  if(is_array($filter_where_array) && count($filter_where_array) > 0){
     $this->db->where($filter_where_array);
   }
+  
+  // Model defined where condition
+  $model = $table.'_model';
+  $this->load->model($model);
 
-  if(method_exists($this->$library,$lib_where_method) && 
-      is_array($this->$library->$lib_where_method()) && 
-        count($this->$library->$lib_where_method()) > 0
-    ){
-    $this->db->where($this->$library->$lib_where_method());
+  if(method_exists($this->$model,$model_where_method)){
+    $this->$model->$model_where_method();
   }
 }
 
@@ -593,17 +590,17 @@ $lib_where_method = "list_table_where", $filter_where_array = array() ){
  * @return Array - Database result
  */
 public function run_list_query($table, $selected_columns, $lookup_tables, 
-  $lib_where_method = "list_table_where", $filter_where_array = array() ): Array {
+  $model_where_method = "list_table_where", $filter_where_array = array() ): Array {
     
 
-    $this->_run_list_query($table, $selected_columns, $lookup_tables,$lib_where_method, $filter_where_array);
+    $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
 
     if(!$this->db->get($table)){
       $error = $this->db->error();
       $message = 'You have a database error code '.$error['code'].'. '.$error['message'];
       show_error($message,500,'An Error Was Encountered');
     }else{
-      $this->_run_list_query($table, $selected_columns, $lookup_tables,$lib_where_method, $filter_where_array);
+      $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
       return $this->db->get($table)->result_array();
     }
     
@@ -681,15 +678,13 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   function grants_get($table){
 
-    $library = $table.'_library';
+    $model = $table.'_model';
 
-    $this->load->library($library);
+    $this->load->model($model);
 
-    if(method_exists($this->$library,'list_table_where') && 
-        is_array($this->$library->list_table_where()) && 
-          count($this->$library->list_table_where()) > 0
-      ){
-      $this->db->where($this->$library->list_table_where());
+    if(method_exists($this->$model,'list_table_where') ){
+      // This is always a $this->db->where statement
+      $this->$library->list_table_where();
     }
 
     return $this->db->get($table)->result_array();
@@ -697,15 +692,13 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   function grants_get_row($table){
 
-    $library = $table.'_library';
+    $model = $table.'_model';
 
-    $this->load->library($library);
+    $this->load->model($model);
 
-    if(method_exists($this->$library,'list_table_where') && 
-        is_array($this->$library->list_table_where()) && 
-          count($this->$library->list_table_where()) > 0
-      ){
-      $this->db->where($this->$library->list_table_where());
+    if(method_exists($this->$model,'list_table_where') ){
+      // This is always a $this->db->where statement
+      $this->$model->list_table_where();
     }
 
     return $this->db->get($table)->row();

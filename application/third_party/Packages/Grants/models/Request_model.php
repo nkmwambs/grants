@@ -56,14 +56,14 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function lookup_values($table){
     
-    // $lookup_values = [];
+    $lookup_values = [];
 
-    // if($table == 'center'){
-      
-    //   $lookup_values['center'] = $this->db->get_where('center',array('fk_center_group_hierarchy_id'=>8))->result_array();  
-    // }
+    if($table == 'office'){
+      $this->db->where_in('office_id',$this->session->hierarchy_offices);
+      $lookup_values['office'] = $this->db->get('office')->result_array();  
+    }
 
-    // return $lookup_values;
+    return $lookup_values;
   }
 
   function list_table_where(){
