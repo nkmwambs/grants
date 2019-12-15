@@ -66,5 +66,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     // return $lookup_values;
   }
 
+  function list_table_where(){
+    $this->db->where_in($this->controller.'.fk_office_id',$this->session->hierarchy_offices);
+  }
+
 
 }

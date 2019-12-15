@@ -165,6 +165,14 @@ function where_condition($condition_type,...$args){
   return $this->CI->grants_model->$condition_method(...$args);
 }
 
+function list_table_where($table = ""){
+  $model = $table == ""?$this->current_model:$this->load_detail_model($table);
+
+  if(method_exists($this->CI->$model,'list_table_where')){
+    $this->CI->$model->list_table_where();
+  }
+}
+
 function get_centers_in_center_group_hierarchy($user_id){
   return $this->user_model->get_centers_in_center_group_hierarchy($user_id);
 
@@ -585,7 +593,7 @@ function detail_tables(String $table_name = ""): Array {
     
     $this->detail_tables = array($detail_table);
 
-  }elseif($this->action == 'view' && $this->dependant_table($table_name) !== ""){
+  }elseif($this->dependant_table($table_name) !== ""){
     // If dependant_table exists, you can't have more than one detail table. This piece nullifies the use
     // of the detail_tables feature model if is set
     $this->detail_tables[] = $this->dependant_table($table_name);

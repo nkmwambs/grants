@@ -84,30 +84,37 @@ public $auth;
          // This session carries the ids of the departments related to the current user.
          // A user may or may not have a department. A user can have multiple departments
         
-        // $this->session->set_userdata('departments',
-          //  $this->user_model->user_department($row->user_id));
+        $this->session->set_userdata('departments',
+           $this->user_model->user_department($row->user_id));
         
-        // This session carries all the center group heierachy association the 
-        // user has related to the user hierarchy level in the user profile
-        // i.e. If the user hierarchy level is Country, then these are the records in the group_country_user table
-        // and answers the question of how many regions, countries, cohorts, clusters or centers is the user associated to
-        // A user can lack an association and in this case cannot access any menu item
+        // This session carries an array of context records related to a certain user 
+        // i.e. if the user is of context country, it give an array of the records in the context_country
+        // table related to this user with fields context_country_user_id, context_country_id, fk_designation_id   
         
-        //$this->session->set_userdata('hierarchy_associations',
-          //  $this->user_model->get_user_center_group_hierarchy_associations($row->user_id));
+        $this->session->set_userdata('context_associations',
+           $this->user_model->get_user_context_association($row->user_id));
         
-        // This carries the id of the center group hierachy
-        //$this->session->set_userdata('center_group',$row->fk_center_group_hierarchy_id);
+        // Retrieves the user's context definition record with 4 fields 
+        // i.e. context_definition_id, context_definition_name, context_definition_level and context_definition_is_active
+        // A user can only have 1 context definition relationship as defined in their user record fk_context_definition_id
 
-        // This session carries the full array of the center group hierarchy  
+        $this->session->set_userdata('context_definition',
+        $this->user_model->get_user_context_definition($row->user_id));
+
+        // This method returns office ids the user has an association with in his/her context 
+        // A user can have multiple offices associated to him or her e.g. A user of context definition of a country
+        // can be associated to multiple countries.  
+    
+        $this->session->set_userdata('context_offices',
+           $this->user_model->get_user_context_offices($this->session->user_id));
         
-        //$this->session->set_userdata('center_group_info',
-          //  $this->user_model->get_center_group_hierarchy_information($this->session->user_id));
+        // This method crreates an array of all office ids in the entire context hierachy of the user. 
+        // If the context of the user is country called Kenya and Uganda, this 
+        // methods gives all offices related to kenya and Uganda from 
+        // the cohort level (immediate next level to a country) to the center level  
         
-        // This session carries an array of the center ids which the current user has a 
-        // scope to in the entire center group hierarchy   
-        //$this->session->set_userdata('user_centers',
-          //  $this->user_model->get_centers_in_center_group_hierarchy($row->user_id));
+        $this->session->set_userdata('hierarchy_offices',
+           $this->user_model->user_hierarchy_offices($row->user_id));
         
         /**
          * Breadcrumb and default page sessions
