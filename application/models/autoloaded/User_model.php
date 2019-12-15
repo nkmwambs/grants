@@ -37,17 +37,10 @@ class User_model extends MY_Model
    * @return Array : Table's foreign tables
    */
   function detail_tables():Array {
-    // $center_group_user_table = "";
+   
+    $context_definition_name = $this->get_user_context_definition(hash_id($this->id,'decode'))['context_definition_name'];
+    return array('context_'.$context_definition_name.'_user','department_user');
 
-    // if($this->action == 'view'){
-
-    //   $user_id = hash_id($this->uri->segment(3),'decode');
-
-    //   $center_group_user_table = $this->get_center_group_hierarchy_user_table_name($user_id);
-    // }
-
-    // return array($center_group_user_table,'department_user');
-    return array();
   }
 
   function lookup_tables(){
@@ -175,34 +168,42 @@ class User_model extends MY_Model
    }
 
    /**
-    * get_center_group_table_name
-    * Gets the name of the center group hierarchy
+    * get_user_context_definition
+    *
+    * Retrieves the user's context definition record with 4 fields 
+    * i.e. context_definition_id, context_definition_name, context_definition_level and context_definition_is_active
+    * 
+    * A user can only have 1 context definition relationship as defined in their user record fk_context_definition_id
+    *
     * @param int $user_id
-    * @return Array - Array of the center group hierarchy record
+    * @return Array - Array of context definition
     */
    function get_user_context_definition(int $user_id):Array{
 
-    $center_group_hierarchy_record = "";
+    $user_context_definition = "";
 
     $this->db->select(array('context_definition_id','context_definition_name',
     'context_definition_level','context_definition_is_active'));
     
     $this->db->join('user','user.fk_context_definition_id=context_definition.context_definition_id');
-    $center_group_obj = $this->db->get_where('context_definition',
+    $user_context_definition_obj = $this->db->get_where('context_definition',
     array('user_id'=>$user_id));
 
-    if($center_group_obj->num_rows() > 0){
-      $center_group_hierarchy_record =  $center_group_obj->row_array();
+    if($user_context_definition_obj->num_rows() > 0){
+      $user_context_definition =  $user_context_definition_obj->row_array();
     }
     
-    return $center_group_hierarchy_record;
+    return $user_context_definition;
   }
 
 
     /**
      * get_user_context_offices
      * 
-     * This method returns offices the user has an association with in his/her context
+     * This method returns office ids the user has an association with in his/her context
+     * 
+     * A user can have multiple offices associated to him or her e.g. A user of context definition of a country
+     * can be associated to multiple countries.
      * 
      * @param int $user_id 
      * @return Array - Office ids
@@ -232,10 +233,12 @@ class User_model extends MY_Model
       return $user_offices;
     }
 
-       /**
+  /**
     * get_user_context_association
     *
-    * This method retrieves an array of context records related to a certain user
+    * This method retrieves an array of context records related to a certain user 
+    * i.e. if the user is of context country, it give an array of the records in the context_country
+    * table related to this user with fields context_country_user_id, context_country_id, fk_designation_id 
     * 
     * @param int $user_id
     * @return Array - A user's context records
@@ -249,15 +252,13 @@ class User_model extends MY_Model
       $context_table = 'context_'.strtolower($context_definition['context_definition_name']);
       $context_users_table = 'context_'.strtolower($context_definition['context_definition_name']).'_user';
       $context_users_table_id = $this->grants->primary_key_field($context_users_table);
-
      
-      $this->db->select(array($context_users_table_id,'fk_user_id',
+      $this->db->select(array($context_users_table_id,
       $context_table.'_id','fk_designation_id'));
       
-      //$this->db->join('context_definition','context_definition.context_definition_id=');
       $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_users_table.'.fk_'.$context_table.'_id');
       $associations = $this->db->get_where($context_users_table,
-      array('fk_user_id'=>$user_id));
+      array('fk_user_id'=>$user_id,$context_users_table.'_is_active'=>1));
 
       if($associations->num_rows()>0){
         $associations_array = $associations->result_array();
@@ -266,41 +267,69 @@ class User_model extends MY_Model
       return $associations_array; 
     }
 
+    /**
+     * user_hierarchy_offices
+     * 
+     * This method crreates an array of all office ids in the entire context hierachy of the user.
+     * 
+     * If the context of the user is country called Kenya and Uganda, this 
+     * methods gives all offices related to kenya and Uganda from 
+     * the cohort level (immediate next level to a country) to the center level
+     * 
+     * @param String $user_id
+     * @param Bool $show_context - If true office Ids will be grouped by their respective contexts
+     * @return Array 
+     * @todo  $show_context is not functional. The array produced is mixed up and cod has been commented for review
+     */
+
     function user_hierarchy_offices($user_id,$show_context = false){
       
-      $user_context = 'country'; // Template variable
+      $user_context_definition = $this->get_user_context_definition($user_id);
 
       $context_definitions = $this->grants->context_definitions();
       
+      $user_context = $user_context_definition['context_definition_name'];
       $user_context_table = $context_definitions[$user_context]['context_table'];
       $user_context_table_user = $context_definitions[$user_context]['context_user_table'];
       
       $user_context_level = $this->db->get_where('context_definition',array('context_definition_name'=>$user_context))->row()->context_definition_level;
 
-      $user_context_id = 1; // Template variable
+      // A user can have multiple context association records e.g. Multiple countries
+      $user_context_association = array_column($this->get_user_context_association($user_id),$user_context_table.'_id');
 
-      $this->db->select(array('context_definition_name'));
-      $hierachy_context_obj = $this->db->order_by('context_definition_level','ASC')
-      ->get_where('context_definition',array('context_definition_level<='=>$user_context_level))->result_array();
-
-      $hierachy_contexts = array_column($hierachy_context_obj,'context_definition_name');
-      
       $user_hierarchy_offices = array();
 
-      foreach($hierachy_contexts as $hierarchy_context){
-        if($show_context) 
-          $office_ids[$hierarchy_context] = $this->get_office_hierarchy($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
-        else
-          $office_ids = $this->get_office_hierarchy($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
+      foreach($user_context_association as $user_context_id){
+        $this->db->select(array('context_definition_name'));
+        $hierachy_context_obj = $this->db->order_by('context_definition_level','ASC')
+        ->get_where('context_definition',array('context_definition_level<='=>$user_context_level))->result_array();
+
+        $hierachy_contexts = array_column($hierachy_context_obj,'context_definition_name');        
+
+        foreach($hierachy_contexts as $hierarchy_context){
+          //if($show_context) 
+            //$office_ids[$hierarchy_context] = $this->_user_hierarchy_offices($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
+          //else
+            $office_ids = $this->_user_hierarchy_offices($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
+          
+            $user_hierarchy_offices = array_merge($user_hierarchy_offices,$office_ids);          
+        }
         
-        $user_hierarchy_offices = array_merge($user_hierarchy_offices,$office_ids);
       }
       
       return $user_hierarchy_offices;
     }
     
     //Context can be global, region, country, cohort, cluster, center 
-    function get_office_hierarchy($user_context_table, $user_context_level, $user_context_id, $hierarchy_context){
+    /**
+     * _user_hierarchy_offices
+     * 
+     * This method in looped in the user_hierarchy_offices method. It creates an array of office ids
+     * in a givem context. E.g. For example if the user's context is country, 
+     * it gives all offices of a passed lower context e.g. cluster for that given user's country
+     * 
+     */
+    private function _user_hierarchy_offices($user_context_table, $user_context_level, $user_context_id, $hierarchy_context){
 
       if($hierarchy_context == 'center'){
 

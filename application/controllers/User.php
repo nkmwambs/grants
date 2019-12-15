@@ -16,6 +16,7 @@ class User extends MY_Controller implements CrudModelInterface
     parent::__construct();
     
     $this->load->library('user_library');
+
   }
 
   function index(){}
