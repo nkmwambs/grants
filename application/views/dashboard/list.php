@@ -1,17 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 print_r($this->session->hierarchy_offices);
-//print_r($this->session->hierarchy_associations);
-//print_r($this->session->user_centers);
-//print_r($this->grants->get_users_with_center_group_hierarchy_name('center'));
-//echo hash_id('kE068JmNdP','decode')[0];
-//print_r($this->grants->lookup_tables('request'));
-
-//print_r($this->grants->action_labels('request',91));
-//echo $this->user_model->get_center_group_table_name(13);
-
-//echo Grants::$context_table;
-//print_r($this->db->list_fields('office'))
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">

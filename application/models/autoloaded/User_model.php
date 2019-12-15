@@ -37,9 +37,14 @@ class User_model extends MY_Model
    * @return Array : Table's foreign tables
    */
   function detail_tables():Array {
-   
-    $context_definition_name = $this->get_user_context_definition(hash_id($this->id,'decode'))['context_definition_name'];
-    return array('context_'.$context_definition_name.'_user','department_user');
+    
+    if($this->controller == 'user'){
+      $context_definition_name = $this->get_user_context_definition(hash_id($this->id,'decode'))['context_definition_name'];
+      return array('context_'.$context_definition_name.'_user','department_user');
+    }else{
+      return array('department_user');
+    }
+    
 
   }
 

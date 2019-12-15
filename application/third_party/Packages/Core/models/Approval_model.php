@@ -39,8 +39,17 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
     // Access methods
   public function show_add_button(){
       return false;
-    }
+  }
 
+/**
+ *  List table where
+ * 
+ *  Used in the run_list_query and ajax_model. Here it lists only approvaeable items
+ * 
+ */
+  function list_table_where(){
+    $this->db->where(array('approve_item.approve_item_is_active'=>1));
+  }
 
 
  /***

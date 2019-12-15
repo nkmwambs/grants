@@ -24,8 +24,4 @@ class Approval_library extends Grants
 
   }
 
-  function list_table_where(){
-    return array('approve_item_is_active'=>1);
-  }
-
 }
