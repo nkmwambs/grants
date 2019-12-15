@@ -546,6 +546,41 @@ function max_number_of_menu_items(){
   return $this->db->get('menu')->num_rows();
 }
 
+private function _run_list_query($table, $selected_columns, $lookup_tables, 
+$lib_where_method = "list_table_where", $filter_where_array = array() ){
+
+  // Run column selector
+  $this->db->select($selected_columns);
+
+  if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
+    foreach ($lookup_tables as $lookup_table) {
+      // Catch errors of missing lookup_tables in models
+      if(!$this->db->table_exists($lookup_table)){
+        $message = "The table ".$lookup_table." doesn't exist in the database. Check the lookup_tables function in the ".$table."_model";
+        show_error($message,500,'An Error Was Encountered');
+      }
+        $lookup_table_id = $lookup_table.'_id';
+        $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
+    }
+  }
+
+  $library = $table.'_library';
+
+  $this->load->library($library);
+
+  // A condition supplied from the Output API class
+  if(count($filter_where_array) > 0 && is_array($filter_where_array) ){
+    $this->db->where($filter_where_array);
+  }
+
+  if(method_exists($this->$library,$lib_where_method) && 
+      is_array($this->$library->$lib_where_method()) && 
+        count($this->$library->$lib_where_method()) > 0
+    ){
+    $this->db->where($this->$library->$lib_where_method());
+  }
+}
+
 /**
  * run_query
  * 
@@ -559,45 +594,16 @@ function max_number_of_menu_items(){
  */
 public function run_list_query($table, $selected_columns, $lookup_tables, 
   $lib_where_method = "list_table_where", $filter_where_array = array() ): Array {
-
-    // Run column selector
-    $this->db->select($selected_columns);
     
-    if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
-      foreach ($lookup_tables as $lookup_table) {
-        // Catch errors of missing lookup_tables in models
-        if(!$this->db->table_exists($lookup_table)){
-          $message = "The table ".$lookup_table." doesn't exist in the database. Check the lookup_tables function in the ".$table."_model";
-          show_error($message,500,'An Error Was Encountered');
-        }
-          $lookup_table_id = $lookup_table.'_id';
-          $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
-      }
-    }
 
-    $library = $table.'_library';
-
-    $this->load->library($library);
-
-    // A condition supplied from the Output API class
-    if(count($filter_where_array) > 0 && is_array($filter_where_array) ){
-      $this->db->where($filter_where_array);
-    }
-
-    if(method_exists($this->$library,$lib_where_method) && 
-        is_array($this->$library->$lib_where_method()) && 
-          count($this->$library->$lib_where_method()) > 0
-      ){
-      $this->db->where($this->$library->$lib_where_method());
-    }
-
-    //print_r($this->db->get($table)->result_array());
+    $this->_run_list_query($table, $selected_columns, $lookup_tables,$lib_where_method, $filter_where_array);
 
     if(!$this->db->get($table)){
       $error = $this->db->error();
       $message = 'You have a database error code '.$error['code'].'. '.$error['message'];
       show_error($message,500,'An Error Was Encountered');
     }else{
+      $this->_run_list_query($table, $selected_columns, $lookup_tables,$lib_where_method, $filter_where_array);
       return $this->db->get($table)->result_array();
     }
     

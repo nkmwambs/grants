@@ -92,7 +92,14 @@ tables:
     - context_center
     - designation
 
-
+  context:
+    lookup_tables:
+      - context_definition
+  
+  context_user:
+    lookup_tables:
+      - user
+      - context
 
 
   

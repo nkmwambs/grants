@@ -162,9 +162,12 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                         $primary_key = $row[$primary_key_column];
                         
                         if(strpos($column,'_id') == true && 
-                            !$this->grants->is_primary_key_field($detail_table_name,$column)){
-                          $column_key = $row['fk_'.$column];
+                            !$this->grants->is_primary_key_field($detail_table_name,$column) 
+                          ){
+
+                          //$column_key = $row['fk_'.$column];
                           // Remove the id suffix
+
                           $lookup_table = substr($column,0,-3);
                           continue;
                         }

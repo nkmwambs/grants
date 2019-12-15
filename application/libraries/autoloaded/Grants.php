@@ -565,13 +565,13 @@ function detail_tables(String $table_name = ""): Array {
     
     $this->detail_tables = array($detail_table);
 
-  }elseif($this->dependant_table($table_name) !== "" ){
+  }elseif($this->action == 'view' && $this->dependant_table($table_name) !== ""){
     // If dependant_table exists, you can't have more than one detail table. This piece nullifies the use
     // of the detail_tables feature model if is set
     $this->detail_tables[] = $this->dependant_table($table_name);
 
-  }elseif(method_exists($this->CI->$model,'detail_tables') && 
-      is_array($this->CI->$model->detail_tables()) 
+  }elseif($this->action == 'view' && method_exists($this->CI->$model,'detail_tables') && 
+      is_array($this->CI->$model->detail_tables() ) 
     ){
     
       $this->detail_tables  = $this->CI->$model->detail_tables();

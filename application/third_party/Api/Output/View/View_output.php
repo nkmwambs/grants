@@ -353,7 +353,7 @@ class View_output extends Output_template{
         $select_columns = $this->toggle_detail_list_select_columns($table);
 
         $filter_where = array($table.'.fk_'.$this->controller.'_id'=> hash_id($this->CI->uri->segment(3,0),'decode') );
-        
+     
         return $this->CI->grants_model->run_list_query($table,$select_columns,$lookup_tables,'detail_list_table_where',$filter_where);
       }   
 
