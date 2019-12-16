@@ -32,7 +32,7 @@ class Ajax_model extends CI_Model{
 		
 		//This is a join statement
 		$this->grants->create_table_join_statement($this->table,$this->grants->lookup_tables($this->table));	
-
+		
 		$this->db->from($this->table);
 
 		$i = 0;

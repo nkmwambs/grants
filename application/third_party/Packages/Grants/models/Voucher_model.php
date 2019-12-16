@@ -29,7 +29,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    return array('office','voucher_type','approval','status');
+    return array('voucher_type','office','approval','status');
   }
 
   public function detail_tables(){
@@ -47,10 +47,6 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
 
   function detail_list(){}
-
-  // function master_view(){
-  //   //return $this->db->select(array('voucher_id','voucher_date'))->get_where('voucher')->result_array();
-  // }
 
   function master_multi_form_add_visible_columns(){
     return array('voucher_number','voucher_date','voucher_cheque_number',

@@ -559,6 +559,27 @@ public function is_lookup_tables_name_field($master_table,$column, $return_looku
 }
 
 /**
+ * lookup_table_name_fields
+ * 
+ * Creates an array of the lookup table name fields
+ * 
+ * @param String $table
+ * @return Array - Lookup tables name fields
+ * 
+ */
+function lookup_table_name_fields(String $table):Array {
+  $lookup_name_fields = array();
+
+  if(is_array($this->lookup_tables($table)) && count($this->lookup_tables($table)) > 0){
+    foreach($this->lookup_tables($table) as $lookup_table){
+      $lookup_name_fields[] = $this->name_field($lookup_table);
+    }
+  }
+
+  return $lookup_name_fields;
+}
+
+/**
  * detail_tables
  * 
  * This is wrapper method to the detail_tables of the specific feature model
@@ -1564,13 +1585,20 @@ function feature_model_list_table_visible_columns() {
 
       // Throw error when a column doesn't exists to avoid Datatable server side loading error
       foreach($list_table_visible_columns as $_column){
+        
         $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
+
+        //Add the lookup table name to the all fields array
+        $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
+        $all_fields = array_merge($all_fields,$lookup_name_fields);
+        
+        //print_r($all_fields);exit();
 
         if(!in_array($_column,$all_fields)){
           $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
           $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
           show_error($message,500,'An Error As Encountered');
-          //unset($list_table_visible_columns[array_search($_column,$list_table_visible_columns)]);
+          
         }
 
       }
