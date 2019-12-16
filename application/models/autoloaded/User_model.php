@@ -548,6 +548,10 @@ class User_model extends MY_Model
           foreach($role_permissions as $row){   
               if($row->permission_type == 1){
                 $role_permission_array[$row->menu_derivative_controller][$row->permission_type][$row->permission_label_name][] = $row->permission_name;  
+              
+                //Update the role_permission_array based on the permissible depth of the label $row->permission_label_name
+                $role_permission_array = $this->update_permitted_permission_labels_based_on_depth($role_permission_array,$row->menu_derivative_controller,$row->permission_label_name);
+              
               }elseif($row->permission_type == 2){
                 $role_permission_array[$row->menu_derivative_controller][$row->permission_type][$row->permission_label_name][$row->permission_field] = $row->permission_name;
               }
@@ -563,7 +567,7 @@ class User_model extends MY_Model
           ){
           $role_permission_array[$this->config->item('default_launch_page')][1]['read'][] = "show_dashboard";
         }
-  
+        
         return $role_permission_array;
   }
 
@@ -635,9 +639,9 @@ class User_model extends MY_Model
    * 
    * @return void - Resets the role_permissions session
    */
-  function update_permitted_permission_labels_based_on_depth($active_controller, $permission_label, $permission_type = 1){
+  function update_permitted_permission_labels_based_on_depth($permissions, $active_controller, $permission_label, $permission_type = 1){
     $permission_label_depth = $this->permission_label_depth($permission_label);
-    $permissions = $this->session->role_permissions;
+    //$permissions = $this->session->role_permissions;
 
     $updated_permissions = array();
 
@@ -656,9 +660,9 @@ class User_model extends MY_Model
             
             foreach($permission_label_depth as $applicable_permission_label){
               //Prevents re-adding the applicable_permission_label if already exists
-              if(!array_key_exists($applicable_permission_label,$permissions[$controller][$permission_type])){
+              //if(!array_key_exists($applicable_permission_label,$permissions[$controller][$permission_type])){
                 $updated_permissions[$controller][$permission_type][$applicable_permission_label][] = $applicable_permission_label.'_'.strtolower($controller);
-              }
+              //}
             }
           }
       }else{
@@ -667,7 +671,8 @@ class User_model extends MY_Model
     }
     
 
-    $this->session->set_userdata('role_permissions',$updated_permissions);
+    //$this->session->set_userdata('role_permissions',$updated_permissions);
+    return $updated_permissions;
   }
 
   /**
@@ -683,32 +688,63 @@ class User_model extends MY_Model
    * @return Boolean
    */
   function check_role_has_permissions(String $active_controller,String $permission_label,int $permission_type = 1): bool {
-      
-      $this->update_permitted_permission_labels_based_on_depth($active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
-      $permission = $this->session->role_permissions;
-
       $has_permission = false;
 
       $active_controller = ucfirst($active_controller);
 
+      $permission = $this->session->role_permissions;
+
+      //if(isset($permission[$active_controller][$permission_type]) && array_key_exists($permission_label,$permission[$active_controller][$permission_type])){
+        //$this->update_permitted_permission_labels_based_on_depth($active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
+      //}
+
       $lookup_tables = $this->grants->lookup_tables($this->controller);
 
-      if( (array_key_exists($active_controller,$permission) && 
-          array_key_exists($permission_type,$permission[$active_controller]) &&
+      if( 
+          ( array_key_exists($active_controller,$permission) 
+            && array_key_exists($permission_type,$permission[$active_controller]) 
 
-          array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
-
-          && count($this->get_user_context_association($this->session->user_id)) > 0 
-          && $this->check_if_user_has_office_data_view_edit_permission() 
-          && count($this->session->departments) > 0
-          ) ||
-          $this->session->system_admin
+            && array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
+            
+            && count($this->get_user_context_association($this->session->user_id)) > 0 
+            && $this->check_if_user_has_office_data_view_edit_permission() 
+            && count($this->session->departments) > 0
+          ) 
+          || $this->session->system_admin
         ){
           $has_permission = true;
         } 
   
        return $has_permission; 
   }
+
+//   function check_role_has_permissions_test(String $active_controller,String $permission_label,int $permission_type = 1) {
+      
+//     $this->update_permitted_permission_labels_based_on_depth($active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
+//     $permission = $this->session->role_permissions;
+
+//     $has_permission = false;
+
+//     $active_controller = ucfirst($active_controller);
+
+//     //$lookup_tables = $this->grants->lookup_tables($this->controller);
+
+//     if( 
+//         ( array_key_exists($active_controller,$permission) 
+//           && array_key_exists($permission_type,$permission[$active_controller]) 
+//           && array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
+//           && count($this->get_user_context_association($this->session->user_id)) > 0 
+//           && $this->check_if_user_has_office_data_view_edit_permission() 
+//           && count($this->session->departments) > 0
+//         ) 
+//           || $this->session->system_admin
+//       )
+//       {
+//         $has_permission = true;
+//       } 
+
+//      return $has_permission; 
+// }
 
   /**
    * check_role_has_field_permission
