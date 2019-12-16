@@ -29,7 +29,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    return array('center','voucher_type','approval','status');
+    return array('voucher_type','office','approval','status');
   }
 
   public function detail_tables(){
@@ -48,13 +48,9 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function detail_list(){}
 
-  // function master_view(){
-  //   //return $this->db->select(array('voucher_id','voucher_date'))->get_where('voucher')->result_array();
-  // }
-
   function master_multi_form_add_visible_columns(){
     return array('voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_description','center_name','voucher_type_name');
+    'voucher_vendor','voucher_description','office_name','voucher_type_name');
   }
 
   public function list(){}
@@ -64,7 +60,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   public function list_table_visible_columns(){
 
     return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_created_date','center_name','voucher_type_name');
+    'voucher_vendor','voucher_created_date','office_name','voucher_type_name');
   
   }
 
@@ -75,7 +71,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function master_table_visible_columns(){
     return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_description','center_name','voucher_type_name','voucher_created_date');
+    'voucher_vendor','voucher_description','office_name','voucher_type_name','voucher_created_date');
   }
 
   public function edit_visible_columns(){
@@ -93,7 +89,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function get_approved_unvouched_request_details(){
 
-    $this->db->select(array('request_detail_id','request_id','request_date','center_name','request_detail_track_number','request_detail_description',
+    $this->db->select(array('request_detail_id','request_id','request_date','office_name','request_detail_track_number','request_detail_description',
       'request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_allocation_name','status_name'));
     
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
