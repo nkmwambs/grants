@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r($this->session->departments);
-//$this->db->where_in('fk_department_id',$this->session->departments);
-//print_r($this->db->get('department')->result_array()); 
+//print_r($this->user_model->permission_label_depth('update'));
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
