@@ -9,7 +9,9 @@ $show_add_button = $this->grants->show_add_button();
 
 
 <div class="">
-<?php echo form_open('' , array('id'=>'form-filter','class' => 'form-vertical form-groups-bordered validate', 'enctype' => 'multipart/form-data'));?>
+<?php echo form_open('' , array('id'=>'form-filter','class' => 'form-vertical form-groups-bordered validate', 'enctype' => 'multipart/form-data'));
+	
+?>
 
 		<div class="row">
 			<div class="col-xs-12">
