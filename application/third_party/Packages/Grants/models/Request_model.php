@@ -63,10 +63,24 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
       $lookup_values['office'] = $this->db->get('office')->result_array();  
     }
 
+    if($table = 'project_allocation'){
+      $this->db->where_in('fk_office_id',$this->session->hierarchy_offices);
+      $lookup_values['project_allocation'] = $this->db->get('project_allocation')->result_array(); 
+    }
+
     return $lookup_values;
   }
 
   function list_table_where(){
+
+    //If the request is set to be department strcit, then only list requests from the user departments
+    $is_role_department_strict = $this->session->role_is_department_strict;
+    
+    if($is_role_department_strict == $is_role_department_strict  && count($this->session->departments) > 0){
+      $this->db->where_in($this->controller.'.fk_department_id', $this->session->departments);
+    }    
+    
+    // Only list requests from the users' hierachy offices
     $this->db->where_in($this->controller.'.fk_office_id',$this->session->hierarchy_offices);
   }
 

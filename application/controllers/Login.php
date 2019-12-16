@@ -115,6 +115,12 @@ public $auth;
         
         $this->session->set_userdata('hierarchy_offices',
            $this->user_model->user_hierarchy_offices($row->user_id));
+
+        
+        $this->session->set_userdata('role_is_department_strict',
+           $this->user_model->check_role_department_strictness($this->session->role_id));
+
+              
         
         /**
          * Breadcrumb and default page sessions

@@ -147,6 +147,13 @@ class User_model extends MY_Model
    * **********************************************************************************************************
    */
 
+  function check_role_department_strictness($role_id){
+    $role_is_department_strict = $this->db->get_where('role',
+    array('role_id'=>$role_id))->row()->role_is_department_strict;
+
+    return $role_is_department_strict;
+  } 
+
   /**
    * user_department
    * 
@@ -397,87 +404,87 @@ class User_model extends MY_Model
       return $options;
     }
 
-    function get_user_center_unit($user_id){
-      // $center_group_info = $this->get_center_group_hierarchy_information($user_id);
-      // $unit_table_name = $center_group_info['center_group_hierarchy_unit_table_name'];
+    // function get_user_center_unit($user_id){
+    //   // $center_group_info = $this->get_center_group_hierarchy_information($user_id);
+    //   // $unit_table_name = $center_group_info['center_group_hierarchy_unit_table_name'];
 
-      // $this->db->join($unit_table_name,$unit_table_name.'.fk_center_id=center.center_id');
-      // return $this->db->get_where('center',array(''))->row();
-    }
+    //   // $this->db->join($unit_table_name,$unit_table_name.'.fk_center_id=center.center_id');
+    //   // return $this->db->get_where('center',array(''))->row();
+    // }
 
-    // This method is too long and unkept. It requires review though working.
-    function get_centers_in_center_group_hierarchy($user_id){
+    // // This method is too long and unkept. It requires review though working.
+    // function get_centers_in_center_group_hierarchy($user_id){
 
-      $hierarchy_info = $this->get_center_group_hierarchy_information($user_id);
+    //   $hierarchy_info = $this->get_center_group_hierarchy_information($user_id);
 
-      $hierarchy_table_name = $hierarchy_info['center_group_hierarchy_table_name'];
+    //   $hierarchy_table_name = $hierarchy_info['center_group_hierarchy_table_name'];
 
-      $hierarchy_user_table_name = $hierarchy_info['center_group_hierarchy_user_table_name'];
+    //   $hierarchy_user_table_name = $hierarchy_info['center_group_hierarchy_user_table_name'];
 
-      $level = $hierarchy_info['center_group_hierarchy_level'];
+    //   $level = $hierarchy_info['center_group_hierarchy_level'];
 
-      //$hierarchy_table = strtolower($hierarchy_info['center_group_hierarchy_name']);
+    //   //$hierarchy_table = strtolower($hierarchy_info['center_group_hierarchy_name']);
 
-      //$associations = $this->get_user_context_association($user_id);
-      //$this->db->select(array('fk_center_id',''));
-      $this->db->join($hierarchy_table_name,$hierarchy_table_name.'.'.$hierarchy_table_name.'_id='.$hierarchy_user_table_name.'.fk_'.$hierarchy_table_name.'_id');
-      $associations = $this->db->get_where($hierarchy_user_table_name)->result_array();
+    //   //$associations = $this->get_user_context_association($user_id);
+    //   //$this->db->select(array('fk_center_id',''));
+    //   $this->db->join($hierarchy_table_name,$hierarchy_table_name.'.'.$hierarchy_table_name.'_id='.$hierarchy_user_table_name.'.fk_'.$hierarchy_table_name.'_id');
+    //   $associations = $this->db->get_where($hierarchy_user_table_name)->result_array();
 
-      $center_group_hierarchy_id = $this->db->get_where('user',
-      array('user_id'=>$user_id))->row()->fk_center_group_hierarchy_id;
+    //   $center_group_hierarchy_id = $this->db->get_where('user',
+    //   array('user_id'=>$user_id))->row()->fk_center_group_hierarchy_id;
 
 
-      $list_of_centers = array();
+    //   $list_of_centers = array();
 
-      if($level == 1){
-        $list_of_centers = array_column($associations,'fk_center_id');       
-      }else{
-        $this->db->select(array('center_group_hierarchy_table_name'));
-        $center_group_hierarchy_level = $this->db->order_by('center_group_hierarchy_level', 'ASC')
-        ->get_where('center_group_hierarchy',
-        array('center_group_hierarchy_level<='=>$level));
+    //   if($level == 1){
+    //     $list_of_centers = array_column($associations,'fk_center_id');       
+    //   }else{
+    //     $this->db->select(array('center_group_hierarchy_table_name'));
+    //     $center_group_hierarchy_level = $this->db->order_by('center_group_hierarchy_level', 'ASC')
+    //     ->get_where('center_group_hierarchy',
+    //     array('center_group_hierarchy_level<='=>$level));
 
-        $raw = $center_group_hierarchy_level->result_array();
+    //     $raw = $center_group_hierarchy_level->result_array();
 
-        $center_group_tables = array_column($raw,'center_group_hierarchy_table_name');
+    //     $center_group_tables = array_column($raw,'center_group_hierarchy_table_name');
 
-        for($i=0;$i<count($center_group_tables);$i++){
+    //     for($i=0;$i<count($center_group_tables);$i++){
             
-          if(isset($center_group_tables[$i+1])){
-            $deep_table = strtolower($center_group_tables[$i]);
-            $joining_table = strtolower($center_group_tables[$i+1]);
+    //       if(isset($center_group_tables[$i+1])){
+    //         $deep_table = strtolower($center_group_tables[$i]);
+    //         $joining_table = strtolower($center_group_tables[$i+1]);
             
-            // $str .= $joining_table.','.$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id</br>';
-            $this->db->join($joining_table,$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id');
-          }
+    //         // $str .= $joining_table.','.$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id</br>';
+    //         $this->db->join($joining_table,$joining_table.'.'.$joining_table.'_id='.$deep_table.'.fk_'.$joining_table.'_id');
+    //       }
           
-        }
+    //     }
 
-        $associations_array = array_column($associations,'fk_'.$hierarchy_table_name.'_id');
+    //     $associations_array = array_column($associations,'fk_'.$hierarchy_table_name.'_id');
 
-        //$this->db->where($hierarchy_table_name."_id IN (".implode(',',$associations_array).")");
+    //     //$this->db->where($hierarchy_table_name."_id IN (".implode(',',$associations_array).")");
 
-        //$this->db->select(array('center_id'));
+    //     //$this->db->select(array('center_id'));
           
-        //$list_of_centers = array_column($this->db->get('center')->result_array(),'center_id');
+    //     //$list_of_centers = array_column($this->db->get('center')->result_array(),'center_id');
         
-      }
+    //   }
       
-      return $list_of_centers;
+    //   return $list_of_centers;
 
-    }
+    // }
 
-    function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
-      // $center_group_hierarchy_id = $this->db->get_where('center_group_hierarchy',
-      // array('center_group_hierarchy_name'=>$center_group_hierarchy_name))->row()->center_group_hierarchy_id;
+    // function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
+    //   // $center_group_hierarchy_id = $this->db->get_where('center_group_hierarchy',
+    //   // array('center_group_hierarchy_name'=>$center_group_hierarchy_name))->row()->center_group_hierarchy_id;
 
-      // $this->db->select(array('user_id','user_name'));
-      // $result = $this->db->get_where('user',
-      // array('fk_center_group_hierarchy_id'=>$center_group_hierarchy_id))->result_array();
+    //   // $this->db->select(array('user_id','user_name'));
+    //   // $result = $this->db->get_where('user',
+    //   // array('fk_center_group_hierarchy_id'=>$center_group_hierarchy_id))->result_array();
 
-      //return $result;
-      return [1,'nkarisa'];
-    }
+    //   //return $result;
+    //   return [1,'nkarisa'];
+    // }
 
   /**
    * default_launch_page
@@ -560,7 +567,7 @@ class User_model extends MY_Model
         return $role_permission_array;
   }
 
-  function check_if_user_has_center_data_view_edit_permission(){
+  function check_if_user_has_office_data_view_edit_permission(){
     
     $has_permission = true;
     
@@ -571,7 +578,7 @@ class User_model extends MY_Model
         $center_id = $this->db->get_where($this->controller,
         array($this->grants->primary_key_field($this->controller)=>hash_id($this->id,'decode')))->row()->fk_center_id;
         
-        if(!in_array($center_id,$this->get_centers_in_center_group_hierarchy($this->session->user_id))){
+        if(!in_array($center_id,$this->user_hierarchy_offices($this->session->user_id))){
           $has_permission = false;
         }
 
@@ -607,7 +614,8 @@ class User_model extends MY_Model
           array_key_exists($permission_type,$permission[$active_controller]) &&
           array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
           && count($this->get_user_context_association($this->session->user_id)) > 0 
-          && $this->check_if_user_has_center_data_view_edit_permission()
+          && $this->check_if_user_has_office_data_view_edit_permission() 
+          && count($this->session->departments) > 0
           ) ||
           $this->session->system_admin
         ){

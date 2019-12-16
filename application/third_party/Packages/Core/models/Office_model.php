@@ -25,8 +25,15 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
     return array('approval','status','context_definition');
   }
 
+  private function context_definition_name_by_office_id($office_id){
+    //Get office context
+    $this->db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+    return $context_definition_name = $this->db->get_where('office',array('office_id'=>$office_id))->row()->context_definition_name;
+    
+  }
   public function detail_tables(){
-    return array('budget','reconciliation','office_bank','project_allocation','request');
+    $context_definition_name = $this->context_definition_name_by_office_id(hash_id($this->id,'decode'));
+    return array('context_'.strtolower($context_definition_name),'budget','reconciliation','office_bank','project_allocation','request');
   }
 
   public function master_table_visible_columns(){
