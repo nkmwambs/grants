@@ -283,7 +283,15 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (460,	'APAL-80263',	'Approval Ticket # APAL-80263',	44,	87,	1,	'2019-12-15',	'2019-12-15 08:18:39',	1),
 (461,	'APAL-18863',	'Approval Ticket # APAL-18863',	52,	87,	1,	'2019-12-15',	'2019-12-15 08:23:05',	1),
 (462,	'APAL-35991',	'Approval Ticket # APAL-35991',	20,	87,	1,	'2019-12-15',	'2019-12-15 09:05:20',	1),
-(463,	'APAL-17664',	'Approval Ticket # APAL-17664',	45,	87,	1,	'2019-12-15',	'2019-12-15 09:06:40',	1);
+(463,	'APAL-17664',	'Approval Ticket # APAL-17664',	45,	87,	1,	'2019-12-15',	'2019-12-15 09:06:40',	1),
+(464,	'APAL-8743',	'Approval Ticket # APAL-8743',	3,	87,	1,	'2019-12-15',	'2019-12-15 09:53:15',	1),
+(465,	'APAL-52707',	'Approval Ticket # APAL-52707',	65,	87,	1,	'2019-12-15',	'2019-12-15 13:55:06',	1),
+(466,	'APAL-80867',	'Approval Ticket # APAL-80867',	3,	87,	5,	'2019-12-15',	'2019-12-15 14:17:14',	5),
+(467,	'APAL-22786',	'Approval Ticket # APAL-22786',	49,	87,	1,	'2019-12-15',	'2019-12-15 15:10:22',	1),
+(468,	'APAL-89404',	'Approval Ticket # APAL-89404',	3,	87,	5,	'2019-12-15',	'2019-12-15 15:17:11',	5),
+(469,	'APAL-78047',	'Approval Ticket # APAL-78047',	19,	87,	1,	'2019-12-15',	'2019-12-15 15:25:35',	1),
+(470,	'APAL-51571',	'Approval Ticket # APAL-51571',	48,	87,	1,	'2019-12-16',	'2019-12-16 10:40:23',	1),
+(471,	'APAL-31869',	'Approval Ticket # APAL-31869',	49,	87,	1,	'2019-12-16',	'2019-12-16 10:41:18',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -625,6 +633,8 @@ CREATE TABLE `context_center_user` (
   CONSTRAINT `context_center_user_ibfk_3` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `context_center_user` (`context_center_user_id`, `context_center_user_track_number`, `context_center_user_name`, `fk_user_id`, `fk_context_center_id`, `fk_designation_id`, `context_center_user_is_active`, `context_center_user_created_date`, `context_center_user_last_modified_date`, `context_center_user_created_by`, `context_center_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'COER-38672',	'David Mbitsi - GRC',	5,	1,	3,	1,	'2019-12-15',	'2019-12-15 13:55:06',	1,	1,	465,	0);
 
 DROP TABLE IF EXISTS `context_cluster`;
 CREATE TABLE `context_cluster` (
@@ -1090,7 +1100,8 @@ CREATE TABLE `department` (
 
 INSERT INTO `department` (`department_id`, `department_track_number`, `department_name`, `department_description`, `department_is_active`, `department_created_date`, `department_last_modified_date`, `department_created_by`, `department_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'DENT-63671',	'Health Promotion',	'Health Promotion Department',	1,	'2019-11-21',	'2019-11-21 16:12:57',	1,	1,	262,	73),
-(2,	'DENT-57933',	'Training Department',	'Training Department',	1,	'2019-11-21',	'2019-11-21 16:13:17',	1,	1,	263,	73);
+(2,	'DENT-57933',	'Training Department',	'Training Department',	1,	'2019-11-21',	'2019-11-21 16:13:17',	1,	1,	263,	73),
+(3,	'DENT-46303',	'Finance',	'Finance department',	1,	'2019-12-16',	'2019-12-16 10:40:23',	1,	1,	470,	73);
 
 DROP TABLE IF EXISTS `department_user`;
 CREATE TABLE `department_user` (
@@ -1118,7 +1129,9 @@ CREATE TABLE `department_user` (
 
 INSERT INTO `department_user` (`department_user_id`, `department_user_track_number`, `department_user_name`, `fk_user_id`, `fk_department_id`, `department_user_created_date`, `department_user_last_modified_date`, `department_user_created_by`, `department_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'DEER-5510',	'Mapenzi Hellen',	9,	1,	'2019-11-21',	'2019-11-21 17:08:57',	1,	1,	272,	74),
-(2,	'DEER-18515',	'Joyce Cherono',	4,	2,	'2019-11-21',	'2019-11-21 19:34:45',	1,	1,	273,	74);
+(2,	'DEER-18515',	'Joyce Cherono',	4,	2,	'2019-11-21',	'2019-11-21 19:34:45',	1,	1,	273,	74),
+(3,	'DEER-84135',	'Nicodemus Karisa - Training Department',	1,	2,	'2019-12-15',	'2019-12-15 15:10:22',	1,	1,	467,	74),
+(4,	'DEER-3294',	'David Mbitsi - Finance Department',	5,	3,	'2019-12-16',	'2019-12-16 10:41:18',	1,	1,	471,	74);
 
 DROP TABLE IF EXISTS `designation`;
 CREATE TABLE `designation` (
@@ -1718,7 +1731,11 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (1297,	1,	521,	1,	90,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1298,	1,	522,	1,	91,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1299,	1,	523,	1,	75,	0,	NULL,	'2019-12-08 12:20:30',	NULL,	NULL,	NULL,	NULL),
-(1300,	1,	524,	1,	75,	0,	NULL,	'2019-12-08 13:57:53',	NULL,	NULL,	NULL,	NULL);
+(1300,	1,	524,	1,	75,	0,	NULL,	'2019-12-08 13:57:53',	NULL,	NULL,	NULL,	NULL),
+(1301,	5,	521,	1,	57,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
+(1302,	5,	522,	1,	58,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
+(1303,	5,	523,	1,	59,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
+(1304,	5,	524,	1,	60,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -2000,6 +2017,7 @@ CREATE TABLE `permission_label` (
   `permission_label_track_number` varchar(100) NOT NULL,
   `permission_label_name` varchar(100) NOT NULL,
   `permission_label_description` varchar(100) NOT NULL,
+  `permission_label_depth` int(10) NOT NULL,
   `fk_approval_id` int(100) NOT NULL,
   `fk_status_id` int(100) NOT NULL,
   `permission_label_created_date` date NOT NULL,
@@ -2009,11 +2027,11 @@ CREATE TABLE `permission_label` (
   PRIMARY KEY (`permission_label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `permission_label` (`permission_label_id`, `permission_label_track_number`, `permission_label_name`, `permission_label_description`, `fk_approval_id`, `fk_status_id`, `permission_label_created_date`, `permission_label_created_by`, `permission_label_last_modified_date`, `permission_label_last_modified_by`) VALUES
-(1,	'PBL-56069',	'create',	'Mark all permissions used to create a new record',	120,	50,	'2019-11-06',	1,	'2019-11-06 12:48:54',	1),
-(2,	'PBL-32200',	'read',	'Mark all permissions used to read a record',	121,	50,	'2019-11-06',	1,	'2019-11-06 12:51:56',	1),
-(3,	'PBL-37242',	'update',	'Mark all permissions for updating a record',	122,	50,	'2019-11-06',	1,	'2019-11-06 12:52:25',	1),
-(4,	'PBL-14166',	'delete',	'Mark all permissions used to delete a record',	123,	50,	'2019-11-06',	1,	'2019-11-06 12:52:43',	1);
+INSERT INTO `permission_label` (`permission_label_id`, `permission_label_track_number`, `permission_label_name`, `permission_label_description`, `permission_label_depth`, `fk_approval_id`, `fk_status_id`, `permission_label_created_date`, `permission_label_created_by`, `permission_label_last_modified_date`, `permission_label_last_modified_by`) VALUES
+(1,	'PBL-56069',	'create',	'Mark all permissions used to create a new record',	2,	120,	50,	'2019-11-06',	1,	'2019-11-06 12:48:54',	1),
+(2,	'PBL-32200',	'read',	'Mark all permissions used to read a record',	1,	121,	50,	'2019-11-06',	1,	'2019-11-06 12:51:56',	1),
+(3,	'PBL-37242',	'update',	'Mark all permissions for updating a record',	3,	122,	50,	'2019-11-06',	1,	'2019-11-06 12:52:25',	1),
+(4,	'PBL-14166',	'delete',	'Mark all permissions used to delete a record',	4,	123,	50,	'2019-11-06',	1,	'2019-11-06 12:52:43',	1);
 
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
@@ -2075,7 +2093,8 @@ CREATE TABLE `project_allocation` (
 INSERT INTO `project_allocation` (`project_allocation_id`, `project_allocation_track_number`, `fk_project_id`, `project_allocation_name`, `project_allocation_amount`, `project_allocation_is_active`, `fk_office_id`, `fk_status_id`, `fk_approval_id`, `project_allocation_extended_end_date`, `project_allocation_created_date`, `project_allocation_last_modified_date`, `project_allocation_created_by`, `project_allocation_last_modified_by`) VALUES
 (5,	'PRON-88526',	7,	'TAWK Project 1 ',	30000.00,	1,	16,	44,	402,	'2019-11-30',	'2019-11-27',	NULL,	1,	1),
 (6,	'PRON-66515',	7,	'YWT Project 1',	45000.00,	1,	17,	44,	405,	'2019-11-30',	'2019-11-27',	NULL,	1,	1),
-(7,	'PRON-2654',	8,	'TWAK Advocacy',	560000.00,	1,	16,	44,	418,	'2020-03-28',	'2019-11-27',	NULL,	1,	1);
+(7,	'PRON-2654',	8,	'TWAK Advocacy',	560000.00,	1,	16,	44,	418,	'2020-03-28',	'2019-11-27',	NULL,	1,	1),
+(8,	'PRON-62640',	9,	'GRC Shingila - WASH',	650000.00,	1,	9,	44,	469,	'2019-12-15',	'2019-12-15',	NULL,	1,	1);
 
 DROP TABLE IF EXISTS `project_cost_proportion`;
 CREATE TABLE `project_cost_proportion` (
@@ -2143,6 +2162,10 @@ CREATE TABLE `request` (
   CONSTRAINT `request_ibfk_5` FOREIGN KEY (`fk_request_type_id`) REFERENCES `request_type` (`request_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_request_type_id`, `fk_status_id`, `fk_office_id`, `fk_approval_id`, `request_date`, `request_description`, `fk_department_id`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
+(1,	'REST-50733',	'Test',	2,	14,	9,	464,	'2019-12-15',	'Test',	1,	'2019-12-15',	'1',	'1',	'2019-12-15 09:53:15',	NULL),
+(2,	'REST-21224',	'Test 2',	1,	15,	9,	466,	'2019-12-15',	'Test 2',	1,	'2019-12-15',	'5',	'5',	'2019-12-15 14:29:53',	NULL),
+(3,	'REST-53097',	'Test 3',	2,	14,	9,	468,	'2019-12-15',	'Test 3',	2,	'2019-12-15',	'5',	'5',	'2019-12-15 15:17:11',	NULL);
 
 DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
@@ -2171,6 +2194,11 @@ CREATE TABLE `request_detail` (
   CONSTRAINT `request_detail_ibfk_1` FOREIGN KEY (`fk_request_id`) REFERENCES `request` (`request_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_conversion_set`, `fk_voucher_id`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
+(1,	'REIL-77347',	1,	'Test',	20,	200.00,	400.00,	1,	5,	1,	NULL,	0,	NULL,	'2019-12-15',	1,	1,	'2019-12-15 09:53:15'),
+(2,	'REIL-54941',	2,	'Test 2',	25,	500.00,	12500.00,	3,	6,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 14:29:53'),
+(3,	'REIL-8734',	3,	'Test 3',	20,	700.00,	14000.00,	1,	5,	1,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 15:17:11'),
+(4,	'REIL-24712',	3,	'Test 3',	25,	850.00,	21250.00,	2,	7,	1,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 15:17:11');
 
 DROP TABLE IF EXISTS `request_type`;
 CREATE TABLE `request_type` (
@@ -2200,6 +2228,7 @@ CREATE TABLE `role` (
   `role_description` longtext,
   `role_is_active` int(5) DEFAULT NULL,
   `role_is_new_status_default` int(5) DEFAULT '0',
+  `role_is_department_strict` int(5) DEFAULT '0',
   `role_created_by` int(100) DEFAULT NULL,
   `role_created_date` date DEFAULT NULL,
   `role_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2210,16 +2239,16 @@ CREATE TABLE `role` (
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `role` (`role_id`, `role_track_number`, `role_name`, `role_shortname`, `role_description`, `role_is_active`, `role_is_new_status_default`, `role_created_by`, `role_created_date`, `role_last_modified_date`, `role_last_modified_by`, `role_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'ROL-65362',	'Department Manager',	'departmentmanager',	'Department Manager',	1,	0,	1,	'2019-11-04',	'2019-11-06 06:08:14',	'1',	NULL,	150,	46),
-(2,	'ROLE-86037',	'Finance Director',	'financedirector',	'Finance Director',	1,	0,	1,	'2019-11-08',	'2019-11-08 10:06:09',	'1',	NULL,	167,	46),
-(3,	'ROLE-23190',	'Center Accountant',	'centeraccountant',	'A Center Accountant',	1,	1,	1,	'2019-11-08',	'2019-11-08 11:38:04',	'1',	NULL,	175,	46),
-(4,	'ROLE-9951',	'Admin',	'admin',	'This is a country admin',	1,	0,	1,	'2019-11-20',	'2019-11-20 16:41:17',	'1',	NULL,	219,	46),
-(5,	'ROLE-6494',	'National Office Accoutant',	'noaccountant',	'National Office Accoutant',	1,	0,	1,	'2019-11-24',	'2019-11-24 21:53:12',	'1',	NULL,	353,	46),
-(6,	'ROLE-8522',	'Test Role',	'tesrole',	'This is a test role',	1,	0,	1,	'2019-11-25',	'2019-11-25 13:57:26',	'1',	NULL,	360,	46),
-(7,	'ROLE-24515',	'Test Role 1',	'testrole1',	'Test Role 1',	1,	0,	1,	'2019-11-26',	'2019-11-26 12:54:34',	'1',	NULL,	374,	46),
-(8,	'ROLE-10917',	'Test Role 2',	'testrole2',	'Test role 2',	1,	0,	1,	'2019-11-26',	'2019-11-26 12:55:01',	'1',	NULL,	375,	46),
-(9,	'ROLE-80181',	'Affiliate Accountant',	'afficiliateaccountant',	'This is role which will allow holders add requests, vouchers etc',	1,	0,	1,	'2019-11-26',	'2019-11-26 14:03:54',	'1',	NULL,	386,	46);
+INSERT INTO `role` (`role_id`, `role_track_number`, `role_name`, `role_shortname`, `role_description`, `role_is_active`, `role_is_new_status_default`, `role_is_department_strict`, `role_created_by`, `role_created_date`, `role_last_modified_date`, `role_last_modified_by`, `role_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'ROL-65362',	'Department Manager',	'departmentmanager',	'Department Manager',	1,	0,	1,	1,	'2019-11-04',	'2019-11-06 06:08:14',	'1',	NULL,	150,	46),
+(2,	'ROLE-86037',	'Finance Director',	'financedirector',	'Finance Director',	1,	0,	0,	1,	'2019-11-08',	'2019-11-08 10:06:09',	'1',	NULL,	167,	46),
+(3,	'ROLE-23190',	'Office Accountant',	'officeaccountant',	'An Office Accountant',	1,	1,	0,	1,	'2019-11-08',	'2019-11-08 11:38:04',	'1',	NULL,	175,	46),
+(4,	'ROLE-9951',	'Admin',	'admin',	'This is a country admin',	1,	0,	0,	1,	'2019-11-20',	'2019-11-20 16:41:17',	'1',	NULL,	219,	46),
+(5,	'ROLE-6494',	'National Office Accoutant',	'noaccountant',	'National Office Accoutant',	1,	0,	0,	1,	'2019-11-24',	'2019-11-24 21:53:12',	'1',	NULL,	353,	46),
+(6,	'ROLE-8522',	'Test Role',	'tesrole',	'This is a test role',	1,	0,	0,	1,	'2019-11-25',	'2019-11-25 13:57:26',	'1',	NULL,	360,	46),
+(7,	'ROLE-24515',	'Test Role 1',	'testrole1',	'Test Role 1',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 12:54:34',	'1',	NULL,	374,	46),
+(8,	'ROLE-10917',	'Test Role 2',	'testrole2',	'Test role 2',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 12:55:01',	'1',	NULL,	375,	46),
+(9,	'ROLE-80181',	'Affiliate Accountant',	'afficiliateaccountant',	'This is role which will allow holders add requests, vouchers etc',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 14:03:54',	'1',	NULL,	386,	46);
 
 DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission` (
@@ -2324,26 +2353,26 @@ CREATE TABLE `status` (
 
 INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_approve_item_id`, `status_approval_sequence`, `status_backflow_sequence`, `status_approval_direction`, `status_is_requiring_approver_action`, `fk_role_id`, `status_created_date`, `status_created_by`, `status_last_modified_date`, `status_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'',	'New',	1,	1,	0,	1,	1,	3,	'0000-00-00',	0,	'2019-11-27 12:03:26',	0,	NULL,	NULL),
-(2,	'',	'Submitted to Head of Department	',	1,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-11-27 12:03:45',	0,	NULL,	NULL),
+(2,	'',	'Submitted to Head of Department	',	1,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
 (3,	'',	'Approved By Head of Department',	1,	3,	0,	1,	1,	2,	'0000-00-00',	0,	'2019-11-27 12:04:17',	0,	NULL,	NULL),
 (4,	'',	'Declined By Head of Department',	1,	2,	1,	-1,	1,	1,	'0000-00-00',	0,	'2019-11-27 12:05:01',	0,	NULL,	NULL),
 (5,	'',	'Approved By Finance Director',	1,	4,	0,	1,	1,	5,	'0000-00-00',	0,	'2019-11-27 12:05:23',	0,	NULL,	NULL),
 (6,	'',	'Declined By Finance Director',	1,	3,	1,	-1,	1,	2,	'0000-00-00',	0,	'2019-11-27 12:08:44',	0,	NULL,	NULL),
 (7,	'',	'Paid By Accountant',	1,	5,	0,	1,	0,	5,	'0000-00-00',	0,	'2019-11-27 12:09:59',	0,	NULL,	NULL),
-(8,	'',	'Reinstate to Head of Department',	1,	2,	0,	0,	1,	1,	'0000-00-00',	0,	'2019-11-27 12:09:59',	0,	NULL,	NULL),
+(8,	'',	'Reinstated to Head of Department',	1,	2,	0,	0,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
 (9,	'',	'Reinstate to Finance Director',	1,	3,	0,	0,	1,	2,	'0000-00-00',	0,	'2019-11-27 12:09:59',	0,	NULL,	NULL),
 (10,	'',	'Submitted',	2,	1,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:05:19',	0,	NULL,	NULL),
 (11,	'',	'Approved By Finance Director',	2,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (12,	'',	'Declined By Finance Director',	2,	2,	0,	-1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (13,	'',	'Reinstated to Finance Director',	2,	2,	0,	0,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (14,	'',	'New',	3,	1,	0,	1,	1,	3,	'0000-00-00',	0,	'2019-11-24 21:57:03',	0,	NULL,	NULL),
-(15,	'',	'Submitted to Head of Department',	3,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-11-24 23:06:30',	0,	NULL,	NULL),
+(15,	'',	'Submitted to Head of Department',	3,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
 (16,	'',	'Approved By Head of Department',	3,	3,	0,	1,	1,	2,	'0000-00-00',	0,	'2019-11-24 23:07:03',	0,	NULL,	NULL),
 (17,	'',	'Declined By Head of Department',	3,	2,	1,	-1,	1,	1,	'0000-00-00',	0,	'2019-11-24 23:06:30',	0,	NULL,	NULL),
 (18,	'',	'Approved By Finance Director',	3,	4,	0,	1,	1,	5,	'0000-00-00',	0,	'2019-11-24 22:30:26',	0,	NULL,	NULL),
 (19,	'',	'Declined By Finance Director',	3,	3,	1,	-1,	1,	2,	'0000-00-00',	0,	'2019-11-24 23:07:03',	0,	NULL,	NULL),
 (20,	'',	'Paid By Accountant',	3,	5,	0,	1,	0,	5,	'0000-00-00',	0,	'2019-11-24 22:32:23',	0,	NULL,	NULL),
-(21,	'',	'Reinstated to Head of Department',	3,	2,	0,	0,	1,	1,	'0000-00-00',	0,	'2019-11-25 01:22:25',	0,	NULL,	NULL),
+(21,	'',	'Reinstated to Head of Department',	3,	2,	0,	0,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
 (22,	'',	'Reinstated to Finance Director',	3,	3,	0,	0,	1,	2,	'0000-00-00',	0,	'2019-11-25 01:22:31',	0,	NULL,	NULL),
 (23,	'',	'New',	4,	1,	0,	1,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
 (30,	'',	'New',	5,	1,	0,	1,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
@@ -2627,4 +2656,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-12-15 09:18:26
+-- 2019-12-16 10:44:40
