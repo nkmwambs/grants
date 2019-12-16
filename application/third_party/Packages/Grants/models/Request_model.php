@@ -68,6 +68,11 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
       $lookup_values['project_allocation'] = $this->db->get('project_allocation')->result_array(); 
     }
 
+    if($table = 'department'){
+      $this->db->where_in('department_id',$this->session->departments);
+      $lookup_values['department'] = $this->db->get('department')->result_array(); 
+    }
+
     return $lookup_values;
   }
 
