@@ -5,7 +5,12 @@
 ?>
 
 <div class="row">
-    <div class="col-xs-12" style="text-align:center;">
-        <span>You are now allowed to access this page. Please contact the admin. The cause may be you lack Page access or You can no center group association</span>
+    <div class="col-xs-offset-3 col-xs-6 col-xs-offset-3">
+        <span>You are now allowed to access this page. Please contact the admin. The cause may be: </br>
+        <ul>
+            <li>Lack page access</li>
+            <li>Lack office association</li>
+            <li>Lack of department association</li>
+        </ul> 
     </div>
 </div>

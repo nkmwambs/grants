@@ -304,7 +304,7 @@ function decline_status($item_status){
 
 function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
   $current_approval_actor = $this->current_approval_actor($item_status);
-  $logged_user_centers = $this->session->user_centers;
+  $logged_user_centers = $this->session->hierarchy_offices;
   $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
 
