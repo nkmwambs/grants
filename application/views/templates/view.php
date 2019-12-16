@@ -1,5 +1,7 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+$action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+
 //print_r($result['detail']['project_allocation']);
 
 extract($result['master']);
@@ -33,13 +35,24 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
-              <?=Widget_base::load('button',get_phrase('edit'),$this->controller.'/edit/'.$this->id);?>
-              <?=Widget_base::load('button',get_phrase('delete'),$this->controller.'/delete/'.$this->id);?>
+              <?php
+              if(isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){ 
+                if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update'))
+                  {
+                    echo Widget_base::load('button',get_phrase('edit'),$this->controller.'/edit/'.$this->id);
+                  }
+
+                if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete'))
+                {
+                    echo Widget_base::load('button',get_phrase('delete'),$this->controller.'/delete/'.$this->id);
+                }
               
+             ?>
+
               <?php 
-                  $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+                  
                   //print_r($action_labels);
-                  if( isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){
+                  //if( isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){
               
                   echo Widget_base::load('button',$action_labels['button_label'],$this->controller.'/approve/'.$this->id);
                             
@@ -48,7 +61,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               
                   }
 
-                  }
+                }
                ?>     
                    
 
