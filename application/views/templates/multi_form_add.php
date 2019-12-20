@@ -181,10 +181,10 @@
         data:data,
         type:"POST",
         beforeSend:function(){
-          $('#overlay').removeClass('hide');
+          $('#overlay').css('display','block');
         },
         success:function(response){
-            //alert(response);
+            $('#overlay').css('display','none');
             var obj = JSON.parse(response);
 
             var detail_row = "<tr><td><div class='btn btn-danger' onclick='delete_row(this);'><?=get_phrase('delete');?></div></td>";
