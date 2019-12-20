@@ -946,7 +946,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
   }
 
 function center_start_date($center_id){
-   return $this->db->get_where('center',array('center_id'=>$center_id))->row()->center_start_date;
+   return $this->db->get_where('office',array('office_id'=>$center_id))->row()->office_start_date;
 }
 
 

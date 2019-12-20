@@ -3,7 +3,7 @@
 // print_r($this->session->role_permissions);
 // print_r($this->user_model->update_permitted_permission_labels_based_on_depth('Request','read'));
 // echo "--------------------------------";
-print_r($this->session->role_permissions);
+// print_r($this->session->role_permissions);
 
 ?>
 <link rel="stylesheet" href="<?=base_url();?>assets/trial/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
