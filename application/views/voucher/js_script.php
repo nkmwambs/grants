@@ -45,9 +45,15 @@ $(document).ready(function(){
 
     if(add_column){
       
-      if(vtype == 2 || vtype == 3 || vtype == 6 ) row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
-
-      if(vtype == 5 || vtype == 7 || vtype == 8 ) row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
+      if(vtype == 2 || vtype == 3 || vtype == 6 ) {
+        $("#approved_request_detail").removeClass('hidden');
+        row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
+      }
+    
+      if(vtype == 5 || vtype == 7 || vtype == 8 ) {
+        $("#approved_request_detail").addClass('hidden');
+        row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
+      } 
     }
         
   });

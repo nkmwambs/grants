@@ -1,64 +1,67 @@
-<div class="row">
-    <div class="col-xs-12" class="no-print" style="text-align:center;margin:10px;font-weight:bold;">
-        Approved Request Details
+<div id="approved_request_detail" class="hidden">
+    <div class="row">
+        <div class="col-xs-12" class="no-print" style="text-align:center;margin:10px;font-weight:bold;">
+            Approved Request Details
+        </div>
     </div>
-</div>
 
-<?php
-//print_r($result);
-if(count($result) > 0){
+    <?php
+    //print_r($result);
+    if(count($result) > 0){
 
-    $fields = array_keys($result[0]);
-    //array_shift($fields);
+        $fields = array_keys($result[0]);
+        //array_shift($fields);
 
-    ?>
+        ?>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>    
+        <table class="table table-striped">
+            <thead>
+                <tr>    
+                    <?php 
+                        foreach($fields as $field){
+                            if($field == 'request_detail_id'){
+                                $field = get_phrase('action');
+                            }
+                    ?>
+                        <th><?=get_phrase($field);?></th>
+                    <?php        
+                        }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
                 <?php 
-                    foreach($fields as $field){
-                        if($field == 'request_detail_id'){
-                            $field = get_phrase('action');
+                    foreach($result as $row){ 
+                ?>
+                    <tr>
+                <?php
+                        foreach($fields as $field){
+                            $cell_value = $row[$field];
+
+                            if($field == 'request_detail_id'){
+                                $cell_value =  '<div class="btn btn-default map_request_to_voucher_row" id="'.$row[$field].'">'.get_phrase('add_to_voucher').'</div>';   
+                            }
+                ?>  
+                            <td><?=$cell_value;?></td>
+                <?php 
                         }
                 ?>
-                    <th><?=get_phrase($field);?></th>
+                    </tr>
                 <?php        
                     }
+                
                 ?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php 
-                foreach($result as $row){ 
-            ?>
-                <tr>
-            <?php
-                    foreach($fields as $field){
-                        $cell_value = $row[$field];
+            </tbody>
+        </table>
+    <?php 
+    }else{
+    ?>
+        <div style="text-align:center;">No Items ready for vouching available</div>
+    <?php 
+    }
+    ?>
 
-                        if($field == 'request_detail_id'){
-                            $cell_value =  '<div class="btn btn-default map_request_to_voucher_row" id="'.$row[$field].'">'.get_phrase('add_to_voucher').'</div>';   
-                        }
-            ?>  
-                        <td><?=$cell_value;?></td>
-            <?php 
-                    }
-            ?>
-                </tr>
-            <?php        
-                }
-            
-            ?>
-        </tbody>
-    </table>
-<?php 
-}else{
-?>
-    <div style="text-align:center;">No Items ready for vouching available</div>
-<?php 
-}
-?>
+</div>
 
 <script>
 $(".map_request_to_voucher_row").click(function(ev){
