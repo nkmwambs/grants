@@ -367,4 +367,78 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
 
 }
 
+/**
+ * get_max_approval_status_id
+ * 
+ * Gets the max approval status id
+ * 
+ * @param String $approveable_item
+ * @return Int 
+ */
+function get_max_approval_status_id(String $approveable_item):Int{
+
+  //Get the maximum status_approval_sequence of an approveable item
+  $this->db->join('approve_item','approve_item_id=status.fk_approve_item_id');
+  $max_status_approval_sequence = $this->db
+  ->select("max(status_approval_sequence) as status_approval_sequence")
+  ->get_where('status',array('approve_item_name'=>$approveable_item))
+  ->row()->status_approval_sequence;
+
+  // Get the status_id
+  $this->db->join('approve_item','approve_item_id=status.fk_approve_item_id');
+  $max_status_id = $this->db->get_where('status',
+  array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
+
+  return $max_status_id;
+}
+
+/**
+ * is_max_status_id
+ * 
+ * Check if the provided approval status id is maximum
+ * 
+ * @param String $approveable_item 
+ * @param Int $status_id
+ * 
+ * @return Bool - True is Max while False is not 
+ */
+function is_max_approval_status_id(String $approveable_item,Int $status_id):Bool{
+  $is_max_status_id = false;
+
+  $max_status_id = $this->get_max_approval_status_id($approveable_item);
+
+  if($status_id == $max_status_id){
+    $is_max_status_id = true;
+  }
+
+  return $is_max_status_id;
+}
+
+/**
+ * has_approval_status_been_set
+ * 
+ * Check if the approvaeable item has other approval statuses other than the "New" status 
+ * auto-created by the system
+ * 
+ * @param String $approveable_item
+ * @return Bool
+ */
+
+function has_approval_status_been_set(String $approveable_item):Bool{
+
+  $has_approval_status_been_set = false;
+
+  $this->db->join('approve_item','approve_item_id=status.fk_approve_item_id');
+  $count_of_status = $this->db
+  ->get_where('status',array('approve_item_name'=>$approveable_item))
+  ->num_rows();
+
+  if($count_of_status > 0){
+    $has_approval_status_been_set = true;
+  }
+
+  return $has_approval_status_been_set;
+
+}
+
 }

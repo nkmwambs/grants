@@ -67,7 +67,7 @@ private $table;
  * Hold an array that is used to switch fields in the details of the multi_form_add action pages
  * @var String
  */
-private $false_keys_model_method = 'false_keys';
+//private $false_keys_model_method = 'false_keys';
 
 /**
  * detail_multi_form_add_visible_columns holds the selected fields of the detail part of the 
@@ -741,6 +741,20 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
  * THE BELOW METHODS ARE TO MOVE TO THE OUTPUT API CLASSES
  */
 
+ function check_if_array_is_associative($fields_array){
+    $keys = array_keys($fields_array);
+
+    $is_assoc = true;
+
+    foreach($keys as $key){
+      if(is_numeric($key)){
+        $is_assoc = false;
+        break; 
+      }
+    }
+
+    return $is_assoc;
+ }
 
   /**
    * detail_row_fields
@@ -757,38 +771,88 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
       // Field type changes for the dependant table
       $this->set_change_field_type($this->dependant_table($this->controller));
 
-      $fields = array();
+      // Check if the arg array is assoc. Assoc array has both values and fields
+      $is_associative_array = $this->check_if_array_is_associative($fields_array);
 
-      foreach ($fields_array as $key) {
+      if($is_associative_array){
+        return $this->_detail_row_fields_for_assoc_fields($fields_array);
+      }else{
+        return $this->_detail_row_fields_for_non_assoc_fields($fields_array);
+      } 
+
+    }
+
+  private function _detail_row_fields_for_non_assoc_fields($fields_array){
+    
+    $fields = array();
+
+    foreach ($fields_array as $key) {
         
-        $f = new Fields_base($key,$this->dependant_table($this->controller));
+      $f = new Fields_base($key,$this->dependant_table($this->controller));
 
-        $field_type = $f->field_type();
+      $field_type = $f->field_type();
 
+      $field = $field_type."_field";
+
+      if(array_key_exists($key,$this->set_field_type)){
+
+        $field_type = $this->set_field_type[$key]['field_type'];
         $field = $field_type."_field";
 
-        if(array_key_exists($key,$this->set_field_type)){
-
-          $field_type = $this->set_field_type[$key]['field_type'];
-          $field = $field_type."_field";
-  
-          if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
-            $fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
-          }else{
-            $fields[$key] =  $f->$field();
-          }
-
-        }elseif($field_type == 'select'){
-          $lookup_table = strtolower(substr($key,0,-5));
-          $fields[$key] = $f->$field($this->lookup_values($lookup_table));
+        if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
+          $fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
         }else{
-          $fields[$key] = $f->$field();
+          $fields[$key] =  $f->$field();
         }
 
+      }elseif($field_type == 'select'){
+        $lookup_table = strtolower(substr($key,0,-5));
+        $fields[$key] = $f->$field($this->lookup_values($lookup_table));
+      }else{
+        $fields[$key] = $f->$field();
       }
 
-      return $fields;
     }
+
+    return $fields;
+  }  
+
+  private function _detail_row_fields_for_assoc_fields($fields_array){
+    
+    $fields = array();
+
+    foreach ($fields_array as $key => $value) {
+        
+      $f = new Fields_base($key,$this->dependant_table($this->controller));
+
+      $field_type = $f->field_type();
+
+      $field = $field_type."_field";
+
+      if(array_key_exists($key,$this->set_field_type)){
+
+        $field_type = $this->set_field_type[$key]['field_type'];
+        $field = $field_type."_field";
+
+        if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
+          $fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
+        }else{
+          $fields[$key] =  $f->$field($value);
+        }
+
+      }elseif($field_type == 'select'){
+        $lookup_table = strtolower(substr($key,0,-5));
+        $fields[$key] = $f->$field($this->lookup_values($lookup_table),$value);
+      }else{
+        $fields[$key] = $f->$field($value);
+      }
+
+    }
+
+    return $fields;
+  }  
+
+
 
   /**
    * header_row_field
@@ -923,17 +987,17 @@ function edit_form_fields(Array $visible_columns_array): Array {
   }
 
 
-  function false_keys($detail_table){
-  $model = $this->load_detail_model($detail_table);
+//   function false_keys($detail_table){
+//   $model = $this->load_detail_model($detail_table);
 
-  $false_keys = array();
+//   $false_keys = array();
 
-  if(method_exists($this->CI->$model,$this->false_keys_model_method)){
-      $false_keys = $this->CI->$model->false_keys();
-  }
+//   if(method_exists($this->CI->$model,$this->false_keys_model_method)){
+//       $false_keys = $this->CI->$model->false_keys();
+//   }
 
-  return $false_keys;
-}
+//   return $false_keys;
+// }
 
 
   
@@ -1222,12 +1286,12 @@ function multi_form_add_output($table_name = ""){
     $detail_table_keys = $this->CI->grants_model->detail_multi_form_add_visible_columns($this->dependant_table($table));
     //print_r($detail_table_keys);
     //exit();
-    $false_keys = $this->false_keys($this->dependant_table($table));
+    //$false_keys = $this->false_keys($this->dependant_table($table));
 
     return array(
       'fields'=>$fields,
       'detail_table'=>$detail_table_keys,
-      'detail_false_keys'=>$false_keys,
+      //'detail_false_keys'=>$false_keys,
       'dependant_table'=>$this->dependant_table($this->controller)
     );
   }

@@ -1,10 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-  //print_r($result);
-  //echo $this->grants->check_role_has_field_permission('Voucher_detail','create','voucher_detail_description');
-  //print_r($this->user_model->get_user_permissions(2));
   extract($result);
-  //echo $dependant_table;
-  //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
+  //print_r($detail_false_keys);
 ?>
 
 <div class="row">
@@ -128,83 +124,56 @@
 
   <script type="text/javascript">
 
-  $(document).on('change','.master',function(){
-    var all_false_keys = '<?=json_encode($detail_false_keys);?>';
-    var elem = $(this);
-    var obj = JSON.parse(all_false_keys);
-
-    $.each(obj,function(i,el){
-
-        if(elem.hasClass(i)){
-          var representing_key = el.representing_key;
-          var lookup_keys = el.lookup_keys;
-          //alert(representing_key);
-          $(".th_data").each(function(thi,th){
-
-            if($(th).attr('id') == 'th_voucher_'+representing_key){
-              //$(th).prop('id','th_expense_account_name');
-              $.each(lookup_keys,function(lki,lkel){
-
-                if($.inArray(parseInt(elem.val()),lkel) > -1){
-                  //alert('hello');
-                  $(th).prop('id','th_'+lki);
-                }
-
-              });
-            }
-
-          });
-
-        }else{
-          //alert('Not a false key trigger '+ i +' = '+elem.attr('id'));
-        }
-    });
-
-  });
+  
 
     $('.insert_row').click(function(ev){
 
       pre_row_insert();
-
-
+      
+      var url = "<?=base_url();?><?=$this->controller;?>/detail_row";
+      
       var fields = [];
 
       $(".th_data").each(function(i,el){
         fields[i] = $(this).attr('id').replace('th_','');
       });
 
-      var url = "<?=base_url();?><?=$this->controller;?>/detail_row";
       var data = {fields};
 
-      $.ajax({
-        url:url,
-        data:data,
-        type:"POST",
-        beforeSend:function(){
-          $('#overlay').css('display','block');
-        },
-        success:function(response){
-            $('#overlay').css('display','none');
-            var obj = JSON.parse(response);
-
-            var detail_row = "<tr><td><div class='btn btn-danger' onclick='delete_row(this);'><?=get_phrase('delete');?></div></td>";
-
-            $.each(obj,function(i,el){
-                detail_row += "<td class='td_"+i+"'>"+el+"</td>";
-            });
-
-              detail_row += "</tr>";
-           $('.detail tbody').append(detail_row);
-           on_row_insert();
-        },
-        error:function(){
-
-        }
-      });
+      insert_row(url,data);
 
       post_row_insert();
 
     });
+
+  function insert_row(url,data){
+
+    $.ajax({
+      url:url,
+      data:data,
+      type:"POST",
+      beforeSend:function(){
+        $('#overlay').css('display','block');
+      },
+      success:function(response){
+          $('#overlay').css('display','none');
+          var obj = JSON.parse(response);
+
+          var detail_row = "<tr><td><div class='btn btn-danger' onclick='delete_row(this);'><?=get_phrase('delete');?></div></td>";
+
+          $.each(obj,function(i,el){
+              detail_row += "<td class='td_"+i+"'>"+el+"</td>";
+          });
+
+            detail_row += "</tr>";
+        $('.detail tbody').append(detail_row);
+        on_row_insert();
+      },
+      error:function(){
+
+      }
+    });
+  }  
 
   function delete_row(el){
     pre_row_delete();

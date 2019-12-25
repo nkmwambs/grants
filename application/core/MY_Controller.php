@@ -98,6 +98,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     //Temporary, should be done on login
     $this->load->model('office_model');
+    $this->load->model('approval_model');
 
   }
   /**
@@ -293,8 +294,6 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    */
   function detail_row(){
     $fields = $this->input->post('fields');
-
-    //$lib = $this->controller."_detail_library";
 
     $lib = $this->grants->dependant_table($this->controller).'_library';
 

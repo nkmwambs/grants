@@ -2,7 +2,7 @@
 
 function pre_record_post(){
 
-  if($("#voucher_type_name").val() == 0){
+  if($("#fkvoucher_type_id").val() == 0){
     alert('Choose a voucher type first');
     exit;
   }else if($('.voucher_detail_total_cost').length == 0){
@@ -16,6 +16,26 @@ $(document).ready(function(){
   $("#voucher_cheque_number").attr('readonly','readonly');
   $("#voucher_number").attr('readonly','readonly');
   $("#center_name").attr('readonly','readonly');
+
+  $("#fk_voucher_type_id").change(function(){
+  
+    let row  = $('.detail thead tr');
+    let th = row.find('th');  
+    let vtype = $(this).val();
+   
+    th.each(function(i,el){
+      if($(el).hasClass('dynamic_column')){
+        //$(el).css('backgroundColor','red');
+        $(el).remove();
+      }
+    });
+
+    if(vtype == 2 || vtype == 3 || vtype == 6 ) row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
+
+    if(vtype == 5 || vtype == 7 || vtype == 8 ) row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
+    
+  });
+
 });
 
 function pre_row_insert(){

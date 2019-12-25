@@ -89,14 +89,18 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function get_approved_unvouched_request_details(){
 
-    $this->db->select(array('request_detail_id','request_id','request_date','office_name','request_detail_track_number','request_detail_description',
-      'request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_allocation_name','status_name'));
+    $this->db->select(array('request_detail_id','request_date','office_name',
+    'request_detail_track_number','request_detail_description','request_detail_quantity',
+    'request_detail_unit_cost','request_detail_total_cost','expense_account_name',
+    'project_allocation_name','status_name'));
     
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
     $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
     $this->db->join('status','status.status_id=request_detail.fk_status_id');
     $this->db->join('request','request.request_id=request_detail.fk_request_id');    
-    $this->db->join('center','center.center_id=request.fk_center_id');  
+    $this->db->join('office','office.office_id=request.fk_office_id'); 
+    
+    $this->db->where(array('request.fk_status_id'=>20));
       
     return $this->db->get('request_detail')->result_array();
   }

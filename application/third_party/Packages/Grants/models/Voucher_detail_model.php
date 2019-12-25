@@ -28,18 +28,18 @@ class Voucher_detail_model extends MY_Model implements CrudModelInterface, Table
 
   public function detail_tables(){}
 
-  public function false_keys(){
+  // public function false_keys(){
 
-      return array(
-        'fk_voucher_type_id'=>array(
-          'representing_key'=>'detail_account',
-          'lookup_keys'=>array(
-            'expense_account_name'=>array(2,3,6),
-            'income_account_name'=>array(5,7)
-          )
-        )
-      );
-    }
+  //     return array(
+  //       'fk_voucher_type_id'=>array(
+  //         'representing_key'=>'detail_account',
+  //         'lookup_keys'=>array(
+  //           'expense_account_name'=>array(2,3,6),
+  //           'income_account_name'=>array(5,7)
+  //         )
+  //       )
+  //     );
+  //   }
 
   public function master_table_visible_columns(){}
 
@@ -61,7 +61,7 @@ class Voucher_detail_model extends MY_Model implements CrudModelInterface, Table
 
   public function detail_multi_form_add_visible_columns(){
     return array('voucher_detail_description','voucher_detail_quantity',
-    'voucher_detail_unit_cost','voucher_detail_total_cost','voucher_detail_account','project_allocation_name');
+    'voucher_detail_unit_cost','voucher_detail_total_cost','project_allocation_name');
 
   }
 
