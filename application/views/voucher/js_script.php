@@ -18,22 +18,38 @@ $(document).ready(function(){
   $("#center_name").attr('readonly','readonly');
 
   $("#fk_voucher_type_id").change(function(){
-  
+    
     let row  = $('.detail thead tr');
     let th = row.find('th');  
     let vtype = $(this).val();
+    let detail_body  = $('.detail tbody');
+    var add_column = true;
    
     th.each(function(i,el){
       if($(el).hasClass('dynamic_column')){
-        //$(el).css('backgroundColor','red');
-        $(el).remove();
+
+        var cfm = confirm('Are you sure you want to clear the details?');
+
+        if(cfm){
+          
+          $(el).remove();
+
+          detail_body.html('');
+          
+        }else{
+          add_column = false;
+        }
+        
       }
     });
 
-    if(vtype == 2 || vtype == 3 || vtype == 6 ) row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
+    if(add_column){
+      
+      if(vtype == 2 || vtype == 3 || vtype == 6 ) row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
 
-    if(vtype == 5 || vtype == 7 || vtype == 8 ) row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
-    
+      if(vtype == 5 || vtype == 7 || vtype == 8 ) row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
+    }
+        
   });
 
 });
