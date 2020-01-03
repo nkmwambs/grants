@@ -26,10 +26,19 @@ class Voucher_library extends Grants
   //   return 100;
   // }
 
+  function get_voucher_number($office_id){
+    //return 191201;
+    return $this->CI->voucher_model->get_voucher_number($office_id);
+  }
+
+  function get_voucher_date($office_id){
+    return date('Y-m-d');
+  }
+
   function default_field_value(){
     return array(
       'voucher_date'=>date('Y-m-d'),
-      'office_name'=>9,
+      //'office_name'=>9,
       'voucher_number'=>1,
     );
   }

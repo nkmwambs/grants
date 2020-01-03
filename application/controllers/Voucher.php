@@ -17,15 +17,31 @@ class Voucher extends MY_Controller
 
   }
 
+  function update_voucher_header_on_office_change(){
+    $office_id = $this->input->post('office_id');
+
+    //echo  $office_id;
+    $voucher_number = $this->voucher_library->get_voucher_number($office_id);
+    $voucher_date = $this->voucher_library->get_voucher_date($office_id);
+
+    $data = ['voucher_number'=>$voucher_number,'voucher_date'=>$voucher_date];
+    echo json_encode($data);
+  }
+
 
   function get_request_detail($request_detail_id){
+
+    //Update the request detail record by the id that has been passed in the arg
+    $data['request_detail_voucher_number'] = $this->input->post('voucher_number');
+    $this->db->where(array('request_detail_id'=>$request_detail_id));
+    $this->db->update('request_detail',$data);
 
     // To be done from request detail model
     $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
     $this->db->select(array('request_detail_description','request_detail_quantity',
     'request_detail_unit_cost','request_detail_total_cost','expense_account_id','project_allocation_id'));
-  
+    
 
     $request_detail = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row();
 
@@ -34,7 +50,7 @@ class Voucher extends MY_Controller
       'voucher_detail_quantity' => $request_detail->request_detail_quantity,
       'voucher_detail_unit_cost' => $request_detail->request_detail_unit_cost,
       'voucher_detail_total_cost' => $request_detail->request_detail_total_cost,
-      'voucher_detail_account' => $request_detail->expense_account_id,
+      'expense_account_name' => $request_detail->expense_account_id,
       'project_allocation_name' => $request_detail->project_allocation_id
     ];
 

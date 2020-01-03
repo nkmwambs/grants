@@ -65,12 +65,14 @@
 
 <script>
 $(".map_request_to_voucher_row").click(function(ev){
-    
+
+    let btn = $(this);
+    let data = {'voucher_number':$("#voucher_number").val()}
 
     $.ajax({
-        url:'<?=base_url();?>voucher/get_request_detail/6',
+        url:'<?=base_url();?>voucher/get_request_detail/'+btn.attr('id'),
+        data:data,
         beforeSend:function(){
-
         },
         success:function(response){
             //alert(response);
@@ -79,7 +81,7 @@ $(".map_request_to_voucher_row").click(function(ev){
             run_detail_row(obj);
         },
         error:function(){
-
+            alert('Error Occurred');
         }
     });
 

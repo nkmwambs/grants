@@ -1,6 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
   extract($result);
   //print_r($detail_false_keys);
+  //echo count((array)$this->voucher_model->get_office_last_voucher(9));
 ?>
 
 <div class="row">
@@ -139,7 +140,7 @@
       });
 
       var data = {fields};
-
+      
       insert_row(url,data);
 
       post_row_insert();
@@ -201,7 +202,7 @@
       //Check if all required fields are filled
   var empty_fields_count = 0;
   $('.form-control').each(function(i,el){
-    if($(el).val() == ''){
+    if($(el).val() == '' && !$(el).hasClass('hidden')){
       $(el).css('border','1px solid red');
       empty_fields_count++;
     }
