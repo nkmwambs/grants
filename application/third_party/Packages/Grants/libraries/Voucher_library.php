@@ -32,7 +32,8 @@ class Voucher_library extends Grants
   }
 
   function get_voucher_date($office_id){
-    return date('Y-m-d');
+    //return date('Y-m-d');
+    return $this->CI->voucher_model->get_voucher_date($office_id);
   }
 
   function default_field_value(){

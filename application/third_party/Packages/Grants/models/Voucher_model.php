@@ -79,6 +79,18 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
     /**Local methods**/
+
+  function get_voucher_date($office_id){
+    //return date('Y-m-t');
+    $voucher_date = $this->db->get_where('office',array('office_id'=>$office_id))->row()->office_start_date;
+    
+    if(count((array)$this->get_office_last_voucher($office_id)) > 0 ){
+      $voucher_date = $this->get_office_last_voucher($office_id)->voucher_date;
+    }
+
+    return $voucher_date;
+  }  
+
   function get_voucher_number($office_id){
 
     $next_voucher_number = "";
@@ -168,15 +180,17 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function get_voucher_next_serial_number($office_id){
 
+    // Set default serial number to 1 unless adding to a series in a month
     $next_serial = 1; 
 
-    //$rows = $this->db->get_where('voucher',array('fk_office_id'=>$office_id))->num_rows();
-
+    // Start checking if the office has a last voucher record
     if(count((array)$this->get_office_last_voucher($office_id)) > 0){
       $last_voucher_number = $this->get_office_last_voucher($office_id)->voucher_number; 
       $last_voucher_date = $this->get_office_last_voucher($office_id)->voucher_date; 
 
       if(!$this->check_if_office_transacting_month_has_been_closed($office_id,$last_voucher_date)){
+        // Get the serial number of the last voucher, replace the month and year part of the 
+        // voucher number with an empty string to remain with only the voucher serial number
         $current_voucher_serial_number = substr_replace($last_voucher_number,'',0,4);  
         $next_serial = $current_voucher_serial_number + 1;
       }
