@@ -1861,8 +1861,8 @@ function feature_model_list_table_visible_columns() {
       if(
         (
           method_exists($this->CI->$current_model,'lookup_values') && 
-          is_array($this->CI->$current_model->lookup_values($table)) &&
-          array_key_exists($table,$this->CI->$current_model->lookup_values($table))
+          is_array($this->CI->$current_model->lookup_values($table)) 
+          && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
         ) 
       ){  
           $result = $this->CI->$current_model->lookup_values($table)[$table];

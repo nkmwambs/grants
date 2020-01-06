@@ -126,11 +126,11 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
    * @return Array 
    *  */  
 
-  function get_office_context_association(int $center_id):Array{
+  function get_office_context_association(int $office_id):Array{
 
     $this->db->join('office','office.fk_context_definition_id=context_definition.context_definition_id');
     $this->db->select(array('context_definition_name'));
-    $association_table_obj = $this->db->get_where('context_definition',array('office_id'=>$center_id));
+    $association_table_obj = $this->db->get_where('context_definition',array('office_id'=>$office_id));
 
     $association_return = array();
     $association_table = '';
@@ -140,7 +140,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
         $association_table = 'context_'.$context_definition_name;
         
         $association_obj = $this->db->get_where($association_table,
-             array('fk_office_id'=>$center_id));
+             array('fk_office_id'=>$office_id));
 
              if($association_obj->num_rows()>0){
               $association_return[$context_definition_name] = $association_obj->row();
@@ -153,39 +153,8 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   }
 
-
-  /**
-   * Lookup Values
-   * 
-   * This methods only returns Centers/ units that have not been associated to any context
-   * 
-   * @return Array Array of unassociated centers/units
-   */
   // function lookup_values(){
-
-  //   $condition_array = [];
-
-  //   // Used when associating a center to a hierarchy. Only gets centers of the 
-  //   // specified hierarchy group and if not yet associated
-  //   //echo str_replace('context_','',$this->controller);
-  //   //exit();
-    
-  //   if($this->action == 'single_form_add'){
-  //       $this->db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
-  //       $condition_array_raw = $this->db->get_where('office',
-  //       array('context_definition_name'=>str_replace('context_','',$this->controller)))->result_array();
-
-  //       foreach($condition_array_raw as $office){
-  //         // Remove centers with association from the select options
-  //         if(!$this->check_if_office_has_any_context_association($office['office_id'])){
-  //           $condition_array[] = $office;
-  //         }
-  //       }
-  //   }
-
-  //   return $condition_array;
-    
+  //   return $this->session->context_offices;
   // }
-
   
 }

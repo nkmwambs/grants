@@ -232,14 +232,19 @@ class User_model extends MY_Model
       $context_table = $context_defs[$user_context_name]['context_table'];
       $context_user_table = $context_defs[$user_context_name]['context_user_table'];
 
-      $this->db->select(array('fk_office_id'));
+      $this->db->select(array('office_name','office_id'));
+      
       $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_user_table.'.fk_'.$context_table.'_id');
+      $this->db->join('office','office.office_id='.$context_table.'.fk_office_id');
       $user_context_obj = $this->db->get_where($context_user_table,array('fk_user_id'=>$user_id));
       
       $user_offices =  array();    
 
       if($user_context_obj->num_rows()>0){
-        $user_offices = array_column($user_context_obj->result_array(),'fk_office_id'); 
+        //$user_offices_names = array_column($user_context_obj->result_array(),'office_name'); 
+        //$user_offices_ids = array_column($user_context_obj->result_array(),'office_id'); 
+        //$user_offices = array_combine($user_offices_ids,$user_offices_names);
+        $user_offices = $user_context_obj->result_array();
       }
       
       return $user_offices;
@@ -324,7 +329,12 @@ class User_model extends MY_Model
           //else
             $office_ids = $this->_user_hierarchy_offices($user_context_table, $user_context_level, $user_context_id, $hierarchy_context);
           
-            $user_hierarchy_offices = array_merge($user_hierarchy_offices,$office_ids);          
+            $user_hierarchy_offices_ids = array_merge($user_hierarchy_offices,$office_ids);    
+            
+            // Workaround - Need to be refactored
+            $user_hierarchy_offices = $this->db->where_in($user_hierarchy_offices_ids)
+            ->select(array('office_name','office_id'))
+            ->get('office')->result_array();
         }
         
       }

@@ -230,5 +230,9 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
       
     return $this->db->get('request_detail')->result_array();
   }
+
+  function lookup_values(){
+    return array('office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices);
+  }
   
 }
