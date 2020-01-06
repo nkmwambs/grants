@@ -86,7 +86,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     }    
     
     // Only list requests from the users' hierachy offices
-    $this->db->where_in($this->controller.'.fk_office_id',$this->session->hierarchy_offices);
+    $this->db->where_in($this->controller.'.fk_office_id',array_keys($this->session->hierarchy_offices));
   }
 
 

@@ -1,5 +1,12 @@
 <script>
 
+$(document).ready(function(){
+ 
+ // Hides or make fields readonly on ready
+  set_fields_on_ready();
+
+});
+
 function pre_record_post(){
 
   if($("#fkvoucher_type_id").val() == 0){
@@ -126,28 +133,23 @@ function remove_all_offices_except_selected(offices){
 
 }
 
-$(document).ready(function(){
- 
- // Hides or make fields readonly on ready
-  set_fields_on_ready();
 
-  $("#fk_voucher_type_id").change(function(){
+$("#fk_voucher_type_id").change(function(){
 
-    let vtype = $(this).val();
+  let vtype = $(this).val();
 
-    toggle_insert_row_button($(this));
- 
-    // Show/ hide the approved requests to allow adding their rows to a voucher details
-    toggle_approved_request_details(vtype);
+  toggle_insert_row_button($(this));
 
-    // add column is true then add respective account type column e.g. expense account or income account columns
-    append_account_column(vtype);
+  // Show/ hide the approved requests to allow adding their rows to a voucher details
+  toggle_approved_request_details(vtype);
 
-    // Show bank select when office is selected
-    toggle_bank_field(vtype);
-        
-  });
+  // add column is true then add respective account type column e.g. expense account or income account columns
+  append_account_column(vtype);
 
+  // Show bank select when office is selected
+  toggle_bank_field(vtype);
+  
+    
 });
 
 function set_fields_on_ready(){
@@ -181,6 +183,35 @@ function toggle_bank_field(vtype){
     }else{
       $("#fk_office_bank_id").closest('.form-group').addClass('hidden');
     }
+
+    var url = "<?=base_url();?>voucher/repopulate_office_banks";
+    var data = {'office_id':$("#fk_office_id").val()};
+
+    $.ajax({
+      url:url,
+      data:data,
+      type:"POST",
+      beforeSend:function(){
+        //$("#fk_office_bank_id").children().remove();
+      },
+      success:function(response){
+        //alert(response);
+  
+        var obj = JSON.parse(response);
+  
+        var options = "<option value='0'><?=get_phrase('select_a_bank');?></option>";
+        
+        obj.forEach(function (el, i) {
+          options += "<option value='"+el.office_bank_id+"'>"+el.office_bank_name+"</option>";
+        });
+
+        $("#fk_office_bank_id").html(options);
+
+      },
+      error:function(){
+
+      }
+    });
 }
 
 // Add an expense or income account column
@@ -252,6 +283,7 @@ function toggle_approved_request_details(vtype){
 
 // Show cheque number field when a bank is selected
 $("#fk_office_bank_id").change(function(){
+  //alert($(this).val());  
   if($(this).val() > 0){
     $("#voucher_cheque_number").closest('.form-group').removeClass('hidden');
   }else{

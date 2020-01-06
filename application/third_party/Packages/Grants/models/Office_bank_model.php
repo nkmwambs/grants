@@ -20,7 +20,7 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
   function index(){}
 
   public function lookup_tables(){
-    return array('office','bank');
+    return array('office','bank','bank_branch');
   }
 
   public function detail_tables(){

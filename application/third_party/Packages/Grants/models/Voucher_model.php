@@ -223,7 +223,15 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   private function is_next_valid_cheque_number($office_bank, $cheque_number){
     
-    $valid_next_cheque_number = 1;
+    $valid_next_cheque_number = 0;
+
+    $active_cheque_book_obj = $this->db->select(array('cheque_book_start_serial_number',
+    'cheque_book_count_of_leaves'))->get_where('cheque_book',
+    array('fk_office_bank_id'=>$office_bank,'cheque_book_is_active'=>1));
+
+    if($active_cheque_book_obj->num_rows() > 0){
+      $valid_next_cheque_number = $active_cheque_book_obj->row()->cheque_book_start_serial_number;
+    }
 
     // Max used cheque number for the bank
     $max_used_cheque_obj = $this->db->select_max('voucher_cheque_number')->get_where('voucher',
@@ -282,6 +290,24 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $is_valid_cheque;
   }
 
+  function populate_office_banks($office_id){
+
+    $office_banks = array();
+
+    $office_banks_obj = $this->db->select(array('office_bank_id','office_bank_name'))->get_where('office_bank',
+    array('fk_office_id'=>$office_id));
+
+    if($office_banks_obj->num_rows() > 0){
+      $office_banks = $office_banks_obj->result_array();
+      //$ids = array_column($banks,'office_bank_id');
+      //$names = array_column($banks,'office_bank_name');
+
+      //$office_banks = array_combine($ids,$names);
+    }
+
+    return $office_banks;
+  }
+
   function get_approved_unvouched_request_details(){
 
     $this->db->select(array('request_detail_id','request_date','office_name',
@@ -301,7 +327,9 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
   function lookup_values(){
-    return array('office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices);
+    return array(
+      'office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices
+    );
   }
   
 }

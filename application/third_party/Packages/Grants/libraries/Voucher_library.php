@@ -40,6 +40,10 @@ class Voucher_library extends Grants
     return $this->CI->voucher_model->validate_cheque_number($data);
   }
 
+  function populate_office_banks($office_id){
+    return $this->CI->voucher_model->populate_office_banks($office_id);
+  }
+
   function approved_unvouched_request_details(){
     $data['result'] = $this->CI->voucher_model->get_approved_unvouched_request_details();
     return $this->CI->load->view('voucher/unvouched_request_details',$data,true);
