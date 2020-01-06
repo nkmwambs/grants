@@ -11,6 +11,13 @@
 class Office_bank_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'office_bank'; // you MUST mention the table name
+  //public $dependant_table = '';
+  public $name_field = 'office_bank_name';
+  public $create_date_field = "office_bank_created_date";
+  public $created_by_field = "office_bank_created_by";
+  public $last_modified_date_field = "office_bank_last_modified_date";
+  public $last_modified_by_field = "office_bank_last_modified_by";
+  public $deleted_at_field = "office_bank_deleted_at";
 
 
   function __construct(){
@@ -20,10 +27,12 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
   function index(){}
 
   public function lookup_tables(){
-    return array('office','bank');
+    return array('office','bank','bank_branch');
   }
 
-  public function detail_tables(){}
+  public function detail_tables(){
+    return ['cheque_book'];
+  }
 
     public function master_table_visible_columns(){}
 
