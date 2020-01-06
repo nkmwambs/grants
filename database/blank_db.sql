@@ -291,7 +291,33 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (468,	'APAL-89404',	'Approval Ticket # APAL-89404',	3,	87,	5,	'2019-12-15',	'2019-12-15 15:17:11',	5),
 (469,	'APAL-78047',	'Approval Ticket # APAL-78047',	19,	87,	1,	'2019-12-15',	'2019-12-15 15:25:35',	1),
 (470,	'APAL-51571',	'Approval Ticket # APAL-51571',	48,	87,	1,	'2019-12-16',	'2019-12-16 10:40:23',	1),
-(471,	'APAL-31869',	'Approval Ticket # APAL-31869',	49,	87,	1,	'2019-12-16',	'2019-12-16 10:41:18',	1);
+(471,	'APAL-31869',	'Approval Ticket # APAL-31869',	49,	87,	1,	'2019-12-16',	'2019-12-16 10:41:18',	1),
+(472,	'APAL-1608',	'Approval Ticket # APAL-1608',	3,	87,	5,	'2019-12-16',	'2019-12-16 10:55:24',	5),
+(473,	'APAL-50855',	'Approval Ticket # APAL-50855',	3,	87,	5,	'2019-12-16',	'2019-12-16 10:57:57',	5),
+(474,	'APAL-22478',	'Approval Ticket # APAL-22478',	49,	87,	1,	'2019-12-16',	'2019-12-16 10:59:09',	1),
+(475,	'APAL-78683',	'Approval Ticket # APAL-78683',	22,	87,	1,	'2019-12-16',	'2019-12-16 13:19:15',	1),
+(476,	'APAL-8372',	'Approval Ticket # APAL-8372',	22,	87,	1,	'2019-12-16',	'2019-12-16 15:36:41',	1),
+(477,	'APAL-60982',	'Approval Ticket # APAL-60982',	22,	87,	1,	'2019-12-16',	'2019-12-16 15:37:40',	1),
+(479,	'APAL-61925',	'Approval Ticket # APAL-61925',	23,	87,	1,	'2019-12-16',	'2019-12-16 15:39:14',	1),
+(480,	'APAL-69191',	'Approval Ticket # APAL-69191',	22,	87,	1,	'2019-12-16',	'2019-12-16 17:11:01',	1),
+(481,	'APAL-27349',	'Approval Ticket # APAL-27349',	2,	87,	1,	'2019-12-20',	'2019-12-20 11:25:54',	1),
+(482,	'APAL-64678',	'Approval Ticket # APAL-64678',	2,	87,	1,	'2020-01-03',	'2020-01-03 11:24:51',	1),
+(483,	'APAL-34790',	'Approval Ticket # APAL-34790',	2,	87,	1,	'2020-01-03',	'2020-01-03 12:30:32',	1),
+(487,	'APAL-65597',	'Approval Ticket # APAL-65597',	67,	87,	1,	'2020-01-04',	'2020-01-04 06:41:24',	1),
+(492,	'APAL-79440',	'Approval Ticket # APAL-79440',	67,	87,	1,	'2020-01-04',	'2020-01-04 06:51:23',	1),
+(493,	'APAL-50021',	'Approval Ticket # APAL-50021',	67,	87,	1,	'2020-01-04',	'2020-01-04 06:51:45',	1),
+(495,	'APAL-35617',	'Approval Ticket # APAL-35617',	67,	87,	1,	'2020-01-04',	'2020-01-04 06:56:49',	1),
+(498,	'APAL-73022',	'Approval Ticket # APAL-73022',	68,	87,	1,	'2020-01-06',	'2020-01-06 06:12:14',	1),
+(499,	'APAL-47888',	'Approval Ticket # APAL-47888',	68,	87,	1,	'2020-01-06',	'2020-01-06 06:14:15',	1),
+(500,	'APAL-21642',	'Approval Ticket # APAL-21642',	68,	87,	1,	'2020-01-06',	'2020-01-06 06:17:59',	1),
+(502,	'APAL-81312',	'Approval Ticket # APAL-81312',	69,	87,	1,	'2020-01-06',	'2020-01-06 06:25:58',	1),
+(503,	'APAL-76872',	'Approval Ticket # APAL-76872',	2,	87,	1,	'2020-01-06',	'2020-01-06 07:36:34',	1),
+(504,	'APAL-32679',	'Approval Ticket # APAL-32679',	2,	87,	1,	'2020-01-06',	'2020-01-06 07:38:59',	1),
+(505,	'APAL-32039',	'Approval Ticket # APAL-32039',	2,	87,	1,	'2020-01-06',	'2020-01-06 07:59:37',	1),
+(506,	'APAL-38768',	'Approval Ticket # APAL-38768',	2,	87,	1,	'2020-01-06',	'2020-01-06 08:01:12',	1),
+(507,	'APAL-51176',	'Approval Ticket # APAL-51176',	2,	87,	1,	'2020-01-06',	'2020-01-06 08:02:00',	1),
+(508,	'APAL-5274',	'Approval Ticket # APAL-5274',	2,	87,	1,	'2020-01-06',	'2020-01-06 09:04:02',	1),
+(509,	'APAL-3664',	'Approval Ticket # APAL-3664',	2,	87,	1,	'2020-01-06',	'2020-01-06 09:09:14',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -395,7 +421,10 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (62,	'',	'approval',	0,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
 (63,	'',	'income_account',	0,	'2019-11-27',	1,	'2019-11-27 12:58:11',	1,	NULL,	NULL),
 (65,	'',	'context_center_user',	0,	'2019-11-30',	1,	'2019-12-08 08:45:49',	1,	NULL,	NULL),
-(66,	'',	'context_definition',	0,	'2019-12-15',	1,	'2019-12-15 06:51:08',	1,	NULL,	NULL);
+(66,	'',	'context_definition',	0,	'2019-12-15',	1,	'2019-12-15 06:51:08',	1,	NULL,	NULL),
+(67,	'',	'bank_branch',	0,	'2020-01-04',	1,	'2020-01-04 06:22:45',	1,	NULL,	NULL),
+(68,	'',	'office_bank',	0,	'2020-01-04',	1,	'2020-01-04 06:30:35',	1,	NULL,	NULL),
+(69,	'',	'cheque_book',	0,	'2020-01-06',	1,	'2020-01-06 06:19:14',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -432,13 +461,17 @@ CREATE TABLE `bank_branch` (
   `bank_branch_created_date` date DEFAULT NULL,
   `bank_branch_last_modified_date` date DEFAULT NULL,
   `bank_branch_last_modified_by` int(100) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`bank_branch_id`),
   KEY `fk_bank_branch_bank1_idx` (`fk_bank_id`),
   CONSTRAINT `fk_bank_branch_bank1` FOREIGN KEY (`fk_bank_id`) REFERENCES `bank` (`bank_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds branches for banks';
 
-INSERT INTO `bank_branch` (`bank_branch_id`, `bank_branch_track_number`, `fk_bank_id`, `bank_branch_name`, `bank_branch_is_active`, `bank_branch_created_by`, `bank_branch_created_date`, `bank_branch_last_modified_date`, `bank_branch_last_modified_by`) VALUES
-(1,	'BBC-83984',	1,	'Kilifi',	1,	1,	'2019-10-09',	'2019-10-09',	1);
+INSERT INTO `bank_branch` (`bank_branch_id`, `bank_branch_track_number`, `fk_bank_id`, `bank_branch_name`, `bank_branch_is_active`, `bank_branch_created_by`, `bank_branch_created_date`, `bank_branch_last_modified_date`, `bank_branch_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(3,	'BACH-7622',	1,	'Kilifi Branch',	1,	1,	'2020-01-04',	NULL,	1,	492,	89),
+(4,	'BACH-55439',	1,	'Malindi Branch',	1,	1,	'2020-01-04',	NULL,	1,	493,	89),
+(5,	'BACH-42899',	1,	'Mombasa Branch',	1,	1,	'2020-01-04',	NULL,	1,	495,	89);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
@@ -536,19 +569,26 @@ CREATE TABLE `chatable_table` (
 DROP TABLE IF EXISTS `cheque_book`;
 CREATE TABLE `cheque_book` (
   `cheque_book_id` int(11) NOT NULL AUTO_INCREMENT,
-  `center_bank_id` int(100) DEFAULT NULL,
-  `start_serial_number` varchar(45) DEFAULT NULL,
-  `count_of_leaves` varchar(45) DEFAULT NULL,
-  `use_start_date` varchar(45) DEFAULT NULL,
-  `created_date` varchar(45) DEFAULT NULL,
-  `created_by` varchar(45) DEFAULT NULL,
-  `last_modified_by` varchar(45) DEFAULT NULL,
-  `last_modified_date` varchar(45) DEFAULT NULL,
+  `cheque_book_track_number` varchar(100) NOT NULL,
+  `cheque_book_name` varchar(100) NOT NULL,
+  `fk_office_bank_id` int(100) DEFAULT NULL,
+  `cheque_book_is_active` int(5) DEFAULT '1',
+  `cheque_book_start_serial_number` varchar(45) DEFAULT NULL,
+  `cheque_book_count_of_leaves` varchar(45) DEFAULT NULL,
+  `cheque_book_use_start_date` date DEFAULT NULL,
+  `cheque_book_created_date` date DEFAULT NULL,
+  `cheque_book_created_by` int(100) DEFAULT NULL,
+  `cheque_book_last_modified_by` int(100) DEFAULT NULL,
+  `cheque_book_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`cheque_book_id`),
-  KEY `fk_cheque_book_center_bank1_idx` (`center_bank_id`),
-  CONSTRAINT `fk_cheque_book_center_bank1` FOREIGN KEY (`center_bank_id`) REFERENCES `office_bank` (`office_bank_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_office_bank_id` (`fk_office_bank_id`),
+  CONSTRAINT `cheque_book_ibfk_1` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `cheque_book` (`cheque_book_id`, `cheque_book_track_number`, `cheque_book_name`, `fk_office_bank_id`, `cheque_book_is_active`, `cheque_book_start_serial_number`, `cheque_book_count_of_leaves`, `cheque_book_use_start_date`, `cheque_book_created_date`, `cheque_book_created_by`, `cheque_book_last_modified_by`, `cheque_book_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'CHOK-32703',	'Cheque_book # CHOK-32703',	2,	1,	'1',	'150',	'2020-01-01',	'2020-01-06',	1,	1,	NULL,	502,	0);
 
 DROP TABLE IF EXISTS `ci_sessions`;
 CREATE TABLE `ci_sessions` (
@@ -1131,7 +1171,8 @@ INSERT INTO `department_user` (`department_user_id`, `department_user_track_numb
 (1,	'DEER-5510',	'Mapenzi Hellen',	9,	1,	'2019-11-21',	'2019-11-21 17:08:57',	1,	1,	272,	74),
 (2,	'DEER-18515',	'Joyce Cherono',	4,	2,	'2019-11-21',	'2019-11-21 19:34:45',	1,	1,	273,	74),
 (3,	'DEER-84135',	'Nicodemus Karisa - Training Department',	1,	2,	'2019-12-15',	'2019-12-15 15:10:22',	1,	1,	467,	74),
-(4,	'DEER-3294',	'David Mbitsi - Finance Department',	5,	3,	'2019-12-16',	'2019-12-16 10:41:18',	1,	1,	471,	74);
+(4,	'DEER-3294',	'David Mbitsi - Finance Department',	5,	3,	'2019-12-16',	'2019-12-16 10:41:18',	1,	1,	471,	74),
+(5,	'DEER-69163',	'David Mbitsi - Training Department',	5,	2,	'2019-12-16',	'2019-12-16 10:59:09',	1,	1,	474,	74);
 
 DROP TABLE IF EXISTS `designation`;
 CREATE TABLE `designation` (
@@ -1367,7 +1408,7 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (521,	'Office',	'Office',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (522,	'Office_bank',	'Office_bank',	1,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (523,	'Context_definition',	'Context_definition',	1,	NULL,	'2019-12-08 12:20:29',	NULL,	NULL,	NULL,	NULL),
-(524,	'Center_bank',	'Center_bank',	1,	NULL,	'2019-12-08 13:57:52',	NULL,	NULL,	NULL,	NULL);
+(525,	'Cheque_book',	'Cheque_book',	1,	NULL,	'2020-01-06 10:11:55',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -1731,11 +1772,10 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (1297,	1,	521,	1,	90,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1298,	1,	522,	1,	91,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
 (1299,	1,	523,	1,	75,	0,	NULL,	'2019-12-08 12:20:30',	NULL,	NULL,	NULL,	NULL),
-(1300,	1,	524,	1,	75,	0,	NULL,	'2019-12-08 13:57:53',	NULL,	NULL,	NULL,	NULL),
 (1301,	5,	521,	1,	57,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
 (1302,	5,	522,	1,	58,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
 (1303,	5,	523,	1,	59,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
-(1304,	5,	524,	1,	60,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL);
+(1305,	1,	525,	1,	63,	0,	NULL,	'2020-01-06 10:11:55',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -1822,7 +1862,7 @@ CREATE TABLE `office` (
 
 INSERT INTO `office` (`office_id`, `office_track_number`, `office_name`, `office_description`, `office_code`, `fk_context_definition_id`, `office_start_date`, `office_end_date`, `office_is_active`, `office_created_by`, `office_created_date`, `office_last_modified_date`, `office_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
 (9,	'CEER-77415',	'GRC Shingila',	'',	'',	13,	'2019-11-07',	'0000-00-00',	1,	1,	'2019-11-07',	'0000-00-00',	1,	151,	45),
-(10,	'CEER-86769',	'Mtondia CDC',	'',	'',	13,	'2010-02-18',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	254,	45),
+(10,	'CEER-86769',	'Mtondia CDC',	'',	'',	13,	'2019-12-18',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	254,	45),
 (11,	'CEER-31976',	'Mnarani FPFK',	'',	'',	13,	'2003-10-16',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	255,	45),
 (12,	'CEER-86974',	'Githunguri PCEA',	'',	'',	13,	'1988-11-08',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	275,	45),
 (13,	'CEER-58399',	'Light CDC',	'',	'',	13,	'2010-03-08',	'0000-00-00',	1,	1,	'2019-11-25',	'0000-00-00',	1,	356,	45),
@@ -1830,33 +1870,40 @@ INSERT INTO `office` (`office_id`, `office_track_number`, `office_name`, `office
 (15,	'CEER-40821',	'Center 2',	'',	'',	13,	'2019-11-26',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	373,	45),
 (16,	'CEER-45109',	'TAWK',	'',	'',	13,	'2016-01-01',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	384,	45),
 (17,	'CEER-82530',	'YWT',	'',	'',	13,	'2017-01-01',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	385,	45),
-(18,	'CEER-5952',	'Kenya Head Office',	'',	'',	10,	'1979-10-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	433,	45),
+(18,	'CEER-5952',	'Kenya Head Office',	'',	'',	10,	'2019-10-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	433,	45),
 (19,	'CEER-29652',	'Kaloleni Cluster Unit',	'',	'',	8,	'2019-06-26',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	439,	45),
 (20,	'CEER-80112',	'Cohort 1 Unit',	'',	'',	9,	'2009-02-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	441,	45),
 (21,	'OFCE-10254',	'Global Office ',	'',	'G001',	12,	'1990-10-11',	'0000-00-00',	1,	1,	'2019-12-08',	'0000-00-00',	1,	442,	45),
 (22,	'OFCE-18309',	'Africa Region Office',	'',	'AFR',	11,	'1979-06-06',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	448,	45),
 (23,	'OFCE-7255',	'Malindi Cluster',	'',	'MLD',	8,	'2008-07-31',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	452,	45),
-(24,	'OFCE-76800',	'Uganda Country Office',	'',	'UG',	10,	'1990-07-10',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	459,	45),
+(24,	'OFCE-76800',	'Uganda Country Office',	'',	'UG',	10,	'2019-07-10',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	459,	45),
 (25,	'OFCE-78129',	'Uganda East Cohort',	'',	'Uganda East Cohort',	9,	'1994-10-26',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	462,	45);
 
 DROP TABLE IF EXISTS `office_bank`;
 CREATE TABLE `office_bank` (
   `office_bank_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_bank_track_number` varchar(100) DEFAULT NULL,
+  `office_bank_name` varchar(100) DEFAULT NULL,
+  `office_bank_account_number` varchar(100) DEFAULT NULL,
   `fk_office_id` int(100) DEFAULT NULL,
-  `office_bank_account_number` varchar(50) DEFAULT NULL,
+  `fk_bank_id` int(100) DEFAULT NULL,
   `fk_bank_branch_id` int(100) DEFAULT NULL,
   `office_bank_created_date` date DEFAULT NULL,
   `office_bank_created_by` int(100) DEFAULT NULL,
   `office_bank_last_modified_date` timestamp NULL DEFAULT NULL,
   `office_bank_last_modified_by` int(100) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`office_bank_id`),
-  KEY `fk_center_bank_center1_idx` (`fk_office_id`),
-  KEY `fk_center_bank_bank_branch1_idx` (`fk_bank_branch_id`),
-  CONSTRAINT `fk_center_bank_bank_branch1` FOREIGN KEY (`fk_bank_branch_id`) REFERENCES `bank_branch` (`bank_branch_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_center_bank_center1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_office_id` (`fk_office_id`),
+  KEY `fk_bank_id` (`fk_bank_id`),
+  CONSTRAINT `office_bank_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `office_bank_ibfk_2` FOREIGN KEY (`fk_bank_id`) REFERENCES `bank` (`bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `office_bank` (`office_bank_id`, `office_bank_track_number`, `office_bank_name`, `office_bank_account_number`, `fk_office_id`, `fk_bank_id`, `fk_bank_branch_id`, `office_bank_created_date`, `office_bank_created_by`, `office_bank_last_modified_date`, `office_bank_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(2,	'OFNK-55821',	'GRC Shingila Bank Account 1',	'11012364830',	9,	1,	5,	'2020-01-06',	1,	NULL,	1,	499,	88),
+(3,	'OFNK-30712',	'GRC Shingila Bank Account 2',	'32112123124',	9,	2,	4,	'2020-01-06',	1,	NULL,	1,	500,	88);
 
 DROP TABLE IF EXISTS `page_view`;
 CREATE TABLE `page_view` (
@@ -2009,7 +2056,11 @@ INSERT INTO `permission` (`permission_id`, `permission_track_number`, `permissio
 (31,	'PEON-58643',	'show_user_list',	'Show a list of users',	1,	2,	1,	'',	400,	205,	47,	'2019-11-11',	1,	NULL,	'2019-11-11 09:49:39',	1),
 (32,	'PEON-46125',	'show_permission_labels',	'Show a list of permission lables',	1,	2,	1,	'',	390,	220,	47,	'2019-11-20',	1,	NULL,	'2019-11-20 16:51:26',	1),
 (33,	'PEON-8856',	'list_users',	'List all users',	1,	1,	1,	'',	400,	222,	47,	'2019-11-20',	1,	NULL,	'2019-11-20 17:04:36',	1),
-(34,	'PEON-30929',	'show_my_menu',	'Show you menu items',	1,	2,	1,	'0',	470,	348,	47,	'2019-11-23',	1,	NULL,	'2019-11-23 18:11:34',	1);
+(34,	'PEON-30929',	'show_my_menu',	'Show you menu items',	1,	2,	1,	'0',	470,	348,	47,	'2019-11-23',	1,	NULL,	'2019-11-23 18:11:34',	1),
+(35,	'PEON-68137',	'edit_request',	'Edit a request',	1,	3,	1,	'0',	392,	475,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 13:19:15',	1),
+(36,	'PEON-70801',	'edit_request',	'Edit request',	1,	3,	1,	'0',	392,	476,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 15:36:41',	1),
+(37,	'PEON-44169',	'delete_request',	'Delete request',	1,	4,	1,	'0',	392,	477,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 15:37:40',	1),
+(38,	'PEON-68222',	'create_voucher',	'Create a voucher',	1,	1,	1,	'0',	397,	480,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 17:11:01',	1);
 
 DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
@@ -2165,7 +2216,9 @@ CREATE TABLE `request` (
 INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_request_type_id`, `fk_status_id`, `fk_office_id`, `fk_approval_id`, `request_date`, `request_description`, `fk_department_id`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
 (1,	'REST-50733',	'Test',	2,	14,	9,	464,	'2019-12-15',	'Test',	1,	'2019-12-15',	'1',	'1',	'2019-12-15 09:53:15',	NULL),
 (2,	'REST-21224',	'Test 2',	1,	15,	9,	466,	'2019-12-15',	'Test 2',	1,	'2019-12-15',	'5',	'5',	'2019-12-15 14:29:53',	NULL),
-(3,	'REST-53097',	'Test 3',	2,	14,	9,	468,	'2019-12-15',	'Test 3',	2,	'2019-12-15',	'5',	'5',	'2019-12-15 15:17:11',	NULL);
+(3,	'REST-53097',	'Test 3',	2,	15,	9,	468,	'2019-12-15',	'Test 3',	2,	'2019-12-15',	'5',	'5',	'2019-12-16 15:42:36',	NULL),
+(4,	'REST-26709',	'Test 4',	1,	14,	9,	472,	'2019-12-16',	'Test 4',	2,	'2019-12-16',	'5',	'5',	'2019-12-16 10:55:24',	NULL),
+(5,	'REST-13572',	'Test 5',	1,	20,	9,	473,	'2019-12-16',	'Test 5',	3,	'2019-12-16',	'5',	'5',	'2019-12-20 09:18:45',	NULL);
 
 DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
@@ -2181,7 +2234,7 @@ CREATE TABLE `request_detail` (
   `fk_status_id` int(100) DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `request_detail_conversion_set` int(5) DEFAULT '0',
-  `fk_voucher_id` int(100) DEFAULT NULL,
+  `request_detail_voucher_number` int(100) DEFAULT NULL,
   `request_detail_created_date` date DEFAULT NULL,
   `request_detail_created_by` int(100) DEFAULT NULL,
   `request_detail_last_modified_by` int(100) DEFAULT NULL,
@@ -2194,11 +2247,13 @@ CREATE TABLE `request_detail` (
   CONSTRAINT `request_detail_ibfk_1` FOREIGN KEY (`fk_request_id`) REFERENCES `request` (`request_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_conversion_set`, `fk_voucher_id`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
+INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_conversion_set`, `request_detail_voucher_number`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
 (1,	'REIL-77347',	1,	'Test',	20,	200.00,	400.00,	1,	5,	1,	NULL,	0,	NULL,	'2019-12-15',	1,	1,	'2019-12-15 09:53:15'),
 (2,	'REIL-54941',	2,	'Test 2',	25,	500.00,	12500.00,	3,	6,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 14:29:53'),
-(3,	'REIL-8734',	3,	'Test 3',	20,	700.00,	14000.00,	1,	5,	1,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 15:17:11'),
-(4,	'REIL-24712',	3,	'Test 3',	25,	850.00,	21250.00,	2,	7,	1,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 15:17:11');
+(3,	'REIL-8734',	3,	'Test 3',	20,	700.00,	14000.00,	1,	5,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-16 15:42:36'),
+(4,	'REIL-24712',	3,	'Test 3',	25,	850.00,	21250.00,	2,	7,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-16 15:42:36'),
+(5,	'REIL-85047',	4,	'Testing 4',	50,	1500.00,	75000.00,	3,	8,	1,	NULL,	0,	NULL,	'2019-12-16',	5,	5,	'2019-12-16 10:55:24'),
+(6,	'REIL-71669',	5,	'Test 5',	15,	2500.00,	37500.00,	1,	8,	1,	NULL,	0,	NULL,	'2019-12-16',	5,	5,	'2019-12-16 10:57:57');
 
 DROP TABLE IF EXISTS `request_type`;
 CREATE TABLE `request_type` (
@@ -2280,7 +2335,7 @@ INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_numb
 (6,	'ROON-44018',	'List requests for Finance director',	1,	2,	22,	173,	48,	'2019-11-08',	1,	'2019-11-08 11:34:43',	1),
 (7,	'ROON-9358',	'Add requests by Finance director',	1,	2,	23,	174,	48,	'2019-11-08',	1,	'2019-11-08 11:35:07',	1),
 (8,	'ROON-30396',	'Finance Director can see the center name when adding a voucher on behalf of a center',	1,	2,	25,	187,	48,	'2019-11-08',	1,	'2019-11-08 12:39:25',	1),
-(9,	'ROON-41670',	'List vouchers to Center Accountant',	1,	3,	26,	190,	48,	'2019-11-08',	1,	'2019-11-08 12:48:05',	1),
+(9,	'ROON-41670',	'List vouchers to Center Accountant',	0,	3,	26,	190,	48,	'2019-11-08',	1,	'2019-11-08 12:48:05',	1),
 (10,	'ROON-77186',	'Allow center accountant to add a voucher',	1,	3,	27,	191,	48,	'2019-11-08',	1,	'2019-11-08 12:48:32',	1),
 (11,	'ROON-72193',	'Show the voucher detail description field',	1,	2,	28,	193,	48,	'2019-11-08',	1,	'2019-11-08 13:31:03',	1),
 (12,	'ROON-40527',	'Show voucher list to Finance Director',	1,	2,	26,	194,	48,	'2019-11-08',	1,	'2019-11-08 14:17:53',	1),
@@ -2292,9 +2347,9 @@ INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_numb
 (18,	'ROON-77476',	'Show a list of permission labels',	1,	4,	32,	221,	48,	'2019-11-20',	1,	'2019-11-20 16:52:41',	1),
 (19,	'ROON-49919',	'List all users',	1,	4,	33,	223,	48,	'2019-11-20',	1,	'2019-11-20 17:05:06',	1),
 (20,	'ROON-67098',	'List all permission labels by an department head',	1,	1,	32,	224,	48,	'2019-11-20',	1,	'2019-11-20 17:12:14',	1),
-(21,	'ROON-85421',	'Listing requests to center accountant',	1,	3,	22,	274,	48,	'2019-11-21',	1,	'2019-11-21 19:51:30',	1),
+(21,	'ROON-85421',	'Listing requests to center accountant',	0,	3,	22,	274,	48,	'2019-11-21',	1,	'2019-11-21 19:51:30',	1),
 (22,	'ROON-78079',	'List requests',	1,	1,	22,	276,	48,	'2019-11-21',	1,	'2019-11-21 22:30:27',	1),
-(23,	'ROON-12657',	'Accountant adding a request',	1,	3,	23,	284,	48,	'2019-11-22',	1,	'2019-11-22 10:15:49',	1),
+(23,	'ROON-12657',	'Accountant adding a request',	0,	3,	23,	284,	48,	'2019-11-22',	1,	'2019-11-22 10:15:49',	1),
 (24,	'ROON-23493',	'Department manager adding a request',	1,	1,	23,	285,	48,	'2019-11-22',	1,	'2019-11-22 10:33:01',	1),
 (25,	'ROON-40361',	'Accountant able to view menu items',	1,	3,	34,	349,	48,	'2019-11-23',	1,	'2019-11-23 18:12:31',	1),
 (26,	'ROON-53893',	'Allowing listing of requests',	1,	6,	22,	361,	48,	'2019-11-25',	1,	'2019-11-25 13:59:46',	1),
@@ -2302,7 +2357,8 @@ INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_numb
 (28,	'ROON-34108',	'Role 1 Adding requests',	1,	7,	23,	377,	48,	'2019-11-26',	1,	'2019-11-26 12:57:18',	1),
 (29,	'ROON-3556',	'Show requests to affiliate accountant',	1,	9,	22,	387,	48,	'2019-11-26',	1,	'2019-11-26 14:06:58',	1),
 (30,	'ROON-43907',	'Add request by affiliate accountant',	1,	9,	23,	388,	48,	'2019-11-26',	1,	'2019-11-26 14:08:47',	1),
-(31,	'ROON-37252',	'Show requests to AC',	1,	5,	22,	427,	48,	'2019-11-28',	1,	'2019-11-28 10:02:02',	1);
+(31,	'ROON-37252',	'Show requests to AC',	1,	5,	22,	427,	48,	'2019-11-28',	1,	'2019-11-28 10:02:02',	1),
+(32,	'ROON-52185',	'Edit request by Office accountant',	1,	3,	35,	479,	48,	'2019-12-16',	1,	'2019-12-16 15:39:14',	1);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -2423,7 +2479,9 @@ INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_app
 (84,	'',	'New',	59,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 14:11:51',	1,	NULL,	NULL),
 (85,	'',	'New',	60,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 14:31:51',	1,	NULL,	NULL),
 (86,	'',	'New',	61,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(87,	'',	'New',	62,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
+(87,	'',	'New',	62,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(88,	'',	'New',	68,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(89,	'',	'New',	67,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -2563,8 +2621,9 @@ CREATE TABLE `voucher` (
   `fk_office_id` int(100) DEFAULT NULL,
   `voucher_date` date DEFAULT NULL,
   `fk_voucher_type_id` int(100) DEFAULT NULL,
-  `fk_approval_id` int(11) DEFAULT NULL,
-  `fk_status_id` int(11) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  `fk_office_bank_id` int(100) DEFAULT NULL,
   `voucher_cheque_number` int(100) DEFAULT NULL,
   `voucher_transaction_cleared_date` date DEFAULT '0000-00-00',
   `voucher_transaction_cleared_month` date DEFAULT '0000-00-00',
@@ -2586,6 +2645,16 @@ CREATE TABLE `voucher` (
   CONSTRAINT `voucher_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
+INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `voucher_number`, `fk_office_id`, `voucher_date`, `fk_voucher_type_id`, `fk_approval_id`, `fk_status_id`, `fk_office_bank_id`, `voucher_cheque_number`, `voucher_transaction_cleared_date`, `voucher_transaction_cleared_month`, `voucher_vendor`, `voucher_description`, `voucher_allow_edit`, `voucher_created_by`, `voucher_created_date`, `voucher_last_modified_date`, `voucher_last_modified_by`) VALUES
+(1,	'VOER-56639',	'Voucher # VOER-56639',	191101,	9,	'2019-11-01',	3,	482,	10,	2,	1,	'0000-00-00',	'0000-00-00',	'Tested',	'Tested',	0,	1,	'2020-01-03',	'2020-01-03 11:24:51',	1),
+(2,	'VOER-6077',	'Voucher # VOER-6077',	191102,	9,	'2019-11-01',	3,	483,	10,	2,	2,	'0000-00-00',	'0000-00-00',	'Tested 2',	'Tested 2',	0,	1,	'2020-01-03',	'2020-01-03 12:30:32',	1),
+(3,	'VOER-12866',	'Voucher # VOER-12866',	191103,	9,	'2019-11-01',	2,	503,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 45',	'Test 45',	0,	1,	'2020-01-06',	'2020-01-06 07:36:34',	1),
+(4,	'VOER-70080',	'Voucher # VOER-70080',	191104,	9,	'2019-11-01',	8,	504,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 10',	'Test 10',	0,	1,	'2020-01-06',	'2020-01-06 07:38:59',	1),
+(5,	'VOER-26548',	'Voucher # VOER-26548',	191105,	9,	'2019-11-01',	2,	505,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 30',	'Test 30',	0,	1,	'2020-01-06',	'2020-01-06 07:59:37',	1),
+(6,	'VOER-23795',	'Voucher # VOER-23795',	191105,	9,	'2019-11-01',	2,	506,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Trial',	'Trial',	0,	1,	'2020-01-06',	'2020-01-06 08:01:12',	1),
+(7,	'VOER-20011',	'Voucher # VOER-20011',	191105,	9,	'2019-11-01',	2,	507,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Trial 2',	'Trial 2',	0,	1,	'2020-01-06',	'2020-01-06 08:02:00',	1),
+(8,	'VOER-64312',	'Voucher # VOER-64312',	191106,	9,	'2019-11-01',	2,	508,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Tried',	'Tried',	0,	1,	'2020-01-06',	'2020-01-06 09:04:02',	1),
+(9,	'VOER-52092',	'Voucher # VOER-52092',	191107,	9,	'2019-11-01',	3,	509,	10,	2,	3,	'0000-00-00',	'0000-00-00',	'Test office bank',	'Test office bank',	0,	1,	'2020-01-06',	'2020-01-06 09:09:14',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
@@ -2612,6 +2681,16 @@ CREATE TABLE `voucher_detail` (
   CONSTRAINT `voucher_detail_ibfk_3` FOREIGN KEY (`fk_voucher_id`) REFERENCES `voucher` (`voucher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`, `fk_voucher_id`, `voucher_detail_description`, `voucher_detail_quantity`, `voucher_detail_unit_cost`, `voucher_detail_total_cost`, `fk_expense_account_id`, `fk_income_account_id`, `fk_approval_id`, `fk_status_id`, `fk_project_allocation_id`, `voucher_detail_last_modified_date`, `voucher_detail_last_modified_by`, `voucher_detail_created_by`, `voucher_detail_created_date`) VALUES
+(1,	'VOIL-27531',	1,	'Tested',	10,	1500.00,	1500.00,	2,	0,	NULL,	39,	5,	NULL,	'1',	1,	'2020-01-03'),
+(2,	'VOIL-21665',	2,	'Tested 2',	15,	15000.00,	225000.00,	1,	0,	NULL,	39,	6,	NULL,	'1',	1,	'2020-01-03'),
+(3,	'VOIL-46102',	3,	'Test 45',	15,	1000.00,	15000.00,	1,	0,	NULL,	39,	5,	NULL,	'1',	1,	'2020-01-06'),
+(4,	'VOIL-59167',	4,	'Test 10',	1,	150000.00,	150000.00,	NULL,	1,	NULL,	39,	5,	NULL,	'1',	1,	'2020-01-06'),
+(5,	'VOIL-1844',	5,	'Test 56',	15,	2500.00,	37500.00,	1,	0,	NULL,	39,	8,	NULL,	'1',	1,	'2020-01-06'),
+(6,	'VOIL-33411',	6,	'Trial',	10,	1200.00,	12000.00,	2,	0,	NULL,	39,	5,	NULL,	'1',	1,	'2020-01-06'),
+(7,	'VOIL-70101',	7,	'Trial 2',	10,	1560.00,	15600.00,	2,	0,	NULL,	39,	5,	NULL,	'1',	1,	'2020-01-06'),
+(8,	'VOIL-4597',	8,	'Tried',	10,	600.00,	6000.00,	2,	0,	NULL,	39,	5,	NULL,	'1',	1,	'2020-01-06'),
+(9,	'VOIL-60459',	9,	'Test office bank',	10,	1400.00,	14000.00,	1,	0,	NULL,	39,	7,	NULL,	'1',	1,	'2020-01-06');
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -2656,4 +2735,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2019-12-16 10:44:40
+-- 2020-01-06 12:11:41
