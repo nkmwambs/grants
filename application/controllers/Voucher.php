@@ -17,6 +17,14 @@ class Voucher extends MY_Controller
 
   }
 
+  function repopulate_office_banks(){
+    $office_id = $this->input->post('office_id');
+
+    $bank_array = $this->voucher_library->populate_office_banks($office_id);
+
+    echo json_encode($bank_array);
+  }
+
   function validate_cheque_number(){
     $data = $this->input->post();
 
