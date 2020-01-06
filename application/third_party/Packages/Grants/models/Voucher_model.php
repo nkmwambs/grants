@@ -49,8 +49,8 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   function detail_list(){}
 
   function master_multi_form_add_visible_columns(){
-    return array('office_name','voucher_type_name','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_description');
+    return array('office_name','voucher_type_name','voucher_number','voucher_date','office_bank_name',
+    'voucher_cheque_number','voucher_vendor','voucher_description');
   }
 
   public function list(){}
@@ -213,6 +213,75 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   }
 
+  private function has_cheque_number_been_used($office_bank, $cheque_number){
+     // Check if the cheque number for the give bank has been used
+   $count_of_used_cheque = $this->db->get_where('voucher',
+   array('fk_office_bank_id'=>$office_bank,'voucher_cheque_number'=>$cheque_number))->num_rows();
+   
+   return $count_of_used_cheque > 0 ? true : false;
+  }
+
+  private function is_next_valid_cheque_number($office_bank, $cheque_number){
+    
+    $valid_next_cheque_number = 1;
+
+    // Max used cheque number for the bank
+    $max_used_cheque_obj = $this->db->select_max('voucher_cheque_number')->get_where('voucher',
+    array('fk_office_bank_id'=>$office_bank));
+
+    if($max_used_cheque_obj->num_rows() > 0){
+      $valid_next_cheque_number = $max_used_cheque_obj->row()->voucher_cheque_number + 1;
+    }
+
+    return $valid_next_cheque_number != $cheque_number ? false : true;
+
+  }
+
+  private function is_cheque_leaf_in_active_cheque_book($office_bank,$cheque_number){
+    
+    $cheque_number_in_active_cheque_book = false;
+
+    // Check if the provided cheque number is within the current/active cheque book
+    $active_cheque_book_obj = $this->db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'))->get_where('cheque_book',
+    array('fk_office_bank_id'=>$office_bank,'cheque_book_is_active'=>1));
+ 
+    if($active_cheque_book_obj->num_rows() == 1){
+      
+      $first_leaf_serial = $active_cheque_book_obj->row()->cheque_book_start_serial_number;
+      $number_of_leaves = $active_cheque_book_obj->row()->cheque_book_count_of_leaves;
+      
+      $list_of_cheque_leaves = range($first_leaf_serial,$number_of_leaves);
+  
+      if(in_array($cheque_number,$list_of_cheque_leaves)){
+        $cheque_number_in_active_cheque_book = true;
+    }
+     
+   } 
+
+   return $cheque_number_in_active_cheque_book;
+
+  }
+
+  function validate_cheque_number($data){
+
+   $office_bank = $data['office_bank'];
+   $cheque_number  = $data['cheque_number'];
+
+   $is_valid_cheque = true;
+
+   if(
+      $this->has_cheque_number_been_used($office_bank,$cheque_number)
+      || (
+          !$this->is_next_valid_cheque_number($office_bank,$cheque_number) 
+          && !$this->config->item("allow_skipping_of_cheque_leaves")
+          )
+      || !$this->is_cheque_leaf_in_active_cheque_book($office_bank,$cheque_number)
+      ){
+      $is_valid_cheque = false;
+   }
+    return $is_valid_cheque;
+  }
+
   function get_approved_unvouched_request_details(){
 
     $this->db->select(array('request_detail_id','request_date','office_name',
@@ -226,8 +295,8 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->db->join('status','status.status_id=request.fk_status_id');
     $this->db->join('office','office.office_id=request.fk_office_id'); 
     
-    $this->db->where(array('request.fk_status_id'=>20,'office_id'=>9));
-      
+    $this->db->where(array('request.fk_status_id'=>20,'office_id'=>$this->session->voucher_office));
+
     return $this->db->get('request_detail')->result_array();
   }
 

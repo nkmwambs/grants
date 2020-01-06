@@ -7,5 +7,8 @@
 	$config['hide_deleted_at_column'] = true;
 	$config['max_priority_menu_items'] = 10;
 	$config['default_launch_page'] = "Dashboard";
-	$config['use_context_office'] = true;
+	$config['use_context_office'] = false;
 
+	//If true cheque numbers can be skipped as long as are in the active cheque book
+	$config['allow_skipping_of_cheque_leaves'] = false; 
+ 

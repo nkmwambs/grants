@@ -89,6 +89,12 @@ private $master_multi_form_add_visible_columns = [];
  */
 private $detail_tables = [];
 
+/**
+  * multi_add_form_fields - Holds the fields of a multi add form details table
+  * @var Array  
+  */  
+
+private $multi_add_form_fields = array(); 
 
 /**
  * Holds the change field type array from the feature library
@@ -782,76 +788,58 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
     }
 
+
   private function _detail_row_fields_for_non_assoc_fields($fields_array){
     
     $fields = array();
 
     foreach ($fields_array as $key) {
-        
-      $f = new Fields_base($key,$this->dependant_table($this->controller));
-
-      $field_type = $f->field_type();
-
-      $field = $field_type."_field";
-
-      if(array_key_exists($key,$this->set_field_type)){
-
-        $field_type = $this->set_field_type[$key]['field_type'];
-        $field = $field_type."_field";
-
-        if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
-          $fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
-        }else{
-          $fields[$key] =  $f->$field();
-        }
-
-      }elseif($field_type == 'select'){
-        $lookup_table = strtolower(substr($key,0,-5));
-        $fields[$key] = $f->$field($this->lookup_values($lookup_table));
-      }else{
-        $fields[$key] = $f->$field();
-      }
-
+      $fields = $this->populate_multi_add_form_fields($key);
     }
 
     return $fields;
   }  
 
   private function _detail_row_fields_for_assoc_fields($fields_array){
-    
+    // This method returns fields that have both keys equivalent to names of the field and values and fields values
+    // Used when adding fields with prepopulated fields values.
     $fields = array();
 
     foreach ($fields_array as $key => $value) {
-        
-      $f = new Fields_base($key,$this->dependant_table($this->controller));
-
-      $field_type = $f->field_type();
-
-      $field = $field_type."_field";
-
-      if(array_key_exists($key,$this->set_field_type)){
-
-        $field_type = $this->set_field_type[$key]['field_type'];
-        $field = $field_type."_field";
-
-        if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
-          $fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
-        }else{
-          $fields[$key] =  $f->$field($value);
-        }
-
-      }elseif($field_type == 'select'){
-        $lookup_table = strtolower(substr($key,0,-5));
-        $fields[$key] = $f->$field($this->lookup_values($lookup_table),$value);
-      }else{
-        $fields[$key] = $f->$field($value);
-      }
-
+      $fields = $this->populate_multi_add_form_fields($key,$value);
     }
 
     return $fields;
   }  
 
+  function populate_multi_add_form_fields($key,$value = ""){
+
+    $f = new Fields_base($key,$this->dependant_table($this->controller));
+
+    $field_type = $f->field_type();
+
+    $field = $field_type."_field";
+
+    if(array_key_exists($key,$this->set_field_type)){
+
+      $field_type = $this->set_field_type[$key]['field_type'];
+      $field = $field_type."_field";
+
+      if($field_type == 'select' && count($this->set_field_type[$key]['options']) > 0){
+        $this->multi_add_form_fields[$key] =  $f->select_field($this->set_field_type[$key]['options']);
+      }else{
+        $this->multi_add_form_fields[$key] =  $f->$field($value);
+      }
+
+    }elseif($field_type == 'select'){
+      $lookup_table = strtolower(substr($key,0,-5));
+      $this->multi_add_form_fields[$key] = $f->$field($this->lookup_values($lookup_table),$value);
+    }else{
+      $this->multi_add_form_fields[$key] = $f->$field($value);
+    }
+
+    return $this->multi_add_form_fields;
+  }
 
 
   /**
