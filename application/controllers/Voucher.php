@@ -17,14 +17,35 @@ class Voucher extends MY_Controller
 
   }
 
+  function validate_cheque_number(){
+    $data = $this->input->post();
+
+    echo $this->voucher_library->validate_cheque_number($data);
+
+  }
+
+  function reload_approved_request_details(){
+    echo $this->voucher_library->approved_unvouched_request_details();
+    // Remove voucher_office session. Not required after this query runs
+    $this->session->unset_userdata('voucher_office');
+  }
+
   function update_voucher_header_on_office_change(){
     $office_id = $this->input->post('office_id');
+
+    // This session is very crucial in getting the list of approve request details
+    if($this->session->voucher_office){
+      $this->session->unset_userdata('voucher_office');
+    }
+    //Set a session for the voucher selected office
+    $this->session->set_userdata('voucher_office',$office_id);
+    
 
     //echo  $office_id;
     $voucher_number = $this->voucher_library->get_voucher_number($office_id);
     $voucher_date = $this->voucher_library->get_voucher_date($office_id);
 
-    $data = ['voucher_number'=>$voucher_number,'voucher_date'=>$voucher_date];
+    $data = ['voucher_number'=>$voucher_number,'voucher_date'=>$voucher_date,'office_id'=>$this->session->voucher_office];
     echo json_encode($data);
   }
 

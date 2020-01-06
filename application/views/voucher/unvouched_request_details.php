@@ -1,4 +1,4 @@
-<div id="approved_request_detail" class="hidden">
+<div id="approved_request_detail" class="">
     <div class="row">
         <div class="col-xs-12" class="no-print" style="text-align:center;margin:10px;font-weight:bold;">
             Approved Request Details

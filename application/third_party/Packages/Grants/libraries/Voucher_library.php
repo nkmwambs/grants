@@ -36,12 +36,8 @@ class Voucher_library extends Grants
     return $this->CI->voucher_model->get_voucher_date($office_id);
   }
 
-  function default_field_value(){
-    return array(
-      'voucher_date'=>date('Y-m-d'),
-      //'office_name'=>9,
-      'voucher_number'=>1,
-    );
+  function validate_cheque_number($data){
+    return $this->CI->voucher_model->validate_cheque_number($data);
   }
 
   function approved_unvouched_request_details(){

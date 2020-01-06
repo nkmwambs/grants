@@ -13,7 +13,37 @@ function pre_record_post(){
 }
 
 $(document).on('change','#voucher_cheque_number',function(){
-  //alert('Hello');
+  let office_bank = $("#fk_office_bank_id").val();
+  let cheque_number = $(this).val();
+  var url = "<?=base_url();?>voucher/validate_cheque_number";
+  var data = {'office_bank':office_bank,'cheque_number':cheque_number};
+
+  $.ajax({
+    url:url,
+    data:data,
+    type:"POST",
+    beforeSend:function(){
+      $("#voucher_cheque_number").closest('.form-group').append('<div style="text-align:center;" id="validate_voucher_cheque_number">Validating .. </div>');
+    },
+    success:function(response){
+      //alert(response);
+      if(!response){
+        $("#voucher_cheque_number").css('border','1px solid red');
+        $("#voucher_cheque_number").val("");
+        alert('Cheque number '+cheque_number+' is invalid');
+      }else{
+        $("#voucher_cheque_number").removeAttr('style');
+      }
+
+      $('#validate_voucher_cheque_number').remove();
+      
+      
+    },
+    error:function(){
+
+    }
+  });
+
 });
 
 $(document).on('change',"#fk_office_id",function(){
@@ -21,6 +51,8 @@ $(document).on('change',"#fk_office_id",function(){
   var office_id =  $(this).val();
   var url = "<?=base_url();?>voucher/update_voucher_header_on_office_change";
   var data = {'office_id':office_id};
+  let vtype = $("#fk_voucher_type_id").val();
+  let offices = $(this);
 
   $.ajax({
     url:url,
@@ -38,15 +70,25 @@ $(document).on('change',"#fk_office_id",function(){
       if(office_id > 0){
 
         var obj = JSON.parse(response); 
+
+        if($("#fk_voucher_type_id").val() > 0){
+          $("#fk_voucher_type_id").val(0);
+          $("#fk_office_bank_id").closest('.form-group').addClass('hidden');
+          $("#voucher_cheque_number").closest('.form-group').addClass('hidden');
+        }else{
+          $("#voucher_number").closest('.form-group').removeClass('hidden');
+          $("#voucher_date").closest('.form-group').removeClass('hidden');
+          $("#fk_voucher_type_id").closest('.form-group').removeClass('hidden'); 
+          $('.save').removeClass('hidden');
+          $('.save_new').removeClass('hidden');
         
-        $("#voucher_number").closest('.form-group').removeClass('hidden');
-        $("#voucher_date").closest('.form-group').removeClass('hidden');
-        $("#fk_voucher_type_id").closest('.form-group').removeClass('hidden'); 
-        $('.save').removeClass('hidden');
-        $('.save_new').removeClass('hidden');
-      
-        $("#voucher_number").val(obj.voucher_number);
-        $("#voucher_date").val(obj.voucher_date);
+          $("#voucher_number").val(obj.voucher_number);
+          $("#voucher_date").val(obj.voucher_date);  
+        }        
+        
+        toggle_approved_request_details(vtype);
+
+
       }else{
         $("#voucher_number").closest('.form-group').addClass('hidden');
         $("#voucher_date").closest('.form-group').addClass('hidden');
@@ -56,6 +98,9 @@ $(document).on('change',"#fk_office_id",function(){
 
         alert('Choose a valid office name');
       }
+
+      remove_all_offices_except_selected(offices);
+      
       
     },
     error:function(){
@@ -66,11 +111,51 @@ $(document).on('change',"#fk_office_id",function(){
  
 });
 
+function remove_all_offices_except_selected(offices){
+  
+  let office_list = offices.children();
+
+  let selected  = offices.children("option:selected").val();
+
+  office_list.each(function(i,el){
+    if($(el).val() != selected){
+        // Works but has been commented
+        //$(el).remove();
+    }
+  });
+
+}
+
 $(document).ready(function(){
+ 
+ // Hides or make fields readonly on ready
+  set_fields_on_ready();
+
+  $("#fk_voucher_type_id").change(function(){
+
+    let vtype = $(this).val();
+
+    toggle_insert_row_button($(this));
+ 
+    // Show/ hide the approved requests to allow adding their rows to a voucher details
+    toggle_approved_request_details(vtype);
+
+    // add column is true then add respective account type column e.g. expense account or income account columns
+    append_account_column(vtype);
+
+    // Show bank select when office is selected
+    toggle_bank_field(vtype);
+        
+  });
+
+});
+
+function set_fields_on_ready(){
   $("#voucher_number").closest('.form-group').addClass('hidden');
   $("#voucher_date").closest('.form-group').addClass('hidden');
   $("#fk_voucher_type_id").closest('.form-group').addClass('hidden');
   $("#voucher_cheque_number").closest('.form-group').addClass('hidden');
+  $("#fk_office_bank_id").closest('.form-group').addClass('hidden');
   $(".save").addClass('hidden');
   $('.save_new').addClass('hidden');
   $(".insert_row").addClass('hidden');
@@ -78,23 +163,35 @@ $(document).ready(function(){
   $("#voucher_number").attr('readonly','readonly');
   $("#center_name").attr('readonly','readonly');
 
-  $("#fk_voucher_type_id").change(function(){
-    
-    if($(this).val() > 0){
+  $("#voucher_cheque_number").val(0);
+}
+
+function toggle_insert_row_button(el){
+  if($(el).val() > 0){
       $('.insert_row').removeClass('hidden');
     }else{
       $(".insert_row").addClass('hidden');
     }
+}
 
-    // Add an expense or income account column
+function toggle_bank_field(vtype){
+  // Show bank select when office is selected
+  if(vtype == 3 && $('#fk_office_id').val() > 0){
+      $("#fk_office_bank_id").closest('.form-group').removeClass('hidden');
+    }else{
+      $("#fk_office_bank_id").closest('.form-group').addClass('hidden');
+    }
+}
 
-    let row  = $('.detail thead tr');
-    let th = row.find('th');  
-    let vtype = $(this).val();
-    let detail_body  = $('.detail tbody');
-    var add_column = true;
-   
-    th.each(function(i,el){
+// Add an expense or income account column
+function append_account_column(vtype){
+  let row  = $('.detail thead tr');
+  let th = row.find('th');    
+  let detail_body  = $('.detail tbody');
+  var add_column = true;
+
+  // Set add_column bool  
+  th.each(function(i,el){
       if($(el).hasClass('dynamic_column')){
 
         var cfm = confirm('Are you sure you want to clear the details?');
@@ -112,13 +209,8 @@ $(document).ready(function(){
       }
     });
 
-    if(vtype == 2 || vtype == 3) {
-      $("#approved_request_detail").removeClass('hidden');
-    }else{
-      $("#approved_request_detail").addClass('hidden');
-    }
-
-    if(add_column){
+  // add column is true then add respective account type column e.g. expense account or income account columns
+  if(add_column){
       
       if(vtype == 2 || vtype == 3 || vtype == 6 ) {
         row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
@@ -128,17 +220,44 @@ $(document).ready(function(){
         row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
       } 
     }
+}
 
-    // Make cheque number editable
+function toggle_approved_request_details(vtype){
+  // 2 = Payment by Cash and 3 Payment by Bank
+  if(vtype == 2 || vtype == 3) {
 
-    if(vtype == 3 && $('#fk_office_id').val() > 0){
-      $("#voucher_cheque_number").closest('.form-group').removeClass('hidden');
-    }else{
-      $("#voucher_cheque_number").closest('.form-group').addClass('hidden');
+   // $("#approved_request_detail").removeClass('hidden');
+
+      var url = "<?=base_url();?>voucher/reload_approved_request_details";  
+
+      $.ajax({
+        url:url,
+        type:"POST",
+        beforeSend:function(){
+          $("#approved_request_detail").html('<div style="text-align:center;">Updating ... </div>');
+        },
+        success:function(response){
+          $("#approved_request_detail").html(response);
+        },
+        error:function(){
+
+        }
+
+      });
     }
-        
-  });
+    // else{
+    //   $("#approved_request_detail").addClass('hidden');
+    // }
+}
 
+// Show cheque number field when a bank is selected
+$("#fk_office_bank_id").change(function(){
+  if($(this).val() > 0){
+    $("#voucher_cheque_number").closest('.form-group').removeClass('hidden');
+  }else{
+    $("#voucher_cheque_number").closest('.form-group').addClass('hidden');
+  }
+  
 });
 
 function pre_row_insert(){
