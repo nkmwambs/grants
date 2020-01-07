@@ -333,7 +333,8 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
   /**
-   * Options for voucher details tables select fields
+   * Options for voucher details tables select fields. Used both on header fields and detail fields
+   * 
    */
   function lookup_values(){
     return array(
