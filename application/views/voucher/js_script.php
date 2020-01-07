@@ -5,6 +5,9 @@ $(document).ready(function(){
  // Hides or make fields readonly on ready
   set_fields_on_ready();
 
+  // Calls the unset_voucher_office_session controller method that contains code to unset the voucher_office session on document ready
+  $.get('<?=base_url();?>voucher/unset_voucher_office_session');
+
 });
 
 function pre_record_post(){
@@ -106,7 +109,7 @@ $(document).on('change',"#fk_office_id",function(){
         alert('Choose a valid office name');
       }
 
-      remove_all_offices_except_selected(offices);
+      remove_all_options_except_selected(offices);
       
       
     },
@@ -118,16 +121,16 @@ $(document).on('change',"#fk_office_id",function(){
  
 });
 
-function remove_all_offices_except_selected(offices){
+function remove_all_options_except_selected(items){
   
-  let office_list = offices.children();
+  let listing = items.children();
 
-  let selected  = offices.children("option:selected").val();
+  let selected  = items.children("option:selected").val();
 
-  office_list.each(function(i,el){
+  listing.each(function(i,el){
     if($(el).val() != selected){
-        // Works but has been commented
-        //$(el).remove();
+        // Remove none selected options
+        $(el).remove();
     }
   });
 
@@ -137,6 +140,7 @@ function remove_all_offices_except_selected(offices){
 $("#fk_voucher_type_id").change(function(){
 
   let vtype = $(this).val();
+  let vtypes = $(this);
 
   toggle_insert_row_button($(this));
 
@@ -148,6 +152,8 @@ $("#fk_voucher_type_id").change(function(){
 
   // Show bank select when office is selected
   toggle_bank_field(vtype);
+
+  remove_all_options_except_selected(vtypes);
   
     
 });
@@ -256,11 +262,17 @@ function append_account_column(vtype){
 function toggle_approved_request_details(vtype){
   // 2 = Payment by Cash and 3 Payment by Bank
   if(vtype == 2 || vtype == 3) {
+    load_request_details();
+  }else{
+    //$("#approved_request_detail").addClass('hidden');
+  }
 
-   // $("#approved_request_detail").removeClass('hidden');
+   
+}
 
+function load_request_details(){
       var url = "<?=base_url();?>voucher/reload_approved_request_details";  
-
+      //$("#approved_request_detail").removeClass('hidden');
       $.ajax({
         url:url,
         type:"POST",
@@ -275,11 +287,8 @@ function toggle_approved_request_details(vtype){
         }
 
       });
-    }
-    // else{
-    //   $("#approved_request_detail").addClass('hidden');
-    // }
-}
+  }
+
 
 // Show cheque number field when a bank is selected
 $("#fk_office_bank_id").change(function(){
