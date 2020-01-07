@@ -327,7 +327,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function get_office_project_allocation_for_voucher_details(){
     $office_project_allocation = $this->db->select(array('project_allocation_id','project_allocation_name'))->get_where('project_allocation',
-    array('fk_office_id'=>$this->session->voucher_office))->result_array();
+    array('fk_office_id'=>$this->session->voucher_office,'project_allocation_extended_end_date >= ' => date('Y-m-d')))->result_array();
 
     return $office_project_allocation;
   }
