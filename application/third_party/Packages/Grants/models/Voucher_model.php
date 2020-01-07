@@ -332,6 +332,9 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $office_project_allocation;
   }
 
+  /**
+   * Options for voucher details tables select fields
+   */
   function lookup_values(){
     return array(
       'office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices,
