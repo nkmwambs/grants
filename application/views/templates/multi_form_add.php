@@ -54,7 +54,7 @@
                  <div class="form-group">
                    <div class="col-xs-12" style="text-align:center;">
                        <div class="btn btn-default insert_row"><?=get_phrase('insert_'.$this->controller.'_detail_row');?></div>
-                       <div class="btn btn-default"><?=get_phrase('reset');?></div>
+                       <div class="btn btn-default reset"><?=get_phrase('reset');?></div>
                        <button class="btn btn-default save back"><?=get_phrase('save');?></button>
                        <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
                    </div>
@@ -111,7 +111,7 @@
                 <div class="form-group">
                   <div class="col-xs-12"  style="text-align:center;">
                     <div class="btn btn-default insert_row"><?=get_phrase('insert_'.$this->controller.'_detail_row');?></div>
-                    <div class="btn btn-default"><?=get_phrase('reset');?></div>
+                    <div class="btn btn-default reset"><?=get_phrase('reset');?></div>
                     <button class="btn btn-default save back"><?=get_phrase('save');?></button>
                     <button class="btn btn-default save_new"><?=get_phrase('save_and_new');?></button>
                   </div>
@@ -252,4 +252,7 @@
     ev.preventDefault();
   });
 
+$(".reset").on('click',function(){
+  location.reload();
+});
   </script>

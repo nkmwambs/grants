@@ -300,10 +300,6 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
     if($office_banks_obj->num_rows() > 0){
       $office_banks = $office_banks_obj->result_array();
-      //$ids = array_column($banks,'office_bank_id');
-      //$names = array_column($banks,'office_bank_name');
-
-      //$office_banks = array_combine($ids,$names);
     }
 
     return $office_banks;
@@ -324,12 +320,22 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     
     $this->db->where(array('request.fk_status_id'=>20,'office_id'=>$this->session->voucher_office));
 
+    //Unset voucher office session
+    //$this->session->unset_userdata('voucher_office');
     return $this->db->get('request_detail')->result_array();
+  }
+
+  function get_office_project_allocation_for_voucher_details(){
+    $office_project_allocation = $this->db->select(array('project_allocation_id','project_allocation_name'))->get_where('project_allocation',
+    array('fk_office_id'=>$this->session->voucher_office))->result_array();
+
+    return $office_project_allocation;
   }
 
   function lookup_values(){
     return array(
-      'office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices
+      'office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices,
+      'project_allocation'=>$this->get_office_project_allocation_for_voucher_details()
     );
   }
   

@@ -34,7 +34,9 @@ class Voucher extends MY_Controller
 
   function reload_approved_request_details(){
     echo $this->voucher_library->approved_unvouched_request_details();
-    // Remove voucher_office session. Not required after this query runs
+  }
+
+  function unset_voucher_office_session(){
     $this->session->unset_userdata('voucher_office');
   }
 
@@ -53,7 +55,7 @@ class Voucher extends MY_Controller
     $voucher_number = $this->voucher_library->get_voucher_number($office_id);
     $voucher_date = $this->voucher_library->get_voucher_date($office_id);
 
-    $data = ['voucher_number'=>$voucher_number,'voucher_date'=>$voucher_date,'office_id'=>$this->session->voucher_office];
+    $data = ['voucher_number'=>$voucher_number,'voucher_date'=>$voucher_date];
     echo json_encode($data);
   }
 
@@ -90,4 +92,5 @@ class Voucher extends MY_Controller
 
   }
 
+  
 }
