@@ -234,15 +234,16 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     }
 
     // Max used cheque number for the bank
-    $max_used_cheque_obj = $this->db->select_max('voucher_cheque_number')->get_where('voucher',
+    $cheque_obj = $this->db->get_where('voucher',
     array('fk_office_bank_id'=>$office_bank));
 
-    if($max_used_cheque_obj->num_rows() > 0){
+    if($cheque_obj->num_rows() > 0){
+      $max_used_cheque_obj = $this->db->select_max('voucher_cheque_number')->get_where('voucher',
+        array('fk_office_bank_id'=>$office_bank));
       $valid_next_cheque_number = $max_used_cheque_obj->row()->voucher_cheque_number + 1;
     }
 
     return $valid_next_cheque_number != $cheque_number ? false : true;
-
   }
 
   private function is_cheque_leaf_in_active_cheque_book($office_bank,$cheque_number){
@@ -274,7 +275,6 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
 
    $office_bank = $data['office_bank'];
    $cheque_number  = $data['cheque_number'];
-
    $is_valid_cheque = true;
 
    if(
@@ -287,6 +287,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
       ){
       $is_valid_cheque = false;
    }
+
     return $is_valid_cheque;
   }
 

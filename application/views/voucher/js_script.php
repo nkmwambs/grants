@@ -283,7 +283,10 @@ function toggle_approved_request_details(vtype){
 
 // Show cheque number field when a bank is selected
 $("#fk_office_bank_id").change(function(){
-  //alert($(this).val());  
+  
+  // Clear the voucher_cheque_number if it has any value
+  $("#voucher_cheque_number").val("");
+
   if($(this).val() > 0){
     $("#voucher_cheque_number").closest('.form-group').removeClass('hidden');
   }else{
