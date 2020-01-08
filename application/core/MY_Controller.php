@@ -205,7 +205,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    * @param String $id
    *@return Void
    */
-  private function crud_views(String $id=''):Void{
+  function crud_views(String $id=''):Void{
 
     $result = $this->result($id);
 

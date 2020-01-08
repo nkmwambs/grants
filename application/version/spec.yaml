@@ -101,5 +101,9 @@ tables:
       - user
       - context
 
+  financial_report:
+    lookup_tables:
+      - office    
+
 
   
