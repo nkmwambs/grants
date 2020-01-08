@@ -2,6 +2,7 @@
   extract($result);
   //print_r($detail_false_keys);
   //echo count((array)$this->voucher_model->get_office_last_voucher(9));
+  //print_r($this->voucher_model->get_approveable_item_last_status(3));
 ?>
 
 <div class="row">

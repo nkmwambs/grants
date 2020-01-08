@@ -1,6 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r($this->voucher_model->get_office_last_voucher(9));
 // print_r($this->user_model->update_permitted_permission_labels_based_on_depth('Request','read'));
 // echo "--------------------------------";
 // print_r($this->session->hierarchy_offices);
