@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Voucher_type extends MY_Controller
+class Voucher_type_effect extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('voucher_type_library');
+    $this->load->library('voucher_type_effect_library');
   }
 
   function index(){}

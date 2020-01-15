@@ -1063,19 +1063,19 @@ function edit_visible_columns(){
   return $edit_visible_columns;
 }
 
-function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
-  $options = array();
-    $result = $this->CI->user_model->get_users_with_center_group_hierarchy_name($center_group_hierarchy_name);
+// function get_users_with_center_group_hierarchy_name($center_group_hierarchy_name){
+//   $options = array();
+//     $result = $this->CI->user_model->get_users_with_center_group_hierarchy_name($center_group_hierarchy_name);
 
-    if(count($result)>0){
-      $user_ids = array_column($result,'user_id');
-      $user_names = array_column($result,'user_name');
+//     if(is_array($result) && count($result)>0){
+//       $user_ids = array_column($result,'user_id');
+//       $user_names = array_column($result,'user_name');
 
-      $options =  array_combine($user_ids,$user_names);
-    }
+//       $options =  array_combine($user_ids,$user_names);
+//     }
     
-    return $options;
-}
+//     return $options;
+// }
 
 /**
  * update_query_result_for_fields_changed_to_select_type
@@ -1904,5 +1904,12 @@ function feature_model_list_table_visible_columns() {
       
       ];
     }
+
+    // /**
+    //  * @todo - need to be completed
+    //  */
+    // function get_office_data(){
+    //   return (object)['office_id'=>9,'office_name'=>'GRC Shingila'];
+    // }
 
 }

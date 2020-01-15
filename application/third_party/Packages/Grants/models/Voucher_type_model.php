@@ -23,7 +23,7 @@ class Voucher_type_model extends MY_Model implements CrudModelInterface, TableRe
   function index(){}
 
   public function lookup_tables(){
-    return array('voucher');
+    return array('voucher_type_account','voucher_type_effect');
   }
 
   public function detail_tables(){}

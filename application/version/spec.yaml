@@ -103,7 +103,11 @@ tables:
 
   financial_report:
     lookup_tables:
-      - office    
+      - office   
+
+  voucher_type_account:     
+
+  voucher_type_effect:
 
 
   

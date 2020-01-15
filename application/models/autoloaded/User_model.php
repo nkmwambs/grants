@@ -123,6 +123,10 @@ class User_model extends MY_Model
 
     return $post_array;
   }
+
+  // function get_users_with_center_group_hierarchy_name(){
+
+  // }
  
   /**
    * action_after_insert

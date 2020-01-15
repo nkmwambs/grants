@@ -103,20 +103,22 @@ class Financial_report extends MY_Controller
 
   function result($id = ''){
 
-    $additional_information = $this->financial_report_information($this->id);
-    
-    return [
-      'additional_information'=>$additional_information,
-      'fund_balance_report'=>$this->fund_balance_report($additional_information['office_id'],$additional_information['financial_report_month']),
-      'proof_of_cash'=>$this->proof_of_cash(),
-      'financial_ratios'=>$this->financial_ratios(),
-      'bank_reconciliation'=>$this->bank_reconciliation(),
-      'outstanding_cheques'=>$this->oustanding_cheques(),
-      'clear_outstanding_cheques'=>$this->cleared_oustanding_cheques(),
-      'deposit_in_transit'=>$this->deposit_in_transit(),
-      'cleared_deposit_in_transit'=>$this->cleared_deposit_in_transit(),
-      'expense_report'=>$this->expense_report()
-    ];
+    if($this->action == 'view'){
+      $additional_information = $this->financial_report_information($this->id);
+      
+      return [
+        'additional_information'=>$additional_information,
+        'fund_balance_report'=>$this->fund_balance_report($additional_information['office_id'],$additional_information['financial_report_month']),
+        'proof_of_cash'=>$this->proof_of_cash(),
+        'financial_ratios'=>$this->financial_ratios(),
+        'bank_reconciliation'=>$this->bank_reconciliation(),
+        'outstanding_cheques'=>$this->oustanding_cheques(),
+        'clear_outstanding_cheques'=>$this->cleared_oustanding_cheques(),
+        'deposit_in_transit'=>$this->deposit_in_transit(),
+        'cleared_deposit_in_transit'=>$this->cleared_deposit_in_transit(),
+        'expense_report'=>$this->expense_report()
+      ];
+    }
   }
 
   function view(){

@@ -59,12 +59,12 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     $lookup_values = [];
 
     if($table == 'office'){
-      $this->db->where_in('office_id',$this->session->hierarchy_offices);
+      $this->db->where_in('office_id',array_keys($this->session->hierarchy_offices));
       $lookup_values['office'] = $this->db->get('office')->result_array();  
     }
 
     if($table = 'project_allocation'){
-      $this->db->where_in('fk_office_id',$this->session->hierarchy_offices);
+      $this->db->where_in('fk_office_id',array_keys($this->session->hierarchy_offices));
       $lookup_values['project_allocation'] = $this->db->get('project_allocation')->result_array(); 
     }
 

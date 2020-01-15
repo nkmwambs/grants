@@ -33,7 +33,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   }
   public function detail_tables(){
     $context_definition_name = $this->context_definition_name_by_office_id(hash_id($this->id,'decode'));
-    return array('context_'.strtolower($context_definition_name),'budget','reconciliation','office_bank','project_allocation','request');
+    return array('context_'.strtolower($context_definition_name),'budget','financial_report','reconciliation','office_bank','project_allocation','request');
   }
 
   public function master_table_visible_columns(){

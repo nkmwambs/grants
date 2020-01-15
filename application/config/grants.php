@@ -11,4 +11,5 @@
 
 	//If true cheque numbers can be skipped as long as are in the active cheque book
 	$config['allow_skipping_of_cheque_leaves'] = false; 
+	$config['use_voucher_type_abbreviation'] = true; 
  

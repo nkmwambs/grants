@@ -23,11 +23,11 @@ class Context_global_user_library extends Grants
 
   function index(){}
 
-  function change_field_type(){
-    $change_field_type['user_name']['field_type'] = 'select';
-    $change_field_type['user_name']['options'] = $this->CI->grants->get_users_with_center_group_hierarchy_name('global');
+  // function change_field_type(){
+  //   // $change_field_type['user_name']['field_type'] = 'select';
+  //   // $change_field_type['user_name']['options'] = $this->CI->grants->get_users_with_center_group_hierarchy_name('global');
 
-    return $change_field_type;
-  }
+  //   // return $change_field_type;
+  // }
 
 } 
