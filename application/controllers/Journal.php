@@ -38,20 +38,33 @@ class Journal extends MY_Controller
     return $this->journal_library->get_office_data_from_journal();
   }
 
+  function journal_navigation($office_id, $transacting_month){
+    return $this->journal_library->journal_navigation($office_id, $transacting_month);
+  }
+
+  function financial_accounts(){
+    return $this->journal_library->financial_accounts();
+  }
+
+
   function result($id = ''){
     if($this->action == 'view'){
     
       $office_id = $this->get_office_data_from_journal()->office_id;
+      $transacting_month = $this->get_office_data_from_journal()->journal_month;
 
     $result = [
-      'transacting_month'=> $this->voucher_model->get_office_transacting_month($office_id),
+      'transacting_month'=> $transacting_month,
       'office_name'=> $this->get_office_data_from_journal()->office_name,
+      'navigation'=>$this->journal_navigation($office_id, $transacting_month),
+      'accounts'=>$this->financial_accounts(),
       'month_opening_balance'=>['bank'=>$this->month_opening_bank_balance($office_id),'cash'=>$this->month_opening_cash_balance($office_id)],
       'vouchers'=>$this->journal_records($office_id)
-  
      ];
 
      return $result;
+    }else{
+      return parent::result($id = '');
     }
   }
 

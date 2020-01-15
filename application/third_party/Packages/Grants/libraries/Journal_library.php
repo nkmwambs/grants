@@ -37,4 +37,57 @@ class Journal_library extends Grants
   function get_office_data_from_journal(){
     return $this->CI->journal_model->get_office_data_from_journal();
   }  
+
+  function journal_navigation($office_id, $transacting_month){
+    return $this->CI->journal_model->journal_navigation($office_id, $transacting_month);
+  }
+
+  function financial_accounts(){
+    return $this->CI->journal_model->financial_accounts();
+  }
+
+  private function empty_journal_cells($account_type = 'income'){
+    
+    $spread_cells = '';
+
+    $financial_accounts = $this->CI->journal_model->financial_accounts();
+    
+    for($i=0;$i<count($financial_accounts[$account_type]);$i++){
+      $spread_cells .= "<td class='align-right'>0.00</td>";
+    }
+      
+    return $spread_cells; 
+  }
+
+  function journal_spread($spread,$account_type = 'income'){
+
+    $financial_accounts = $this->CI->journal_model->financial_accounts();
+    
+    $spread_cells = "";
+
+    $accounts = $account_type == 'income'?$financial_accounts['income']:$financial_accounts['expense'];
+
+    // Fill up empty cells in spread when the account type is an expense type
+    if($account_type == 'expense' || $account_type == 'contra') echo $this->empty_journal_cells('income');
+      
+      foreach($accounts as $account_id => $account_code){
+        $transacted_amount = 0;
+        foreach($spread as $spread_transaction){
+            if(in_array($account_id,$spread_transaction)){
+                $transacted_amount += $spread_transaction['transacted_amount'];
+            }
+        }
+        if($account_type != 'contra'){
+          $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
+        }
+        
+    }
+
+    // Fill up empty cells in spread when the account type is an income type
+    if($account_type == 'income' || $account_type == 'contra') echo $this->empty_journal_cells('expense');
+    
+
+    return $spread_cells;
+  }
+
 }

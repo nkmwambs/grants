@@ -4,44 +4,59 @@
 
 extract($result);
 
+$sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
+
 ?>
 
 <style>
     .align-right{
         text-align:right;
     }
+
 </style>
 
 <div class='row'>
-    <div class='col-xs-12'>
+    <div class='col-xs-12' style='overflow-x: auto'>
         
-        <table class='table table-bordered'>
+        <table class='table table-bordered' style='white-space:nowrap;'>
             <thead>
                 <tr>
-                    <th><a class='pull-left' href="#"><i class='fa fa-angle-left' style='font-size:20pt;'></i></a></th>
-                    <th colspan="10" style='text-align:center;'>
+                    <th>
+                        <?php if($navigation['previous']){?>
+                            <a class='pull-left' href="<?=base_url();?>journal/view/<?=hash_id($navigation['previous']);?>" title='Previous Month'><i class='fa fa-minus-circle' style='font-size:20pt;'></i></a>
+                        <?php }?>    
+                    </th>
+                    <th colspan="<?=$sum_of_accounts + 11;?>" style='text-align:center;'>
                         <?=$office_name;?></br>
                         Cash Journal <br>
                         <?=date('F Y',strtotime($transacting_month));?>    
 
                     </th>
-                    <th><a class='pull-right' href="#"><i class='fa fa-angle-right' style='font-size:20pt;'></i></a></th>
+                    <th>
+                        <?php if($navigation['next']){?>
+                            <a class='pull-right' href="<?=base_url();?>journal/view/<?=hash_id($navigation['next']);?>" title='Next Month'><i class='fa fa-plus-circle' style='font-size:20pt;'></i></a>
+                        <?php }?>
+                    </th>
                 </tr>
                 <tr>
-                    <th colspan='6'></th>
+                    <th colspan='7'></th>
                     <th colspan='3' style='text-align:center;'>Bank</th>
                     <th colspan='3' style='text-align:center;'>Cash</th>
+                    <th colspan='<?=$sum_of_accounts;?>'></th>
                 </tr>
                 <tr>
-                    <th colspan='6'>Balance b/f</th>
+                    <th colspan='7'>Balance b/f</th>
                     <th colspan='3'><?=number_format($month_opening_balance['bank'],2);?></th>
                     <th colspan='3'><?=number_format($month_opening_balance['cash'],2);?></th>
+                    <th colspan='<?=count($accounts['income']);?>'>Income</th>
+                    <th colspan='<?=count($accounts['expense']);?>'>Expense</th>
                 </tr>
                 <tr>
                     <th>Action</th>
                     <th>Date</th>
                     <th>Voucher Type</th>
                     <th>Voucher Number</th>
+                    <th>Payee</th>
                     <th>Description</th>
                     <th>Cheque Number</th>
                     <th>Bank Income</th>
@@ -50,6 +65,15 @@ extract($result);
                     <th>Cash Income</th>
                     <th>Cash Expense</th>
                     <th>Cash Balance</th>
+                    
+                    <?php foreach($accounts['income'] as $income_account_code){ ?>
+                        <th><?=$income_account_code;?></th>
+                    <?php }?>
+
+                    <?php foreach($accounts['expense'] as $expense_account_code){?>   
+                        <th><?=$expense_account_code;?></th>
+                    <?php }?>  
+                    
                 </tr>
             </thead>
 
@@ -79,7 +103,19 @@ extract($result);
                                 <div class='btn btn-default'><?=$voucher_number;?></div>
                             </a>    
                         </td>
-                        <td><?=$description;?></td>
+
+                        <td 
+                            title='<?php if(strlen($payee)>50) echo $description;?>'
+                        >
+                            <?=strlen($payee)>50?substr($payee,0,50).'...':$payee;?>
+                        </td>
+                        
+                        <td 
+                            title='<?php if(strlen($description)>50) echo $description;?>'
+                        >
+                            <?=strlen($description)>50?substr($description,0,50).'...':$description;?>
+                        </td>
+
                         <td class='align-right'><?=$cheque_number != 0?$cheque_number:'';?></td>
                         
                         <?php 
@@ -104,13 +140,18 @@ extract($result);
                         <td class='align-right'><?=number_format($petty_cash_income,2);?></td>
                         <td class='align-right'><?=number_format($petty_cash_expense,2);?></td>
                         <td class='align-right'><?=number_format($running_petty_cash_balance,2);?></td>
+
+                        <?php 
+                            echo $this->journal_library->journal_spread($spread,$voucher_type_transaction_effect);
+                        ?>
+
                      </tr>   
                 <?php }?>
                
             </tbody>
             <tfoot>
                   <tr>
-                    <td colspan='6'>Total and Balance b/d</td>
+                    <td colspan='7'>Total and Balance b/d</td>
 
                     <td class='align-right'><?=number_format($sum_bank_income,2);?></td>
                     <td class='align-right'><?=number_format($sum_bank_expense,2);?></td>
@@ -119,6 +160,10 @@ extract($result);
                     <td class='align-right'><?=number_format($sum_petty_cash_income,2);?></td>
                     <td class='align-right'><?=number_format($sum_petty_cash_expense,2);?></td>
                     <td class='align-right'><?=number_format($running_petty_cash_balance,2);?></td>
+
+                    <?php for($i=0;$i<$sum_of_accounts;$i++){?>
+                        <td>0</td> 
+                    <?php }?> 
 
                   </tr>  
             </tfoot>
@@ -129,7 +174,7 @@ extract($result);
 <script>
 $('.table').DataTable({
         dom: 'Bfrtip',
-        fixedHeader: true,
+        //fixedHeader: true,
         stateSave: true,
         bSort:false,
         buttons: [

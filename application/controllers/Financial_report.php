@@ -118,6 +118,8 @@ class Financial_report extends MY_Controller
         'cleared_deposit_in_transit'=>$this->cleared_deposit_in_transit(),
         'expense_report'=>$this->expense_report()
       ];
+    }else{
+      return parent::result($id = '');
     }
   }
 
