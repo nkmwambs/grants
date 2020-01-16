@@ -261,6 +261,7 @@ function append_account_column(vtype){
       $('#overlay').css('display','block');
     },
     success:function(response){
+      //alert(response);
       $('#overlay').css('display','none');
       if(add_column){
           
@@ -271,6 +272,15 @@ function append_account_column(vtype){
           if(response == 'income' ) {
             row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
           } 
+
+          if(response == 'bank_contra' ) {
+            row.append('<th class="th_data dynamic_column" id="th_bank_contra_account_name">Bank Contra Account Name</th>');
+          } 
+
+          if(response == 'cash_contra' ) {
+            row.append('<th class="th_data dynamic_column" id="th_cash_contra_account_name">Cash Contra Account Name</th>');
+          } 
+
         }
     },
     error:function(error){

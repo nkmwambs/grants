@@ -102,7 +102,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                             <a href="#" class="action" title="Clear"><i class='fa fa-eraser'></i></a>
                         </td>
                         <td><?=date('jS M Y',strtotime($date));?></td>
-                        <td><span class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>
+                        <td><span title="<?=$voucher_type_name;?>" class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>
                         <td>
                             <a href="<?=base_url();?>voucher/view/<?=hash_id($voucher_id);?>" target="__blank">
                                 <div class='btn btn-default'><?=$voucher_number;?></div>
@@ -124,10 +124,11 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                         <td class='align-right'><?=$cheque_number != 0?$cheque_number:'';?></td>
                         
                         <?php 
-                            $bank_income = ($voucher_type_cash_account == 'bank' && ($voucher_type_transaction_effect == 'income' || $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
-                            $bank_expense = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
-                            $petty_cash_income = ($voucher_type_cash_account == 'cash' && ($voucher_type_transaction_effect == 'income' || $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
-                            $petty_cash_expense = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                            $voucher_amount = array_sum(array_column($spread,'transacted_amount'));
+                            $bank_income = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
+                            $bank_expense = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'bank_contra'))?$voucher_amount:0;
+                            $petty_cash_income = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'bank_contra'))?$voucher_amount:0;
+                            $petty_cash_expense = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
 
                             $sum_bank_income += $bank_income;
                             $sum_bank_expense += $bank_expense;
@@ -147,7 +148,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                         <td class='align-right'><?=number_format($running_petty_cash_balance,2);?></td>
 
                         <?php 
-                            echo $this->journal_library->journal_spread($spread,$voucher_type_transaction_effect);
+                            echo $this->journal_library->journal_spread($spread,$voucher_type_cash_account,$voucher_type_transaction_effect);
                         ?>
 
                      </tr>   

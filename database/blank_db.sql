@@ -338,7 +338,23 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (527,	'APAL-8940',	'Approval Ticket # APAL-8940',	37,	87,	1,	'2020-01-15',	'2020-01-15 15:27:46',	1),
 (528,	'APAL-78134',	'Approval Ticket # APAL-78134',	37,	87,	1,	'2020-01-15',	'2020-01-15 15:28:22',	1),
 (529,	'APAL-68883',	'Approval Ticket # APAL-68883',	37,	87,	1,	'2020-01-15',	'2020-01-15 15:28:54',	1),
-(530,	'APAL-6081',	'Approval Ticket # APAL-6081',	37,	87,	1,	'2020-01-15',	'2020-01-15 15:29:43',	1);
+(530,	'APAL-6081',	'Approval Ticket # APAL-6081',	37,	87,	1,	'2020-01-15',	'2020-01-15 15:29:43',	1),
+(531,	'APAL-35435',	'Approval Ticket # APAL-35435',	71,	87,	1,	'2020-01-15',	'2020-01-15 17:54:40',	1),
+(532,	'APAL-50257',	'Approval Ticket # APAL-50257',	2,	87,	1,	'2020-01-16',	'2020-01-16 11:06:17',	1),
+(533,	'APAL-57906',	'Approval Ticket # APAL-57906',	74,	87,	1,	'2020-01-16',	'2020-01-16 11:15:15',	1),
+(534,	'APAL-28616',	'Approval Ticket # APAL-28616',	74,	87,	1,	'2020-01-16',	'2020-01-16 11:15:37',	1),
+(535,	'APAL-13866',	'Approval Ticket # APAL-13866',	72,	87,	1,	'2020-01-16',	'2020-01-16 11:31:42',	1),
+(537,	'APAL-5306',	'Approval Ticket # APAL-5306',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:01:57',	1),
+(538,	'APAL-14183',	'Approval Ticket # APAL-14183',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:02:46',	1),
+(539,	'APAL-54691',	'Approval Ticket # APAL-54691',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:03:29',	1),
+(540,	'APAL-73549',	'Approval Ticket # APAL-73549',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:04:14',	1),
+(541,	'APAL-40607',	'Approval Ticket # APAL-40607',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:05:05',	1),
+(542,	'APAL-16117',	'Approval Ticket # APAL-16117',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:05:53',	1),
+(543,	'APAL-17354',	'Approval Ticket # APAL-17354',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:06:37',	1),
+(545,	'APAL-85609',	'Approval Ticket # APAL-85609',	2,	87,	1,	'2020-01-16',	'2020-01-16 19:16:54',	1),
+(546,	'APAL-30805',	'Approval Ticket # APAL-30805',	73,	87,	1,	'2020-01-16',	'2020-01-16 20:25:42',	1),
+(547,	'APAL-3069',	'Approval Ticket # APAL-3069',	75,	87,	1,	'2020-01-16',	'2020-01-16 20:32:38',	1),
+(548,	'APAL-19321',	'Approval Ticket # APAL-19321',	76,	87,	1,	'2020-01-16',	'2020-01-16 21:40:38',	1);
 
 DROP TABLE IF EXISTS `approval_process_map`;
 CREATE TABLE `approval_process_map` (
@@ -449,7 +465,10 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (70,	'',	'financial_report',	0,	'2020-01-08',	1,	'2020-01-08 09:43:43',	1,	NULL,	NULL),
 (71,	'',	'journal',	0,	'2020-01-15',	1,	'2020-01-15 11:49:13',	1,	NULL,	NULL),
 (72,	'',	'voucher_type_account',	0,	'2020-01-15',	1,	'2020-01-15 15:13:29',	1,	NULL,	NULL),
-(73,	'',	'voucher_type_effect',	0,	'2020-01-15',	1,	'2020-01-15 15:14:14',	1,	NULL,	NULL);
+(73,	'',	'voucher_type_effect',	0,	'2020-01-15',	1,	'2020-01-15 15:14:14',	1,	NULL,	NULL),
+(74,	'',	'bank_contra_account',	0,	'2020-01-16',	1,	'2020-01-16 20:36:54',	1,	NULL,	NULL),
+(75,	'',	'cash_contra_account',	0,	'2020-01-16',	1,	'2020-01-16 20:31:30',	1,	NULL,	NULL),
+(76,	'',	'opening_cash_balance',	0,	'2020-01-16',	1,	'2020-01-16 21:37:40',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -497,6 +516,24 @@ INSERT INTO `bank_branch` (`bank_branch_id`, `bank_branch_track_number`, `fk_ban
 (3,	'BACH-7622',	1,	'Kilifi Branch',	1,	1,	'2020-01-04',	NULL,	1,	492,	89),
 (4,	'BACH-55439',	1,	'Malindi Branch',	1,	1,	'2020-01-04',	NULL,	1,	493,	89),
 (5,	'BACH-42899',	1,	'Mombasa Branch',	1,	1,	'2020-01-04',	NULL,	1,	495,	89);
+
+DROP TABLE IF EXISTS `bank_contra_account`;
+CREATE TABLE `bank_contra_account` (
+  `bank_contra_account_id` int(100) NOT NULL AUTO_INCREMENT,
+  `bank_contra_account_track_number` varchar(100) NOT NULL,
+  `bank_contra_account_name` varchar(100) NOT NULL,
+  `bank_contra_account_code` varchar(50) NOT NULL,
+  `bank_contra_account_created_date` date DEFAULT NULL,
+  `bank_contra_account_created_by` int(100) DEFAULT NULL,
+  `bank_contra_account_last_modified_by` int(100) DEFAULT NULL,
+  `bank_contra_account_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`bank_contra_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `bank_contra_account` (`bank_contra_account_id`, `bank_contra_account_track_number`, `bank_contra_account_name`, `bank_contra_account_code`, `bank_contra_account_created_date`, `bank_contra_account_created_by`, `bank_contra_account_last_modified_by`, `bank_contra_account_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'CONT-20988',	'Petty Cash Imprest',	'C001',	'2020-01-16',	1,	1,	NULL,	533,	0);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
@@ -577,6 +614,24 @@ CREATE TABLE `budget_item_detail` (
   CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
+
+DROP TABLE IF EXISTS `cash_contra_account`;
+CREATE TABLE `cash_contra_account` (
+  `cash_contra_account_id` int(100) NOT NULL AUTO_INCREMENT,
+  `cash_contra_account_track_number` varchar(100) NOT NULL,
+  `cash_contra_account_name` varchar(100) NOT NULL,
+  `cash_contra_account_code` varchar(50) NOT NULL,
+  `cash_contra_account_created_date` date DEFAULT NULL,
+  `cash_contra_account_created_by` int(100) DEFAULT NULL,
+  `cash_contra_account_last_modified_by` int(100) DEFAULT NULL,
+  `cash_contra_account_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`cash_contra_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `cash_contra_account` (`cash_contra_account_id`, `cash_contra_account_track_number`, `cash_contra_account_name`, `cash_contra_account_code`, `cash_contra_account_created_date`, `cash_contra_account_created_by`, `cash_contra_account_last_modified_by`, `cash_contra_account_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'CANT-70987',	'Petty Cash Rebanking',	'C002',	'2020-01-16',	1,	1,	NULL,	547,	0);
 
 DROP TABLE IF EXISTS `chatable_table`;
 CREATE TABLE `chatable_table` (
@@ -1258,8 +1313,8 @@ INSERT INTO `expense_account` (`expense_account_id`, `expense_account_track_numb
 (1,	'EAC-78285',	'Expense Account 1',	'Expense 1',	'E001',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (2,	'EAC-87922',	'Expense Account 2',	'Expense 2',	'E002',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (3,	'EAC-87020',	'Expense Account 3',	'Expense 3',	'E003',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(4,	'EXNT-30031',	'Expense 5',	'Expense 5',	'Exp5',	0,	1,	1,	2,	404,	64,	'2019-11-27',	NULL,	1,	1),
-(5,	'EXNT-77016',	'Salaries',	'Salaries',	'EXP89',	0,	1,	1,	3,	420,	64,	'2019-11-27',	NULL,	1,	1);
+(4,	'EXNT-30031',	'Expense 5',	'Expense 5',	'E004',	0,	1,	1,	2,	404,	64,	'2019-11-27',	NULL,	1,	1),
+(5,	'EXNT-77016',	'Salaries',	'Salaries',	'E005',	0,	1,	1,	3,	420,	64,	'2019-11-27',	NULL,	1,	1);
 
 DROP TABLE IF EXISTS `financial_report`;
 CREATE TABLE `financial_report` (
@@ -1363,9 +1418,9 @@ CREATE TABLE `income_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table contains the income accounts. ';
 
 INSERT INTO `income_account` (`income_account_id`, `income_account_track_number`, `income_account_name`, `income_account_description`, `income_account_code`, `income_account_is_active`, `income_account_is_budgeted`, `income_account_is_donor_funded`, `income_account_created_date`, `income_account_last_modified_date`, `income_account_created_by`, `income_account_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'INC-65627',	'Income Account 1',	'Project Cost',	'PC',	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(2,	'INNT-62852',	'Income Account 5',	'Income Account 5',	'ACC 5',	1,	1,	1,	'2019-11-27',	NULL,	1,	1,	403,	0),
-(3,	'INNT-84810',	'Income 6 - Program ',	'Income 6',	'PRG090',	1,	1,	1,	'2019-11-27',	NULL,	1,	1,	419,	0);
+(1,	'INC-65627',	'Income Account 1',	'Project Cost',	'R100',	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(2,	'INNT-62852',	'Income Account 5',	'Income Account 5',	'R200',	1,	1,	1,	'2019-11-27',	NULL,	1,	1,	403,	0),
+(3,	'INNT-84810',	'Income 6 - Program ',	'Income 6',	'R300',	1,	1,	1,	'2019-11-27',	NULL,	1,	1,	419,	0);
 
 DROP TABLE IF EXISTS `journal`;
 CREATE TABLE `journal` (
@@ -1384,7 +1439,8 @@ CREATE TABLE `journal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `journal` (`journal_id`, `journal_track_number`, `journal_name`, `journal_month`, `fk_office_id`, `journal_created_date`, `journal_created_by`, `journal_last_modified_by`, `journal_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'JOAL-20975',	'GRC Shingila November Journal',	'2019-12-01',	9,	'2020-01-15',	1,	1,	NULL,	517,	0);
+(1,	'JOAL-20975',	'GRC Shingila November Journal',	'2019-11-01',	9,	'2020-01-15',	1,	1,	NULL,	517,	90),
+(2,	'JOAL-34582',	'December Financial Rpeort for GRC Shingila',	'2019-12-01',	9,	'2020-01-15',	1,	1,	NULL,	531,	90);
 
 DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
@@ -1470,7 +1526,10 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (526,	'Financial_report',	'Financial_report',	1,	NULL,	'2020-01-08 09:43:05',	NULL,	NULL,	NULL,	NULL),
 (527,	'Voucher_type_account',	'Voucher_type_account',	1,	NULL,	'2020-01-15 15:13:14',	NULL,	NULL,	NULL,	NULL),
 (528,	'Voucher_type_effect',	'Voucher_type_effect',	1,	NULL,	'2020-01-15 15:13:14',	NULL,	NULL,	NULL,	NULL),
-(529,	'Voucher_type',	'Voucher_type',	1,	NULL,	'2020-01-15 15:17:27',	NULL,	NULL,	NULL,	NULL);
+(529,	'Voucher_type',	'Voucher_type',	1,	NULL,	'2020-01-15 15:17:27',	NULL,	NULL,	NULL,	NULL),
+(531,	'Bank_contra_account',	'Bank_contra_account',	1,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
+(532,	'Cash_contra_account',	'Cash_contra_account',	1,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
+(533,	'Opening_cash_balance',	'Opening_cash_balance',	1,	NULL,	'2020-01-16 21:37:28',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -1860,7 +1919,10 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (1325,	6,	526,	1,	49,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
 (1326,	1,	527,	1,	67,	0,	NULL,	'2020-01-15 15:13:14',	NULL,	NULL,	NULL,	NULL),
 (1327,	1,	528,	1,	68,	0,	NULL,	'2020-01-15 15:13:14',	NULL,	NULL,	NULL,	NULL),
-(1328,	1,	529,	1,	71,	0,	NULL,	'2020-01-15 15:17:27',	NULL,	NULL,	NULL,	NULL);
+(1328,	1,	529,	1,	71,	0,	NULL,	'2020-01-15 15:17:27',	NULL,	NULL,	NULL,	NULL),
+(1330,	1,	531,	1,	73,	0,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
+(1331,	1,	532,	1,	74,	0,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
+(1332,	1,	533,	1,	77,	0,	NULL,	'2020-01-16 21:37:28',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -1990,6 +2052,26 @@ INSERT INTO `office_bank` (`office_bank_id`, `office_bank_track_number`, `office
 (2,	'OFNK-55821',	'GRC Shingila Bank Account 1',	'11012364830',	9,	1,	5,	'2020-01-06',	1,	NULL,	1,	499,	88),
 (3,	'OFNK-30712',	'GRC Shingila Bank Account 2',	'32112123124',	9,	2,	4,	'2020-01-06',	1,	NULL,	1,	500,	88),
 (4,	'OFNK-80172',	'Mtondia Chess Bank',	'42353464564',	10,	2,	4,	'2020-01-06',	1,	NULL,	1,	510,	88);
+
+DROP TABLE IF EXISTS `opening_cash_balance`;
+CREATE TABLE `opening_cash_balance` (
+  `opening_cash_balance_id` int(100) NOT NULL AUTO_INCREMENT,
+  `opening_cash_balance_track_number` varchar(100) NOT NULL,
+  `opening_cash_balance_name` varchar(100) NOT NULL,
+  `fk_office_id` int(100) NOT NULL,
+  `opening_cash_balance_bank` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `opening_cash_balance_cash` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `opening_cash_balance_created_date` date DEFAULT NULL,
+  `opening_cash_balance_created_by` int(100) DEFAULT NULL,
+  `opening_cash_balance_last_modified_by` int(100) DEFAULT NULL,
+  `opening_cash_balance_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`opening_cash_balance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `opening_cash_balance` (`opening_cash_balance_id`, `opening_cash_balance_track_number`, `opening_cash_balance_name`, `fk_office_id`, `opening_cash_balance_bank`, `opening_cash_balance_cash`, `opening_cash_balance_created_date`, `opening_cash_balance_created_by`, `opening_cash_balance_last_modified_by`, `opening_cash_balance_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'OPCE-41048',	'GRC Bank Opening',	9,	845560.27,	18700.00,	'2020-01-16',	1,	1,	NULL,	548,	0);
 
 DROP TABLE IF EXISTS `page_view`;
 CREATE TABLE `page_view` (
@@ -2572,7 +2654,12 @@ INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_app
 (86,	'',	'New',	61,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
 (87,	'',	'New',	62,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
 (88,	'',	'New',	68,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(89,	'',	'New',	67,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
+(89,	'',	'New',	67,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(90,	'',	'New',	71,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(91,	'',	'New',	72,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(92,	'',	'New',	73,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(93,	'',	'New',	74,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(94,	'',	'New',	75,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -2712,6 +2799,8 @@ CREATE TABLE `voucher` (
   `fk_office_id` int(100) DEFAULT NULL,
   `voucher_date` date DEFAULT NULL,
   `fk_voucher_type_id` int(100) DEFAULT NULL,
+  `voucher_cleared` int(5) DEFAULT '0',
+  `voucher_cleared_month` date DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   `fk_office_bank_id` int(100) DEFAULT NULL,
@@ -2736,6 +2825,16 @@ CREATE TABLE `voucher` (
   CONSTRAINT `voucher_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
+INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `voucher_number`, `fk_office_id`, `voucher_date`, `fk_voucher_type_id`, `voucher_cleared`, `voucher_cleared_month`, `fk_approval_id`, `fk_status_id`, `fk_office_bank_id`, `voucher_cheque_number`, `voucher_transaction_cleared_date`, `voucher_transaction_cleared_month`, `voucher_vendor`, `voucher_description`, `voucher_allow_edit`, `voucher_created_by`, `voucher_created_date`, `voucher_last_modified_date`, `voucher_last_modified_by`) VALUES
+(1,	'VOER-1089',	'Voucher # VOER-1089',	191101,	9,	'2019-11-07',	2,	0,	NULL,	532,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 1',	'Test 1',	0,	1,	'2020-01-16',	'2020-01-16 11:06:17',	1),
+(2,	'VOER-53791',	'Voucher # VOER-53791',	191102,	9,	'2019-11-07',	3,	0,	NULL,	537,	10,	2,	1,	'0000-00-00',	'0000-00-00',	'Test 2',	'Test 2',	0,	1,	'2020-01-16',	'2020-01-16 18:01:57',	1),
+(3,	'VOER-5211',	'Voucher # VOER-5211',	191103,	9,	'2019-11-07',	4,	0,	NULL,	538,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 3',	'Test 3',	0,	1,	'2020-01-16',	'2020-01-16 18:02:46',	1),
+(4,	'VOER-54762',	'Voucher # VOER-54762',	191104,	9,	'2019-11-07',	9,	0,	NULL,	539,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 4',	'Test 4',	0,	1,	'2020-01-16',	'2020-01-16 18:03:29',	1),
+(5,	'VOER-8270',	'Voucher # VOER-8270',	191105,	9,	'2019-11-07',	5,	0,	NULL,	540,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 5',	'Test 5',	0,	1,	'2020-01-16',	'2020-01-16 18:04:14',	1),
+(6,	'VOER-69294',	'Voucher # VOER-69294',	191106,	9,	'2019-11-07',	6,	1,	'2019-11-01',	541,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 6',	'Test 6',	0,	1,	'2020-01-16',	'2020-01-16 18:05:05',	1),
+(7,	'VOER-89999',	'Voucher # VOER-89999',	191107,	9,	'2019-11-07',	7,	0,	NULL,	542,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 7',	'Test 7',	0,	1,	'2020-01-16',	'2020-01-16 18:05:53',	1),
+(8,	'VOER-1551',	'Voucher # VOER-1551',	191108,	9,	'2019-11-07',	8,	0,	NULL,	543,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 8',	'Test 8',	0,	1,	'2020-01-16',	'2020-01-16 18:06:37',	1),
+(9,	'VOER-9033',	'Voucher # VOER-9033',	191109,	9,	'2019-11-07',	2,	0,	NULL,	545,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 10',	'Test 10',	0,	1,	'2020-01-16',	'2020-01-16 19:16:54',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
@@ -2746,8 +2845,10 @@ CREATE TABLE `voucher_detail` (
   `voucher_detail_quantity` int(10) DEFAULT NULL,
   `voucher_detail_unit_cost` decimal(10,2) DEFAULT NULL,
   `voucher_detail_total_cost` decimal(10,2) DEFAULT NULL,
-  `fk_expense_account_id` int(100) DEFAULT NULL COMMENT 'Can be income_account_id or expense_account_id depending on the selected voucher type',
+  `fk_expense_account_id` int(100) NOT NULL DEFAULT '0' COMMENT 'Can be income_account_id or expense_account_id depending on the selected voucher type',
   `fk_income_account_id` int(100) NOT NULL DEFAULT '0',
+  `fk_bank_contra_account_id` int(100) NOT NULL DEFAULT '0',
+  `fk_cash_contra_account_id` int(100) NOT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   `fk_project_allocation_id` int(100) DEFAULT NULL,
@@ -2762,6 +2863,17 @@ CREATE TABLE `voucher_detail` (
   CONSTRAINT `voucher_detail_ibfk_3` FOREIGN KEY (`fk_voucher_id`) REFERENCES `voucher` (`voucher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`, `fk_voucher_id`, `voucher_detail_description`, `voucher_detail_quantity`, `voucher_detail_unit_cost`, `voucher_detail_total_cost`, `fk_expense_account_id`, `fk_income_account_id`, `fk_bank_contra_account_id`, `fk_cash_contra_account_id`, `fk_approval_id`, `fk_status_id`, `fk_project_allocation_id`, `voucher_detail_last_modified_date`, `voucher_detail_last_modified_by`, `voucher_detail_created_by`, `voucher_detail_created_date`) VALUES
+(1,	'VOIL-37322',	1,	'Test 11',	10,	4500.00,	45000.00,	1,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(3,	'VOIL-64285',	2,	'10',	5400,	5.00,	27000.00,	2,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(4,	'VOIL-71539',	3,	'Test 3',	1,	25000.00,	25000.00,	0,	0,	1,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(5,	'VOIL-69765',	4,	'Test 4',	1,	10000.00,	10000.00,	0,	0,	0,	1,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(6,	'VOIL-45509',	5,	'Test 5',	1,	150000.00,	150000.00,	0,	1,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(7,	'VOIL-21040',	6,	'Test 6',	1,	546.00,	546.00,	4,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(8,	'VOIL-30018',	7,	'Test 7',	1,	2400.00,	2400.00,	0,	3,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(9,	'VOIL-34090',	8,	'Test 8',	1,	8700.00,	8700.00,	0,	1,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(12,	'VOIL-71463',	9,	'Test 101',	10,	1500.00,	15000.00,	1,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
+(13,	'VOIL-9518',	9,	'Test 101',	15,	2000.00,	30000.00,	4,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16');
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -2770,8 +2882,8 @@ CREATE TABLE `voucher_type` (
   `voucher_type_name` varchar(45) DEFAULT NULL,
   `voucher_type_is_active` int(5) DEFAULT NULL,
   `voucher_type_abbrev` varchar(5) DEFAULT NULL,
-  `fk_voucher_type_account_id` int(100) DEFAULT NULL COMMENT 'Can either be bank or cash',
-  `fk_voucher_type_effect_id` int(100) DEFAULT NULL COMMENT 'Can be payment or revenue',
+  `fk_voucher_type_account_id` int(100) DEFAULT NULL COMMENT 'Can be bank, cash or contra',
+  `fk_voucher_type_effect_id` int(100) DEFAULT NULL COMMENT 'Can be income or expense',
   `voucher_type_created_by` int(100) DEFAULT NULL,
   `voucher_type_created_date` date DEFAULT NULL,
   `voucher_type_last_modified_by` int(100) DEFAULT NULL,
@@ -2786,21 +2898,21 @@ CREATE TABLE `voucher_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `voucher_type` (`voucher_type_id`, `voucher_type_track_number`, `voucher_type_name`, `voucher_type_is_active`, `voucher_type_abbrev`, `fk_voucher_type_account_id`, `fk_voucher_type_effect_id`, `voucher_type_created_by`, `voucher_type_created_date`, `voucher_type_last_modified_by`, `voucher_type_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(10,	'VOPE-73018',	'Payment by Cash',	1,	'PCE',	2,	2,	1,	'2020-01-15',	1,	NULL,	523,	62),
-(11,	'VOPE-52694',	'Bank payment',	1,	'CHQ',	1,	2,	1,	'2020-01-15',	1,	NULL,	524,	62),
-(12,	'VOPE-3307',	'Petty Cash Top Up',	1,	'CTP',	2,	3,	1,	'2020-01-15',	1,	NULL,	525,	62),
-(13,	'VOPE-56398',	'Bank Cash Received',	1,	'BCR',	1,	1,	1,	'2020-01-15',	1,	NULL,	526,	62),
-(14,	'VOPE-19114',	'Bank Charges',	1,	'BCHG',	1,	2,	1,	'2020-01-15',	1,	NULL,	527,	62),
-(15,	'VOPE-29303',	'Bank Interest Receiveable',	1,	'BIT',	1,	1,	1,	'2020-01-15',	1,	NULL,	528,	62),
-(16,	'VOPE-75339',	'Petty Cash Income',	1,	'PCR',	2,	1,	1,	'2020-01-15',	1,	NULL,	529,	62),
-(17,	'VOPE-9009',	'Petty Cash Rebanking',	1,	'PCRB',	1,	3,	1,	'2020-01-15',	1,	NULL,	530,	62);
+(2,	'VOPE-73018',	'Payment by Cash',	1,	'PCE',	2,	2,	1,	'2020-01-15',	1,	NULL,	523,	62),
+(3,	'VOPE-52694',	'Bank payment',	1,	'CHQ',	1,	2,	1,	'2020-01-15',	1,	NULL,	524,	62),
+(4,	'VOPE-3307',	'Petty Cash Top Up',	1,	'CTP',	2,	3,	1,	'2020-01-15',	1,	NULL,	525,	62),
+(5,	'VOPE-56398',	'Bank Cash Received',	1,	'BCR',	1,	1,	1,	'2020-01-15',	1,	NULL,	526,	62),
+(6,	'VOPE-19114',	'Bank Charges',	1,	'BCHG',	1,	2,	1,	'2020-01-15',	1,	NULL,	527,	62),
+(7,	'VOPE-29303',	'Bank Interest Receiveable',	1,	'BIT',	1,	1,	1,	'2020-01-15',	1,	NULL,	528,	62),
+(8,	'VOPE-75339',	'Petty Cash Income',	1,	'PCR',	2,	1,	1,	'2020-01-15',	1,	NULL,	529,	62),
+(9,	'VOPE-3307',	'Petty Cash Rebanking',	1,	'CTP',	1,	4,	1,	'2020-01-15',	1,	NULL,	525,	62);
 
 DROP TABLE IF EXISTS `voucher_type_account`;
 CREATE TABLE `voucher_type_account` (
   `voucher_type_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_account_track_number` varchar(100) NOT NULL,
   `voucher_type_account_name` varchar(100) NOT NULL,
-  `voucher_type_account_code` varchar(10) NOT NULL,
+  `voucher_type_account_code` varchar(10) NOT NULL COMMENT 'cash or bank',
   `voucher_type_account_created_date` date DEFAULT NULL,
   `voucher_type_account_created_by` int(100) DEFAULT NULL,
   `voucher_type_account_last_modified_by` int(100) DEFAULT NULL,
@@ -2819,7 +2931,7 @@ CREATE TABLE `voucher_type_effect` (
   `voucher_type_effect_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_effect_track_number` varchar(100) NOT NULL,
   `voucher_type_effect_name` varchar(100) NOT NULL,
-  `voucher_type_effect_code` varchar(10) NOT NULL,
+  `voucher_type_effect_code` varchar(50) NOT NULL,
   `voucher_type_effect_created_date` date DEFAULT NULL,
   `voucher_type_effect_created_by` int(100) DEFAULT NULL,
   `voucher_type_effect_last_modified_by` int(100) DEFAULT NULL,
@@ -2832,7 +2944,8 @@ CREATE TABLE `voucher_type_effect` (
 INSERT INTO `voucher_type_effect` (`voucher_type_effect_id`, `voucher_type_effect_track_number`, `voucher_type_effect_name`, `voucher_type_effect_code`, `voucher_type_effect_created_date`, `voucher_type_effect_created_by`, `voucher_type_effect_last_modified_by`, `voucher_type_effect_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'VOCT-80726',	'Income',	'income',	'2020-01-15',	1,	1,	NULL,	520,	0),
 (2,	'VOCT-37953',	'Expense',	'expense',	'2020-01-15',	1,	1,	NULL,	521,	0),
-(3,	'VOCT-51241',	'Contra Entry',	'contra',	'2020-01-15',	1,	1,	NULL,	522,	0);
+(3,	'VOCT-51241',	'Bank Contra',	'bank_contra',	'2020-01-15',	1,	1,	NULL,	522,	0),
+(4,	'VOCT-12589',	'Cash Contra',	'cash_contra',	'2020-01-16',	1,	1,	NULL,	546,	0);
 
 DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
@@ -2849,4 +2962,4 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-01-15 17:15:51
+-- 2020-01-16 23:10:22

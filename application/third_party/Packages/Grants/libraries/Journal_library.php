@@ -22,17 +22,17 @@ class Journal_library extends Grants
 
   }
 
-  function journal_records($office_id){
-    return $this->CI->journal_model->journal_records($office_id);
+  function journal_records($office_id,$transacting_month){
+    return $this->CI->journal_model->journal_records($office_id,$transacting_month);
   }
 
-  function month_opening_bank_balance($office_id){
-    return $this->CI->journal_model->month_opening_bank_balance($office_id);
+  function month_opening_cash_balance($office_id,$transacting_month){
+    return $this->CI->journal_model->month_opening_cash_balance($office_id,$transacting_month);
   }
 
-  function month_opening_cash_balance($office_id){
-    return $this->CI->journal_model->month_opening_cash_balance($office_id);
-  }
+  // function month_opening_cash_balance($office_id){
+  //   return $this->CI->journal_model->month_opening_cash_balance($office_id);
+  // }
 
   function get_office_data_from_journal(){
     return $this->CI->journal_model->get_office_data_from_journal();
@@ -59,16 +59,16 @@ class Journal_library extends Grants
     return $spread_cells; 
   }
 
-  function journal_spread($spread,$account_type = 'income'){
+  function journal_spread($spread,$account_type = 'bank',$transaction_effect = 'income'){
 
     $financial_accounts = $this->CI->journal_model->financial_accounts();
     
     $spread_cells = "";
 
-    $accounts = $account_type == 'income'?$financial_accounts['income']:$financial_accounts['expense'];
+    $accounts = $transaction_effect == 'income'?$financial_accounts['income']:$financial_accounts['expense'];
 
     // Fill up empty cells in spread when the account type is an expense type
-    if($account_type == 'expense' || $account_type == 'contra') echo $this->empty_journal_cells('income');
+    if($transaction_effect == 'expense' || strpos($transaction_effect,'contra')) echo $this->empty_journal_cells('income');
       
       foreach($accounts as $account_id => $account_code){
         $transacted_amount = 0;
@@ -77,14 +77,14 @@ class Journal_library extends Grants
                 $transacted_amount += $spread_transaction['transacted_amount'];
             }
         }
-        if($account_type != 'contra'){
+        if( !strpos($transaction_effect,'contra')){
           $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
         }
         
     }
 
     // Fill up empty cells in spread when the account type is an income type
-    if($account_type == 'income' || $account_type == 'contra') echo $this->empty_journal_cells('expense');
+    if($transaction_effect == 'income' || strpos($transaction_effect,'contra')) echo $this->empty_journal_cells('expense');
     
 
     return $spread_cells;

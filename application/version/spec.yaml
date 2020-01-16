@@ -109,5 +109,12 @@ tables:
 
   voucher_type_effect:
 
+  cash_contra_account:
+
+  bank_contra_account:
+
+  opening_cash_balance:
+    - office 
+
 
   

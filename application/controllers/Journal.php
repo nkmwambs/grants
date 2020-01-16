@@ -22,16 +22,16 @@ class Journal extends MY_Controller
 
   function index(){}
 
-  function month_opening_bank_balance($office_id){
-    return $this->journal_library->month_opening_bank_balance($office_id);
+  // function month_opening_bank_balance($office_id){
+  //   return $this->journal_library->month_opening_bank_balance($office_id);
+  // }
+
+  function month_opening_cash_balance($office_id,$transacting_month){
+    return $this->journal_library->month_opening_cash_balance($office_id,$transacting_month);
   }
 
-  function month_opening_cash_balance($office_id){
-    return $this->journal_library->month_opening_cash_balance($office_id);
-  }
-
-  function journal_records($office_id){
-      return $this->journal_library->journal_records($office_id);
+  function journal_records($office_id,$transacting_month){
+      return $this->journal_library->journal_records($office_id,$transacting_month);
   }
 
   function get_office_data_from_journal(){
@@ -58,8 +58,8 @@ class Journal extends MY_Controller
       'office_name'=> $this->get_office_data_from_journal()->office_name,
       'navigation'=>$this->journal_navigation($office_id, $transacting_month),
       'accounts'=>$this->financial_accounts(),
-      'month_opening_balance'=>['bank'=>$this->month_opening_bank_balance($office_id),'cash'=>$this->month_opening_cash_balance($office_id)],
-      'vouchers'=>$this->journal_records($office_id)
+      'month_opening_balance'=>$this->month_opening_cash_balance($office_id,$transacting_month),
+      'vouchers'=>$this->journal_records($office_id,$transacting_month)
      ];
 
      return $result;
