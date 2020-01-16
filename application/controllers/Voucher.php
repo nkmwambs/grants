@@ -17,6 +17,10 @@ class Voucher extends MY_Controller
 
   }
 
+  function get_voucher_type_effect($voucher_type_id){
+    echo $this->voucher_library->get_voucher_type_effect($voucher_type_id)->voucher_type_effect_code;
+  }
+
   function repopulate_office_banks(){
     $office_id = $this->input->post('office_id');
 

@@ -14,7 +14,7 @@
 
         ?>
 
-        <table class="table table-striped">
+        <table class="table table-striped" id='approved_request_table'>
             <thead>
                 <tr>    
                     <?php 

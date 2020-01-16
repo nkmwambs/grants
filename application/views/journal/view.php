@@ -1,5 +1,4 @@
 <?php
-//print_r($this->journal_model->get_office_data_from_journal());
 //print_r($result);
 
 extract($result);
@@ -14,6 +13,12 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
     }
 
 </style>
+
+<div class="row">
+  <div class="col-xs-12">
+      <?=Widget_base::load('comment');?>
+  </div>
+</div>
 
 <div class='row'>
     <div class='col-xs-12' style='overflow-x: auto'>

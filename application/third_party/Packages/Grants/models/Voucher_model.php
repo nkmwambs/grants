@@ -479,5 +479,12 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
       'project_allocation'=>$this->get_office_project_allocation_for_voucher_details()
     );
   }
+
+  function get_voucher_type_effect($voucher_type_id){
+      //return (object)['voucher_type_effect_id'=>1,'voucher_type_effect_name'=>'income'];
+      $this->db->select(array('voucher_type_effect_code','voucher_type_id','voucher_type_effect_id'));
+      $this->db->join('voucher_type','voucher_type.fk_voucher_type_effect_id=voucher_type_effect.voucher_type_effect_id');
+      return $this->db->get_where('voucher_type_effect',array('voucher_type_id'=>$voucher_type_id))->row();
+  }
   
 }

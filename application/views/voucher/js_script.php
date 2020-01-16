@@ -6,7 +6,12 @@ $(document).ready(function(){
   set_fields_on_ready();
 
   // Calls the unset_voucher_office_session controller method that contains code to unset the voucher_office session on document ready
+  //Not working as expected
   $.get('<?=base_url();?>voucher/unset_voucher_office_session');
+
+  // if($("#approved_request_table").length){
+  //     $(this).remove();
+  // } 
 
 });
 
@@ -245,28 +250,47 @@ function append_account_column(vtype){
         
       }
     });
+  
+  //alert(vtype);
+  // Get the fk_voucher_type_effect_id of the selected voucher
+  var url = '<?=base_url();?>voucher/get_voucher_type_effect/'+vtype;
 
-  // add column is true then add respective account type column e.g. expense account or income account columns
-  if(add_column){
-      
-      if(vtype == 2 || vtype == 3 || vtype == 6 ) {
-        row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
-      }
-    
-      if(vtype == 5 || vtype == 7 || vtype == 8 ) {
-        row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
-      } 
+  $.ajax({
+    url:url,
+    beforeSend:function(){
+      $('#overlay').css('display','block');
+    },
+    success:function(response){
+      $('#overlay').css('display','none');
+      if(add_column){
+          
+          if(response == 'expense') {
+            row.append('<th class="th_data dynamic_column" id="th_expense_account_name">Expense Account Name</th>');
+          }
+        
+          if(response == 'income' ) {
+            row.append('<th class="th_data dynamic_column" id="th_income_account_name">Income Account Name</th>');
+          } 
+        }
+    },
+    error:function(error){
+        alert('Error Occurred');
     }
+  });
+  
 }
 
 function toggle_approved_request_details(vtype){
-  // 2 = Payment by Cash and 3 Payment by Bank
-  if(vtype == 2 || vtype == 3) {
-    load_request_details();
-  }else{
-    //$("#approved_request_detail").addClass('hidden');
-  }
 
+  var url = '<?=base_url();?>voucher/get_voucher_type_effect/'+vtype;
+  $.get(url,function(response){
+      // 2 = Payment by Cash and 3 Payment by Bank
+      if(response == 'expense') {
+        load_request_details();
+      }else{
+        //$("#approved_request_detail").addClass('hidden');
+      }
+  });
    
 }
 

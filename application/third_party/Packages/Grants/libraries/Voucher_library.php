@@ -49,6 +49,10 @@ class Voucher_library extends Grants
     return $this->CI->load->view('voucher/unvouched_request_details',$data,true);
   }
 
+  function get_voucher_type_effect($voucher_type_id){
+      return $this->CI->voucher_model->get_voucher_type_effect($voucher_type_id);
+  }
+
   function page_position(){
 
     $widget['position_5'][] = $this->approved_unvouched_request_details();
