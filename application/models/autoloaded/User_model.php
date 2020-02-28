@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH."core/MY_Model.php";
+//require_once APPPATH."core/MY_Model.php";
 /*
  *	@author 	: Nicodemus Karisa
  *	@date		: 27th September, 2018
