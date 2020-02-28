@@ -35,7 +35,7 @@ public $auth;
              //if (extension_loaded('php_yaml')) {
                 // $this->grants->create_missing_system_files(); 
              //}
-            redirect(base_url().strtolower($this->session->default_launch_page).'/list');
+            redirect(base_url().ucfirst($this->session->default_launch_page).'/list');
         }
           
 
