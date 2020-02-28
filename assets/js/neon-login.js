@@ -69,9 +69,10 @@ var neonLogin = neonLogin || {};
 							email: $("input#email").val(),
 							password: $("input#password").val(),
 						},
-						error: function()
+						error: function(xhr, status, error)
 						{
-							alert("An error occoured!");
+							var err = eval("(" + xhr.responseText + ")");
+							alert(err.Message);
 						},
 						success: function(response)
 						{

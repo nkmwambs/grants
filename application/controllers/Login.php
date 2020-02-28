@@ -21,7 +21,7 @@ public $auth;
         parent::__construct();
         $this->load->database();
 
-        //$this->load->add_package_path(APPPATH.'third_party/Packages/Core');
+        $this->load->add_package_path(APPPATH.'third_party/Packages/Core');
         $this->load->model('user_model');
         $this->load->library('Language_library');
         $this->load->model('Language_model');
@@ -33,10 +33,9 @@ public $auth;
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
              //if (extension_loaded('php_yaml')) {
-                //$this->grants->create_missing_system_files(); 
+                // $this->grants->create_missing_system_files(); 
              //}
-            //redirect(base_url().strtolower($this->session->default_launch_page).'/list');
-            redirect(base_url().'dashboard/list');
+            redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
           
 
@@ -71,66 +70,67 @@ public $auth;
 		$this->session->set_userdata('user_id', $row->user_id);
 		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
         $this->session->set_userdata('role_id', $row->fk_role_id);
-        
-        // $this->session->set_userdata('role_permissions',
-        //     $this->user_model->get_user_permissions($row->fk_role_id));
-        // $this->session->set_userdata('system_admin',$row->user_is_system_admin); 
-        // $this->session->set_userdata('user_locale',$this->db->get_where('language',
-        //     array('language_id'=>$row->fk_language_id))->row()->language_code);   
+        $this->session->set_userdata('role_permissions',
+            $this->user_model->get_user_permissions($row->fk_role_id));
+        $this->session->set_userdata('system_admin',$row->user_is_system_admin); 
+        $this->session->set_userdata('user_locale',$this->db->get_where('language',
+            array('language_id'=>$row->fk_language_id))->row()->language_code);   
         
 
-        // /**
-        //  * These are Center Group Hierarchy related sessions
-        //  */
+        /**
+         * These are Center Group Hierarchy related sessions
+         */
         
-        //  // This session carries the ids of the departments related to the current user.
-        //  // A user may or may not have a department. A user can have multiple departments
+         // This session carries the ids of the departments related to the current user.
+         // A user may or may not have a department. A user can have multiple departments
         
-        // $this->session->set_userdata('departments',
-        //    $this->user_model->user_department($row->user_id));
+        $this->session->set_userdata('departments',
+           $this->user_model->user_department($row->user_id));
         
-        // // This session carries an array of context records related to a certain user 
-        // // i.e. if the user is of context country, it give an array of the records in the context_country
-        // // table related to this user with fields context_country_user_id, context_country_id, fk_designation_id   
+        // This session carries an array of context records related to a certain user 
+        // i.e. if the user is of context country, it give an array of the records in the context_country
+        // table related to this user with fields context_country_user_id, context_country_id, fk_designation_id   
         
-        // $this->session->set_userdata('context_associations',
-        //    $this->user_model->get_user_context_association($row->user_id));
+        $this->session->set_userdata('context_associations',
+           $this->user_model->get_user_context_association($row->user_id));
         
-        // // Retrieves the user's context definition record with 4 fields 
-        // // i.e. context_definition_id, context_definition_name, context_definition_level and context_definition_is_active
-        // // A user can only have 1 context definition relationship as defined in their user record fk_context_definition_id
+        // Retrieves the user's context definition record with 4 fields 
+        // i.e. context_definition_id, context_definition_name, context_definition_level and context_definition_is_active
+        // A user can only have 1 context definition relationship as defined in their user record fk_context_definition_id
 
-        // $this->session->set_userdata('context_definition',
-        // $this->user_model->get_user_context_definition($row->user_id));
+        $this->session->set_userdata('context_definition',
+        $this->user_model->get_user_context_definition($row->user_id));
 
-        // // This method returns office ids the user has an association with in his/her context 
-        // // A user can have multiple offices associated to him or her e.g. A user of context definition of a country
-        // // can be associated to multiple countries.  
+        // This method returns office ids the user has an association with in his/her context 
+        // A user can have multiple offices associated to him or her e.g. A user of context definition of a country
+        // can be associated to multiple countries.  
     
-        // $this->session->set_userdata('context_offices',
-        //    $this->user_model->get_user_context_offices($this->session->user_id));
+        $this->session->set_userdata('context_offices',
+           $this->user_model->get_user_context_offices($this->session->user_id));
         
-        // // This method crreates an array of all office ids in the entire context hierachy of the user. 
-        // // If the context of the user is country called Kenya and Uganda, this 
-        // // methods gives all offices related to kenya and Uganda from 
-        // // the cohort level (immediate next level to a country) to the center level  
+        // This method crreates an array of all office ids in the entire context hierachy of the user. 
+        // If the context of the user is country called Kenya and Uganda, this 
+        // methods gives all offices related to kenya and Uganda from 
+        // the cohort level (immediate next level to a country) to the center level  
         
-        // $this->session->set_userdata('hierarchy_offices',
-        //    $this->user_model->user_hierarchy_offices($row->user_id));
+        $this->session->set_userdata('hierarchy_offices',
+           $this->user_model->user_hierarchy_offices($row->user_id));
 
         
-        // $this->session->set_userdata('role_is_department_strict',
-        //    $this->user_model->check_role_department_strictness($this->session->role_id));
+        $this->session->set_userdata('role_is_department_strict',
+           $this->user_model->check_role_department_strictness($this->session->role_id));
 
               
         
-        // /**
-        //  * Breadcrumb and default page sessions
-        //  */  
-        // $this->session->set_userdata('breadcrumb_list',array());        
-        // $default_launch_page = $this->user_model->default_launch_page($row->user_id);
-        // $this->session->set_userdata('default_launch_page',$default_launch_page);
+        /**
+         * Breadcrumb and default page sessions
+         */  
+        $this->session->set_userdata('breadcrumb_list',array());        
+        $default_launch_page = $this->user_model->default_launch_page($row->user_id);
+        $this->session->set_userdata('default_launch_page',$default_launch_page);
 
+        // This is a testing session. By default set to empty array
+        //$this->session->set_userdata('testing',array());
         
 		return 'success';
 	}
