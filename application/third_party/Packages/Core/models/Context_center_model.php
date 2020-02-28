@@ -37,4 +37,8 @@ class Context_center_model extends MY_Model{
     }
 
     public function detail_multi_form_add_visible_columns(){}
+
+    // function lookup_values(){
+    //     return array('office'=>array(9=>'Abc'));
+    // }
 }

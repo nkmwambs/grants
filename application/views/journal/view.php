@@ -20,6 +20,14 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
   </div>
 </div>
 
+<div class="row">
+  <div class="col-xs-12">
+      <a href='<?=base_url();?>voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
+  </div>
+</div>
+
+<hr>
+
 <div class='row'>
     <div class='col-xs-12' style='overflow-x: auto'>
         

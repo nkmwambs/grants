@@ -153,8 +153,5 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   }
 
-  // function lookup_values(){
-  //   return $this->session->context_offices;
-  // }
   
 }

@@ -882,6 +882,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // $column has a _name suffix if is a foreign key in the table
         // This is converted from fk_xxxx_id where xxxx is the primary table name
         $lookup_table = strtolower(substr($column,0,-5));
+        //echo $lookup_table;
         return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value);
       }elseif(strrpos($column,'_is_') == true ){
         return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value);

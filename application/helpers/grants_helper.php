@@ -203,3 +203,13 @@ if ( ! function_exists('model_exists')){
         
     }
 }
+
+if ( ! function_exists('combine_name_with_ids')){
+    function combine_name_with_ids($array,$id_field_name,$name_field_name){
+		
+		$names = array_column($array,$name_field_name);
+		$ids = array_column($array,$id_field_name);
+		
+		return array_combine($ids,$names);
+    }
+}

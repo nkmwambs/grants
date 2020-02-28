@@ -58,7 +58,7 @@ $autoload['packages'] = array('Request_pkg');
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('autoloaded/Menu_library','autoloaded/Access','Session','autoloaded/Grants','autoloaded/CustomException');
+$autoload['libraries'] = array('autoloaded/Menu_library','autoloaded/Access','Session','autoloaded/Grants','autoloaded/CustomException','fields/Element','fields/Input_element');
 
 /*
 | -------------------------------------------------------------------
@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('multi_language','url','grants','form');
+$autoload['helper'] = array('multi_language','url','grants','form','elements');
 
 /*
 | -------------------------------------------------------------------

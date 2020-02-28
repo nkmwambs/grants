@@ -61,4 +61,44 @@ class Voucher_library extends Grants
   }
 
 
+  // Below is the code for a voucher object
+
+function form_field_select($label,$offices = array(), $id = '',$label_cols =1, $input_cols = 3){
+  $return = label_element(get_phrase($label),['col-xs-'.$label_cols]);
+  $return .= div_element(
+                [
+                  select_element($offices,$label,[],$id)
+                ],
+                ['col-xs-'.$input_cols]
+              );
+  
+   return $return;           
 }
+
+
+function field_date($date = ''){
+  $return = label_element(get_phrase('date'),['col-xs-1']);
+  $return .= div_element(
+                [
+                  input_element($date,get_phrase('enter_date'),['datepicker'],'t_date',['readonly'=>'readonly','data-format'=>'yyyy-mm-dd'])
+                ],
+                ['col-xs-3']
+            );
+  return $return;
+}
+
+function form_field_text($label, $default_value = '', $classes = [], $id = '', $parameters = [], $label_cols = 1, $input_cols = 3){
+  $return = label_element(get_phrase($label),['col-xs-1']);
+  $return .= div_element(
+                  [
+                    input_element($default_value,get_phrase($label),$classes,$id,$parameters)
+                  ],
+                  ['col-xs-3']
+            );
+
+  return $return;
+}
+
+
+}
+

@@ -92,6 +92,29 @@ class Voucher extends MY_Controller
     echo json_encode($array);
   }
 
+  // New voucher form methods
+
+  function result($id = ''){
+    if($this->action == 'view'){
+  
+    $transacting_month = '';
+    $last_voucher_date = '';
+    
+    $result = [
+      'transacting_month'=> $transacting_month,
+      'last_voucher_date'=> $last_voucher_date,
+     ];
+
+     return $result;
+    }else{
+      return parent::result($id = '');
+    }
+  }
+
+  function view(){
+    parent::view();
+  }
+
   static function get_menu_list(){
 
   }
