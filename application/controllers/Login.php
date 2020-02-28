@@ -21,7 +21,7 @@ public $auth;
         parent::__construct();
         $this->load->database();
 
-        $this->load->add_package_path(APPPATH.'third_party/Packages/Core');
+        //$this->load->add_package_path(APPPATH.'third_party/Packages/Core');
         $this->load->model('user_model');
         $this->load->library('Language_library');
         $this->load->model('Language_model');
@@ -35,7 +35,8 @@ public $auth;
              //if (extension_loaded('php_yaml')) {
                 //$this->grants->create_missing_system_files(); 
              //}
-            redirect(base_url().strtolower($this->session->default_launch_page).'/list');
+            //redirect(base_url().strtolower($this->session->default_launch_page).'/list');
+            redirect(base_url().'dashboard/list');
         }
           
 
@@ -127,8 +128,8 @@ public $auth;
         //  * Breadcrumb and default page sessions
         //  */  
         // $this->session->set_userdata('breadcrumb_list',array());        
-        //$default_launch_page = $this->user_model->default_launch_page($row->user_id);
-        $this->session->set_userdata('default_launch_page','dashboard');
+        // $default_launch_page = $this->user_model->default_launch_page($row->user_id);
+        // $this->session->set_userdata('default_launch_page',$default_launch_page);
 
         
 		return 'success';
