@@ -25,7 +25,7 @@ class Income_account_model extends MY_Model implements CrudModelInterface, Table
   }
 
   function lookup_tables(){
-    
+    return ['account_system'];
   }
 
   function detail_tables(){

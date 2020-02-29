@@ -33,7 +33,7 @@ public $auth;
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
              //if (extension_loaded('php_yaml')) {
-                // $this->grants->create_missing_system_files(); 
+                $this->grants->create_missing_system_files(); 
              //}
             redirect(base_url().ucfirst($this->session->default_launch_page).'/list');
         }
