@@ -426,20 +426,37 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $status_id;  
   }
 
+  function conversion_approval_status($office_id):int{
+
+    $approval_status_id = 0;
+
+    $office_account_system_id = $this->db->get_where('office',
+    array('office_id'=>$office_id))->row()->fk_account_system_id;
+
+    $request_conversion_obj =  $this->db->get_where('request_conversion',
+    array('fk_account_system_id'=>$office_account_system_id));
+    
+    if($request_conversion_obj->num_rows() > 0){
+      $approval_status_id = $request_conversion_obj->row()->conversion_status_id;
+    }
+
+    return $approval_status_id;
+  }
+
   /**
    * Get Approved Unvouched Request Details
    * 
    * List all the request details that have been finalised in the approval workflow
    * @return Array
    */
-  function get_approved_unvouched_request_details():Array{
+  function get_approved_unvouched_request_details($office_id):Array{
 
     // 3 is the approve_item_id for request
-    $request_last_status_id = $this->get_approveable_item_last_status(3);
+    //$request_last_status_id = $this->get_approveable_item_last_status(3);
 
     $this->db->select(array('request_detail_id','request_date','office_name',
     'request_detail_track_number','request_detail_description','request_detail_quantity',
-    'request_detail_unit_cost','request_detail_total_cost','expense_account_name',
+    'request_detail_unit_cost','request_detail_total_cost','expense_account_id',
     'project_allocation_name','status_name'));
     
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
@@ -448,10 +465,11 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->db->join('status','status.status_id=request.fk_status_id');
     $this->db->join('office','office.office_id=request.fk_office_id'); 
     
-    $this->db->where(array('request.fk_status_id'=>$request_last_status_id,'office_id'=>$this->session->voucher_office));
+    //$conversion_approval_status = $this->conversion_approval_status($office_id);
 
-    //Unset voucher office session
-    //$this->session->unset_userdata('voucher_office');
+    //$this->db->where(array('request.fk_status_id'=>$conversion_approval_status,'office.office_id'=>$office_id));
+    $this->db->where(array('office_id'=>$office_id));
+
     return $this->db->get('request_detail')->result_array();
   }
 

@@ -77,18 +77,20 @@ class Voucher extends MY_Controller
     $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
     $this->db->select(array('request_detail_description','request_detail_quantity',
-    'request_detail_unit_cost','request_detail_total_cost','expense_account_id','project_allocation_id'));
+    'request_detail_unit_cost','request_detail_total_cost','expense_account_id',
+    'project_allocation_id','request_detail_id'));
     
 
     $request_detail = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row();
 
     $array = [
+      'request_detail_id'=> $request_detail->request_detail_id,
       'voucher_detail_description' => $request_detail->request_detail_description,
       'voucher_detail_quantity' => $request_detail->request_detail_quantity,
       'voucher_detail_unit_cost' => $request_detail->request_detail_unit_cost,
       'voucher_detail_total_cost' => $request_detail->request_detail_total_cost,
-      'expense_account_name' => $request_detail->expense_account_id,
-      'project_allocation_name' => $request_detail->project_allocation_id
+      'expense_account_id' => $request_detail->expense_account_id,
+      'project_allocation_id' => $request_detail->project_allocation_id
     ];
 
     echo json_encode($array);
@@ -128,6 +130,8 @@ class Voucher extends MY_Controller
 
     $response = [];
     $response['is_bank_payment'] = false;
+    $response['is_expense'] = false;
+    $response['approved_requests'] = 0;
 
     $office_accounting_system = $this->db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
 
@@ -157,8 +161,9 @@ class Voucher extends MY_Controller
       $response['accounts'] = $this->db->get_where('income_account',array('income_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system))->result_object();
     
     }elseif($voucher_type_effect == 'expense'){
-      
+      $response['is_expense'] = true;
       $response['project_allocation'] = $project_allocation;
+      $response['approved_requests'] = 4;//count($this->voucher_model->get_approved_unvouched_request_details($office_id);
       
       $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name','expense_account_code as account_code'));
       $response['accounts'] = $this->db->get_where('expense_account',array('expense_account_is_active'=>1))->result_object();
@@ -217,6 +222,111 @@ class Voucher extends MY_Controller
      $is_valid_cheque = ($no_active_cheque_book || $used_cheque_in_vouchers > 0 || $cheque_number_greater_than_last_leaf_serial)?false:true;
 
      echo $is_valid_cheque;
+  }
+
+
+  function compute_next_voucher_number($office_id){
+   echo $this->voucher_model->get_voucher_number($office_id);
+  }
+   
+  function get_office_voucher_date($office_id){
+    echo $this->voucher_model->get_voucher_date($office_id);
+  }
+
+  function get_approve_request_details($office_id){
+    //echo "Approved request details";
+    echo $this->voucher_library->approved_unvouched_request_details($office_id);
+  }
+
+  function insert_new_voucher(){
+
+    $header = [];
+    $detail = [];
+    $row = [];
+
+    // Check voucher type
+    $this->db->select(array('voucher_type_effect_code'));
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $voucher_type_effect_code = $this->db->get_where('voucher_type',
+    array('voucher_type_id'=>$this->input->post('fk_voucher_type_id')))->row()->voucher_type_effect_code;
+
+
+    $header['voucher_track_number'] = $this->grants_model->generate_item_track_number_and_name('voucher')['voucher_track_number'];
+    $header['voucher_name'] = $this->grants_model->generate_item_track_number_and_name('voucher')['voucher_name'];
+   
+    $header['fk_office_id'] = $this->input->post('fk_office_id');
+    $header['voucher_date'] = $this->input->post('voucher_date');
+    $header['voucher_number'] = $this->input->post('voucher_number');
+    $header['fk_voucher_type_id'] = $this->input->post('fk_voucher_type_id');
+    $header['fk_office_bank_id'] = $this->input->post('fk_office_bank_id') == null?0:$this->input->post('fk_office_bank_id');
+    $header['voucher_cheque_number'] = $this->input->post('voucher_cheque_number') == null?0:$this->input->post('voucher_cheque_number');
+    $header['voucher_vendor'] = $this->input->post('voucher_vendor');
+    $header['voucher_vendor_address'] = $this->input->post('voucher_vendor_address');
+    $header['voucher_description'] = $this->input->post('voucher_description');
+    $header['fk_approval_id'] = $this->grants_model->insert_approval_record('voucher');
+    $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
+
+    $this->db->trans_start();
+    $this->db->insert('voucher',$header);
+
+    $header_id = $this->db->insert_id();
+
+    for ($i=0; $i < sizeof($this->input->post('voucher_detail_quantity')); $i++) { 
+      
+      $detail['fk_voucher_id'] = $header_id;
+      $detail['voucher_detail_track_number'] = $this->grants_model->generate_item_track_number_and_name('voucher_detail')['voucher_detail_track_number'];
+      $detail['voucher_detail_name'] = $this->grants_model->generate_item_track_number_and_name('voucher_detail')['voucher_detail_name'];
+     
+      $detail['voucher_detail_quantity'] = $this->input->post('voucher_detail_quantity')[$i];
+      $detail['voucher_detail_description'] = $this->input->post('voucher_detail_description')[$i];
+      $detail['voucher_detail_unit_cost'] = $this->input->post('voucher_detail_unit_cost')[$i];
+      $detail['voucher_detail_total_cost'] = $this->input->post('voucher_detail_total_cost')[$i];
+      
+      if($voucher_type_effect_code == 'expense'){
+        $detail['fk_expense_account_id'] = $this->input->post('voucher_detail_account')[$i]; 
+        $detail['fk_income_account_id'] = 0; 
+        $detail['fk_bank_contra_account_id'] = 0;    
+        $detail['fk_cash_contra_account_id'] = 0;   
+      }elseif($voucher_type_effect_code == 'income'){
+        $detail['fk_expense_account_id'] = 0; 
+        $detail['fk_income_account_id'] = $this->input->post('voucher_detail_account')[$i]; 
+        $detail['fk_bank_contra_account_id'] = 0;    
+        $detail['fk_cash_contra_account_id'] = 0;   
+      }elseif($voucher_type_effect_code == 'bank_contra'){
+        $detail['fk_expense_account_id'] = 0; 
+        $detail['fk_income_account_id'] = 0; 
+        $detail['fk_bank_contra_account_id'] = $this->input->post('voucher_detail_account')[$i];    
+        $detail['fk_cash_contra_account_id'] = 0;   
+      }else{
+        $detail['fk_expense_account_id'] = 0; 
+        $detail['fk_income_account_id'] = 0; 
+        $detail['fk_bank_contra_account_id'] = 0;    
+        $detail['fk_cash_contra_account_id'] = $this->input->post('voucher_detail_account')[$i];
+      }
+  
+      
+      $detail['fk_project_allocation_id'] = $this->input->post('fk_project_allocation_id')[$i];
+      $detail['fk_request_detail_id'] = $this->input->post('fk_request_detail_id')[$i];
+      $detail['fk_approval_id'] = 0;//$this->grants_model->insert_approval_record('voucher_detail');
+      $detail['fk_status_id'] = $this->grants_model->initial_item_status('voucher_detail');      
+      
+      //$this->db->insert('voucher_detail',$detail);
+      
+      $row[] = $detail;
+    }
+
+    //echo json_encode($row);
+    $this->db->insert_batch('voucher_detail',$row);
+
+    $this->db->trans_complete();
+
+    if ($this->db->trans_status() === FALSE)
+    {
+      echo "Voucher posting failed";
+    }else{
+      echo "Voucher posted successfully";
+    }
+
   }
   
 }

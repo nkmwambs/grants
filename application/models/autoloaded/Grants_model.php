@@ -78,6 +78,33 @@ function edit(String $id):String{
 
 }
 
+function check_item_requires_approval($approveable_item){
+  return $this->approveable_item($approveable_item);
+}
+
+function insert_approval_record($approveable_item){
+  $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
+  $approval['approval_track_number'] = $approval_random;
+  $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
+  $approval['approval_created_by'] = $this->session->user_id;
+  $approval['approval_created_date'] = date('Y-m-d');
+  $approval['approval_last_modified_by'] = $this->session->user_id;
+  $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',
+  array('approve_item_name'=>$approveable_item))->row()->approve_item_id;
+
+  $this->db->insert('approval',$approval);
+
+  return $this->db->insert_id();
+}
+
+function generate_item_track_number_and_name($approveable_item){
+   $header_random = record_prefix($this->controller).'-'.rand(1000,90000);
+    $columns[$approveable_item.'_track_number'] = $header_random;
+    $columns[$approveable_item.'_name'] = ucfirst($approveable_item).' # '.$header_random;
+
+    return $columns;
+}
+
   function add(){
 
     // There are 3 insert scenarios
@@ -221,6 +248,7 @@ function edit(String $id):String{
 
 
     // End the transaction and determine if successful
+    $this->db->trans_complete();
 
     if ($this->db->trans_status() === FALSE)
     {

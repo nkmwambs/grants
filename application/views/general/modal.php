@@ -306,3 +306,13 @@
 </style>
 
 <div id="overlay"><img src='<?php echo base_url()."uploads/preloader4.gif";?>'/></div>
+
+<script>
+$( document ).ajaxSend(function() {
+  $("#overlay").css("display","block");
+});
+
+$(document).ajaxSuccess(function() {
+    $("#overlay").css("display","none");
+});
+</script>

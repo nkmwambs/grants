@@ -23,7 +23,7 @@
                                 $field = get_phrase('action');
                             }
                     ?>
-                        <th><?=get_phrase($field);?></th>
+                        <th  nowrap='nowrap'><?=get_phrase($field);?></th>
                     <?php        
                         }
                     ?>
@@ -42,7 +42,7 @@
                                 $cell_value =  '<div class="btn btn-default map_request_to_voucher_row" id="'.$row[$field].'">'.get_phrase('add_to_voucher').'</div>';   
                             }
                 ?>  
-                            <td><?=$cell_value;?></td>
+                            <td nowrap='nowrap'><?=$cell_value;?></td>
                 <?php 
                         }
                 ?>
@@ -78,7 +78,7 @@ $(".map_request_to_voucher_row").click(function(ev){
             //alert(response);
             var obj = JSON.parse(response);
             
-            run_detail_row(obj);
+            insertRowFromRequest(obj);
         },
         error:function(){
             alert('Error Occurred');
@@ -86,6 +86,39 @@ $(".map_request_to_voucher_row").click(function(ev){
     });
 
 });
+
+function insertRowFromRequest(obj){
+    var tbl_body = $("#tbl_voucher_body tbody");
+
+    var description = obj['voucher_detail_description'];
+    var quantity = obj['voucher_detail_quantity'];
+    var unitcost = obj['voucher_detail_unit_cost'];
+    var totalcost = obj['voucher_detail_total_cost'];
+    var expense_account_id = obj['expense_account_id'];
+    var project_allocation_id = obj['project_allocation_id'];
+    var request_detail_id = obj['request_detail_id'];
+
+
+    var cell = actionCell(); 
+    cell += quantityCell(quantity); 
+    cell += descriptionCell(description);
+    cell += unitCostCell(unitcost); 
+    cell += totalCostCell(totalcost); 
+    cell += accountCell(expense_account_id); 
+    cell += allocatioCodeCell(project_allocation_id); 
+    cell += requestIdCell(request_detail_id); 
+    
+
+    tbl_body.append("<tr>"+cell+"</tr>");
+
+    $('.body-input').prop('readonly','readonly');
+
+    updateAccountAndAllocationField(expense_account_id, project_allocation_id);
+    
+    $("#voucher_total").val(sumVoucherDetailTotalCost());
+}
+
+
 
 function run_detail_row(obj){
 
