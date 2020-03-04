@@ -335,9 +335,9 @@ $('a').on('click',function(ev){
         
     });
 
-    var newUrl = "<?=base_url();?>"+str;
+    //var newUrl = "<?=base_url();?>"+str;
 
-    $(this).prop('href',newUrl);
+    //$(this).prop('href',newUrl);
 
 });
 
