@@ -1,5 +1,5 @@
 <?php
-    print_r($result);
+    //print_r($result);
 
     extract($result);
 ?>
@@ -37,11 +37,14 @@
 <div class='row'>
     <div class='col-xs-12'>
         <div class='form-group'>
-            <div class='col-xs-3'>
-                <label class='control-label pull-right'>Choose a funder project</label>
+            <!-- <div class='col-xs-2'>
+                <label class='control-label pull-right'>Filter</label>
             </div>
-            <div class='col-xs-7'>
-                <?=funder_projects_select($funder_projects);?>
+            <div class='col-xs-4'>
+                <?=hierarchy_office_select();?>      
+            </div> -->
+            <div class='col-xs-offset-4 col-xs-4'>
+                <?=funder_projects_select($funder_projects);?>      
             </div>
             <div class='col-xs-2'>
                 <div class='btn btn-success'>View</div>

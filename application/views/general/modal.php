@@ -316,6 +316,10 @@ $(document).ajaxSuccess(function() {
     $("#overlay").css("display","none");
 });
 
+$(document).ajaxError(function(xhr) {
+    alert('Error has occurred');
+});
+
 
 $('a').on('click',function(ev){
 

@@ -128,7 +128,7 @@ $show_add_button = $this->grants->show_add_button();
 		
 		       // Load data for the table's content from an Ajax source
 		       "ajax": {
-		           "url": "<?php echo base_url();?><?=ucfirst($this->controller);?>/list_ajax",
+		           "url": "<?php echo base_url();?><?=$this->controller;?>/list_ajax",
 		           "type": "POST",
 		           "data": function(data){
 		           		var x = $("#form-filter").serializeArray();

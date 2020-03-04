@@ -57,9 +57,11 @@ if ( ! function_exists('hash_id'))
 
 		if($action == 'encode'){
 			return $hashids->encode($id);
-		}else{
+		}elseif(isset($hashids->decode($id)[0])){
 			//print_r($hashids->decode($id));exit();
 			return $hashids->decode($id)[0];
+		}else{
+			return null;
 		}
 
 	}

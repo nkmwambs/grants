@@ -664,13 +664,13 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
     $data = (array)$this->db->get_where($table,array($this->grants->primary_key_field($table) => hash_id($this->uri->segment(3,0),'decode') ) )->row();
     
     // Get the name of the record creator
-    $created_by = $data[$this->grants->history_tracking_field($table,'created_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
+    $created_by = isset($data[$this->grants->history_tracking_field($table,'created_by')]) && $data[$this->grants->history_tracking_field($table,'created_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
     array('user_id'=>$data[$this->grants->history_tracking_field($table,'created_by')]))->row()->user_name:get_phrase('creator_user_not_set');
 
     $data['created_by'] = $created_by;
 
     //Get the name of the last record modifier
-    $last_modified_by = $data[$this->grants->history_tracking_field($table,'last_modified_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
+    $last_modified_by = isset($data[$this->grants->history_tracking_field($table,'last_modified_by')]) && $data[$this->grants->history_tracking_field($table,'last_modified_by')] >= 1? $this->db->select('CONCAT(`user_firstname`," ",`user_lastname`) as user_name')->get_where('user',
     array('user_id'=>$data[$this->grants->history_tracking_field($table,'last_modified_by')]))->row()->user_name:get_phrase('modifier_user_not_set');
 
     $data['last_modified_by'] = $last_modified_by;

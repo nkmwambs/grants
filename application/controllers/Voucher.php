@@ -251,6 +251,8 @@ class Voucher extends MY_Controller
     array('voucher_type_id'=>$this->input->post('fk_voucher_type_id')))->row()->voucher_type_effect_code;
 
 
+    $this->db->trans_start();
+
     $header['voucher_track_number'] = $this->grants_model->generate_item_track_number_and_name('voucher')['voucher_track_number'];
     $header['voucher_name'] = $this->grants_model->generate_item_track_number_and_name('voucher')['voucher_name'];
    
@@ -263,10 +265,15 @@ class Voucher extends MY_Controller
     $header['voucher_vendor'] = $this->input->post('voucher_vendor');
     $header['voucher_vendor_address'] = $this->input->post('voucher_vendor_address');
     $header['voucher_description'] = $this->input->post('voucher_description');
+
+    $header['voucher_created_by'] = $this->session->user_id;
+    $header['voucher_last_modified_by'] = $this->session->user_id;
+    $header['voucher_created_date'] = date('Y-m-d');
+
     $header['fk_approval_id'] = $this->grants_model->insert_approval_record('voucher');
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
 
-    $this->db->trans_start();
+    
     $this->db->insert('voucher',$header);
 
     $header_id = $this->db->insert_id();
@@ -304,7 +311,10 @@ class Voucher extends MY_Controller
         $detail['fk_cash_contra_account_id'] = $this->input->post('voucher_detail_account')[$i];
       }
   
-      
+      $detail['voucher_detail_created_by'] = $this->session->user_id;
+      $detail['voucher_detail_last_modified_by'] = $this->session->user_id;
+      $detail['voucher_detail_created_date'] = date('Y-m-d');
+
       $detail['fk_project_allocation_id'] = $this->input->post('fk_project_allocation_id')[$i];
       $detail['fk_request_detail_id'] = $this->input->post('fk_request_detail_id')[$i];
       $detail['fk_approval_id'] = 0;//$this->grants_model->insert_approval_record('voucher_detail');

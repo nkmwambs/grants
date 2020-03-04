@@ -19,3 +19,19 @@ if ( ! function_exists('funder_projects_select')){
         return $select;            
     }
 }
+
+if ( ! function_exists('hierarchy_office_select')){
+    function hierarchy_office_select(){
+        $CI =& get_instance();
+        $items = $CI->session->hierarchy_offices;
+
+        $select ="<select class='form-control' id='office' name='fk_office_id'>";
+        $select .="<option>".get_phrase('select_office')."</option>";
+            foreach($items as $office){
+                $select .= "<option value='".$office['office_id']."'>".$office['office_name']."</option>";
+            }
+        $select .= "</select>";
+
+        return $select;
+    }
+}      

@@ -19,36 +19,169 @@ class Budget extends MY_Controller
   function index(){}
 
   function budget_summary_result(){
-    return [];
+
+    $data = [];
+    
+    $budget_office = $this->budget_office();
+
+    $this->db->select(array('income_account_name','income_account_code','income_account_id',
+    'expense_account_id','expense_account_name','expense_account_code','month_id','month_name'));
+    $this->db->select_sum('budget_item_detail_amount');
+    
+    $this->db->join('budget_item','budget_item.fk_budget_id=budget.budget_id');
+    $this->db->join('budget_item_detail','budget_item_detail.fk_budget_item_id=budget_item.budget_item_id');
+    $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
+    $this->db->where(array('fk_office_id'=>$budget_office->office_id,
+    'budget_year'=>$budget_office->budget_year));
+    $this->db->group_by(array('fk_month_id','expense_account_id','income_account_id'));
+    $result_raw  = $this->db->get('budget')->result_object();
+
+    $result = [];
+    
+    foreach($result_raw as $detail){
+      
+      $result[$detail->income_account_id]['income_account'] = ['income_account_name'=>$detail->income_account_name,'income_account_code'=>$detail->income_account_code];
+      $result[$detail->income_account_id]['spread_account'][$detail->expense_account_id]['expense_account'] = ['account_name'=>$detail->expense_account_name,'account_code'=>$detail->expense_account_code];        
+      $result[$detail->income_account_id]['spread_account'][$detail->expense_account_id]['spread'][$detail->month_name] = $detail->budget_item_detail_amount;
+      
+    }
+    
+  $data['summary'] =  $result;
+
+  //   $data = [
+  //     'test'=> $result_raw,
+  //     'test2'=> $result,
+  //     'summary'=>[
+  //       [
+  //         //Income account 1
+  //         'income_account'=>['income_account_name'=>'Income Account 1','income_account_code'=>'INC 001'],
+  //         'spread_account'=>[
+  //             [
+  //               // Expense account 1 of 1
+  //               'expense_account'=>['account_name'=>'Expense 1','account_code'=>'E001'],
+  //               'spread'=>[
+  //                 'Jan'=>10000,
+  //                 'Feb'=>20000,
+  //                 'Mar'=>30000,
+  //                 'Apr'=>40000,
+  //                 'May'=>50000,
+  //                 'Jun'=>60000,
+  //                 'Jul'=>70000,
+  //                 'Aug'=>80000,
+  //                 'Sep'=>90000,
+  //                 'Oct'=>100000,
+  //                 'Nov'=>110000,
+  //                 'Dec'=>120000
+  //               ],
+  //             ], 
+
+  //               // Expense account 2 of 1
+  //               [
+  //                 'expense_account'=>['account_name'=>'Expense 2','account_code'=>'E002'],
+  //                 'spread'=>[
+  //                   'Jan'=>410000,
+  //                   'Feb'=>420000,
+  //                   'Mar'=>430000,
+  //                   'Apr'=>440000,
+  //                   'May'=>450000,
+  //                   'Jun'=>460000,
+  //                   'Jul'=>470000,
+  //                   'Aug'=>480000,
+  //                   'Sep'=>490000,
+  //                   'Oct'=>4100000,
+  //                   'Nov'=>4110000,
+  //                   'Dec'=>4120000
+  //                 ]
+  //               ],
+  //           ],
+  //         ],
+            
+  //         //Income account 2
+  //         [
+  //           //Income account 2
+  //           'income_account'=>['income_account_name'=>'Income Account 2','income_account_code'=>'INC 002'],
+  //           'spread_account'=>[
+  //               [
+  //                 // Expense account 1 of 2
+  //                 'expense_account'=>['account_name'=>'Expense 3','account_code'=>'E003'],
+  //                 'spread'=>[
+  //                   'Jan'=>610000,
+  //                   'Feb'=>620000,
+  //                   'Mar'=>630000,
+  //                   'Apr'=>640000,
+  //                   'May'=>650000,
+  //                   'Jun'=>660000,
+  //                   'Jul'=>670000,
+  //                   'Aug'=>680000,
+  //                   'Sep'=>690000,
+  //                   'Oct'=>6100000,
+  //                   'Nov'=>6110000,
+  //                   'Dec'=>6120000
+  //                 ],
+  //               ], 
+  
+  //                 // Expense account 2 of 2
+  //                 [
+  //                   'expense_account'=>['account_name'=>'Expense 4','account_code'=>'E004'],
+  //                   'spread'=>[
+  //                     'Jan'=>210000,
+  //                     'Feb'=>220000,
+  //                     'Mar'=>230000,
+  //                     'Apr'=>240000,
+  //                     'May'=>250000,
+  //                     'Jun'=>260000,
+  //                     'Jul'=>270000,
+  //                     'Aug'=>280000,
+  //                     'Sep'=>290000,
+  //                     'Oct'=>2100000,
+  //                     'Nov'=>2110000,
+  //                     'Dec'=>2120000
+  //                   ]
+  //                 ],
+  //             ],
+  //           ],
+
+  //   ]
+  // ];
+    
+
+    return $data;
   }
 
-  function budget_header_information($office_id = 9, $year = 2020){
-    $data = [
-        'funder_projects'=>[
-          [
-            'funder'=>['funder_id'=>1,'funder_name'=>'Funder 1'],
-            'projects'=>[
-                ['project_allocation_id'=>1,'project_allocation_name'=>'Project 1'],
-                ['project_allocation_id'=>2,'project_allocation_name'=>'Project 2'],
-                ['project_allocation_id'=>3,'project_allocation_name'=>'Project 3'],
-              ]
-          ],
-          [
-            'funder'=>['funder_id'=>1,'funder_name'=>'Funder 2'],
-            'projects'=>[
-                ['project_allocation_id'=>4,'project_allocation_name'=>'Project 4'],
-                ['project_allocation_id'=>5,'project_allocation_name'=>'Project 5'],
-                ['project_allocation_id'=>6,'project_allocation_name'=>'Project 6'],
-              ]
-          ],
-        ],
-        
-        'current_year'=>2020,
-        'office'=>'GRC Shingila',
-        
-      ];
+  function budget_office(){
+    $this->db->select(array('office_id','office_name','office_code','budget_year'));
+    $this->db->join('office','office.office_id=budget.fk_office_id'); 
+    $budget_office = $this->db->get_where('budget',
+    array('budget_id'=>hash_id($this->id,'decode')))->row();
 
-      return $data;
+    return $budget_office;
+  }
+
+  function budget_header_information($office_id = '', $year = ''){
+
+    $budget_office = $this->budget_office();
+
+    $this->db->select(array('funder_id','funder_name','project_allocation_id','project_allocation_name'));
+    $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+    $this->db->join('funder','funder.funder_id=project.fk_funder_id');
+    $this->db->where(array('fk_office_id'=>$budget_office->office_id));
+    $projects = $this->db->get('project')->result_object();
+
+    $data = [];
+
+    $funder_projects = [];
+
+    foreach($projects as $project){
+      $data['funder_projects'][$project->funder_id]['funder'] = ['funder_id'=>$project->funder_id,'funder_name'=>$project->funder_name];
+      $data['funder_projects'][$project->funder_id]['projects'][] = ['project_allocation_id'=>$project->project_allocation_id,'project_allocation_name'=>$project->project_allocation_name];
+    }
+
+    $data['current_year'] = $budget_office->budget_year;
+    $data['office'] = $budget_office->office_name;
+
+    return $data;
   }
 
   function budget_schedule_result($office_id = 9,$year = 2020,$income_account = 1,$funder_id = 1){

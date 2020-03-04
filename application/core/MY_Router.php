@@ -10,22 +10,22 @@ class MY_Router extends CI_Router {
         parent::__construct();
     }
 
-    public function _parse_routes()
-    {
-        $count = 0;
-        foreach ($this->uri->segments as &$segment)
-        {
-            if($count == 0 && $_SERVER['HTTP_HOST'] !== 'localhost'){
-                $segment = ucfirst($segment);
-            }else{
-                $segment = strtolower($segment);
-            }
+    // public function _parse_routes()
+    // {
+    //     $count = 0;
+    //     foreach ($this->uri->segments as &$segment)
+    //     {
+    //         if($count == 0 && $_SERVER['HTTP_HOST'] !== 'localhost'){
+    //             $segment = ucfirst($segment);
+    //         }else{
+    //             $segment = strtolower($segment);
+    //         }
 
-            $count++;
-        }
+    //         $count++;
+    //     }
 
-        return parent::_parse_routes();
-    }
+    //     return parent::_parse_routes();
+    // }
 
     function _validate_request($segments)
     {

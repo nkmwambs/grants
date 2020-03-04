@@ -1,7 +1,8 @@
 <?php
-    print_r($result);
 
     extract($result);
+
+    print_r($summary);
 ?>
 
 <style>
@@ -22,9 +23,9 @@
     </div>
     
     <div class='col-xs-8' style='text-align:center;'>
-        <!-- <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
-            <div class='btn btn-default'>Add new budget item</div>
-        </a> -->
+        <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
+            <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
+        </a>
 
     </div>
 
@@ -37,10 +38,7 @@
 <div class='row'>
     <div class='col-xs-12'>
         <div class='form-group'>
-            <div class='col-xs-3'>
-                <label class='control-label pull-right'>Choose a funder</label>
-            </div>
-            <div class='col-xs-7'>
+            <div class='col-xs-offset-4 col-xs-4'>
                 <?=funder_projects_select($funder_projects);?>      
             </div>
             <div class='col-xs-2'>
@@ -52,136 +50,73 @@
 
 <div class='row'>
     <div class='col-xs-12'>
+        
+        <?php 
+            foreach($summary as $income_account){
+            extract($income_account);
+            $months = array_keys(array_shift($spread_account)['spread']);
+        ?>
+            
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
-                        Income Account 1 Budget Summary (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/schedule/<?=hash_id(1);?>'>Show budget schedule</a>)
+                       <?=get_phrase('year');?> <?=$current_year;?> <?=$office?> <?=$income_account['income_account_name'];?> Budget Summary (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/schedule/<?=hash_id(1);?>'>Show budget schedule</a>)
                     </th>
                 </tr>
                 <tr>
-                    <th>Account</th>
-                    <th>Total Cost</th>
+                    <th><?=get_phrase('account');?></th>
+                    <th><?=get_phrase('total_cost');?></th>
 
-                    <th>Jan</th>
-                    <th>Feb</th>
-                    <th>Mar</th>
-                    <th>Apr</th>
-                    <th>May</th>
-                    <th>Jun</th>
-                    <th>Jul</th>
-                    <th>Aug</th>
-                    <th>Sep</th>
-                    <th>Oct</th>
-                    <th>Nov</th>
-                    <th>Dec</th>
+                    <?php foreach($months as $month){?>
+                        <th><?=$month;?></th>
+                    <?php }?>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>E001 - Expense 1</td>
-                    <td>90,000.00</td>
-                    
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
 
-                </tr>            
+            <tbody>
+                 <?php 
+                    foreach($spread_account as $spreading){
+                        extract($spreading);
+                ?>
+                    <tr>
+                        <td><?=$expense_account['account_code'].' - '.$expense_account['account_name'];?></td>
+                        <td><?=number_format(array_sum($spread),2);?></td>
+
+                        <?php foreach($spread as $month_amount){ ?>
+                            <td><?=number_format($month_amount,2);?></td>
+                        <?php }?>
+                    </tr>
+                 <?php }?>       
             </tbody>
             <tfoot>
                 <tr>
-                    <td>Income Account 1 Total</td>
-                    <td>0.00</td>
+                    <td><?=$income_account['income_account_name'];?> <?=get_phrase('total');?></td>
+                    
+                    <?php 
+                        $total = 0;
 
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
+                        foreach (array_column($spread_account,'spread') as $row_spread) {
+                            $total += array_sum($row_spread);
+                        }
+                    ?>
+
+                    <td><?=number_format($total,2);?></td>
+
+                    <?php foreach(array_shift(array_shift($summary)['spread_account'])['spread'] as $month_label=>$month_spread){?>
+                        <td>
+                            <?php 
+                                $_spread_col = array_column($spread_account,'spread');
+                                //echo number_format(array_sum(array_column($_spread_col,$month_label)),2);
+                            ?>
+                        </td>
+                    <?php }?>
+
                 </tr>
             </tfoot>
         </table>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th colspan='14' style='text-align:center'>
-                        Income Account 2 Budget Summary (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/schedule/<?=hash_id(2);?>'>Show budget schedule</a>)
-                    </th>
-                </tr>
-                <tr>
-                    <th>Account</th>
-                    <th>Total Cost</th>
-
-                    <th>Jan</th>
-                    <th>Feb</th>
-                    <th>Mar</th>
-                    <th>Apr</th>
-                    <th>May</th>
-                    <th>Jun</th>
-                    <th>Jul</th>
-                    <th>Aug</th>
-                    <th>Sep</th>
-                    <th>Oct</th>
-                    <th>Nov</th>
-                    <th>Dec</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>E001 - Expense 2</td>
-                    <td>60,000.00</td>
-                    
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>20,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>20,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>20,000.00</td>
-
-                </tr>            
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Income Account 1 Total</td>
-                    <td>0.00</td>
-
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                </tr>
-            </tfoot>
-        </table>
+        <?php }?>
+       
     </div>
 </div>
