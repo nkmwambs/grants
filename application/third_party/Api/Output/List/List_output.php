@@ -223,7 +223,7 @@ function feature_model_list_table_visible_columns(): Array {
         $no = $_POST['start'];
         foreach ($list as $item) {
 
-          $this->CI->load->model('ajax_model','dt_model');
+          $this->CI->load->model('Ajax_model','dt_model');
 
           $row = array();
 
