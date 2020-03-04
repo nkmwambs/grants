@@ -315,4 +315,35 @@ $( document ).ajaxSend(function() {
 $(document).ajaxSuccess(function() {
     $("#overlay").css("display","none");
 });
+
+
+$('a').on('click',function(ev){
+
+    var url_path = window.location.pathname;
+
+    var split_path = url_path.split("/");
+
+    var str = "";
+    $.each(split_path,function(i,el){
+        if(i > 1){
+            if(i == 2){
+                str += capitalize(el)+"/";
+            }else{
+                str += el+"/";;
+            }
+        }
+        
+    });
+
+    var newUrl = "<?=base_url();?>"+str;
+
+    $(this).prop('href',newUrl);
+
+});
+
+const capitalize = (s) => {
+  if (typeof s !== 'string') return ''
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 </script>
