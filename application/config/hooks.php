@@ -12,4 +12,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$hook['pre_controller'] = array('class'=>'UpperControllerUrl','function'=>'run','filename'=>'UpperControllerUrl.php','filepath'=>'hooks');
+$hook['pre_system '] = array('class'=>'UpperControllerUrl','function'=>'run','filename'=>'UpperControllerUrl.php','filepath'=>'hooks');
