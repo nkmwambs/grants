@@ -931,6 +931,16 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   }
 
+  /**
+   * approveable_item
+   * 
+   * Gives you true if the passed items is approveable else false
+   * 
+   * @param $approveable_item_name String - Object name
+   * 
+   * @return bool
+   */
+
   function approveable_item($approveable_item_name = ""){
 
     $approveable_item_name = $approveable_item_name == ""?$this->controller:$approveable_item_name;

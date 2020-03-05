@@ -60,6 +60,17 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   ***********************************************************************************************************
   */
   
+  /**
+   * get_status_id
+   * 
+   * Gives you the status id of a selected item
+   * 
+   * @param $table String
+   * 
+   * @param $primary  Int - Item primary key
+   * 
+   * @return int
+   */
   function get_status_id($table,$primary_key){
     $fk_status_id = 0;
 
@@ -75,23 +86,43 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
   /**
 * The method produces an array of the valid approval status ids for the listed items
 * These methods need to taken to the approval modal
-*
+* 
 **/
 
-function range_of_status_approval_sequence($item_status){
+function range_of_status_approval_sequence($approve_item_name){
+  $this->db->select('MAX("status_approval_sequence") as status_approval_sequence');
+  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  $this->db->get_where('status',array('approve_item_name'=>$approve_item_name))->row()->status_approval_sequence;
   return 5;
 }
 
 function get_approveable_item_id_by_status($item_status){
-  return 3;
+    $this->db->select(array('approve_item_id'));
+    $this->db->join('status','status.fk_approve_item_id=approve_item.approve_item_id');
+    $result =  $this->db->get_where('approve_item',array('status_id'=>$item_status))->row()->approve_item_id;
+
+    return $result;
+}
+
+function get_approve_item_name_by_status($item_status){
+
+  $this->db->select(array('approve_item_name'));
+  $this->db->join('status','status.fk_approve_item_id=approve_item.approve_item_id');
+  $result =  $this->db->get_where('approve_item',array('status_id'=>$item_status))->row()->approve_item_name;
+
+  return $result;
 }
 
 //Used for label naming e.g. Submit to [next_role_name]
 function next_approval_actor($item_status){
+
+  //Get approval item name using the status_id
+  $approve_item_name = $this->get_approve_item_name_by_status($item_status);
+
   // Can remain a zero if this is the last status
   $next_approval_actor_role_id = 0; 
 
-  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($item_status);
+  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($approve_item_name);
 
   $approveable_item_id = $this->get_approveable_item_id_by_status($item_status);
 
@@ -130,9 +161,12 @@ function next_approval_actor($item_status){
 
 function current_approval_actor($item_status){
 
+  //Get approval item name using the status_id
+  $approve_item_name = $this->get_approve_item_name_by_status($item_status);
+
   $current_approval_actor_role_id = 0;
 
-  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($item_status);
+  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($approve_item_name);
   
   $approveable_item_id = $this->get_approveable_item_id_by_status($item_status);
 
@@ -182,10 +216,12 @@ function get_role_name($role_id){
 }
 
 function user_action_label($item_status,$role_id){
+    //Get approval item name using the status_id
+  $approve_item_name = $this->get_approve_item_name_by_status($item_status);
   $status_label = $this->get_status_name($item_status);
   $current_actor = $this->current_approval_actor($item_status);
   $next_actor = $this->next_approval_actor($item_status);
-  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($item_status);
+  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($approve_item_name);
 
   $next_actor_role_name = $this->get_role_name($next_actor);
   
@@ -204,7 +240,8 @@ function user_action_label($item_status,$role_id){
   // the appropriate label 
   if($current_actor == $role_id &&  
       $backflow_sequence == 0 && 
-        $approval_sequence < $range_of_status_approval_sequence
+        $approval_sequence < $range_of_status_approval_sequence && 
+         $next_actor != 0
     ){
     $status_label = "Submit to ".$next_actor_role_name;
   }elseif($backflow_sequence > 0){
@@ -303,8 +340,11 @@ function decline_status($item_status){
 }
 
 function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
+
+  $table = $this->get_approve_item_name_by_status($item_status);
+
   $current_approval_actor = $this->current_approval_actor($item_status);
-  $logged_user_centers = $this->session->hierarchy_offices;
+  $logged_user_centers = array_column($this->session->hierarchy_offices,'office_id');
   $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
 
@@ -345,7 +385,7 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
    * - The last status is irreversible
    *  
    */
-
+    
     $approval_button_info = [];
 
     $item_status = $this->get_status_id($table,$primary_key);
@@ -440,5 +480,9 @@ function has_approval_status_been_set(String $approveable_item):Bool{
   return $has_approval_status_been_set;
 
 }
+
+// function approval_action_buttons($logged_role_id,$table,$primary_key){
+  
+// }
 
 }

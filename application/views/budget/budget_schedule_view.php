@@ -1,6 +1,6 @@
 <?php
-    //print_r($result);
-
+    //print_r($result['budget_schedule'][1]['budget_items'][1]['expense_items']['month_spread']);
+    //print_r($result['budget_schedule']);
     extract($result);
 ?>
 
@@ -17,32 +17,27 @@
 </div>
 
 <div class='row'>
-    <div class='col-xs-2'>
+    <!-- <div class='col-xs-2'>
         <a class='pull-left' href="#" title='Previous Year'><i class='fa fa-minus-circle' style='font-size:20pt;'></i></a>
-    </div>
+    </div> -->
     
-    <div class='col-xs-8' style='text-align:center;'>
+    <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
         <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
             <div class='btn btn-default'>Add new budget item</div>
         </a>
 
     </div>
 
-    <div class='col-xs-2'>
+    <!-- <div class='col-xs-2'>
         <a class='pull-right' href="#" title='Next Year'><i class='fa fa-plus-circle' style='font-size:20pt;'></i></a>
-    </div>
+    </div> -->
 
 </div>
 
 <div class='row'>
     <div class='col-xs-12'>
         <div class='form-group'>
-            <!-- <div class='col-xs-2'>
-                <label class='control-label pull-right'>Filter</label>
-            </div>
-            <div class='col-xs-4'>
-                <?=hierarchy_office_select();?>      
-            </div> -->
+            
             <div class='col-xs-offset-4 col-xs-4'>
                 <?=funder_projects_select($funder_projects);?>      
             </div>
@@ -53,274 +48,44 @@
     </div>
 </div>
 
+<?php foreach($budget_schedule as $income_group){?>
 <div class='row'>
     <div class='col-xs-12' style='text-align:center;font-weight:bold;'>
-        <?=$budget_schedule['income_account']['income_account_name'];?> Budget Schedule for <?=$office;?> <?=$current_year;?> (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'>Show budget summary</a>)
+        <?=$income_group['income_account']['income_account_name'];?> Budget Schedule for <?=$office;?> <?=$current_year;?> (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'>Show budget summary</a>)
     </div>
 </div>
 
 <div class='row'>
     <div class='col-xs-12'>
-        <?php foreach($budget_schedule['budget_items'] as $budget_items){?>
+        <?php foreach($income_group['budget_items'] as $loop_budget_items){?>
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th colspan='19' style='text-align:center'>
-                            Expense account: <?=$budget_items['expense_account']['expense_account_code'];?> - <?=$budget_items['expense_account']['expense_account_name'];?>
+                            Expense account: <?=$loop_budget_items['expense_account']['expense_account_code'];?> - <?=$loop_budget_items['expense_account']['expense_account_name'];?>
                         </th>
                     </tr>
                     <tr>
-                        <th>Action</th>
                         <th>Track Number</th>
                         <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Cost</th>
-                        <th>Total Cost</th>
-
-                        <th>Jan</th>
-                        <th>Feb</th>
-                        <th>Mar</th>
-                        <th>Apr</th>
-                        <th>May</th>
-                        <th>Jun</th>
-                        <th>Jul</th>
-                        <th>Aug</th>
-                        <th>Sep</th>
-                        <th>Oct</th>
-                        <th>Nov</th>
-                        <th>Dec</th>
-                        
+                        <th>Total Cost</th>                        
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach($loop_budget_items['expense_items'] as $loop_expense_items){?>
+                    <tr>
+                        <td><?="<a href='".base_url()."budget_item/view/".hash_id($loop_expense_items['budget_item_id'],'encode')."' >".$loop_expense_items['budget_item_track_number']."</a>";?></td>
+                        <td><?=$loop_expense_items['description']?></td>
+                        <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
+                        <td><?=$loop_expense_items['status']['status_name'];?></td>
+                    </tr>
+                <?php }?>
                 </tbody>
            </table>    
         <?php }?>
-        <!-- <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th colspan='19' style='text-align:center'>
-                       Expense account: E001 - Expense Account 1
-                    </th>
-                </tr>
-                <tr>
-                    <th>Action</th>
-                    <th>Track Number</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Unit Cost</th>
-                    <th>Total Cost</th>
-
-                    <th>Jan</th>
-                    <th>Feb</th>
-                    <th>Mar</th>
-                    <th>Apr</th>
-                    <th>May</th>
-                    <th>Jun</th>
-                    <th>Jul</th>
-                    <th>Aug</th>
-                    <th>Sep</th>
-                    <th>Oct</th>
-                    <th>Nov</th>
-                    <th>Dec</th>
-                    
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <i class='fa fa-check' title='Approve'></i> 
-                        <i class='fa fa-times' title='Decline'></i> 
-                        <i class='fa fa-pencil' title='Edit'></i>
-                        <i class='fa fa-trash' title='Delete'></i>  
-                    </td>
-                    <td><a href="#">BUEM-78374</a></td>
-                    <td>Training Cost</td>
-                    <td>3</td>
-                    <td>30,000.00</td>
-                    <td>90,000.00</td>
-                    
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-
-                    <td>New</td>
-                </tr> 
-
-                <tr>
-                    <td>
-                        <i class='fa fa-check' title='Approve'></i> 
-                        <i class='fa fa-times' title='Decline'></i> 
-                        <i class='fa fa-pencil' title='Edit'></i>
-                        <i class='fa fa-trash' title='Delete'></i>  
-                    </td>
-                    <td><a href="#">BUEM-57654</a></td>
-                    <td>Training Cost</td>
-                    <td>3</td>
-                    <td>30,000.00</td>
-                    <td>90,000.00</td>
-                    
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-
-                    <td>Submitted</td>
-                </tr>            
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan='5'>Expense Account 1 Total</td>
-                    <td>0.00</td>
-
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th colspan='19' style='text-align:center'>
-                       Expense account: E002 - Expense Account 2
-                    </th>
-                </tr>
-                <tr>
-                    <th>Action</th>
-                    <th>Track Number</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Unit Cost</th>
-                    <th>Total Cost</th>
-
-                    <th>Jan</th>
-                    <th>Feb</th>
-                    <th>Mar</th>
-                    <th>Apr</th>
-                    <th>May</th>
-                    <th>Jun</th>
-                    <th>Jul</th>
-                    <th>Aug</th>
-                    <th>Sep</th>
-                    <th>Oct</th>
-                    <th>Nov</th>
-                    <th>Dec</th>
-
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <i class='fa fa-check' title='Approve'></i> 
-                        <i class='fa fa-times' title='Decline'></i> 
-                        <i class='fa fa-pencil' title='Edit'></i>
-                        <i class='fa fa-trash' title='Delete'></i>  
-                    </td>
-                    <td><a href="#">BUEM-46544</a></td>
-                    <td>Training Cost</td>
-                    <td>3</td>
-                    <td>30,000.00</td>
-                    <td>90,000.00</td>
-                    
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-
-                    <td>Declined</td>    
-                </tr> 
-
-                <tr>
-                    <td>
-                        <i class='fa fa-check' title='Approve'></i> 
-                        <i class='fa fa-times' title='Decline'></i> 
-                        <i class='fa fa-pencil' title='Edit'></i>
-                        <i class='fa fa-trash' title='Delete'></i>  
-                    </td>
-                    <td><a href="#">BUEM-65654</a></td>
-                    <td>Training Cost</td>
-                    <td>3</td>
-                    <td>30,000.00</td>
-                    <td>90,000.00</td>
-                    
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>30,000.00</td>
-
-                    <td>Returned For Rework</td>
-                </tr>            
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan='5'>Expense Account 2 Total</td>
-                    <td>0.00</td>
-
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table> -->
+       
     </div>
 </div>
+
+<?php }?>

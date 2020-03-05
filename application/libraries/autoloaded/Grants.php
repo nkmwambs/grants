@@ -147,6 +147,13 @@ function __construct(){
 
   // Loading the main feature library
   $this->CI->load->library($this->current_library);
+
+
+  if(isset($this->session->user_id)){
+    $this->CI->session->sess_destroy();
+    //$this->CI->session->set_flashdata('logout_notification', 'logged_out');
+    redirect(base_url(), 'refresh');
+  }
 }
 
 /**

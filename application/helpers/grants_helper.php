@@ -237,3 +237,34 @@ if ( ! function_exists('cap_url_controller')){
 		echo base_url().implode("/",$arguments_array);
     }
 }
+
+if ( ! function_exists('approval_action_buttons')){
+    function approval_action_buttons($logged_role_id,$table,$primary_key){
+		?>
+			<style>
+				.btn{
+					margin:5px;
+				}
+			</style>
+		<?php
+		
+		$CI =& get_instance();
+
+		$approver_status = $CI->approval_model->display_approver_status_action($logged_role_id,$table,$primary_key);
+		$current_user_role = $CI->session->role_id;
+		
+		if(	
+			$current_user_role == $approver_status['current_actor_role_id'] &&
+			$approver_status['show_label_as_button'] == true
+		){
+			$buttons = "<a title='".$approver_status['status_name']."' href='".base_url().$CI->controller."/approve_item/".$approver_status['next_approval_status']."' class='btn btn-default'>".$approver_status['button_label']."</a>";
+
+			if($approver_status['show_decline_button'] == true){
+				$buttons .= "<a href='".base_url().$CI->controller."/decline_item/".$approver_status['next_decline_status']."' class='btn btn-default'>Decline</a>";
+			}
+			
+		}
+		
+		return $buttons;
+    }
+}
