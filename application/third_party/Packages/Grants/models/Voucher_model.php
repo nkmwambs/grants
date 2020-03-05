@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Voucher_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Voucher_model extends MY_Model implements  TableRelationshipInterface
 {
   public $table = 'voucher'; // you MUST mention the table name
   //public $primary_key = 'voucher_id'; // you MUST mention the primary key
@@ -53,7 +53,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     'voucher_cheque_number','voucher_vendor','voucher_description');
   }
 
-  public function list(){}
+  public function listing(){}
 
   public function view(){}
 
@@ -468,7 +468,7 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
     //$conversion_approval_status = $this->conversion_approval_status($office_id);
 
     //$this->db->where(array('request.fk_status_id'=>$conversion_approval_status,'office.office_id'=>$office_id));
-    $this->db->where(array('office_id'=>$office_id));
+    $this->db->where(array('office_id'=>$office_id,'request_detail.fk_status_id<>'=>7));
 
     return $this->db->get('request_detail')->result_array();
   }
@@ -503,6 +503,43 @@ class Voucher_model extends MY_Model implements CrudModelInterface, TableRelatio
       $this->db->select(array('voucher_type_effect_code','voucher_type_id','voucher_type_effect_id'));
       $this->db->join('voucher_type','voucher_type.fk_voucher_type_effect_id=voucher_type_effect.voucher_type_effect_id');
       return $this->db->get_where('voucher_type_effect',array('voucher_type_id'=>$voucher_type_id))->row();
+  }
+
+  function get_transaction_voucher($id){
+
+    $this->db->join('voucher_detail','voucher_detail.fk_voucher_id=voucher.voucher_id');
+    return $this->db->get_where('voucher',array('voucher_id'=>$id))->result_array();
+  }
+
+  function get_voucher_type($voucher_type_id){
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $voucher_type = $this->db->get_where('voucher_type',
+    array('voucher_type_id'=>$voucher_type_id))->row();
+
+    return $voucher_type;
+
+  }
+
+  function get_office_bank($office_bank_id){
+    $this->db->join('bank','bank.bank_id=office_bank.fk_bank_id');
+    $result = $this->db->get_where('office_bank',array('office_bank_id'=>$office_bank_id));
+
+    if($result->num_rows()>0){
+      return $result->row();
+    }else{
+      return [];
+    }
+  }
+
+  function get_project_allocation($allocation_id){
+    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+    $result = $this->db->get_where('project_allocation',array('project_allocation_id'=>$allocation_id));
+    
+    if($result->num_rows()>0){
+      return $result->row();
+    }else{
+      return [];
+    }
   }
   
 }
