@@ -16,6 +16,7 @@ class Voucher extends MY_Controller
     parent::__construct();
 
     $this->load->model('voucher_type_model');
+    $this->load->model('approval_model');
 
   }
 
@@ -98,16 +99,71 @@ class Voucher extends MY_Controller
 
   // New voucher form methods
 
+  function get_transaction_voucher($id){
+    
+    $raw_result = $this->voucher_model->get_transaction_voucher(hash_id($id,'decode'));
+
+    $office_bank = $this->voucher_model->get_office_bank($raw_result[0]['fk_office_bank_id']);
+    
+    $voucher_type = $this->voucher_model->get_voucher_type($raw_result[0]['fk_voucher_type_id']);
+  
+    $header = [];
+    $body = [];
+
+    $office = $this->db->get_where('office',array('office_id'=>$raw_result[0]['fk_office_id']))->row();
+
+    $header['office_name'] = $office->office_code.' - '.$office->office_name;
+    $header['voucher_date'] = $raw_result[0]['voucher_date'];
+    $header['voucher_number'] = $raw_result[0]['voucher_number'];
+    $header['voucher_type_name'] = $voucher_type->voucher_type_name;
+    $header['office_bank'] = sizeof($office_bank)>0?$office_bank->bank_name .'('.$office_bank->office_bank_account_number.')':"";
+    $header['voucher_cheque_number'] = $raw_result[0]['voucher_cheque_number'];
+    $header['voucher_vendor'] = $raw_result[0]['voucher_vendor'];
+    $header['voucher_vendor_address'] = $raw_result[0]['voucher_vendor_address'];
+    $header['voucher_description'] = $raw_result[0]['voucher_description'];
+
+    $count = 0;
+    foreach($raw_result as $row){
+      $body[$count]['quantity'] = $row['voucher_detail_quantity'];
+      $body[$count]['description'] = $row['voucher_detail_description'];
+      $body[$count]['unitcost'] = $row['voucher_detail_unit_cost'];
+      $body[$count]['totalcost'] = $row['voucher_detail_total_cost'];
+
+      if($row['fk_expense_account_id'] > 0){
+        $body[$count]['account_code'] = $this->db->get_where('expense_account',
+        array('expense_account_id'=>$row['fk_expense_account_id']))->row()->expense_account_code;
+      }elseif ($row['fk_income_account_id'] > 0) {
+        $body[$count]['account_code'] = $this->db->get_where('income_account',
+        array('income_account_id'=>$row['fk_income_account_id']))->row()->income_account_code;
+      }elseif ($row['fk_bank_contra_account_id'] > 0) {
+        $body[$count]['account_code'] = $this->db->get_where('bank_contra_account',
+        array('bank_contra_account_id'=>$row['fk_bank_contra_account_id']))->row()->bank_contra_account_code;
+      }elseif ($row['fk_cash_contra_account_id'] > 0) {
+        $body[$count]['account_code'] = $this->db->get_where('cash_contra_account',
+        array('cash_contra_account_id'=>$row['fk_cash_contra_account_id']))->row()->cash_contra_account_code;
+      }
+
+      $allocation = $this->voucher_model->get_project_allocation($row['fk_project_allocation_id']);
+     
+
+      $body[$count]['project_allocation_code'] = !empty($allocation)?$allocation->project_allocation_name.' ('.$allocation->project_name.') ':"";
+
+      $count++;
+    }
+
+    $item_status = $this->grants_model->initial_item_status('voucher');
+    $logged_role_id = $this->session->role_id;
+    $table = 'voucher';
+    $primary_key = hash_id($this->id,'decode');
+
+    return ["header"=>$header,"body"=>$body,'action_labels'=>$this->approval_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)];
+
+  }
+
   function result($id = ''){
     if($this->action == 'view'){
   
-    $transacting_month = '';
-    $last_voucher_date = '';
-    
-    $result = [
-      'transacting_month'=> $transacting_month,
-      'last_voucher_date'=> $last_voucher_date,
-     ];
+    $result = $this->get_transaction_voucher($this->id);
 
      return $result;
     }else{
@@ -251,8 +307,6 @@ class Voucher extends MY_Controller
     array('voucher_type_id'=>$this->input->post('fk_voucher_type_id')))->row()->voucher_type_effect_code;
 
 
-    $this->db->trans_start();
-
     $header['voucher_track_number'] = $this->grants_model->generate_item_track_number_and_name('voucher')['voucher_track_number'];
     $header['voucher_name'] = $this->grants_model->generate_item_track_number_and_name('voucher')['voucher_name'];
    
@@ -265,15 +319,10 @@ class Voucher extends MY_Controller
     $header['voucher_vendor'] = $this->input->post('voucher_vendor');
     $header['voucher_vendor_address'] = $this->input->post('voucher_vendor_address');
     $header['voucher_description'] = $this->input->post('voucher_description');
-
-    $header['voucher_created_by'] = $this->session->user_id;
-    $header['voucher_last_modified_by'] = $this->session->user_id;
-    $header['voucher_created_date'] = date('Y-m-d');
-
     $header['fk_approval_id'] = $this->grants_model->insert_approval_record('voucher');
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
 
-    
+    $this->db->trans_start();
     $this->db->insert('voucher',$header);
 
     $header_id = $this->db->insert_id();
@@ -311,16 +360,23 @@ class Voucher extends MY_Controller
         $detail['fk_cash_contra_account_id'] = $this->input->post('voucher_detail_account')[$i];
       }
   
-      $detail['voucher_detail_created_by'] = $this->session->user_id;
-      $detail['voucher_detail_last_modified_by'] = $this->session->user_id;
-      $detail['voucher_detail_created_date'] = date('Y-m-d');
-
+      
       $detail['fk_project_allocation_id'] = $this->input->post('fk_project_allocation_id')[$i];
       $detail['fk_request_detail_id'] = $this->input->post('fk_request_detail_id')[$i];
       $detail['fk_approval_id'] = 0;//$this->grants_model->insert_approval_record('voucher_detail');
       $detail['fk_status_id'] = $this->grants_model->initial_item_status('voucher_detail');      
       
-      //$this->db->insert('voucher_detail',$detail);
+      // // if request_id > 0 give the item the final status
+      // if($this->input->post('fk_request_detail_id')[$i] > 0){
+
+      //   $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+        
+
+      //   $this->db->where(array('request_detail_id'=>$this->input->post('fk_request_detail_id')[$i]));
+      //   $this->db->update('request_detail',array('fk_status_id'=>$this->voucher_model->get_approveable_item_last_status($approve_item_id)));
+      
+      //   // Check if all request detail items in the request has the last status and update the request to last status too
+      // }
       
       $row[] = $detail;
     }
