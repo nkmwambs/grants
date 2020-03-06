@@ -11,7 +11,7 @@
 <?php 
    //print_r($this->voucher_model->get_request_to_voucher_conversion_approval_status(9));
 ?>
-
+  <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
         <div class="panel panel-default" data-collapsed="0">
        	    <div class="panel-heading">
@@ -30,7 +30,7 @@
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_voucher_detail_row');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
-                            <div class='btn btn-default btn-retrieve-request'><?=get_phrase('show_or_hide_requests');?> &nbsp; <span id='requests_badge' class='badge badge-secondary'>10</span></div>
+                            <div class='btn btn-default btn-retrieve-request'><?=get_phrase('show_or_hide_requests');?> &nbsp; <span class='badge badge-secondary requests_badge'>0</span></div>
                         </div>
                     </div>
 
@@ -124,7 +124,7 @@
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_voucher_detail_row');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
-                            <div class='btn btn-default btn-retrieve-request'><?=get_phrase('show_or_hide_requests');?> &nbsp; <span id='requests_badge' class='badge badge-secondary'>0</span></div>
+                            <div class='btn btn-default btn-retrieve-request'><?=get_phrase('show_or_hide_requests');?> &nbsp; <span class='badge badge-secondary requests_badge'>0</span></div>
                         </div>
                     </div>
 
@@ -161,7 +161,7 @@
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_voucher_detail_row');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
-                            <div class='btn btn-default btn-retrieve-request'><?=get_phrase('show_or_hide_requests');?> &nbsp; <span id='requests_badge' class='badge badge-secondary'>10</span></div>
+                            <div class='btn btn-default btn-retrieve-request'><?=get_phrase('show_or_hide_requests');?> &nbsp; <span class='badge badge-secondary requests_badge'>0</span></div>
                         </div>
                     </div>
 
@@ -201,7 +201,7 @@ $(".btn-retrieve-request").on('click',function(){
 
             },
             success:function(response){
-                //alert();
+                
                 $("#main_row").append("<div id='request_screen' class='col-xs-6'>"+response+"</div>");
                 $("#request_screen").css('overflow-x','auto');
             },
@@ -426,7 +426,10 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
             $(".account").html(account_select_option);
 
-            $("#requests_badge").html(response_approved_requests);
+
+            $.each($(".requests_badge"),function(i,el){
+                $(el).html(response_approved_requests);
+            });
 
             if(response_is_expense){
                 $('.btn-retrieve-request').show();

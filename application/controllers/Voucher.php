@@ -219,7 +219,7 @@ class Voucher extends MY_Controller
     }elseif($voucher_type_effect == 'expense'){
       $response['is_expense'] = true;
       $response['project_allocation'] = $project_allocation;
-      $response['approved_requests'] = 4;//count($this->voucher_model->get_approved_unvouched_request_details($office_id);
+      $response['approved_requests'] = count($this->voucher_model->get_approved_unvouched_request_details($office_id));
       
       $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name','expense_account_code as account_code'));
       $response['accounts'] = $this->db->get_where('expense_account',array('expense_account_is_active'=>1))->result_object();
