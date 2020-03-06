@@ -10,6 +10,10 @@
 
 <?php 
    //print_r($this->voucher_model->get_request_to_voucher_conversion_approval_status(9));
+   //$approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+        
+  // print_r($this->voucher_model->get_approveable_item_last_status($approve_item_id));
+      
 ?>
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
@@ -472,6 +476,10 @@ function resetVoucher(){
     $(".number-fields").val(0);
     $("#bank").val("");
     $("#bank").html('<option value="">Select a bank</option>');
+
+    $("#voucher_vendor").val("");
+    $("#voucher_vendor_address").val("");
+    $("#voucher_description").val("");
     
 }
 
@@ -709,5 +717,6 @@ $(".btn-save").on('click',function(){
 
 $(".btn-save-new").on('click',function(){
     saveVoucher();
+    resetVoucher();
 });
 </script>

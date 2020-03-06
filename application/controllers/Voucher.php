@@ -367,16 +367,29 @@ class Voucher extends MY_Controller
       $detail['fk_status_id'] = $this->grants_model->initial_item_status('voucher_detail');      
       
       // // if request_id > 0 give the item the final status
-      // if($this->input->post('fk_request_detail_id')[$i] > 0){
+      if($this->input->post('fk_request_detail_id')[$i] > 0){
 
-      //   $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+        $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
         
 
-      //   $this->db->where(array('request_detail_id'=>$this->input->post('fk_request_detail_id')[$i]));
-      //   $this->db->update('request_detail',array('fk_status_id'=>$this->voucher_model->get_approveable_item_last_status($approve_item_id)));
-      
-      //   // Check if all request detail items in the request has the last status and update the request to last status too
-      // }
+        $this->db->where(array('request_detail_id'=>$this->input->post('fk_request_detail_id')[$i]));
+        //$this->db->update('request_detail',array('fk_status_id'=>$this->voucher_model->get_approveable_item_last_status($approve_item_id)));
+        $this->db->update('request_detail',array('fk_status_id'=>7));
+       
+       
+        // Check if all request detail items in the request has the last status and update the request to last status too
+        
+        
+        $request_id = $this->db->get_where('request_detail',array('request_detail_id'=>$this->input->post('fk_request_detail_id')[$i]))->row()->fk_request_id;
+
+        $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_status_id<>'=>7))->num_rows();
+
+        if($unpaid_request_details == 0){
+          $this->db->where(array('request_id'=>$request_id));
+          $this->db->update('request',array('fk_status_id'=>20));
+        }
+
+      }
       
       $row[] = $detail;
     }

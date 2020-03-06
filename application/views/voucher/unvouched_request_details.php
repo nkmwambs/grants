@@ -75,7 +75,9 @@ $(".map_request_to_voucher_row").click(function(ev){
         beforeSend:function(){
         },
         success:function(response){
-            //alert(response);
+            
+            btn.closest('tr').remove();
+
             var obj = JSON.parse(response);
             
             insertRowFromRequest(obj);
