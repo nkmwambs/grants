@@ -248,7 +248,7 @@ function generate_item_track_number_and_name($approveable_item){
 
 
     // End the transaction and determine if successful
-    $this->db->trans_complete();
+    //$this->db->trans_complete();
 
     if ($this->db->trans_status() === FALSE)
     {

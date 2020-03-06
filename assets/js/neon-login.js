@@ -73,7 +73,8 @@ var neonLogin = neonLogin || {};
 						{
 							// Error message
 							//var err = eval("(" + xhr.responseText + ")");
-							alert(xhr.responseText);
+							//alert(xhr.responseText);
+							alert('An error has occurred!');
 						},
 						success: function(response)
 						{

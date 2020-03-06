@@ -81,7 +81,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     //If the request is set to be department strcit, then only list requests from the user departments
     $is_role_department_strict = $this->session->role_is_department_strict;
     
-    if($is_role_department_strict == $is_role_department_strict  && count($this->session->departments) > 0){
+    if($is_role_department_strict == 1  && count($this->session->departments) > 0){
       $this->db->where_in($this->controller.'.fk_department_id', $this->session->departments);
     }    
     

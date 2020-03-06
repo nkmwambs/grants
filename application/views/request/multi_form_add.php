@@ -392,7 +392,7 @@ function allocatioCodeCell(value = 0){
 
 function saveRequest(){
     var url = "<?=base_url();?>request/insert_new_request";
-    var data = $("#frm_voucher").serializeArray();
+    var data = $("#frm_request").serializeArray();
 
     $.ajax({
         url:url,
