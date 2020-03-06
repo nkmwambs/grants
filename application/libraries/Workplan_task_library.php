@@ -1,4 +1,7 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -8,21 +11,16 @@
  *	NKarisa@ke.ci.org
  */
 
-
-class Workplan extends MY_Controller
+class Workplan_task_library extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-
-    $this->load->library('Workplan_library');
-
+    $this->CI =& get_instance();
   }
 
   function index(){}
 
-  static function get_menu_list(){
-
-  }
-
-}
+} 

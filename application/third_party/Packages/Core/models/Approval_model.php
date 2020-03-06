@@ -279,7 +279,9 @@ function next_status($item_status){
 
   $next_status_id = 0;
 
-  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($item_status);
+  $approve_item_name = $this->get_approve_item_name_by_status($item_status);
+
+  $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($approve_item_name);
 
   $approveable_item_id = $this->get_approveable_item_id_by_status($item_status);
 

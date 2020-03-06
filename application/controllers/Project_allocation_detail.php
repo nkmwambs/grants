@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -9,20 +11,16 @@
  */
 
 
-class Workplan extends MY_Controller
+class Project_allocation_detail extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-
-    $this->load->library('Workplan_library');
-
+    $this->load->library('project_allocation_detail_library');
   }
 
   function index(){}
 
-  static function get_menu_list(){
-
-  }
+  // static function get_menu_list(){}
 
 }

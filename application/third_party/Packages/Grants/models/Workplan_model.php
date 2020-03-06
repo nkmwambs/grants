@@ -23,7 +23,9 @@
 
   public function lookup_tables(){}
 
-  public function detail_tables(){}
+  public function detail_tables(){
+    return ['workplan_task'];
+  }
 
   public function master_table_visible_columns(){}
 

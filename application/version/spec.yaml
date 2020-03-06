@@ -122,3 +122,6 @@ tables:
     - status
     - account_system 
   
+  project_allocation_detail:
+
+  workplan_task:  

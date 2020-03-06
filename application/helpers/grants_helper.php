@@ -252,6 +252,7 @@ if ( ! function_exists('approval_action_buttons')){
 
 		$approver_status = $CI->approval_model->display_approver_status_action($logged_role_id,$table,$primary_key);
 		$current_user_role = $CI->session->role_id;
+		$buttons = "";
 		
 		if(	
 			$current_user_role == $approver_status['current_actor_role_id'] &&

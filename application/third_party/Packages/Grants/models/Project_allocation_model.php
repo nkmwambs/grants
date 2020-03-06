@@ -23,7 +23,9 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     return array('office','project');
   }
 
-  public function detail_tables(){}
+  public function detail_tables(){
+    return ['project_allocation_detail'];
+  }
     public function master_table_visible_columns(){}
 
     public function master_table_hidden_columns(){}
