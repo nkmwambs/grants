@@ -49,8 +49,8 @@
                             </select>
                         </div>
 
-                        <label class='control-label col-xs-1'><?=get_phrase('date');?></label>
-                        <div class='col-xs-3'>
+                        <label class='control-label col-xs-1 date-field'><?=get_phrase('date');?></label>
+                        <div class='col-xs-3 date-field'>
                             <input id="transaction_date" type='text' name='voucher_date' readonly data-format='yyyy-mm-dd' class='form-control datepicker' />
                         </div>
 
@@ -179,6 +179,7 @@
 
 $(document).ready(function(){
     //get_approved_unvouched_request_details
+    $('.date-field').hide();
     $('.btn-insert').hide();
     $('.btn-save').hide();
     $('.btn-save-new').hide();
@@ -337,12 +338,14 @@ function computeCurrentTransactingDate(office_id){
 
         },
         success:function(response){
+            $('.date-field').show();
+
             $("#transaction_date").val(response);
 
             $('.datepicker').datepicker({
 		        format: 'yyyy-mm-dd',
-		        startDate: response,
-		        endDate:''
+		        startDate: '2019-11-01',
+		        endDate:'2019-11-30'
 	        });
         },
         error:function(){

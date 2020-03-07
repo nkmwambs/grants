@@ -7,7 +7,7 @@
 
 <?php 
 
-    print_r($this->grants->action_labels($this->controller,hash_id($this->id,'decode')));
+    //print_r($this->approval_model->get_max_approval_status_id($this->controller));
 
     extract($result);
     $logged_role_id = $this->session->role_id;
@@ -116,13 +116,11 @@
                                     <td colspan='3'><?=number_format(array_sum(array_column($body,'totalcost')),2);?></td>
                                 </tr>
                                 <tr>
-                                    <td  colspan='3'><?=get_phrase('raised_by');?>:<td> <td colspan='3'><?=get_phrase('signature');?>:</td>
+                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info['voucher_raiser_name'];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
                                 </tr>
-                                <tr>
-                                    <td  colspan='3'><?=get_phrase('verified_by');?>:<td> <td colspan='3'><?=get_phrase('signature');?>:</td>
-                                </tr>
+                                
                                 <tr>        
-                                    <td  colspan='3'><?=get_phrase('approved_by');?>:<td> <td colspan='3'><?=get_phrase('signature');?>:</td>
+                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('approved_by');?>:</span><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
                                 </tr>
                         </tfoot>
                    </table>

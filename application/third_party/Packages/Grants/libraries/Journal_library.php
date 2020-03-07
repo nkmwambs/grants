@@ -90,4 +90,9 @@ class Journal_library extends Grants
     return $spread_cells;
   }
 
+  // function get_voucher_max_approval_status_id(){
+  //   $this->CI->load->model('approval_model');
+  //   return $this->CI->approval_model->get_max_approval_status_id('voucher');
+  // }
+
 }

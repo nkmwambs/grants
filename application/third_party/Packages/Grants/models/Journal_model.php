@@ -19,7 +19,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   function __construct(){
     parent::__construct();
     $this->load->database();
-
+    $this->load->model('approval_model');
   }
 
   function index(){
@@ -185,10 +185,12 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_bank_contra_account_id','fk_cash_contra_account_id'));
     
     //$this->db->select_sum('voucher_detail_total_cost');
-
+    
     $this->db->where('voucher_date >=', $month_start_date);
     $this->db->where('voucher_date <=', $month_end_date);
     $this->db->where('fk_office_id',$office_id);
+    //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
+    $this->db->where(array('voucher.fk_status_id'=>11));
 
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');

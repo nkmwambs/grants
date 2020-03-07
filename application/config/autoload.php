@@ -132,7 +132,7 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('autoloaded/Grants_model','autoloaded/user_model','autoloaded/menu_model');
+$autoload['model'] = array('approval_model','autoloaded/Grants_model','autoloaded/user_model','autoloaded/menu_model');
 
 // spl_autoload_register(function($classname){
 //     if( strpos($classname,'Interface') !== false ){

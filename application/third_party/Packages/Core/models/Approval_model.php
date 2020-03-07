@@ -150,7 +150,7 @@ function next_approval_actor($item_status){
 
     $next_approval_actor_role_id = $status_record->fk_role_id;
 
-    }elseif(count($next_status_record) > 0){
+    }elseif(is_array($next_status_record) && count($next_status_record) > 0){
       
       $next_approval_actor_role_id = $next_status_record['fk_role_id'];
     
@@ -296,9 +296,13 @@ function next_status($item_status){
     
     $next_approval_seq = $status_approval_sequence + 1;
     
-    $next_status_id = $this->db->get_where('status',
+    $next_status_id_obj = $this->db->get_where('status',
     array('status_approval_sequence'=>$next_approval_seq,
-    'fk_approve_item_id'=>$approveable_item_id))->row()->status_id;
+    'fk_approve_item_id'=>$approveable_item_id));
+
+    if($next_status_id_obj->num_rows() > 0){
+      $next_status_id = $next_status_id_obj->row()->status_id;
+    }
   }
 
   // // Get the backflow seq
@@ -420,14 +424,15 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
 function get_max_approval_status_id(String $approveable_item):Int{
 
   //Get the maximum status_approval_sequence of an approveable item
-  $this->db->join('approve_item','approve_item_id=status.fk_approve_item_id');
+  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
   $max_status_approval_sequence = $this->db
   ->select("max(status_approval_sequence) as status_approval_sequence")
   ->get_where('status',array('approve_item_name'=>$approveable_item))
   ->row()->status_approval_sequence;
 
   // Get the status_id
-  $this->db->join('approve_item','approve_item_id=status.fk_approve_item_id');
+  $this->db->select('status_id');
+  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
   $max_status_id = $this->db->get_where('status',
   array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
 

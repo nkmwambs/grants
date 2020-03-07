@@ -116,11 +116,12 @@ class Voucher extends MY_Controller
     $header['voucher_date'] = $raw_result[0]['voucher_date'];
     $header['voucher_number'] = $raw_result[0]['voucher_number'];
     $header['voucher_type_name'] = $voucher_type->voucher_type_name;
-    $header['office_bank'] = sizeof($office_bank)>0?$office_bank->bank_name .'('.$office_bank->office_bank_account_number.')':"";
+    $header['office_bank'] = sizeof((array)$office_bank)>0?$office_bank->bank_name .'('.$office_bank->office_bank_account_number.')':"";
     $header['voucher_cheque_number'] = $raw_result[0]['voucher_cheque_number'];
     $header['voucher_vendor'] = $raw_result[0]['voucher_vendor'];
     $header['voucher_vendor_address'] = $raw_result[0]['voucher_vendor_address'];
     $header['voucher_description'] = $raw_result[0]['voucher_description'];
+    $header['voucher_created_date'] = $raw_result[0]['voucher_created_date'];
 
     $count = 0;
     foreach($raw_result as $row){
@@ -156,9 +157,22 @@ class Voucher extends MY_Controller
     $table = 'voucher';
     $primary_key = hash_id($this->id,'decode');
 
-    return ["header"=>$header,"body"=>$body,'action_labels'=>['show_label_as_button'=>$this->approval_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)]];
+    $voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_created_by'])['full_name'];
+    //$voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_last_modified_by'])['full_name'];
+
+    return ["header"=>$header,"body"=>$body,'action_labels'=>['show_label_as_button'=>$this->approval_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name]];
 
   }
+
+  function record_raiser_info($user_id){
+    
+    $user_obj = $this->db->get_where('user',array('user_id'=>$user_id));
+
+    $user_info['full_name'] = $user_obj->row()->user_firstname.' '.$user_obj->row()->user_lastname;
+
+    return $user_info;
+  }
+  
 
   function result($id = ''){
     if($this->action == 'view'){

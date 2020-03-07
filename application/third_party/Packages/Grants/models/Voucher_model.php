@@ -53,14 +53,14 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     'voucher_cheque_number','voucher_vendor','voucher_description');
   }
 
-  public function listing(){}
+  public function list(){}
 
   public function view(){}
 
   public function list_table_visible_columns(){
 
     return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_created_date','office_name','voucher_type_name');
+    'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
   
   }
 
@@ -540,6 +540,15 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     }else{
       return [];
     }
+  }
+
+  function list_table_where(){
+
+    $max_approval_status_id = $this->approval_model->get_max_approval_status_id('voucher');
+    // Only list vouchers without not yet in the cash journal 
+
+    $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+    //$this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
   }
   
 }
