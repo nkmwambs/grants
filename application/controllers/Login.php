@@ -38,7 +38,7 @@ public $auth;
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-                // COnsider working on this 
+                // COnsider working on this !!!
             //  if(parse_url(base_url())['host'] == 'localhost'){
             //     $this->grants->create_missing_system_files(); 
             //   }
