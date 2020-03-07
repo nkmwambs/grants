@@ -188,17 +188,11 @@ $(document).ready(function(){
     $("#voucher_type").prop('disabled','disabled');
 });
 
-$(".btn-retrieve-request").on('click',function(){
-
-    if($(".split_screen").hasClass('col-xs-12')){
-        $(".split_screen").removeClass('col-xs-12').addClass('col-xs-6');
-
-        //alert($(".split_screen").attr('class'));
-
-        var split_screen = $(".split_screen");
-
+function load_approved_requests(){
         var office = $("#office").val();
         var url = "<?=base_url();?>voucher/get_approve_request_details/" + office;
+
+        $("#request_screen").html("");
 
         $.ajax({
             url:url,
@@ -207,19 +201,34 @@ $(".btn-retrieve-request").on('click',function(){
             },
             success:function(response){
                 
-                $("#main_row").append("<div id='request_screen' class='col-xs-6'>"+response+"</div>");
+                if($("#main_row").find('#request_screen').length == 0){
+                    $("#main_row").append("<div id='request_screen' class='col-xs-6'>"+response+"</div>");
+                }else{
+                    $("#request_screen").html(response);
+                }
+                
                 $("#request_screen").css('overflow-x','auto');
             },
             error:function(){
                 alert("Error occurred!");
             }
         });
+}
+
+$(".btn-retrieve-request").on('click',function(){
+    
+    if($(".split_screen").hasClass('col-xs-12')){
+        $(".split_screen").removeClass('col-xs-12').addClass('col-xs-6');
+
+        var split_screen = $(".split_screen");
+
+        load_approved_requests();    
+       
     }else{
         $("#request_screen").remove();
         $(".split_screen").removeClass('col-xs-6').addClass('col-xs-12');
 
     }
-    
 });
 
 function showHiddenButtons(response_is_expense){
@@ -367,6 +376,10 @@ $('#transaction_date').on('click',function(){
 $("#office").on('change',function(){
     
     var rows = $("#tbl_voucher_body tbody tr");
+
+    if($(".split_screen").hasClass('col-xs-6')){
+        load_approved_requests();
+    }
 
     resetVoucher();
 

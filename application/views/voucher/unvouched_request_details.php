@@ -16,6 +16,11 @@
 
         <table class="table table-striped" id='approved_request_table'>
             <thead>
+                <tr>
+                    <th colspan='11'>
+                        <div class='btn btn-default' id='insert_all_request'><?=get_phrase('insert_all_to_voucher');?></div>
+                    </th>
+                </tr>
                 <tr>    
                     <?php 
                         foreach($fields as $field){
@@ -67,16 +72,24 @@
 $(".map_request_to_voucher_row").click(function(ev){
 
     let btn = $(this);
+
+    get_request_details_for_voucher(btn.attr('id'));
+
+    btn.closest('tr').remove();
+
+});
+
+function get_request_details_for_voucher(req_id){
+
     let data = {'voucher_number':$("#voucher_number").val()}
+    let url = '<?=base_url();?>voucher/get_request_detail/'+ req_id;
 
     $.ajax({
-        url:'<?=base_url();?>voucher/get_request_detail/'+btn.attr('id'),
+        url:url,
         data:data,
         beforeSend:function(){
         },
         success:function(response){
-            
-            btn.closest('tr').remove();
 
             var obj = JSON.parse(response);
             
@@ -86,8 +99,7 @@ $(".map_request_to_voucher_row").click(function(ev){
             alert('Error Occurred');
         }
     });
-
-});
+}
 
 function insertRowFromRequest(obj){
     var tbl_body = $("#tbl_voucher_body tbody");
@@ -138,4 +150,15 @@ function run_detail_row(obj){
 
     insert_row(url,data);
 }
+
+$("#insert_all_request").on('click',function(){
+    var request_rows = $(".map_request_to_voucher_row");
+    var request_count = request_rows.length;
+
+    $.each(request_rows,function(i,el){
+        get_request_details_for_voucher($(el).attr('id'));
+    });
+
+    $("#approved_request_table tbody tr").remove();
+});
 </script>
