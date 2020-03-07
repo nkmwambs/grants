@@ -90,10 +90,10 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
 **/
 
 function range_of_status_approval_sequence($approve_item_name){
-  $this->db->select('MAX("status_approval_sequence") as status_approval_sequence');
+  $this->db->select('MAX(status_approval_sequence) as status_approval_sequence');
   $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
-  $this->db->get_where('status',array('approve_item_name'=>$approve_item_name))->row()->status_approval_sequence;
-  return 5;
+  $max_range = $this->db->get_where('status',array('approve_item_name'=>$approve_item_name))->row()->status_approval_sequence;
+  return $max_range;
 }
 
 function get_approveable_item_id_by_status($item_status){
@@ -354,9 +354,9 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
   $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
 
-  if($record_center_id == 0){
+  // if($record_center_id == 0){
 
-  }
+  // }
 
   $show_label_as_button = false; 
   
@@ -369,6 +369,10 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
   return $show_label_as_button;
 
 }
+
+// function get_count_of_approval_workflow_levels($approveable_item_id){
+//   $number_of_levels = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id))->num_rows();
+// }
 
 function display_approver_status_action($logged_role_id,$table,$primary_key){
   /**

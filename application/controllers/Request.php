@@ -15,6 +15,8 @@ class Request extends MY_Controller
   function __construct(){
     parent::__construct();
 
+    $this->load->model('request_model');
+    $this->load->library('request_library');
   }
 
   function index(){}

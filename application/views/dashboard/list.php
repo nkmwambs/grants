@@ -1,7 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  //print_r($this->approval_model->display_approver_status_action($this->session->role_id,'request',2));
+  //print_r($this->approval_model->range_of_status_approval_sequence('request'));
   //print_r($this->session->departments);
+  
+  //print_r($this->voucher_model->get_approveable_item_last_status(1));
 ?>
 
   <div class="row">

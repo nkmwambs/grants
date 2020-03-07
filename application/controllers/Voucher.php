@@ -17,7 +17,8 @@ class Voucher extends MY_Controller
 
     $this->load->model('voucher_type_model');
     $this->load->model('approval_model');
-
+    $this->load->model('voucher_model');
+    $this->load->library('voucher_library');
   }
 
   function get_voucher_type_effect($voucher_type_id){
@@ -448,21 +449,25 @@ class Voucher extends MY_Controller
   }
 
   function update_request_detail_status_on_vouching($request_detail_id){
-        //$approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+        $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+        
+        $item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
 
         $this->db->where(array('request_detail_id'=>$request_detail_id));
-        //$this->db->update('request_detail',array('fk_status_id'=>$this->voucher_model->get_approveable_item_last_status($approve_item_id)));
-        $this->db->update('request_detail',array('fk_status_id'=>7));
+        $this->db->update('request_detail',array('fk_status_id'=>$item_last_status));
   }
 
   function update_request_on_paying_all_details($request_detail_id){
     $request_id = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row()->fk_request_id;
-
     $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_status_id<>'=>7))->num_rows();
+    
+    $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request'))->row()->approve_item_id;
+    $item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
+
 
     if($unpaid_request_details == 0){
       $this->db->where(array('request_id'=>$request_id));
-      $this->db->update('request',array('fk_status_id'=>20));
+      $this->db->update('request',array('fk_status_id'=>$item_last_status));
     }
   }
   
