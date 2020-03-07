@@ -327,6 +327,7 @@ class Voucher extends MY_Controller
     $this->db->trans_start();
     
     // Check if this is the first voucher in the month, if so create a new journal record for the month
+    // This must be run before a voucher is created
     if(!$this->voucher_model->office_has_vouchers_for_the_transacting_month($this->input->post('fk_office_id'),$this->input->post('voucher_date'))){
           
       $new_journal = [];
@@ -423,7 +424,7 @@ class Voucher extends MY_Controller
        
         // Check if all request detail items in the request has the last status and update the request to last status too
         
-        $this->db->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
+        $this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
        
 
       }
