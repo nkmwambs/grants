@@ -46,7 +46,7 @@
 
                         <label class='control-label col-xs-2'><?=get_phrase('request_date');?></label>
                         <div class='col-xs-3'>
-                            <input id="request_date" type='text' name='request_date' value="<?=date('Y-m-d');?>" readonly data-format='yyyy-mm-dd' class='form-control datepicker' />
+                            <input id="request_date" type='text' name='request_date' value="<?=date('Y-m-d');?>" data-end-date='<?=date('Y-m-d');?>' readonly data-format='yyyy-mm-dd' class='form-control datepicker' />
                         </div>
 
                     </div>

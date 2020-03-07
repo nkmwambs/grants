@@ -51,7 +51,7 @@
 
                         <label class='control-label col-xs-1 date-field'><?=get_phrase('date');?></label>
                         <div class='col-xs-3 date-field'>
-                            <input id="transaction_date" type='text' name='voucher_date' readonly data-format='yyyy-mm-dd' class='form-control datepicker' />
+                            <input id="transaction_date" type='text' name='voucher_date' readonly class='form-control' />
                         </div>
 
                         <label class='control-label col-xs-1'><?=get_phrase('voucher_number');?></label>
@@ -339,14 +339,18 @@ function computeCurrentTransactingDate(office_id){
         },
         success:function(response){
             $('.date-field').show();
+        
+            let obj = JSON.parse(response);
 
-            $("#transaction_date").val(response);
+            $("#transaction_date").val(obj.next_vouching_date);
 
-            $('.datepicker').datepicker({
+            $('#transaction_date').datepicker({
 		        format: 'yyyy-mm-dd',
-		        startDate: '2019-11-01',
-		        endDate:'2019-11-30'
+		        startDate: obj.next_vouching_date,
+		        endDate:obj.last_vouching_month_date
 	        });
+
+
         },
         error:function(){
             alert('Error occurred');
@@ -354,6 +358,10 @@ function computeCurrentTransactingDate(office_id){
     });
 }
 
+$('#transaction_date').on('click',function(){
+        
+        
+});
 
 
 $("#office").on('change',function(){

@@ -7,7 +7,7 @@
 
 <?php 
 
-    //print_r($this->approval_model->get_max_approval_status_id($this->controller));
+    //print_r($this->voucher_model->get_office_transacting_month(9));
 
     extract($result);
     $logged_role_id = $this->session->role_id;

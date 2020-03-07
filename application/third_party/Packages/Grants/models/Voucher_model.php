@@ -92,9 +92,15 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   function get_voucher_date(Int $office_id):String{
     //return date('Y-m-t');
     $voucher_date = $this->db->get_where('office',array('office_id'=>$office_id))->row()->office_start_date;
-    
+
+    $office_transaction_date = $this->get_office_transacting_month($office_id);
+
     if(count((array)$this->get_office_last_voucher($office_id)) > 0 ){
       $voucher_date = $this->get_office_last_voucher($office_id)->voucher_date;
+    }
+
+    if(strtotime($office_transaction_date) > $voucher_date){
+      $voucher_date = $office_transaction_date;
     }
 
     return $voucher_date;

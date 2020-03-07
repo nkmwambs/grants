@@ -300,7 +300,13 @@ class Voucher extends MY_Controller
   }
    
   function get_office_voucher_date($office_id){
-    echo $this->voucher_model->get_voucher_date($office_id);
+
+    $next_vouching_date = $this->voucher_model->get_voucher_date($office_id);
+    $last_vouching_month_date = date('Y-m-t',strtotime($this->voucher_model->get_voucher_date($office_id)));
+    
+    $voucher_date_field_dates = ['next_vouching_date'=>$next_vouching_date,'last_vouching_month_date'=>$last_vouching_month_date];
+  
+    echo json_encode($voucher_date_field_dates);
   }
 
   function get_approve_request_details($office_id){
