@@ -69,15 +69,28 @@
 </div>
 
 <script>
+
 $(".map_request_to_voucher_row").click(function(ev){
 
     let btn = $(this);
 
+    // Load request details from the server
     get_request_details_for_voucher(btn.attr('id'));
 
+    // Remove the row
     btn.closest('tr').remove();
 
 });
+
+function update_request_details_count_on_badge(){
+    var badges = $(".requests_badge");
+    var request_rows = $(".map_request_to_voucher_row");
+
+    var current_count = request_rows.length;
+
+    badges.html(current_count);
+
+}
 
 function get_request_details_for_voucher(req_id){
 
@@ -94,6 +107,8 @@ function get_request_details_for_voucher(req_id){
             var obj = JSON.parse(response);
             
             insertRowFromRequest(obj);
+
+            update_request_details_count_on_badge();
         },
         error:function(){
             alert('Error Occurred');

@@ -147,7 +147,7 @@
                                         <th><?=get_phrase('request_number');?></th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbl_voucher_body">
+                                <tbody id="tbl_tbody">
                                 </tbody>  
                                 <tfoot>
                                     <tr>
@@ -208,6 +208,8 @@ function load_approved_requests(){
                 }
                 
                 $("#request_screen").css('overflow-x','auto');
+
+                update_request_details_count_on_badge();
             },
             error:function(){
                 alert("Error occurred!");
@@ -222,7 +224,9 @@ $(".btn-retrieve-request").on('click',function(){
 
         var split_screen = $(".split_screen");
 
-        load_approved_requests();    
+        load_approved_requests();   
+
+        remove_request_derived_voucher_details(); 
        
     }else{
         $("#request_screen").remove();
@@ -230,6 +234,27 @@ $(".btn-retrieve-request").on('click',function(){
 
     }
 });
+
+function remove_request_derived_voucher_details(){
+    var tbl_voucher_body_rows = $("#tbl_voucher_body tbody tr");
+
+    $.each(tbl_voucher_body_rows,function(i,el){
+        
+        let row_request_id_input = $(el).find("td:last").find('input');
+
+        if(parseInt(row_request_id_input.val()) > 0){
+            row_request_id_input.closest("tr").remove();
+
+            //Adjust the voucher_total value
+            let row_voucher_total = $(el).find('.totalcost').val();
+            let voucher_total = $("#voucher_total").val();
+
+            $update_voucher_total = parseFloat(voucher_total) - parseFloat(row_voucher_total);
+
+            $("#voucher_total").val($update_voucher_total);
+        }
+    });
+}
 
 function showHiddenButtons(response_is_expense){
     
