@@ -261,7 +261,7 @@ function showHiddenButtons(response_is_expense){
     $('.btn-save-new').show();
     $('.btn-insert').show();
 
-    var only_allow_voucher_details_from_request = <?=$this->config->item('only_allow_voucher_details_from_request');?>;
+    var only_allow_voucher_details_from_request = '<?=$this->config->item('only_allow_voucher_details_from_request');?>';
 
     if(response_is_expense && only_allow_voucher_details_from_request == true){
         $('.btn-insert').hide();
@@ -560,6 +560,23 @@ function copyRow(){
     var original_row = tbl_body.find('tr').clone()[0];
 
     tbl_body.append(original_row);
+
+    $.each(tbl_body.find("tr:last").find('input'),function(i,el){
+        let resatable_fields = ['quantity','description','unitcost'];
+        var elem = $(el);
+
+        resatable_fields.forEach(function(fieldClass,index){
+            if(elem.hasClass(fieldClass)){
+                elem.removeAttr('readonly');
+            }
+            
+            if(elem.hasClass('number-fields')){
+                elem.val(0);
+            }else{
+                elem.val("");
+            }
+        });
+    });
 }
 
 function insertRow(){

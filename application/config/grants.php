@@ -13,5 +13,5 @@
 	$config['allow_skipping_of_cheque_leaves'] = false; 
 	$config['use_voucher_type_abbreviation'] = true; 
 	
-	$config['only_allow_voucher_details_from_request'] = true;
+	$config['only_allow_voucher_details_from_request'] = false;
  
