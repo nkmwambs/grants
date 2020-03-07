@@ -156,7 +156,7 @@ class Voucher extends MY_Controller
     $table = 'voucher';
     $primary_key = hash_id($this->id,'decode');
 
-    return ["header"=>$header,"body"=>$body,'action_labels'=>$this->approval_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)];
+    return ["header"=>$header,"body"=>$body,'action_labels'=>['show_label_as_button'=>$this->approval_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)]];
 
   }
 
@@ -319,6 +319,11 @@ class Voucher extends MY_Controller
     $header['voucher_vendor'] = $this->input->post('voucher_vendor');
     $header['voucher_vendor_address'] = $this->input->post('voucher_vendor_address');
     $header['voucher_description'] = $this->input->post('voucher_description');
+
+    $header['voucher_created_by'] = $this->session_user_id;
+    $header['voucher_created_date'] = date('Y-m-d');
+    $header['voucher_last_modified_by'] = $this->session_user_id;
+
     $header['fk_approval_id'] = $this->grants_model->insert_approval_record('voucher');
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
 
@@ -368,26 +373,13 @@ class Voucher extends MY_Controller
       
       // // if request_id > 0 give the item the final status
       if($this->input->post('fk_request_detail_id')[$i] > 0){
-
-        $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
         
-
-        $this->db->where(array('request_detail_id'=>$this->input->post('fk_request_detail_id')[$i]));
-        //$this->db->update('request_detail',array('fk_status_id'=>$this->voucher_model->get_approveable_item_last_status($approve_item_id)));
-        $this->db->update('request_detail',array('fk_status_id'=>7));
-       
+        $this->update_request_detail_status_on_vouching($this->input->post('fk_request_detail_id')[$i]);
        
         // Check if all request detail items in the request has the last status and update the request to last status too
         
-        
-        $request_id = $this->db->get_where('request_detail',array('request_detail_id'=>$this->input->post('fk_request_detail_id')[$i]))->row()->fk_request_id;
-
-        $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_status_id<>'=>7))->num_rows();
-
-        if($unpaid_request_details == 0){
-          $this->db->where(array('request_id'=>$request_id));
-          $this->db->update('request',array('fk_status_id'=>20));
-        }
+        $this->db->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
+       
 
       }
       
@@ -406,6 +398,25 @@ class Voucher extends MY_Controller
       echo "Voucher posted successfully";
     }
 
+  }
+
+  function update_request_detail_status_on_vouching($request_detail_id){
+        //$approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+
+        $this->db->where(array('request_detail_id'=>$request_detail_id));
+        //$this->db->update('request_detail',array('fk_status_id'=>$this->voucher_model->get_approveable_item_last_status($approve_item_id)));
+        $this->db->update('request_detail',array('fk_status_id'=>7));
+  }
+
+  function update_request_on_paying_all_details($request_detail_id){
+    $request_id = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row()->fk_request_id;
+
+    $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_status_id<>'=>7))->num_rows();
+
+    if($unpaid_request_details == 0){
+      $this->db->where(array('request_id'=>$request_id));
+      $this->db->update('request',array('fk_status_id'=>20));
+    }
   }
   
 }

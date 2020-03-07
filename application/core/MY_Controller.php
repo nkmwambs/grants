@@ -358,8 +358,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
           $data['fk_status_id'] = $master_action_labels['next_decline_status'];
         }
         
-        $this->db->where(array('request_id'=>hash_id($this->id,'decode')));
-        $this->db->update('request',$data);
+        $this->db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
+        $this->db->update(strtolower($this->controller),$data);
     
         //Update detail record
         $detail_record = $this->grants->dependant_table($this->controller);

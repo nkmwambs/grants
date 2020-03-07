@@ -6,9 +6,13 @@
 </style>
 
 <?php 
-//print_r($this->session->hierarchy_offices);
-//phpinfo();
-extract($result);
+
+    print_r($this->grants->action_labels($this->controller,hash_id($this->id,'decode')));
+
+    extract($result);
+    $logged_role_id = $this->session->role_id;
+    $table = 'voucher';
+    $primary_key = hash_id($this->id,'decode');
 ?>
 
 <div class="row">
@@ -17,31 +21,6 @@ extract($result);
   </div>
 </div>
 
-<div class='row'>
-    <div col-xs-12>
-        <?php
-              if(isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){ 
-                if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update'))
-                  {
-                    echo Widget_base::load('button',get_phrase('edit'),$this->controller.'/edit/'.$this->id);
-                  }
-
-                if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete'))
-                {
-                    echo Widget_base::load('button',get_phrase('delete'),$this->controller.'/delete/'.$this->id);
-                }
-                  
-                  echo Widget_base::load('button',$action_labels['button_label'],$this->controller.'/approve/'.$this->id);
-                            
-                  if($action_labels['show_decline_button']){
-                    echo Widget_base::load('button',get_phrase('decline'),$this->controller.'/decline/'.$this->id);
-              
-                  }
-
-                }
-               ?>  
-    </div>
-<div>
 
 <div class='row'>
     <div class="col-xs-12">
@@ -55,13 +34,18 @@ extract($result);
                 
             <div class="panel-body"  style="max-width:50; overflow: auto;padding-left: 30px;padding-right: 30px;">	
 
-                <div class="row" class='form_rows'>
-                    <div onclick="PrintElem('#voucher_print')" class="btn btn-default"><?=get_phrase('print');?></div>
+                <div class="row form_rows">
+                    <div class='col-xs-12'>
+                        <div onclick="PrintElem('#voucher_print')" class="btn btn-default"><?=get_phrase('print');?></div>
+                        <?php 
+                            echo approval_action_buttons($logged_role_id,$table,$primary_key);
+                        ?>
+                    </div>
                 </div>
                 
                 <hr/>
                 <div id="voucher_print">
-                <div class="row" class='form_rows'>
+                <div class="row form_rows">
                     <div class="col-xs-4"><span class='span_label'><?=get_phrase('office_name');?>:</span> <?=$header['office_name']?></div>
                                     
                     <div class="col-xs-4"><span class='span_label'><?=get_phrase('voucher_date');?>:</span> <?=$header['voucher_date']?></div>
@@ -71,7 +55,7 @@ extract($result);
                         
                 <hr/>
                         
-                <div class="row" class='form_rows'>
+                <div class="row form_rows">
 
                     <div class="col-xs-4"><span class='span_label'><?=get_phrase('voucher_type');?>:</span> <?=$header['voucher_type_name']?></div>
 
@@ -83,25 +67,25 @@ extract($result);
 
                 <hr/>
 
-                <div class="row" class='form_rows'>
+                <div class="row form_rows">
                     <div class="col-xs-12"><span class='span_label'><?=get_phrase('vendor');?>:</span> <?=$header['voucher_vendor']?></div>
                 </div>
 
                 <hr/>
 
-                <div class="row" class='form_rows'>
+                <div class="row form_rows">
                     <div class="col-xs-12"><span class='span_label'><?=get_phrase('vendor_address');?>:</span> <?=$header['voucher_vendor_address']?></div>
                 </div>
 
                 <hr/>
 
-                <div class="row" class='form_rows'>
+                <div class="row form_rows">
                     <div class="col-xs-12"><span class='span_label'><?=get_phrase('voucher_description');?>:</span> <?=$header['voucher_description']?></div>
                 </div>
 
                 <hr/>
 
-                <div class="row" class='form_rows'>
+                <div class="row form_rows">
                    <table class='table table-striped'>
                         <thead>
                             <tr>

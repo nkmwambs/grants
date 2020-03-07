@@ -221,10 +221,17 @@ $(".btn-retrieve-request").on('click',function(){
     
 });
 
-function showHiddenButtons(){
-    $('.btn-insert').show();
+function showHiddenButtons(response_is_expense){
+    
     $('.btn-save').show();
     $('.btn-save-new').show();
+    $('.btn-insert').show();
+
+    var only_allow_voucher_details_from_request = <?=$this->config->item('only_allow_voucher_details_from_request');?>;
+
+    if(response_is_expense && only_allow_voucher_details_from_request == true){
+        $('.btn-insert').hide();
+    }
 }
 
 $("#bank").on("change",function(){
@@ -424,7 +431,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 });
             }
 
-            showHiddenButtons();
+            showHiddenButtons(response_is_expense);
             
             $(".allocation").html(allocation_select_option);
 

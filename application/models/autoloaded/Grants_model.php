@@ -176,7 +176,7 @@ function generate_item_track_number_and_name($approveable_item){
     // Insert the header record. Use the $approval_id to insert into the fk_approval_id field
     $header_random = record_prefix($this->controller).'-'.rand(1000,90000);
     $header_columns[$this->controller.'_track_number'] = $header_random;
-    $header_columns[$this->controller.'_name'] = ucfirst($this->controller).' # '.$header_random;
+    $header_columns[$this->controller.'_name'] = $this->input->post($this->controller.'_name') != ""?$this->input->post($this->controller.'_name'):ucfirst($this->controller).' # '.$header_random;
 
     foreach ($header as $key => $value) {
       $header_columns[$key] = $value;
