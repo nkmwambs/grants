@@ -7,7 +7,7 @@
 
 <?php 
 
-    //print_r($this->voucher_model->get_office_transacting_month(9));
+    //print_r($this->voucher_model->office_has_vouchers_for_the_transacting_month(9,'2019-11-01'));
 
     extract($result);
     $logged_role_id = $this->session->role_id;

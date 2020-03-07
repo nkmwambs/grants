@@ -354,10 +354,14 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
   $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
 
+  if($record_center_id == 0){
+
+  }
+
   $show_label_as_button = false; 
   
   if( is_array($logged_user_centers) && $logged_role_id == $current_approval_actor && 
-      in_array($record_center_id,$logged_user_centers) &&
+      //in_array($record_center_id,$logged_user_centers) &&
       $is_approveable_item){
     $show_label_as_button = true;
   }

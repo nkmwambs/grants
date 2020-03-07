@@ -2,7 +2,9 @@
 
 $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
 
-//print_r($result['detail']['project_allocation']);
+//print_r($this->grants->get_record_office_id('budget_item',22));
+
+//echo hash_id($this->id,'decode');
 
 extract($result['master']);
 
@@ -36,6 +38,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;">
               <?php
+              
+              //$action_labels['show_label_as_button'] =  true;
+
               if(isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){ 
                 if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update'))
                   {

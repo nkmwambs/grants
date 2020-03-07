@@ -23,6 +23,10 @@ class Budget_item_model extends MY_Model implements CrudModelInterface, TableRel
     return array('budget','expense_account','status','approval');
   }
 
+  public function show_add_button(){
+    return false;
+}
+
   public function detail_tables(){
     return array('budget_item_detail');
   }

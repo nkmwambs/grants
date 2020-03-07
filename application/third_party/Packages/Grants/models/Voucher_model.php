@@ -160,6 +160,24 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     return $count_of_vouchers > 0 ? true : false;
   }
 
+  function office_has_vouchers_for_the_transacting_month($office_id,$transacting_month){
+
+    $month_start_date = date('Y-m-01',strtotime($transacting_month));
+    $month_end_date = date('Y-m-t',strtotime($transacting_month));
+
+    $coucher_count_for_the_month = $this->db->get_where('voucher',
+    array('fk_office_id'=>$office_id,'voucher_date>='=>$month_start_date,'voucher_date<='=>$month_end_date))->num_rows();
+
+    $office_has_vouchers_for_the_transacting_month = false;
+
+    if($coucher_count_for_the_month > 0){
+      $office_has_vouchers_for_the_transacting_month = true;
+    }
+
+    return $office_has_vouchers_for_the_transacting_month;
+
+  }
+
   /**
    * Get Office Last Voucher
    * 

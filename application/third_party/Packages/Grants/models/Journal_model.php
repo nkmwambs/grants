@@ -44,6 +44,10 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     
   }
 
+  public function show_add_button(){
+    return false;
+  }
+
   public function view(){}
 
   private function system_opening_cash_balance($office_id){
@@ -290,4 +294,11 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   function journal_records($office_id,$transacting_month){
     return $this->reorder_office_month_vouchers($office_id,$transacting_month);
   }
+
+  function list_table_where(){
+    
+    // Only list requests from the users' hierachy offices
+    $this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+  }
+
 }

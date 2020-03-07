@@ -130,4 +130,5 @@ class Budget_item extends MY_Controller
 
   }
 
+  static function get_menu_list(){}
 }

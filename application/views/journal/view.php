@@ -105,9 +105,10 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                 ?>
                      <tr>
                         <td>
-                            <a href="#" class="action" title="Approve"><i class='fa fa-check'></i></a> 
+                            <!-- <a href="#" class="action" title="Approve"><i class='fa fa-check'></i></a> 
                             <a href="#" class="action" title="Decline"><i class='fa fa-times'></i></a>
-                            <a href="#" class="action" title="Clear"><i class='fa fa-eraser'></i></a>
+                            <a href="#" class="action" title="Clear"><i class='fa fa-eraser'></i></a> -->
+                            <div class="btn btn-danger"><?=get_phrase('clear');?></div>
                         </td>
                         <td><?=date('jS M Y',strtotime($date));?></td>
                         <td><span title="<?=$voucher_type_name;?>" class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>

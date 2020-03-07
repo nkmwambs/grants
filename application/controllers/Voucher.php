@@ -168,7 +168,11 @@ class Voucher extends MY_Controller
     
     $user_obj = $this->db->get_where('user',array('user_id'=>$user_id));
 
-    $user_info['full_name'] = $user_obj->row()->user_firstname.' '.$user_obj->row()->user_lastname;
+    $user_info['full_name'] = '';
+
+    if($user_obj->num_rows() > 0){
+      $user_obj->row()->user_firstname.' '.$user_obj->row()->user_lastname;
+    }
 
     return $user_info;
   }
@@ -320,6 +324,27 @@ class Voucher extends MY_Controller
     $detail = [];
     $row = [];
 
+    $this->db->trans_start();
+    
+    // Check if this is the first voucher in the month, if so create a new journal record for the month
+    if(!$this->voucher_model->office_has_vouchers_for_the_transacting_month($this->input->post('fk_office_id'),$this->input->post('voucher_date'))){
+          
+      $new_journal = [];
+
+      $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
+      $new_journal['journal_name'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_name'];
+      $new_journal['journal_month'] = date("Y-m-01",strtotime($this->input->post('voucher_date')));
+      $new_journal['fk_office_id'] = $this->input->post('fk_office_id');
+      $new_journal['journal_created_date'] = date('Y-m-d');
+      $new_journal['journal_created_by'] = $this->session->user_id;
+      $new_journal['journal_last_modified_by'] = $this->session->user_id;
+      $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
+      $new_journal['fk_status_id'] = $detail['fk_status_id'] = $this->grants_model->initial_item_status('journal');;
+
+
+      $this->db->insert('journal',$new_journal);
+    }
+
     // Check voucher type
     $this->db->select(array('voucher_type_effect_code'));
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
@@ -347,7 +372,7 @@ class Voucher extends MY_Controller
     $header['fk_approval_id'] = $this->grants_model->insert_approval_record('voucher');
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
 
-    $this->db->trans_start();
+    
     $this->db->insert('voucher',$header);
 
     $header_id = $this->db->insert_id();
@@ -408,6 +433,7 @@ class Voucher extends MY_Controller
 
     //echo json_encode($row);
     $this->db->insert_batch('voucher_detail',$row);
+
 
     $this->db->trans_complete();
 
