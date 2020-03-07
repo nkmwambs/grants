@@ -42,7 +42,7 @@
                         <label class='control-label col-xs-1'><?=get_phrase('office');?></label>
                         <div class='col-xs-3'>
                             <select class='form-control' id='office' name='fk_office_id'>
-                                <option><?=get_phrase('select_office');?></option>
+                                <option value=""><?=get_phrase('select_office');?></option>
                                 <?php foreach($this->session->hierarchy_offices as $office){?>
                                         <option value="<?=$office['office_id'];?>"><?=$office['office_name'];?></option>
                                 <?php }?>
@@ -64,7 +64,7 @@
                     <div class='form-group'>
                         <label class='control-label col-xs-1'><?=get_phrase('voucher_type');?></label>
                         <div class='col-xs-3'>
-                            <select class='form-control' name='fk_voucher_type_id' id='voucher_type' onchange="getAccountsByVoucherType(this);">
+                            <select class='form-control'  disabled="disabled" name='fk_voucher_type_id' id='voucher_type' onchange="getAccountsByVoucherType(this);">
                                 <option value=""><?=get_phrase('select_voucher_type');?></option>
                                 <?php 
                                     $voucher_types = $this->voucher_type_model->get_active_voucher_types();
@@ -185,7 +185,6 @@ $(document).ready(function(){
     $('.btn-save-new').hide();
     $('.btn-retrieve-request').hide();
 
-    $("#voucher_type").prop('disabled','disabled');
 });
 
 function load_approved_requests(){
@@ -400,11 +399,16 @@ $('#transaction_date').on('click',function(){
 
 $("#office").on('change',function(){
     
+    
     var rows = $("#tbl_voucher_body tbody tr");
 
-    if($(".split_screen").hasClass('col-xs-6')){
-        load_approved_requests();
+    if($(this).val() == "") {
+        resetVoucher();
+        return false;
     }
+    
+    if($(".split_screen").hasClass('col-xs-6')) load_approved_requests();
+    
 
     resetVoucher();
 
@@ -420,7 +424,7 @@ $("#office").on('change',function(){
 
     $("#voucher_type").val('');
 
-    $("#voucher_type").prop('disabled','');
+    $("#voucher_type").removeAttr('disabled');
 });
 
 function checkIfDateIfSelected(){
@@ -518,11 +522,13 @@ function resetVoucher(){
 
     // Remove extra rows
     var count_body_rows = tbl_body_rows.length;
-
+    
+    //alert(count_body_rows);
+    
     if(count_body_rows > 1){
-        tbl_body_rows.each(function(i,el){
+        $.each(tbl_body_rows,function(i,el){
             if(i != 0){
-                el.remove();
+                $(el).remove();
             }
         });
     }
@@ -536,7 +542,11 @@ function resetVoucher(){
     $("#voucher_vendor").val("");
     $("#voucher_vendor_address").val("");
     $("#voucher_description").val("");
-    
+    $("#transaction_date").val("");
+    $("#voucher_number").val("");
+
+    $("#voucher_type").val("");
+    $("#voucher_type").prop('disabled','disabled');;    
 }
 
 $(".btn-reset").on('click',function(){
