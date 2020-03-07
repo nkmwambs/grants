@@ -39,9 +39,9 @@ public $auth;
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
              
-             if(parse_url(base_url())['host'] == 'localhost'){
-                $this->grants->create_missing_system_files(); 
-              }
+            //  if(parse_url(base_url())['host'] == 'localhost'){
+            //     $this->grants->create_missing_system_files(); 
+            //   }
 
             redirect(base_url().ucfirst($this->session->default_launch_page).'/list');
         }
