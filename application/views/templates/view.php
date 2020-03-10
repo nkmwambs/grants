@@ -1,6 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-$action_labels['show_label_as_button'] = false;//$this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+//$action_labels['show_label_as_button'] = false;//$this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+
+print_r($action_labels);
 
 //print_r($this->grants->get_record_office_id('budget_item',22));
 
