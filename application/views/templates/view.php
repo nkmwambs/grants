@@ -109,7 +109,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     }elseif(in_array($column,$lookup_name_fields) ){
                         $primary_table_name = substr($column,0,-5);
                         $lookup_table_id = $table_body[strtolower($primary_table_name).'_id'];
-                        echo '<a href="'.base_url().ucfirst($primary_table_name).'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
+                        echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
                     }else{
                         echo ucwords(str_replace('_',' ',$column_value));
                     }
@@ -196,13 +196,13 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                           <?php
                           if(isset($row[$column]) && array_key_exists($column,$row) ){
                             if(strpos($column,'track_number') == true && $has_details_table == 1 ){
-                              echo '<a href="'.base_url().ucfirst($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
+                              echo '<a href="'.base_url().$detail_table_name.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
                             }elseif($column_key > 0){ 
-                               echo '<a href="'.base_url().ucfirst($lookup_table).'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
+                               echo '<a href="'.base_url().$lookup_table.'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
                             }else{
                                 echo ucfirst($row[$column]);
                             }
