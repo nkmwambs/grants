@@ -398,7 +398,7 @@ function get_max_approval_status_id(String $approveable_item):Int{
   ->select("max(status_approval_sequence) as status_approval_sequence")
   ->get_where('status',array('approve_item_name'=>$approveable_item));
 
-  if($max_status_approval_sequence_obj->num_row() >0){
+  if($max_status_approval_sequence_obj->num_rows() >0){
     // Get the status_id
     $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
     $this->db->select('status_id');
