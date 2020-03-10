@@ -19,7 +19,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   function __construct(){
     parent::__construct();
     $this->load->database();
-    $this->load->model('approval_model');
+    $this->load->model('general_model');
   }
 
   function delete($id = null){

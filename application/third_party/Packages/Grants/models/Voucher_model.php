@@ -568,7 +568,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
   function list_table_where(){
 
-    $max_approval_status_id = $this->approval_model->get_max_approval_status_id('voucher');
+    $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
     // Only list vouchers without not yet in the cash journal 
 
     $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));

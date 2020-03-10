@@ -250,7 +250,7 @@ if ( ! function_exists('approval_action_buttons')){
 		
 		$CI =& get_instance();
 
-		$approver_status = $CI->approval_model->display_approver_status_action($logged_role_id,$table,$primary_key);
+		$approver_status = $CI->general_model->display_approver_status_action($logged_role_id,$table,$primary_key);
 		$current_user_role = $CI->session->role_id;
 		$buttons = "";
 		
