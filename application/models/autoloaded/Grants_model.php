@@ -360,6 +360,24 @@ function generate_item_track_number_and_name($approveable_item){
     return array_combine($ids_array,$value_array);
   }
 
+  function counts_of_looup($table){
+    $table = strtolower($table);
+
+    if( is_array($this->grants->lookup_values_where($table)) && 
+        count($this->grants->lookup_values_where($table)) > 0)
+    {
+      $this->create_table_join_statement(strtolower($this->controller),$table);
+      $this->db->where($this->grants->lookup_values_where($table));
+    }
+
+    $result = $this->db->get($table)->result_array();
+
+    $ids_array = array_column($result,$this->grants->primary_key_field($table));
+    $value_array = array_column($result,$this->grants->name_field($table));
+
+    return ['ids'=>count($ids_array),'vals'=>count($value_array)];
+  }
+
 
   /**
  * mandatory_fields
