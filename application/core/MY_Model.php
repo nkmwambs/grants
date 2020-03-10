@@ -181,9 +181,9 @@ class MY_Model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->_set_connection();
-        $this->_set_timestamps();
-        $this->_fetch_table();
+       // $this->_set_connection();
+        //$this->_set_timestamps();
+        //$this->_fetch_table();
         $this->pagination_delimiters = (isset($this->pagination_delimiters)) ? $this->pagination_delimiters : array('<span>','</span>');
         $this->pagination_arrows = (isset($this->pagination_arrows)) ? $this->pagination_arrows : array('&lt;','&gt;');
         /* These below are implementation examples for before_create and before_update triggers.
