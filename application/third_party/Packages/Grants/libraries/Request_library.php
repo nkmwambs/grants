@@ -28,7 +28,7 @@ class Request_library extends Grants
   
   
   function page_position(){
-
+    $widgets = [];
     //$widgets['position_1'][] = Widget_base::load('comment');
 
     //$widgets['position_2'][] = Widget_base::load('button',get_phrase('edit'),$this->CI->controller.'/edit/'.$this->CI->id);
