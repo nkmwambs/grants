@@ -123,8 +123,8 @@ function __construct(){
   // Instantiate Codeigniter Singleton class
   $this->CI =& get_instance();
 
-  $this->CI->load->add_package_path(APPPATH.'third_party/Packages/Core');
-  $this->CI->load->add_package_path(APPPATH.'third_party/Packages/Grants');
+  $this->CI->load->add_package_path(APPPATH.'third_party.'.DIRECTORY_SEPARATOR.'.Packages.'.DIRECTORY_SEPARATOR.'.Core');
+  $this->CI->load->add_package_path(APPPATH.'third_party.'.DIRECTORY_SEPARATOR.'.Packages.'.DIRECTORY_SEPARATOR.'.Grants');
 
   // Instantiate the name of the current running object/ main controller
   $this->controller = $this->CI->uri->segment(1, 'approval');
