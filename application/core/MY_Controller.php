@@ -113,7 +113,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $action = $this->action.'_output';
 
-    $lib = $this->current_library;
+    $lib = ucfirst($this->current_library);
 
     /*Makes a decision if we are posting to db table when the $this->input->post() 
     return true otherwise load the page to add records*/
