@@ -491,7 +491,7 @@ function detail_list_output(String $table): Array {
             'has_details_table' => $has_details,
             'is_approveable_item' => $is_approveable_item,
             'lookup_name_fields' => $look_tables_name_fields,
-            'action_labels'=>false,//$this->CI->grants->action_labels($table,hash_id($this->CI->uri->segment(3,0),'decode'))
+            'action_labels'=>$this->CI->grants->action_labels($table,hash_id($this->CI->uri->segment(3,0),'decode'))
         );
     
         $detail_tables = $this->CI->grants->detail_tables($table);

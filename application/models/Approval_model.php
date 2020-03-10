@@ -14,6 +14,7 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
 
   function __construct(){
     parent::__construct();
+    $this->load->database();
   }
 
   function index(){}
