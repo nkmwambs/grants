@@ -1,6 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  print_r($this->grants_model->lookup_values($this->controller));
+  print_r($this->grants_model->lookup_values_keys($this->controller));
+  print_r($this->grants_model->lookup_values_values($this->controller));
 
   extract($result);
   //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
