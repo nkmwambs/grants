@@ -188,7 +188,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    */
   function get_office_last_voucher($office_id):Object{
 
-    $last_voucher = (object)[];
+    $last_voucher = [];
 
     if($this->check_if_office_has_started_transacting($office_id)){
       // Check the max voucher id of the office provided
@@ -200,7 +200,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     }
     
 
-    return (object)$last_voucher;
+    return $last_voucher;
   }
 
   /**
