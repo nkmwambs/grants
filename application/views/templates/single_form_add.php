@@ -87,10 +87,10 @@ $(".save, .save_new").on('click',function(ev){
   }else{
       pre_record_post();
 
-      var url = "<?=base_url().ucfirst($this->controller);?>/<?=$this->action;?>";
+      var url = "<?=base_url().$this->capped_controller;?>/<?=$this->action;?>";
 
       if('<?=$this->uri->segment(3,0);?>' !== 0){
-        url = "<?=base_url().ucfirst($this->controller);?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
+        url = "<?=base_url().$this->capped_controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
       }
 
       var data = $(this).closest('form').serializeArray();

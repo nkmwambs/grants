@@ -51,6 +51,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    */
   public $has_permission = false;
   public $sub_action;
+  public $capped_controller;
 
   //public $widget = null;
 
@@ -68,6 +69,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->current_library = strtolower($segment.'_library');
     $this->current_model = strtolower($segment.'_model');
     $this->controller = strtolower($segment);
+    $this->capped_controller = ucfirst($segment);
+
     $this->action = $action;
     $this->sub_action = $this->uri->segment(4, null);;
 

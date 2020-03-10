@@ -92,7 +92,7 @@ $(".edit, .edit_continue").on('click',function(ev){
 
   pre_record_post();
 
-  var url = "<?=base_url().$this->controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
+  var url = "<?=base_url().$this->capped_controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
 
   var data = $(this).closest('form').serializeArray();
 
