@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-$action_labels = $this->Grants->action_labels($this->controller,hash_id($this->id,'decode'));
+$action_labels = $this->grants->action_labels(ucfirst($this->controller),hash_id($this->id,'decode'));
 
 //print_r($this->grants->get_record_office_id('budget_item',22));
 
