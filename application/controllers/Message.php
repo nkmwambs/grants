@@ -9,7 +9,7 @@
  */
 
 
-class Message extends MY_Controller implements CrudModelInterface
+class Message extends MY_Controller
 {
 
   function __construct(){
@@ -17,9 +17,9 @@ class Message extends MY_Controller implements CrudModelInterface
 
   }
 
-  function delete($id = null){
+  // function delete($id = null){
 
-  }
+  // }
 
   function index(){}
 

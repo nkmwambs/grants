@@ -9,7 +9,7 @@
  */
 
 
-class User extends MY_Controller implements CrudModelInterface
+class User extends MY_Controller 
 {
 
   function __construct(){
@@ -21,9 +21,9 @@ class User extends MY_Controller implements CrudModelInterface
 
   function index(){}
 
-  function delete($id = null){
+  // function delete($id = null){
 
-  }
+  // }
 
   static function get_menu_list(){
   
