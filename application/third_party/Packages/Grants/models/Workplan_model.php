@@ -17,6 +17,10 @@
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){
 
   }

@@ -24,6 +24,9 @@ class Approve_item_model extends MY_Model implements CrudModelInterface, TableRe
 
   }
 
+  function delete($id = null){
+
+  }
 
   function list(){
 

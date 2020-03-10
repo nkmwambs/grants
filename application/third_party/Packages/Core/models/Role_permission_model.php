@@ -19,6 +19,10 @@ class Role_permission_model extends MY_Model implements CrudModelInterface, Tabl
 
   }
 
+  function delete($id = null){
+
+  }
+  
   function index(){
 
   }

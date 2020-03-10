@@ -17,6 +17,10 @@ class Language extends MY_Controller implements CrudModelInterface
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
 

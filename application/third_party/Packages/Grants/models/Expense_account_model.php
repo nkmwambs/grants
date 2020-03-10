@@ -20,6 +20,10 @@ class Expense_account_model extends MY_Model implements CrudModelInterface, Tabl
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){
 
   }

@@ -17,6 +17,10 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   }
 
+  function delete($id = null){
+
+  }
+
     function index(){}
 
     function lookup_tables(){

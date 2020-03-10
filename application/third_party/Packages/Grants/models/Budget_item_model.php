@@ -16,6 +16,11 @@ class Budget_item_model extends MY_Model implements CrudModelInterface, TableRel
   function __construct(){
     parent::__construct();
   }
+  
+  function delete($id = null){
+
+  }
+
 
   function index(){}
 

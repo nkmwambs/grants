@@ -20,6 +20,10 @@ class Income_account_model extends MY_Model implements CrudModelInterface, Table
 
   }
 
+  function delete($id = null){
+
+  }
+  
   function index(){
 
   }

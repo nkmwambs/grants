@@ -17,6 +17,10 @@ class Message extends MY_Controller implements CrudModelInterface
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
   // static function get_menu_list(){

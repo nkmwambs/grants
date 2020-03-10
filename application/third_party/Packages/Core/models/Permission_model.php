@@ -18,7 +18,11 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
     $this->load->database();
 
   }
+  
+  function delete($id = null){
 
+  }
+  
   function index(){
 
   }

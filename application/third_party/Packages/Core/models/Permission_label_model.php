@@ -20,6 +20,10 @@ class Permission_label_model extends MY_Model implements CrudModelInterface, Tab
 
   }
 
+  function delete($id = null){
+
+  }
+  
   function index(){
 
   }

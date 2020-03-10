@@ -21,6 +21,9 @@ class User extends MY_Controller implements CrudModelInterface
 
   function index(){}
 
+  function delete($id = null){
+
+  }
 
   static function get_menu_list(){
   

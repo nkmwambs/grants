@@ -26,6 +26,10 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+  function delete($id = null){
+
+  }
+
   function lookup_tables(){
     
   }

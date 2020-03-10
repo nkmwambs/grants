@@ -21,6 +21,10 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   function index(){}
 
+  function delete($id = null){
+
+  }
+
   public function lookup_tables(){
     return array('approval','status','context_definition','account_system');
   }

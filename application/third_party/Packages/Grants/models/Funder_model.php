@@ -19,6 +19,10 @@ class Funder_model extends MY_Model implements CrudModelInterface, TableRelation
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
     public function lookup_tables(){

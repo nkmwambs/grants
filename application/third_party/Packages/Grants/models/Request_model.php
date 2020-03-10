@@ -17,6 +17,10 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     parent::__construct();
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
   public function lookup_tables(){

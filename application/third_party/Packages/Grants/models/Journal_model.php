@@ -22,6 +22,10 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->load->model('approval_model');
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){
 
   }

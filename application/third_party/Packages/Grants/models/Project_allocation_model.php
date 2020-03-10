@@ -17,6 +17,10 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     parent::__construct();
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
   public function lookup_tables(){

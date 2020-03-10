@@ -20,6 +20,10 @@ class Voucher_type_model extends MY_Model implements CrudModelInterface, TableRe
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
   public function lookup_tables(){

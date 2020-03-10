@@ -19,6 +19,10 @@ class Menu_user_order_model extends MY_Model implements CrudModelInterface, Tabl
 
   }
 
+  function delete($id = null){
+
+  }
+  
   function index(){
 
   }

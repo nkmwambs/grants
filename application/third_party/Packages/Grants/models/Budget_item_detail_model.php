@@ -16,7 +16,10 @@ class Budget_item_detail_model extends MY_Model implements CrudModelInterface, T
   function __construct(){
     parent::__construct();
   }
+  function delete($id = null){
 
+  }
+  
   function index(){}
 
   public function lookup_tables(){

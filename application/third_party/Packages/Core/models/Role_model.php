@@ -20,6 +20,10 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){
 
   }

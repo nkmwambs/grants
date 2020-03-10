@@ -24,6 +24,10 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
     parent::__construct();
   }
 
+  function delete($id = null){
+
+  }
+
   function index(){}
 
   public function lookup_tables(){
