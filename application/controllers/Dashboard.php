@@ -18,7 +18,7 @@ public $auth;
     function __construct() {
         parent::__construct();
         $this->load->database();
-        //$this->load->model('voucher_model');
+        $this->load->library('dashboard_library');
     }
 
 

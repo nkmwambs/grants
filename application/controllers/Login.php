@@ -42,7 +42,7 @@ public $auth;
             //  if(parse_url(base_url())['host'] == 'localhost'){
             //     $this->grants->create_missing_system_files(); 
             //   }
-            
+            //$this->load->library($this->session->default_launch_page.'_library');
             redirect(base_url().ucfirst($this->session->default_launch_page).'/list');
         }
           

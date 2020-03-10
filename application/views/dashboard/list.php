@@ -4,6 +4,7 @@
   //print_r($this->session->departments);
   
   //print_r($this->voucher_model->get_approveable_item_last_status(1));
+  //echo $this->current_library;
 ?>
 
   <div class="row">

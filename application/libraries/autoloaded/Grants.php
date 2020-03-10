@@ -970,7 +970,7 @@ function edit_form_fields(Array $visible_columns_array): Array {
       $library = $detail_table.'_library';
     }
 
-    if( method_exists($this->CI->$library,'change_field_type') && 
+    if( isset($this->CI->$library) && method_exists($this->CI->$library,'change_field_type') && 
         is_array($this->CI->$library->change_field_type())
       ){
       

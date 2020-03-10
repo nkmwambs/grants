@@ -129,9 +129,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
         $this->$lib->$action($id);
       }elseif($this->id !== null){
         $this->$lib->$action($this->id);
-      }elseif($this->action == 'list'){
-        //echo $this->list_ajax();
-      }elseif($this->action == 'view'){
+      }elseif($this->action == 'list' || $this->action == 'view'){
           // Just to test if the third party API are working for list output
           // This is the way to go for all outputs. Move all outputs to the Output API  
           // Applies when using page view: See View Widget
@@ -145,9 +143,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }
 
 
-    if($this->action == 'list'){
-      //echo $this->list_ajax();
-    }elseif($this->action == 'view'){
+    if($this->action == 'list' || $this->action == 'view'){
       // Just to test if the third party API are working for list output
       // This is the way to go for all outputs. Move all outputs to the Output API  
       $this->list_result = Output_base::load($this->action);
