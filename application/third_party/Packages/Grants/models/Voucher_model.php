@@ -186,7 +186,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    * @param Int $office_id - Office in check
    * @return Object - a voucher record
    */
-  function get_office_last_voucher($office_id):Object{
+  function get_office_last_voucher($office_id):Array{
 
     $last_voucher = [];
 
