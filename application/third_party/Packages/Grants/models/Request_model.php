@@ -95,10 +95,10 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
 
-  function get_request_types($account_system_id){
+  function get_request_types(){
     $this->db->select(array('request_type_id','request_type_name'));
     return $this->db->get_where('request_type',
-    array('request_type_is_active'=>1,'fk_account_system_id'=>$account_system_id))->result_object();
+    array('request_type_is_active'=>1))->result_object();
   }
 
   function get_user_departments(){

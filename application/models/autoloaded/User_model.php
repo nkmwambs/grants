@@ -814,7 +814,7 @@ class User_model extends MY_Model
       $lookup_tables = $this->grants->lookup_tables($this->controller);
 
       if( 
-          ( array_key_exists($active_controller,$permission) 
+          ( is_array($permission) && array_key_exists($active_controller,$permission) 
             && array_key_exists($permission_type,$permission[$active_controller]) 
 
             && array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
