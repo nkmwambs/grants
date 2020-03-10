@@ -161,7 +161,7 @@ class Voucher extends MY_Controller
     $voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_created_by'])['full_name'];
     //$voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_last_modified_by'])['full_name'];
 
-    return ["header"=>$header,"body"=>$body,'action_labels'=>['show_label_as_button'=>$this->approval_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name]];
+    return ["header"=>$header,"body"=>$body,'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name]];
 
   }
 
