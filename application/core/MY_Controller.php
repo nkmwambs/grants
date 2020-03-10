@@ -3,7 +3,7 @@
 /*This autoloads all the classes in third_party folder subdirectories e.g. Output
   The third_party houses the reusable API or code systemwise
  */
-require_once APPPATH."third_party/Api/autoload.php";
+require_once APPPATH."third_party".DIRECTORY_SEPARATOR."Api".DIRECTORY_SEPARATOR."autoload.php";
 require_once APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core';
 require_once APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants';
 
