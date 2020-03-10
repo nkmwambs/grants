@@ -95,7 +95,7 @@ function update_request_details_count_on_badge(){
 function get_request_details_for_voucher(req_id){
 
     let data = {'voucher_number':$("#voucher_number").val()}
-    let url = '<?=base_url();?>voucher/get_request_detail/'+ req_id;
+    let url = '<?=base_url();?>Voucher/get_request_detail/'+ req_id;
 
     $.ajax({
         url:url,
@@ -151,7 +151,7 @@ function insertRowFromRequest(obj){
 
 function run_detail_row(obj){
 
-    var url = "<?=base_url();?><?=$this->controller;?>/detail_row";
+    var url = "<?=base_url();?><?=ucfirst($this->controller);?>/detail_row";
 
     var fields = {};
 
