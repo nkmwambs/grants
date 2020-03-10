@@ -361,7 +361,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
         $this->db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
         $this->db->update(strtolower($this->controller),$data);
         
-        $is_max_approval_status_id = $this->approval_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
+        $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
 
         $item_approval_id = $this->db->get_where($this->controller,
           array($this->controller.'_id'=>hash_id($this->id,'decode')))->row()->fk_approval_id;
