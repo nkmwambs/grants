@@ -109,7 +109,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                     }elseif(in_array($column,$lookup_name_fields) ){
                         $primary_table_name = substr($column,0,-5);
                         $lookup_table_id = $table_body[strtolower($primary_table_name).'_id'];
-                        echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
+                        echo '<a href="'.base_url().ucfirst($primary_table_name).'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
                     }else{
                         echo ucwords(str_replace('_',' ',$column_value));
                     }
