@@ -1580,7 +1580,7 @@ function action_labels($table,$primary_key){
   //$this->load_detail_model('approval');
   //$this->CI->load->model('approval');
 
-  return $this->CI->grants_model->display_approver_status_action($this->CI->session->role_id, $table, $primary_key);
+  return $this->CI->grants_model->action_labels($table, $primary_key);
 
 }
 
