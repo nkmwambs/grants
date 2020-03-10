@@ -82,7 +82,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     //Will alwasy be null for other actions
     
     if($this->action == 'view'){
-      $this->session->set_userdata('master_table',$this->controller);
+      $this->session->set_userdata('master_table',ucfirst($this->controller));
       $this->id = hash_id($this->uri->segment(3,0),'decode');
     }elseif ($this->action == 'list') {
       $this->session->set_userdata('master_table',null);
