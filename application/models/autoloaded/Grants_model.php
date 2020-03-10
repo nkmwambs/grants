@@ -348,7 +348,7 @@ function generate_item_track_number_and_name($approveable_item){
     if( is_array($this->grants->lookup_values_where($table)) && 
         count($this->grants->lookup_values_where($table)) > 0)
     {
-      $this->create_table_join_statement($this->controller,$table);
+      $this->create_table_join_statement(strtolower($this->controller),$table);
       $this->db->where($this->grants->lookup_values_where($table));
     }
 
