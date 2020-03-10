@@ -1867,7 +1867,14 @@ function feature_model_list_table_visible_columns() {
           $ids_array = array_column($result,$this->primary_key_field($table));
           $value_array = array_column($result,$this->name_field($table));
 
-          $lookup_values =  array_combine($ids_array,$value_array);
+          $lookup_values =  [];//array_combine($ids_array,$value_array);
+          
+          $count = 0;
+
+          foreach ($ids_array as $key) {
+            $lookup_values[$key] = $value_array[$count];
+            $count ++;
+          }
       }
       elseif(         
         (
