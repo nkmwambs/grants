@@ -4,8 +4,6 @@
   The third_party houses the reusable API or code systemwise
  */
 require_once APPPATH."third_party".DIRECTORY_SEPARATOR."Api".DIRECTORY_SEPARATOR."autoload.php";
-//require_once APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core';
-//require_once APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants';
 
 class MY_Controller extends CI_Controller implements CrudModelInterface
 {
@@ -115,7 +113,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $action = $this->action.'_output';
 
-    $lib = $this->current_library;
+    $lib = strtolower($this->current_library);
 
     /*Makes a decision if we are posting to db table when the $this->input->post() 
     return true otherwise load the page to add records*/
