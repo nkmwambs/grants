@@ -27,7 +27,10 @@ class Approval_model extends MY_Model implements CrudModelInterface, TableRelati
     return array('request','budget','voucher','office','bank','permission','role_permission','project_allocation');
   }
 
+  function delete(){
 
+  }
+  
   function detail_list(){}
 
   function master_view(){}
