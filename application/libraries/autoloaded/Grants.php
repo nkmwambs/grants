@@ -1577,9 +1577,10 @@ function get_record_office_id($table,$primary_key){
 
 function action_labels($table,$primary_key){
 
-  $this->load_detail_model('approval');
+  //$this->load_detail_model('approval');
+  $this->CI->load->model('approval');
 
-  return $this->CI->approval_model->status_action($this->CI->session->role_id, $table, $primary_key);
+  return $this->CI->approval_model->display_approver_status_action($this->CI->session->role_id, $table, $primary_key);
 
 }
 
