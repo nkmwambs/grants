@@ -19,7 +19,7 @@ class Fields_base{
 
     $this->column = $column;
 
-    $this->table = $table;
+    $this->table = strtolower($table);
 
     $this->is_header = $is_header;
 
