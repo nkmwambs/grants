@@ -35,9 +35,9 @@ function get_request_type(){
 
   $office_id = $this->input->post('office_id');
 
-  //$account_system_id = $this->db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
+  $account_system_id = $this->db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
 
-  $result['request_type'] = $this->Request_model->get_request_types();
+  $result['request_type'] = $this->Request_model->get_request_types($account_system_id);
   $result['department'] = $this->Request_model->get_user_departments();
 
   echo json_encode($result);
