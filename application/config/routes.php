@@ -63,18 +63,9 @@ $uri = explode('/', $_SERVER['REQUEST_URI']);
 
 if($uri[2]) 
 {
-    //if($uri[1] == 'blog' && $uri[2])
-    //{
-        //Check blog slugs
-        //$db->select('post_id, post_slug');
-        //$db->where('post_slug', $uri[2]);
-        //$db->where('post_live', 1);
- 
-        //if($post = $db->get('tbl_blog_post')->row_array())
-        //{
-            $route[strtolower($uri[2]).'/'.$uri[3]] = $uri[2].'/'.$uri[3];
-      //  }
-    //}
+
+    $route[strtolower($uri[2]).'/'.$uri[3]] = ucfirst($uri[2]).'/'.$uri[3];
+   
 } 
 
 
