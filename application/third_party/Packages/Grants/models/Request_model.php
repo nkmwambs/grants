@@ -21,6 +21,10 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   }
 
+  function list_table_visible_columns (){
+    
+  }
+
   function index(){}
 
   public function lookup_tables(){
