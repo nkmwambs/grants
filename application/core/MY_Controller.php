@@ -58,8 +58,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     
     parent::__construct();
 
-    $this->load->add_package_path(APPPATH.'third_party/Packages/Core');
-    $this->load->add_package_path(APPPATH.'third_party/Packages/Grants');
+    $this->load->add_package_path(APPPATH.'third_party.'.DIRECTORY_SEPARATOR.'.Packages.'.DIRECTORY_SEPARATOR.'.Core');
+    $this->load->add_package_path(APPPATH.'third_party.'.DIRECTORY_SEPARATOR.'.Packages.'.DIRECTORY_SEPARATOR.'.Grants');
     //$this->widget = new Widget_base();
 
     $segment = $this->uri->segment(1, 'approval');
@@ -113,7 +113,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $action = $this->action.'_output';
 
-    $lib = ucfirst($this->current_library);
+    $lib = $this->current_library;
 
     /*Makes a decision if we are posting to db table when the $this->input->post() 
     return true otherwise load the page to add records*/
