@@ -1496,7 +1496,7 @@ function create_missing_controller($table, $assets_temp_path){
 
 function create_missing_library($table, $assets_temp_path){
  
-  $libararies_path = APPPATH.'libraries'.DIRECTORY_SEPARATOR; 
+  $libararies_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants'.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR; 
 
   // Copy contents of assets/temp_library to the created file after the tag above
   $replaceables = array("%library%"=>ucfirst($table).'_library');
@@ -1506,7 +1506,7 @@ function create_missing_library($table, $assets_temp_path){
 
 function create_missing_model($table, $assets_temp_path, $table_specs){
 
-  $models_path = APPPATH.'models'.DIRECTORY_SEPARATOR;
+  $models_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR;
  
       // Copy contents of assets/temp_model to the created file after the tag above
       $lookup_tables = "";
