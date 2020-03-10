@@ -58,8 +58,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     
     parent::__construct();
 
-    $this->load->add_package_path(APPPATH.'third_party.'.DIRECTORY_SEPARATOR.'.Packages.'.DIRECTORY_SEPARATOR.'.Core');
-    $this->load->add_package_path(APPPATH.'third_party.'.DIRECTORY_SEPARATOR.'.Packages.'.DIRECTORY_SEPARATOR.'.Grants');
+    $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core');
+    $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants');
     //$this->widget = new Widget_base();
 
     $segment = $this->uri->segment(1, 'approval');
