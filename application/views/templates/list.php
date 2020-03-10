@@ -83,6 +83,7 @@ extract($result);
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
+                              //////
                             }
 
                            ?>
