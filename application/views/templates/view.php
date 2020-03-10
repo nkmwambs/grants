@@ -5,7 +5,7 @@
 
 extract($result['master']);
 
-print_r($action_labels);
+//print_r($action_labels);
 
 $this->grants->unset_lookup_tables_ids($keys);
 
