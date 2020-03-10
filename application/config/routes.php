@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once( BASEPATH .'database/DB.php');
+
 /*
 | -------------------------------------------------------------------------
 | URI ROUTING
@@ -52,6 +54,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+
+// $db =& DB();
+
+// $uri = explode('?', $_SERVER['REQUEST_URI']); //We don't want to include querystring data
+$uri = explode('/', $_SERVER['REQUEST_URI']);
+
+if($uri[2]) 
+{
+    //if($uri[1] == 'blog' && $uri[2])
+    //{
+        //Check blog slugs
+        //$db->select('post_id, post_slug');
+        //$db->where('post_slug', $uri[2]);
+        //$db->where('post_live', 1);
+ 
+        //if($post = $db->get('tbl_blog_post')->row_array())
+        //{
+            $route[strtolower($uri[2]).'/'.$uri[3]] = $uri[2].'/'.$uri[3];
+      //  }
+    //}
+} 
 
 
 spl_autoload_register(function($classname){

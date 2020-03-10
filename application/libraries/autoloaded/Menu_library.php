@@ -253,7 +253,7 @@ class Menu_library {
           array('menu_derivative_controller'=>ucfirst($menu),'menu_is_active'=>1))->num_rows()>0){
           $nav .= '
           <li class="">
-              <a href="'.base_url().ucfirst($menu).'/list">
+              <a href="'.base_url().strtolower($menu).'/list">
                   <i class="'.$menu_icon.'"></i>
                   <span>'.get_phrase(strtolower($items['menu_name'])).'</span>
               </a>
