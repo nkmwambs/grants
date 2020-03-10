@@ -8,7 +8,7 @@ $action_labels = $this->grants->action_labels($this->controller,hash_id($this->i
 
 extract($result['master']);
 
-$this->grants->unset_lookup_tables_ids($keys);
+//$this->grants->unset_lookup_tables_ids($keys);
 
 // Make the master detail table have columns as per the config
 $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
