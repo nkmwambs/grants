@@ -394,20 +394,20 @@ function get_max_approval_status_id(String $approveable_item):Int{
 
   //Get the maximum status_approval_sequence of an approveable item
 
-  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
-  $max_status_approval_sequence_obj = $this->db
-  ->select_max('status_approval_sequence')
-  //->select("max(status_approval_sequence) as status_approval_sequence")
-  ->get_where('status',array('approve_item_name'=>$approveable_item));
+  // $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  // $max_status_approval_sequence_obj = $this->db
+  // ->select_max('status_approval_sequence')
+  // //->select("max(status_approval_sequence) as status_approval_sequence")
+  // ->get_where('status',array('approve_item_name'=>$approveable_item));
 
-  if($max_status_approval_sequence_obj->num_rows() >0){
-    // Get the status_id
-    $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
-    $this->db->select('status_id');
-    $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
-    $max_status_id = $this->db->get_where('status',
-    array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
-  }
+  // if($max_status_approval_sequence_obj->num_rows() >0){
+  //   // Get the status_id
+  //   $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
+  //   $this->db->select('status_id');
+  //   $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  //   $max_status_id = $this->db->get_where('status',
+  //   array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
+  // }
   return $max_status_id;
 }
 
