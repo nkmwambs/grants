@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approval_model extends MY_Model
+class Approval_model extends CI_Model
 {
   public $table = 'approval'; // you MUST mention the table name
 
