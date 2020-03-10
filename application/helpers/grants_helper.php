@@ -98,7 +98,7 @@ if( ! function_exists('render_list_table_header') ){
 if( ! function_exists('list_table_edit_action')){
 	function list_table_edit_action($table_controller,$primary_key){
 
-		$string = '<a class="list_edit_link" href="'.base_url().strtolower($table_controller).'/edit/'.hash_id($primary_key,'encode').'">'.get_phrase("edit").'</a>';
+		$string = '<a class="list_edit_link" href="'.base_url().ucfirst($table_controller).'/edit/'.hash_id($primary_key,'encode').'">'.get_phrase("edit").'</a>';
 
 		return $string;
 	}
@@ -107,7 +107,7 @@ if( ! function_exists('list_table_edit_action')){
 if( ! function_exists('list_table_delete_action')){
 	function list_table_delete_action($table_controller,$primary_key){
 
-		$string = '<a class="list_delete_link" href="'.base_url().strtolower($table_controller).'/delete/'.hash_id($primary_key).'">'.get_phrase("delete").'</a>';
+		$string = '<a class="list_delete_link" href="'.base_url().ucfirst($table_controller).'/delete/'.hash_id($primary_key).'">'.get_phrase("delete").'</a>';
 
 		return $string;
 	}
@@ -116,7 +116,7 @@ if( ! function_exists('list_table_delete_action')){
 if( ! function_exists('list_table_approval_action')){
 	function list_table_approval_action($table_controller,$primary_key){
 
-		$string = '<a class="list_approval_link" href="'.base_url().strtolower($table_controller).'/approve/'.hash_id($primary_key).'">'.get_phrase("approve").'</a>';
+		$string = '<a class="list_approval_link" href="'.base_url().ucfirst($table_controller).'/approve/'.hash_id($primary_key).'">'.get_phrase("approve").'</a>';
 
 		return $string;
 	}
@@ -125,7 +125,7 @@ if( ! function_exists('list_table_approval_action')){
 if( ! function_exists('list_table_decline_action')){
 	function list_table_decline_action($table_controller,$primary_key){
 
-		$string = '<a class="list_decline_link" href="'.base_url().strtolower($table_controller).'/decline/'.hash_id($primary_key).'">'.get_phrase("decline").'</a>';
+		$string = '<a class="list_decline_link" href="'.base_url().ucfirst($table_controller).'/decline/'.hash_id($primary_key).'">'.get_phrase("decline").'</a>';
 
 		return $string;
 	}
@@ -138,7 +138,7 @@ if( ! function_exists('add_record_button') ){
 		$CI =& get_instance();
 
 		if($id !== null){
-			$link =  '<a href="'.base_url().$table_controller.'/'.$add_view.'/'.$id.'/'.$CI->controller.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
+			$link =  '<a href="'.base_url().ucfirst($table_controller).'/'.$add_view.'/'.$id.'/'.$CI->controller.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}else{
 			$link =  '<a style="margin-bottom:-70px;z-index:100;position:relative;" href="'.base_url().$table_controller.'/'.$add_view.'" class="btn btn-default">'.get_phrase('add_'.$table_controller).'</a>';
 		}
@@ -159,7 +159,7 @@ if( ! function_exists('create_breadcrumb') ){
 		$string = '<b>'.get_phrase('you_are_here').":</b> ";
 
 		foreach ($breadcrumb_list as $menuItem) {
-			$string .= '<a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a> <i style="font-size:15pt;font-weight:bolder;" class="fa fa-angle-right"></i> ';
+			$string .= '<a href="'.base_url().ucfirst($menuItem).'/list">'.get_phrase($menuItem).'</a> <i style="font-size:15pt;font-weight:bolder;" class="fa fa-angle-right"></i> ';
 		}
 
 		return $string;

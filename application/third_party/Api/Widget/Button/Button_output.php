@@ -15,7 +15,7 @@ class Button_output{
         $action = $args[1];
 
         return '
-            <a href="'.base_url().$action.'" class="btn btn-default" id="btn">'
+            <a href="'.base_url().ucfirst($action).'" class="btn btn-default" id="btn">'
             .ucfirst($label).
             '</a>
         ';

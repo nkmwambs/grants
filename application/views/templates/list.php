@@ -78,7 +78,7 @@ extract($result);
                           <?php
 
                             if(strpos($column,'track_number') == true ){
-                              echo '<a href="'.base_url().strtolower($this->controller).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
+                              echo '<a href="'.base_url().$this->capped_controller.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
