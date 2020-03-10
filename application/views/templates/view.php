@@ -196,13 +196,13 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                           <?php
                           if(isset($row[$column]) && array_key_exists($column,$row) ){
                             if(strpos($column,'track_number') == true && $has_details_table == 1 ){
-                              echo '<a href="'.base_url().strtolower($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
+                              echo '<a href="'.base_url().ucfirst($detail_table_name).'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column])){
                                   echo number_format($row[$column],2);
                             }elseif($column_key > 0){ 
-                               echo '<a href="'.base_url().strtolower($lookup_table).'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
+                               echo '<a href="'.base_url().ucfirst($lookup_table).'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
                             }else{
                                 echo ucfirst($row[$column]);
                             }
