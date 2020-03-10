@@ -8,7 +8,7 @@ interface CrudModelInterface {
 
   //public function update();
 
-  public function delete($id);
+  public function delete($id = null);
 
   public function list();
 
