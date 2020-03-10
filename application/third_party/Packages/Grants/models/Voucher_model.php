@@ -184,7 +184,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    * The methods get the last voucher record for a given office
    * 
    * @param Int $office_id - Office in check
-   * @return Object - a voucher record
+   * @return Array - a voucher record
    */
   function get_office_last_voucher($office_id):Array{
 
