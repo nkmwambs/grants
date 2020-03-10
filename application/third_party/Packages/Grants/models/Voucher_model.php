@@ -200,7 +200,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     }
     
 
-    return $last_voucher;
+    return (object)$last_voucher;
   }
 
   /**
