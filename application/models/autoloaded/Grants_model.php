@@ -360,15 +360,7 @@ function generate_item_track_number_and_name($approveable_item){
     return array_combine($ids_array,$value_array);
   }
 
-  function action_labels($table,$primary_key){
-
-    //$this->load_detail_model('approval');
-    //$this->CI->load->model('approval');
   
-    return $this->approval_model->display_approver_status_action($this->CI->session->role_id, $table, $primary_key);
-  
-  }
-
   function counts_of_looup($table){
     $table = strtolower($table);
 
