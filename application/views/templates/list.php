@@ -19,7 +19,7 @@ extract($result);
 
     <?php
     if($show_add_button){
-      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
+      echo add_record_button($this->capped_controller, $has_details_table,null,$has_details_listing);
     }
     ?>
   </div>
