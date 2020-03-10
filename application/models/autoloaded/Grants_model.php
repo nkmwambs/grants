@@ -343,6 +343,8 @@ function generate_item_track_number_and_name($approveable_item){
    */
   function lookup_values(String $table) {
 
+    $table = strtolower($table);
+
     if( is_array($this->grants->lookup_values_where($table)) && 
         count($this->grants->lookup_values_where($table)) > 0)
     {
