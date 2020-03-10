@@ -1891,10 +1891,10 @@ function feature_model_list_table_visible_columns() {
         $lookup_values =  [];//array_combine($ids_array,$value_array);
         $count = 0;
 
-          foreach ($ids_array as $key) {
-            $lookup_values[$key] = $value_array[$count];
-            $count ++;
-          }
+        foreach ($value_array as $value) {
+          $lookup_values[$ids_array[$count]] = $value;
+          $count ++;
+        }
         
       }else{
         $lookup_values = $this->CI->grants_model->lookup_values($table);

@@ -144,7 +144,7 @@ function unhide_all_hidden_button(){
 }
 
 $("#office").on('change',function(){
-    let url = "<?=base_url();?>request/get_request_type";
+    let url = "<?=base_url();?>Request/get_request_type";
     $.post(url,{'office_id':$(this).val()},function(response){
         
         unhide_all_hidden_button();
@@ -212,7 +212,7 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
 
     var request_date = $("#request_date").val();
 
-    var url = "<?=base_url();?>request/get_request_accounts_and_allocation/" + office_id + "/" + request_date;
+    var url = "<?=base_url();?>Request/get_request_accounts_and_allocation/" + office_id + "/" + request_date;
     
     $.ajax({
         url:url,
@@ -391,7 +391,7 @@ function allocatioCodeCell(value = 0){
 }
 
 function saveRequest(){
-    var url = "<?=base_url();?>request/insert_new_request";
+    var url = "<?=base_url();?>Request/insert_new_request";
     var data = $("#frm_request").serializeArray();
 
     $.ajax({
