@@ -1655,12 +1655,12 @@ function feature_model_list_table_visible_columns() {
         
         //print_r($all_fields);exit();
 
-        if(!in_array($_column,$all_fields)){
-          $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
-          $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
-          show_error($message,500,'An Error As Encountered');
+        // if(!in_array($_column,$all_fields)){
+        //   $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
+        //   $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
+        //   show_error($message,500,'An Error As Encountered');
           
-        }
+        // }
 
       }
     }
