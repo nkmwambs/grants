@@ -1871,8 +1871,8 @@ function feature_model_list_table_visible_columns() {
           
           $count = 0;
 
-          foreach ($ids_array as $key) {
-            $lookup_values[$key] = $value_array[$count];
+          foreach ($value_array as $value) {
+            $lookup_values[$ids_array[$count]] = $value;
             $count ++;
           }
       }
