@@ -67,7 +67,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $this->current_library = $segment.'_library';
     $this->current_model = $segment.'_model';
-    $this->controller = $segment;
+    $this->controller = strtolower($segment);
     $this->action = $action;
     $this->sub_action = $this->uri->segment(4, null);;
 
