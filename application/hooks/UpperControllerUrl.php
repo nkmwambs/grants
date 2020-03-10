@@ -2,9 +2,9 @@
 
 class UpperControllerUrl{
     public function run(){
-        //if($_SERVER['HTTP_HOST'] !== 'localhost'){
+        if($_SERVER['HTTP_HOST'] !== 'localhost'){
             $_SERVER['REQUEST_URI'] = $this->cap_url_controller($_SERVER['REQUEST_URI']);
-        //}
+        }
     }
 
     function cap_url_controller($url){
