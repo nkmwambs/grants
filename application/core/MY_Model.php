@@ -194,6 +194,10 @@ class MY_Model extends CI_Model
         */////
     }
 
+    function test(){
+        
+    }
+
     /*
      * public function _get_rules($action=NULL)
      * This function returns the rules. If action is given and rules are
