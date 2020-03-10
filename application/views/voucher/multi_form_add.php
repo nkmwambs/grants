@@ -189,7 +189,7 @@ $(document).ready(function(){
 
 function load_approved_requests(){
         var office = $("#office").val();
-        var url = "<?=base_url();?>voucher/get_approve_request_details/" + office;
+        var url = "<?=base_url();?>Voucher/get_approve_request_details/" + office;
 
         $("#request_screen").html("");
 
@@ -276,7 +276,7 @@ $("#bank").on("change",function(){
 
 function checkIfChequeIsValid(office,bank,cheque_number){
     
-    var url = "<?=base_url();?>voucher/check_cheque_validity";
+    var url = "<?=base_url();?>Voucher/check_cheque_validity";
     var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
 
     if($("#bank").val() == ""){
@@ -314,7 +314,7 @@ $("#cheque_number").on('change',function(){
 
 function getOfficeBanks(office_id){
     
-    var url = "<?=base_url();?>voucher/get_office_banks/" + office_id;
+    var url = "<?=base_url();?>Voucher/get_office_banks/" + office_id;
 
     var select_option = "<option value=''>Select a bank account</option>";
 
@@ -345,7 +345,7 @@ function getOfficeBanks(office_id){
 
 function computeNextVoucherNumber(office_id){
     
-    var url = "<?=base_url();?>voucher/compute_next_voucher_number/" + office_id;
+    var url = "<?=base_url();?>Voucher/compute_next_voucher_number/" + office_id;
 
     $.ajax({
         url:url,
@@ -363,7 +363,7 @@ function computeNextVoucherNumber(office_id){
 
 function computeCurrentTransactingDate(office_id){
     
-    var url = "<?=base_url();?>voucher/get_office_voucher_date/" + office_id;
+    var url = "<?=base_url();?>Voucher/get_office_voucher_date/" + office_id;
 
     $.ajax({
         url:url,
@@ -448,7 +448,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
     var voucher_type_id = $(voucherTypeSelect).val();// Can be expense, income, cash_contra or bank_contra
 
-    var url = "<?=base_url();?>voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
+    var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
     
     var account_select_option = "<option value=''>Select an account</option>";
 
@@ -613,7 +613,7 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
 
     var voucher_type_id = $("#voucher_type").val();// Can be expense, income, cash_contra or bank_contra
 
-    var url = "<?=base_url();?>voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
+    var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
     
     $.ajax({
         url:url,
@@ -773,7 +773,7 @@ function requestIdCell(value = 0){
 }
 
 function saveVoucher(){
-    var url = "<?=base_url();?>voucher/insert_new_voucher";
+    var url = "<?=base_url();?>Voucher/insert_new_voucher";
     var data = $("#frm_voucher").serializeArray();
 
     $.ajax({
