@@ -22,7 +22,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
 <div class="row">
   <div class="col-xs-12">
-      <a href='<?=base_url();?>voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
+      <a href='<?=base_url();?>Voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
   </div>
 </div>
 
@@ -36,7 +36,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                 <tr>
                     <th>
                         <?php if($navigation['previous']){?>
-                            <a class='pull-left' href="<?=base_url();?>journal/view/<?=hash_id($navigation['previous']);?>" title='Previous Month'><i class='fa fa-minus-circle' style='font-size:20pt;'></i></a>
+                            <a class='pull-left' href="<?=base_url();?>Journal/view/<?=hash_id($navigation['previous']);?>" title='Previous Month'><i class='fa fa-minus-circle' style='font-size:20pt;'></i></a>
                         <?php }?>    
                     </th>
                     <th colspan="<?=$sum_of_accounts + 11;?>" style='text-align:center;'>
@@ -47,7 +47,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                     </th>
                     <th>
                         <?php if($navigation['next']){?>
-                            <a class='pull-right' href="<?=base_url();?>journal/view/<?=hash_id($navigation['next']);?>" title='Next Month'><i class='fa fa-plus-circle' style='font-size:20pt;'></i></a>
+                            <a class='pull-right' href="<?=base_url();?>Journal/view/<?=hash_id($navigation['next']);?>" title='Next Month'><i class='fa fa-plus-circle' style='font-size:20pt;'></i></a>
                         <?php }?>
                     </th>
                 </tr>
@@ -113,7 +113,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                         <td><?=date('jS M Y',strtotime($date));?></td>
                         <td><span title="<?=$voucher_type_name;?>" class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>
                         <td>
-                            <a href="<?=base_url();?>voucher/view/<?=hash_id($voucher_id);?>" target="__blank">
+                            <a href="<?=base_url();?>Voucher/view/<?=hash_id($voucher_id);?>" target="__blank">
                                 <div class='btn btn-default'><?=$voucher_number;?></div>
                             </a>    
                         </td>
