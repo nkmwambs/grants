@@ -1,6 +1,8 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 //$action_labels['show_label_as_button'] = false;//$this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
+print_r($this->general_model->test());
+
 extract($result['master']);
 
 print_r($action_labels);

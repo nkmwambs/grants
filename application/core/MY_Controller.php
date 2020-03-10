@@ -102,6 +102,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     //Temporary, should be done on login
     $this->load->model('office_model');
     $this->load->model('approval_model');
+    $this->load->model('general_model');
 
   }
   /**
