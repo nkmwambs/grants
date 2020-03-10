@@ -45,6 +45,8 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   //   'department_name','approval_name','status_name');
   // }
 
+  
+
   function list_table_visible_columns(){
     return array('request_id','request_track_number','request_name',
     'request_description','request_date','request_created_date');
