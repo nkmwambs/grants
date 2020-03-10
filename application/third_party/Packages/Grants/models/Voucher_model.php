@@ -95,8 +95,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
     $office_transaction_date = $this->get_office_transacting_month($office_id);
 
-    if(count((array)$this->get_office_last_voucher($office_id)) > 0 ){
-      $voucher_date = $this->get_office_last_voucher($office_id)->voucher_date;
+    if(count($this->get_office_last_voucher($office_id)) > 0 ){
+      $voucher_date = $this->get_office_last_voucher($office_id)['voucher_date'];
     }
 
     if(strtotime($office_transaction_date) > $voucher_date){
@@ -196,7 +196,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
       array('fk_office_id'=>$office_id))->row()->voucher_id;
 
       $last_voucher = $this->db->get_where('voucher',
-      array('voucher_id'=>$voucher_id))->row();
+      array('voucher_id'=>$voucher_id))->row_array();
     }
     
 
@@ -224,7 +224,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     }else{
 
       // Get the last office voucher date
-      $voucher_date = $this->get_office_last_voucher($office_id)->voucher_date;
+      $voucher_date = $this->get_office_last_voucher($office_id)['voucher_date'];
 
       // Check if the transacting month has been closed based on the last voucher date
 
@@ -254,8 +254,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
     // Start checking if the office has a last voucher record
     if(count((array)$this->get_office_last_voucher($office_id)) > 0){
-      $last_voucher_number = $this->get_office_last_voucher($office_id)->voucher_number; 
-      $last_voucher_date = $this->get_office_last_voucher($office_id)->voucher_date; 
+      $last_voucher_number = $this->get_office_last_voucher($office_id)['voucher_number']; 
+      $last_voucher_date = $this->get_office_last_voucher($office_id)['voucher_date']; 
 
       if(!$this->check_if_office_transacting_month_has_been_closed($office_id,$last_voucher_date)){
         // Get the serial number of the last voucher, replace the month and year part of the 
