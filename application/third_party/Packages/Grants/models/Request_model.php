@@ -21,10 +21,6 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   }
 
-  function list_table_visible_columns (){
-    
-  }
-
   function index(){}
 
   public function lookup_tables(){
@@ -43,10 +39,15 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   function master_view(){}
 
+  // function list_table_visible_columns(){
+  //   return array('request_id','request_track_number','request_name','request_type_name',
+  //   'request_description','request_date','request_created_date','office_name',
+  //   'department_name','approval_name','status_name');
+  // }
+
   function list_table_visible_columns(){
-    return array('request_id','request_track_number','request_name','request_type_name','request_description',
-    'request_date','request_created_date','office_name','department_name',
-    'approval_name','status_name');
+    return array('request_id','request_track_number','request_name',
+    'request_description','request_date','request_created_date');
   }
 
   public function list(){
