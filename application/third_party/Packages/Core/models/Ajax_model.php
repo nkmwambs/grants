@@ -25,7 +25,7 @@ class Ajax_model extends CI_Model{
 	{	
 		
 		//Custom page view filters are applied here (Applies for status as at now - plan to expand it to other fields)
-		$this->grants->where_condition('page_view',$this->table,$this->input->post('page_view'));
+		//$this->grants->where_condition('page_view',$this->table,$this->input->post('page_view'));
 
 		//Loading default center records
 		$this->grants->list_table_where();
