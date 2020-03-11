@@ -121,7 +121,7 @@
 
                     <div class="login-bottom-links">
 
-                        <a href="<?php echo base_url(); ?>login" class="link">
+                        <a href="<?php echo base_url(); ?>" class="link">
                             <i class="entypo-lock"></i>
                             <?php echo get_phrase('return_to_login_page'); ?>
                         </a>
