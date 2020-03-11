@@ -168,7 +168,7 @@ public $auth;
     // PASSWORD RESET BY EMAIL
     function forgot_password()
     {
-        $this->load->view('backend/forgot_password');
+        $this->load->view('general/forgot_password');
     }
 
     function ajax_forgot_password()

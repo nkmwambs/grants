@@ -258,6 +258,9 @@ function generate_item_track_number_and_name($approveable_item){
     else
     {
             $this->db->trans_commit();
+
+            $this->grants->action_after_insert($post_array,$approval_id,$header_id);
+
             // This runs after post is successful. It is defined in feature model wrapped via grants model
           //if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
             return get_phrase('insert_successful');
