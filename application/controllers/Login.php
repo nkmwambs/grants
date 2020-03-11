@@ -43,7 +43,7 @@ public $auth;
                 $this->grants->create_missing_system_files(); 
               }
             //$this->load->library($this->session->default_launch_page.'_library');
-            redirect(base_url().ucfirst($this->session->default_launch_page).'/list');
+            redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
           
 

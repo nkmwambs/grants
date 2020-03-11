@@ -1023,4 +1023,19 @@ function update_status(){
 }
 
 
+/**
+ * This method cleans up all the system and make it a new instance
+ */
+function reset_system(){
+
+  $tables = $this->db->list_tables();
+
+  foreach ($tables as $table)
+  {
+      //$this->db->truncate($table);
+  }
+
+}
+
+
 }

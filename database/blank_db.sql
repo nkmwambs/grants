@@ -5,6 +5,24 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+DROP TABLE IF EXISTS `account_system`;
+CREATE TABLE `account_system` (
+  `account_system_id` int(100) NOT NULL AUTO_INCREMENT,
+  `account_system_track_number` varchar(100) NOT NULL,
+  `account_system_name` varchar(100) NOT NULL,
+  `account_system_created_date` date DEFAULT NULL,
+  `account_system_created_by` int(100) DEFAULT NULL,
+  `account_system_last_modified_by` int(100) DEFAULT NULL,
+  `account_system_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `account_system` (`account_system_id`, `account_system_track_number`, `account_system_name`, `account_system_created_date`, `account_system_created_by`, `account_system_last_modified_by`, `account_system_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'ACEM-84359',	'Kenya',	'2020-02-29',	1,	1,	NULL,	564,	0),
+(2,	'ACEM-24684',	'Uganda',	'2020-02-29',	1,	1,	NULL,	565,	0);
+
 DROP TABLE IF EXISTS `approval`;
 CREATE TABLE `approval` (
   `approval_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -346,7 +364,7 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (535,	'APAL-13866',	'Approval Ticket # APAL-13866',	72,	87,	1,	'2020-01-16',	'2020-01-16 11:31:42',	1),
 (537,	'APAL-5306',	'Approval Ticket # APAL-5306',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:01:57',	1),
 (538,	'APAL-14183',	'Approval Ticket # APAL-14183',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:02:46',	1),
-(539,	'APAL-54691',	'Approval Ticket # APAL-54691',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:03:29',	1),
+(539,	'APAL-54691',	'Approval Ticket # APAL-54691',	2,	102,	1,	'2020-01-16',	'2020-03-07 04:43:20',	1),
 (540,	'APAL-73549',	'Approval Ticket # APAL-73549',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:04:14',	1),
 (541,	'APAL-40607',	'Approval Ticket # APAL-40607',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:05:05',	1),
 (542,	'APAL-16117',	'Approval Ticket # APAL-16117',	2,	87,	1,	'2020-01-16',	'2020-01-16 18:05:53',	1),
@@ -354,38 +372,140 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (545,	'APAL-85609',	'Approval Ticket # APAL-85609',	2,	87,	1,	'2020-01-16',	'2020-01-16 19:16:54',	1),
 (546,	'APAL-30805',	'Approval Ticket # APAL-30805',	73,	87,	1,	'2020-01-16',	'2020-01-16 20:25:42',	1),
 (547,	'APAL-3069',	'Approval Ticket # APAL-3069',	75,	87,	1,	'2020-01-16',	'2020-01-16 20:32:38',	1),
-(548,	'APAL-19321',	'Approval Ticket # APAL-19321',	76,	87,	1,	'2020-01-16',	'2020-01-16 21:40:38',	1);
-
-DROP TABLE IF EXISTS `approval_process_map`;
-CREATE TABLE `approval_process_map` (
-  `approval_process_map_id` int(100) NOT NULL,
-  `approveable_item_id` int(100) DEFAULT NULL,
-  `role_id` int(100) DEFAULT NULL,
-  `approval_step_depth` varchar(45) DEFAULT NULL,
-  `created_by` varchar(45) DEFAULT NULL,
-  `created_date` varchar(45) DEFAULT NULL,
-  `last_modified_by` varchar(45) DEFAULT NULL,
-  `last_modified_date` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`approval_process_map_id`),
-  KEY `fk_approval_process_map_role1_idx` (`role_id`),
-  CONSTRAINT `fk_approval_process_map_role1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `approval_tracker`;
-CREATE TABLE `approval_tracker` (
-  `approval_tracker_id` int(100) NOT NULL AUTO_INCREMENT,
-  `fk_status_id` int(11) NOT NULL,
-  `item_key` int(100) NOT NULL,
-  `approval_tracker_created_date` date NOT NULL,
-  `approval_tracker_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `approval_tracker_created_by` int(100) NOT NULL,
-  `approval_tracker_last_modified_by` int(100) NOT NULL,
-  PRIMARY KEY (`approval_tracker_id`),
-  KEY `fk_status_id` (`fk_status_id`),
-  CONSTRAINT `approval_tracker_ibfk_1` FOREIGN KEY (`fk_status_id`) REFERENCES `approval` (`approval_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+(548,	'APAL-19321',	'Approval Ticket # APAL-19321',	76,	87,	1,	'2020-01-16',	'2020-01-16 21:40:38',	1),
+(549,	'APAL-89622',	'Approval Ticket # APAL-89622',	4,	87,	1,	'2020-01-18',	'2020-01-18 09:37:11',	1),
+(550,	'APAL-83089',	'Approval Ticket # APAL-83089',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:09:29',	1),
+(551,	'APAL-89221',	'Approval Ticket # APAL-89221',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:10:59',	1),
+(552,	'APAL-17754',	'Approval Ticket # APAL-17754',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:11:15',	1),
+(553,	'APAL-28097',	'Approval Ticket # APAL-28097',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:11:30',	1),
+(554,	'APAL-55802',	'Approval Ticket # APAL-55802',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:11:52',	1),
+(556,	'APAL-84221',	'Approval Ticket # APAL-84221',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:13:03',	1),
+(557,	'APAL-15342',	'Approval Ticket # APAL-15342',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:13:19',	1),
+(558,	'APAL-84801',	'Approval Ticket # APAL-84801',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:13:38',	1),
+(559,	'APAL-18643',	'Approval Ticket # APAL-18643',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:13:53',	1),
+(560,	'APAL-78018',	'Approval Ticket # APAL-78018',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:14:16',	1),
+(561,	'APAL-20731',	'Approval Ticket # APAL-20731',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:14:32',	1),
+(562,	'APAL-17405',	'Approval Ticket # APAL-17405',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:14:49',	1),
+(563,	'APAL-21845',	'Approval Ticket # APAL-21845',	36,	87,	1,	'2020-01-18',	'2020-01-18 13:15:07',	1),
+(564,	'APAL-40491',	'Approval Ticket # APAL-40491',	78,	87,	1,	'2020-02-29',	'2020-02-29 19:03:28',	1),
+(565,	'APAL-28842',	'Approval Ticket # APAL-28842',	78,	87,	1,	'2020-02-29',	'2020-02-29 19:11:52',	1),
+(613,	'APAL-84241',	'Approval Ticket # APAL-84241',	2,	87,	1,	'2020-03-03',	'2020-03-03 01:48:44',	1),
+(615,	'APAL-24884',	'Approval Ticket # APAL-24884',	2,	87,	1,	'2020-03-03',	'2020-03-03 01:52:31',	1),
+(616,	'APAL-86132',	'Approval Ticket # APAL-86132',	2,	87,	1,	'2020-03-03',	'2020-03-03 01:56:07',	1),
+(617,	'APAL-38350',	'Approval Ticket # APAL-38350',	2,	87,	1,	'2020-03-03',	'2020-03-03 01:58:49',	1),
+(618,	'APAL-82937',	'Approval Ticket # APAL-82937',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:14:08',	1),
+(619,	'APAL-11717',	'Approval Ticket # APAL-11717',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:19:34',	1),
+(620,	'APAL-12554',	'Approval Ticket # APAL-12554',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:25:23',	1),
+(621,	'APAL-88760',	'Approval Ticket # APAL-88760',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:26:28',	1),
+(622,	'APAL-89141',	'Approval Ticket # APAL-89141',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:27:41',	1),
+(623,	'APAL-37990',	'Approval Ticket # APAL-37990',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:29:41',	1),
+(624,	'APAL-23305',	'Approval Ticket # APAL-23305',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:32:50',	1),
+(625,	'APAL-59836',	'Approval Ticket # APAL-59836',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:33:42',	1),
+(626,	'APAL-39230',	'Approval Ticket # APAL-39230',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:36:23',	1),
+(627,	'APAL-36058',	'Approval Ticket # APAL-36058',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:36:29',	1),
+(628,	'APAL-50775',	'Approval Ticket # APAL-50775',	2,	87,	1,	'2020-03-03',	'2020-03-03 02:37:26',	1),
+(629,	'APAL-38632',	'Approval Ticket # APAL-38632',	2,	87,	1,	'2020-03-03',	'2020-03-03 07:59:37',	1),
+(630,	'APAL-71357',	'Approval Ticket # APAL-71357',	2,	87,	1,	'2020-03-03',	'2020-03-03 08:01:54',	1),
+(631,	'APAL-26087',	'Approval Ticket # APAL-26087',	2,	87,	1,	'2020-03-03',	'2020-03-03 08:02:45',	1),
+(632,	'APAL-56811',	'Approval Ticket # APAL-56811',	2,	87,	1,	'2020-03-03',	'2020-03-03 08:04:29',	1),
+(633,	'APAL-82268',	'Approval Ticket # APAL-82268',	5,	87,	1,	'2020-03-04',	'2020-03-04 14:07:29',	1),
+(637,	'APAL-42629',	'Approval Ticket # APAL-42629',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:41:58',	1),
+(638,	'APAL-18403',	'Approval Ticket # APAL-18403',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:43:49',	1),
+(643,	'APAL-24068',	'Approval Ticket # APAL-24068',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:47:33',	1),
+(645,	'APAL-80520',	'Approval Ticket # APAL-80520',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:50:40',	1),
+(646,	'APAL-60001',	'Approval Ticket # APAL-60001',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:52:05',	1),
+(647,	'APAL-72457',	'Approval Ticket # APAL-72457',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:52:56',	1),
+(648,	'APAL-77158',	'Approval Ticket # APAL-77158',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:54:43',	1),
+(649,	'APAL-88940',	'Approval Ticket # APAL-88940',	5,	87,	1,	'2020-03-04',	'2020-03-04 17:59:08',	1),
+(650,	'APAL-68286',	'Approval Ticket # APAL-68286',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:01:18',	1),
+(651,	'APAL-48709',	'Approval Ticket # APAL-48709',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:02:15',	1),
+(652,	'APAL-78800',	'Approval Ticket # APAL-78800',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:03:10',	1),
+(653,	'APAL-3175',	'Approval Ticket # APAL-3175',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:09:12',	1),
+(654,	'APAL-8425',	'Approval Ticket # APAL-8425',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:09:42',	1),
+(655,	'APAL-56555',	'Approval Ticket # APAL-56555',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:10:49',	1),
+(656,	'APAL-10461',	'Approval Ticket # APAL-10461',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:11:29',	1),
+(657,	'APAL-68105',	'Approval Ticket # APAL-68105',	5,	87,	1,	'2020-03-04',	'2020-03-04 18:11:46',	1),
+(658,	'APAL-19959',	'Approval Ticket # APAL-19959',	5,	87,	1,	'2020-03-04',	'2020-03-04 22:22:16',	1),
+(659,	'APAL-39515',	'Approval Ticket # APAL-39515',	3,	87,	1,	'2020-03-05',	'2020-03-05 22:44:53',	1),
+(663,	'APAL-43195',	'Approval Ticket # APAL-43195',	9,	87,	1,	'2020-03-06',	'2020-03-06 00:09:38',	1),
+(664,	'APAL-13035',	'Approval Ticket # APAL-13035',	3,	87,	1,	'2020-03-06',	'2020-03-06 05:21:43',	1),
+(665,	'APAL-51120',	'Approval Ticket # APAL-51120',	3,	87,	1,	'2020-03-06',	'2020-03-06 05:23:23',	1),
+(666,	'APAL-65509',	'Approval Ticket # APAL-65509',	3,	87,	1,	'2020-03-06',	'2020-03-06 05:24:44',	1),
+(667,	'APAL-10071',	'Approval Ticket # APAL-10071',	3,	87,	1,	'2020-03-06',	'2020-03-06 05:29:17',	1),
+(668,	'APAL-9872',	'Approval Ticket # APAL-9872',	3,	87,	1,	'2020-03-06',	'2020-03-06 05:30:51',	1),
+(669,	'APAL-61157',	'Approval Ticket # APAL-61157',	3,	87,	1,	'2020-03-06',	'2020-03-06 05:32:16',	1),
+(670,	'APAL-86793',	'Approval Ticket # APAL-86793',	50,	87,	1,	'2020-03-06',	'2020-03-06 05:40:21',	1),
+(671,	'APAL-4049',	'Approval Ticket # APAL-4049',	49,	87,	1,	'2020-03-06',	'2020-03-06 05:50:13',	1),
+(672,	'APAL-77467',	'Approval Ticket # APAL-77467',	2,	87,	1,	'2020-03-06',	'2020-03-06 06:23:41',	1),
+(673,	'APAL-5934',	'Approval Ticket # APAL-5934',	2,	87,	1,	'2020-03-06',	'2020-03-06 06:25:18',	1),
+(674,	'APAL-84009',	'Approval Ticket # APAL-84009',	2,	87,	1,	'2020-03-06',	'2020-03-06 06:29:07',	1),
+(675,	'APAL-65111',	'Approval Ticket # APAL-65111',	2,	87,	1,	'2020-03-06',	'2020-03-06 06:41:59',	1),
+(676,	'APAL-64740',	'Approval Ticket # APAL-64740',	2,	87,	1,	'2020-03-06',	'2020-03-06 06:45:55',	1),
+(677,	'APAL-39231',	'Approval Ticket # APAL-39231',	2,	87,	1,	'2020-03-06',	'2020-03-06 06:47:21',	1),
+(678,	'APAL-72837',	'Approval Ticket # APAL-72837',	29,	87,	1,	'2020-03-06',	'2020-03-06 09:05:54',	1),
+(679,	'APAL-62830',	'Approval Ticket # APAL-62830',	52,	87,	1,	'2020-03-06',	'2020-03-06 09:13:25',	1),
+(680,	'APAL-3261',	'Approval Ticket # APAL-3261',	49,	87,	1,	'2020-03-06',	'2020-03-06 09:18:01',	1),
+(681,	'APAL-74429',	'Approval Ticket # APAL-74429',	3,	87,	5,	'2020-03-06',	'2020-03-06 10:01:03',	5),
+(682,	'APAL-45800',	'Approval Ticket # APAL-45800',	2,	87,	1,	'2020-03-06',	'2020-03-06 10:36:12',	1),
+(683,	'APAL-83198',	'Approval Ticket # APAL-83198',	2,	87,	1,	'2020-03-06',	'2020-03-06 17:38:19',	1),
+(684,	'APAL-79323',	'Approval Ticket # APAL-79323',	32,	87,	1,	'2020-03-07',	'2020-03-07 01:49:06',	1),
+(685,	'APAL-31450',	'Approval Ticket # APAL-31450',	26,	87,	1,	'2020-03-07',	'2020-03-07 01:55:13',	1),
+(686,	'APAL-5243',	'Approval Ticket # APAL-5243',	32,	87,	1,	'2020-03-07',	'2020-03-07 02:52:58',	1),
+(687,	'APAL-59144',	'Approval Ticket # APAL-59144',	32,	87,	1,	'2020-03-07',	'2020-03-07 02:54:39',	1),
+(688,	'APAL-22037',	'Approval Ticket # APAL-22037',	32,	87,	1,	'2020-03-07',	'2020-03-07 02:56:38',	1),
+(689,	'APAL-63418',	'Approval Ticket # APAL-63418',	32,	87,	1,	'2020-03-07',	'2020-03-07 02:58:06',	1),
+(691,	'APAL-38726',	'Approval Ticket # APAL-38726',	21,	87,	1,	'2020-03-07',	'2020-03-07 04:21:56',	1),
+(692,	'APAL-39926',	'Approval Ticket # APAL-39926',	32,	87,	1,	'2020-03-07',	'2020-03-07 04:23:20',	1),
+(693,	'APAL-74822',	'Approval Ticket # APAL-74822',	32,	87,	1,	'2020-03-07',	'2020-03-07 04:24:17',	1),
+(695,	'APAL-63220',	'Approval Ticket # APAL-63220',	38,	87,	1,	'2020-03-07',	'2020-03-07 05:29:10',	1),
+(696,	'APAL-86895',	'Approval Ticket # APAL-86895',	2,	102,	1,	'2020-03-07',	'2020-03-07 05:36:08',	1),
+(697,	'APAL-56477',	'Approval Ticket # APAL-56477',	38,	87,	1,	'2020-03-07',	'2020-03-07 06:03:30',	1),
+(700,	'APAL-46485',	'Approval Ticket # APAL-46485',	33,	87,	1,	'2020-03-07',	'2020-03-07 06:14:11',	1),
+(701,	'APAL-41347',	'Approval Ticket # APAL-41347',	71,	87,	1,	'2020-03-07',	'2020-03-07 06:23:33',	1),
+(702,	'APAL-70521',	'Approval Ticket # APAL-70521',	2,	87,	1,	'2020-03-07',	'2020-03-07 06:23:33',	1),
+(703,	'APAL-21867',	'Approval Ticket # APAL-21867',	2,	102,	1,	'2020-03-07',	'2020-03-07 06:25:44',	1),
+(704,	'APAL-4778',	'Approval Ticket # APAL-4778',	22,	87,	1,	'2020-03-07',	'2020-03-07 06:36:47',	1),
+(705,	'APAL-29796',	'Approval Ticket # APAL-29796',	23,	87,	1,	'2020-03-07',	'2020-03-07 06:38:18',	1),
+(706,	'APAL-61231',	'Approval Ticket # APAL-61231',	22,	87,	1,	'2020-03-07',	'2020-03-07 06:42:38',	1),
+(707,	'APAL-87998',	'Approval Ticket # APAL-87998',	23,	87,	1,	'2020-03-07',	'2020-03-07 06:43:49',	1),
+(708,	'APAL-32202',	'Approval Ticket # APAL-32202',	22,	87,	1,	'2020-03-07',	'2020-03-07 06:46:10',	1),
+(713,	'APAL-16334',	'Approval Ticket # APAL-16334',	5,	102,	5,	'2020-03-07',	'2020-03-07 07:41:09',	5),
+(714,	'APAL-28672',	'Approval Ticket # APAL-28672',	32,	87,	1,	'2020-03-07',	'2020-03-07 07:09:03',	1),
+(715,	'APAL-3704',	'Approval Ticket # APAL-3704',	32,	87,	1,	'2020-03-07',	'2020-03-07 07:42:53',	1),
+(716,	'APAL-86315',	'Approval Ticket # APAL-86315',	3,	102,	5,	'2020-03-07',	'2020-03-07 09:13:03',	5),
+(717,	'APAL-49505',	'Approval Ticket # APAL-49505',	51,	87,	1,	'2020-03-07',	'2020-03-07 09:35:21',	1),
+(721,	'APAL-65291',	'Approval Ticket # APAL-65291',	2,	87,	1,	'2020-03-07',	'2020-03-07 10:24:52',	1),
+(722,	'APAL-73429',	'Approval Ticket # APAL-73429',	2,	87,	1,	'2020-03-07',	'2020-03-07 10:27:58',	1),
+(723,	'APAL-58004',	'Approval Ticket # APAL-58004',	3,	102,	5,	'2020-03-07',	'2020-03-07 10:43:13',	5),
+(724,	'APAL-10610',	'Approval Ticket # APAL-10610',	52,	87,	1,	'2020-03-07',	'2020-03-07 10:50:38',	1),
+(725,	'APAL-68209',	'Approval Ticket # APAL-68209',	49,	87,	1,	'2020-03-07',	'2020-03-07 10:51:36',	1),
+(726,	'APAL-66182',	'Approval Ticket # APAL-66182',	23,	87,	1,	'2020-03-07',	'2020-03-07 11:04:26',	1),
+(727,	'APAL-32959',	'Approval Ticket # APAL-32959',	23,	87,	1,	'2020-03-07',	'2020-03-07 11:06:04',	1),
+(729,	'APAL-37874',	'Approval Ticket # APAL-37874',	2,	102,	1,	'2020-03-07',	'2020-03-07 11:34:00',	1),
+(731,	'APAL-72184',	'Approval Ticket # APAL-72184',	2,	102,	5,	'2020-03-07',	'2020-03-07 11:50:19',	5),
+(732,	'APAL-26838',	'Approval Ticket # APAL-26838',	38,	87,	1,	'2020-03-07',	'2020-03-07 12:07:24',	1),
+(733,	'APAL-44880',	'Approval Ticket # APAL-44880',	71,	87,	5,	'2020-03-07',	'2020-03-07 12:11:32',	5),
+(734,	'APAL-33241',	'Approval Ticket # APAL-33241',	2,	87,	5,	'2020-03-07',	'2020-03-07 12:11:32',	5),
+(735,	'APAL-28346',	'Approval Ticket # APAL-28346',	22,	87,	1,	'2020-03-08',	'2020-03-08 18:02:49',	1),
+(736,	'APAL-20720',	'Approval Ticket # APAL-20720',	23,	87,	1,	'2020-03-08',	'2020-03-08 18:03:55',	1),
+(737,	'APAL-2790',	'Approval Ticket # APAL-2790',	26,	87,	1,	'2020-03-08',	'2020-03-08 20:26:09',	1),
+(738,	'APAL-7138',	'Approval Ticket # APAL-7138',	22,	87,	1,	'2020-03-08',	'2020-03-08 20:55:06',	1),
+(739,	'APAL-32287',	'Approval Ticket # APAL-32287',	23,	87,	1,	'2020-03-08',	'2020-03-08 20:56:05',	1),
+(740,	'APAL-74886',	'Approval Ticket # APAL-74886',	22,	87,	1,	'2020-03-08',	'2020-03-08 20:58:08',	1),
+(741,	'APAL-10546',	'Approval Ticket # APAL-10546',	23,	87,	1,	'2020-03-08',	'2020-03-08 20:59:32',	1),
+(742,	'APAL-68713',	'Approval Ticket # APAL-68713',	22,	87,	1,	'2020-03-08',	'2020-03-08 21:02:26',	1),
+(743,	'APAL-73259',	'Approval Ticket # APAL-73259',	23,	87,	1,	'2020-03-08',	'2020-03-08 21:03:15',	1),
+(748,	'APAL-82624',	'Approval Ticket # APAL-82624',	81,	87,	1,	'2020-03-09',	'2020-03-09 05:40:01',	1),
+(749,	'APAL-37475',	'Approval Ticket # APAL-37475',	81,	87,	1,	'2020-03-09',	'2020-03-09 05:41:30',	1),
+(750,	'APAL-12171',	'Approval Ticket # APAL-12171',	81,	87,	1,	'2020-03-09',	'2020-03-09 05:43:25',	1),
+(751,	'APAL-84802',	'Approval Ticket # APAL-84802',	81,	87,	1,	'2020-03-09',	'2020-03-09 05:51:11',	1),
+(752,	'APAL-1194',	'Approval Ticket # APAL-1194',	81,	87,	1,	'2020-03-09',	'2020-03-09 05:55:17',	1),
+(754,	'APAL-1040',	'Approval Ticket # APAL-1040',	81,	87,	1,	'2020-03-09',	'2020-03-09 05:58:23',	1),
+(755,	'APAL-70174',	'Approval Ticket # APAL-70174',	81,	87,	1,	'2020-03-09',	'2020-03-09 06:09:39',	1),
+(756,	'APAL-30608',	'Approval Ticket # APAL-30608',	81,	87,	1,	'2020-03-09',	'2020-03-09 06:10:42',	1),
+(757,	'APAL-54545',	'Approval Ticket # APAL-54545',	81,	87,	1,	'2020-03-09',	'2020-03-09 06:12:37',	1),
+(758,	'APAL-26566',	'Approval Ticket # APAL-26566',	81,	87,	1,	'2020-03-09',	'2020-03-09 06:17:46',	1),
+(760,	'APAL-22180',	'Approval Ticket # APAL-22180',	4,	87,	1,	'2020-03-11',	'2020-03-10 23:42:07',	1);
 
 DROP TABLE IF EXISTS `approve_item`;
 CREATE TABLE `approve_item` (
@@ -407,7 +527,7 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (2,	'APEM-45323',	'voucher',	1,	'0000-00-00',	0,	'2019-11-15 18:14:11',	0,	NULL,	NULL),
 (3,	'APEM-45324',	'request',	1,	'0000-00-00',	0,	'2019-11-25 03:19:05',	0,	NULL,	NULL),
 (4,	'APEM-45325',	'budget',	1,	'2019-10-22',	1,	'2019-11-15 18:14:11',	1,	NULL,	NULL),
-(5,	'APEM-45326',	'budget_item',	0,	'2019-10-22',	1,	'2019-11-15 18:14:11',	1,	NULL,	NULL),
+(5,	'APEM-45326',	'budget_item',	1,	'2019-10-22',	1,	'2020-03-07 07:05:10',	1,	NULL,	NULL),
 (8,	'APEM-45327',	'funder',	1,	'2019-10-22',	1,	'2019-11-20 23:35:59',	1,	NULL,	NULL),
 (9,	'APEM-45328',	'workplan',	0,	'2019-10-22',	1,	'2019-11-15 18:14:11',	1,	NULL,	NULL),
 (13,	'APEM-45329',	'budget_item_detail',	0,	'2019-10-22',	1,	'2019-11-15 18:14:11',	1,	NULL,	NULL),
@@ -455,7 +575,7 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (59,	'',	'page_view_role',	0,	'2019-11-23',	1,	'2019-11-23 14:11:51',	1,	NULL,	NULL),
 (60,	'',	'request_type',	0,	'2019-11-23',	1,	'2019-11-23 14:31:51',	1,	NULL,	NULL),
 (61,	'',	'page_view_condition',	0,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(62,	'',	'approval',	0,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
+(62,	'APEM-78654',	'approval',	0,	'2019-11-23',	1,	'2020-03-07 04:19:43',	1,	NULL,	NULL),
 (63,	'',	'income_account',	0,	'2019-11-27',	1,	'2019-11-27 12:58:11',	1,	NULL,	NULL),
 (65,	'',	'context_center_user',	0,	'2019-11-30',	1,	'2019-12-08 08:45:49',	1,	NULL,	NULL),
 (66,	'',	'context_definition',	0,	'2019-12-15',	1,	'2019-12-15 06:51:08',	1,	NULL,	NULL),
@@ -468,7 +588,12 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (73,	'',	'voucher_type_effect',	0,	'2020-01-15',	1,	'2020-01-15 15:14:14',	1,	NULL,	NULL),
 (74,	'',	'bank_contra_account',	0,	'2020-01-16',	1,	'2020-01-16 20:36:54',	1,	NULL,	NULL),
 (75,	'',	'cash_contra_account',	0,	'2020-01-16',	1,	'2020-01-16 20:31:30',	1,	NULL,	NULL),
-(76,	'',	'opening_cash_balance',	0,	'2020-01-16',	1,	'2020-01-16 21:37:40',	1,	NULL,	NULL);
+(76,	'',	'opening_cash_balance',	0,	'2020-01-16',	1,	'2020-01-16 21:37:40',	1,	NULL,	NULL),
+(77,	'',	'budget_schedule',	0,	'2020-01-18',	1,	'2020-01-18 11:35:29',	1,	NULL,	NULL),
+(78,	'',	'account_system',	0,	'2020-02-29',	1,	'2020-02-29 19:03:20',	1,	NULL,	NULL),
+(79,	'',	'request_conversion',	0,	'2020-03-02',	1,	'2020-03-02 06:27:11',	1,	NULL,	NULL),
+(80,	'',	'project_allocation_detail',	0,	'2020-03-06',	1,	'2020-03-05 23:39:58',	1,	NULL,	NULL),
+(81,	'',	'status_role',	0,	'2020-02-29',	1,	'2020-02-29 19:03:20',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -490,9 +615,6 @@ CREATE TABLE `bank` (
   CONSTRAINT `bank_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the banks for centers';
 
-INSERT INTO `bank` (`bank_id`, `bank_track_number`, `bank_name`, `bank_swift_code`, `bank_is_active`, `bank_created_date`, `bank_created_by`, `bank_last_modified_date`, `bank_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'BAK-87365',	'Commercial Bank of Kenya',	'23700',	1,	'2019-11-07',	1,	'2019-11-06 15:28:30',	1,	152,	51),
-(2,	'BANK-3124',	'Chess Bank',	'65783',	1,	'2019-11-08',	2,	'2019-11-08 11:03:07',	2,	170,	51);
 
 DROP TABLE IF EXISTS `bank_branch`;
 CREATE TABLE `bank_branch` (
@@ -512,10 +634,6 @@ CREATE TABLE `bank_branch` (
   CONSTRAINT `fk_bank_branch_bank1` FOREIGN KEY (`fk_bank_id`) REFERENCES `bank` (`bank_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds branches for banks';
 
-INSERT INTO `bank_branch` (`bank_branch_id`, `bank_branch_track_number`, `fk_bank_id`, `bank_branch_name`, `bank_branch_is_active`, `bank_branch_created_by`, `bank_branch_created_date`, `bank_branch_last_modified_date`, `bank_branch_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(3,	'BACH-7622',	1,	'Kilifi Branch',	1,	1,	'2020-01-04',	NULL,	1,	492,	89),
-(4,	'BACH-55439',	1,	'Malindi Branch',	1,	1,	'2020-01-04',	NULL,	1,	493,	89),
-(5,	'BACH-42899',	1,	'Mombasa Branch',	1,	1,	'2020-01-04',	NULL,	1,	495,	89);
 
 DROP TABLE IF EXISTS `bank_contra_account`;
 CREATE TABLE `bank_contra_account` (
@@ -558,8 +676,6 @@ CREATE TABLE `budget` (
   CONSTRAINT `fk_budget_center1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the budget items by activity';
 
-INSERT INTO `budget` (`budget_id`, `budget_track_number`, `budget_name`, `fk_office_id`, `fk_approval_id`, `fk_status_id`, `budget_year`, `budget_created_by`, `budget_created_date`, `budget_last_modified_by`, `budget_last_modified_date`) VALUES
-(2,	'BUET-37550',	'Test Budget',	18,	443,	23,	2019,	1,	'2019-12-08',	1,	NULL);
 
 DROP TABLE IF EXISTS `budget_item`;
 CREATE TABLE `budget_item` (
@@ -567,16 +683,16 @@ CREATE TABLE `budget_item` (
   `budget_item_track_number` varchar(100) DEFAULT NULL,
   `budget_item_name` varchar(100) DEFAULT NULL,
   `fk_budget_id` int(100) DEFAULT NULL,
+  `budget_item_total_cost` int(50) DEFAULT NULL,
   `fk_expense_account_id` int(100) DEFAULT NULL,
-  `budget_item_description` varchar(45) DEFAULT NULL,
+  `budget_item_description` longtext,
   `fk_status_id` int(11) DEFAULT '0',
   `fk_approval_id` int(11) DEFAULT '0',
   `fk_project_allocation_id` int(100) DEFAULT NULL,
-  `budget_item_note` longtext,
   `budget_item_created_by` int(100) DEFAULT NULL,
-  `budget_item_last_modified_by` int(100) DEFAULT NULL,
+  `budget_item_last_modified_by` int(11) DEFAULT NULL,
   `budget_item_created_date` date DEFAULT NULL,
-  `budget_item_last_modified_date` date DEFAULT NULL,
+  `budget_item_last_modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`budget_item_id`),
   KEY `fk_budget_detail_id_expense_account_id_idx` (`fk_expense_account_id`),
   KEY `fk_budget_detail_budget_id_idx` (`fk_budget_id`),
@@ -604,13 +720,12 @@ CREATE TABLE `budget_item_detail` (
   `budget_item_detail_created_date` date DEFAULT NULL,
   `budget_item_detail_created_by` int(100) DEFAULT NULL,
   `budget_item_detail_last_modified_by` int(100) DEFAULT NULL,
-  `budget_item_detail_last_modified_date` date DEFAULT NULL,
+  `budget_item_detail_last_modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`budget_item_detail_id`),
   KEY `fk_budget_month_spread_budget_detail1_idx` (`fk_budget_item_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_approval_id` (`fk_approval_id`),
   CONSTRAINT `budget_item_detail_ibfk_1` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `budget_item_detail_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
@@ -633,19 +748,6 @@ CREATE TABLE `cash_contra_account` (
 INSERT INTO `cash_contra_account` (`cash_contra_account_id`, `cash_contra_account_track_number`, `cash_contra_account_name`, `cash_contra_account_code`, `cash_contra_account_created_date`, `cash_contra_account_created_by`, `cash_contra_account_last_modified_by`, `cash_contra_account_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'CANT-70987',	'Petty Cash Rebanking',	'C002',	'2020-01-16',	1,	1,	NULL,	547,	0);
 
-DROP TABLE IF EXISTS `chatable_table`;
-CREATE TABLE `chatable_table` (
-  `chatable_table_id` int(11) NOT NULL,
-  `chatable_table_name` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`chatable_table_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 DROP TABLE IF EXISTS `cheque_book`;
 CREATE TABLE `cheque_book` (
   `cheque_book_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -667,9 +769,6 @@ CREATE TABLE `cheque_book` (
   CONSTRAINT `cheque_book_ibfk_1` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `cheque_book` (`cheque_book_id`, `cheque_book_track_number`, `cheque_book_name`, `fk_office_bank_id`, `cheque_book_is_active`, `cheque_book_start_serial_number`, `cheque_book_count_of_leaves`, `cheque_book_use_start_date`, `cheque_book_created_date`, `cheque_book_created_by`, `cheque_book_last_modified_by`, `cheque_book_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'CHOK-32703',	'Cheque_book # CHOK-32703',	2,	1,	'1',	'150',	'2020-01-01',	'2020-01-06',	1,	1,	NULL,	502,	0),
-(2,	'CHOK-9577',	'First Cheque Book',	4,	1,	'150',	'150',	'2020-01-01',	'2020-01-06',	1,	1,	NULL,	511,	0);
 
 DROP TABLE IF EXISTS `ci_sessions`;
 CREATE TABLE `ci_sessions` (
@@ -680,26 +779,6 @@ CREATE TABLE `ci_sessions` (
   PRIMARY KEY (`id`),
   KEY `ci_sessions_timestamp` (`timestamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS `context`;
-CREATE TABLE `context` (
-  `context_id` int(100) NOT NULL AUTO_INCREMENT,
-  `context_track_number` varchar(100) NOT NULL,
-  `context_name` varchar(100) NOT NULL,
-  `context_description` longtext NOT NULL,
-  `fk_context_definition_id` int(100) NOT NULL,
-  `context_created_date` date NOT NULL,
-  `context_created_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `context_created_by` int(11) NOT NULL,
-  `context_last_modified_by` int(11) NOT NULL,
-  `context_last_modified_date` date DEFAULT NULL,
-  `fk_approval_id` int(100) DEFAULT NULL,
-  `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`context_id`),
-  KEY `fk_context_definition_id` (`fk_context_definition_id`),
-  CONSTRAINT `context_ibfk_1` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `context_center`;
@@ -727,8 +806,6 @@ CREATE TABLE `context_center` (
   CONSTRAINT `context_center_ibfk_4` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `context_center` (`context_center_id`, `context_center_track_number`, `context_center_name`, `context_center_description`, `fk_context_cluster_id`, `fk_context_definition_id`, `fk_office_id`, `context_center_created_date`, `context_center_created_by`, `context_center_last_modified_by`, `context_center_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'COER-53990',	'GRC Shingila',	'This is GRC Shingila',	1,	13,	9,	'2019-12-13',	1,	1,	NULL,	454,	58);
 
 DROP TABLE IF EXISTS `context_center_user`;
 CREATE TABLE `context_center_user` (
@@ -746,17 +823,14 @@ CREATE TABLE `context_center_user` (
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`context_center_user_id`),
-  KEY `fk_user_id` (`fk_user_id`),
   KEY `fk_context_center_id` (`fk_context_center_id`),
   KEY `fk_designation_id` (`fk_designation_id`),
+  KEY `fk_user_id` (`fk_user_id`),
   CONSTRAINT `context_center_user_ibfk_1` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `context_center_user_ibfk_2` FOREIGN KEY (`fk_context_center_id`) REFERENCES `context_center` (`context_center_id`),
   CONSTRAINT `context_center_user_ibfk_3` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `context_center_user` (`context_center_user_id`, `context_center_user_track_number`, `context_center_user_name`, `fk_user_id`, `fk_context_center_id`, `fk_designation_id`, `context_center_user_is_active`, `context_center_user_created_date`, `context_center_user_last_modified_date`, `context_center_user_created_by`, `context_center_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'COER-38672',	'David Mbitsi - GRC',	5,	1,	3,	1,	'2019-12-15',	'2019-12-15 13:55:06',	1,	1,	465,	0),
-(2,	'COER-8517',	'Betty Kanze',	6,	1,	3,	1,	'2020-01-09',	'2020-01-09 11:37:08',	1,	1,	515,	0);
 
 DROP TABLE IF EXISTS `context_cluster`;
 CREATE TABLE `context_cluster` (
@@ -787,9 +861,6 @@ CREATE TABLE `context_cluster` (
   CONSTRAINT `context_cluster_ibfk_7` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `context_cluster` (`context_cluster_id`, `context_cluster_track_number`, `context_cluster_name`, `context_cluster_description`, `fk_office_id`, `fk_context_cohort_id`, `fk_context_definition_id`, `context_cluster_created_date`, `context_cluster_last_modified_date`, `context_cluster_created_by`, `context_cluster_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'COER-25606',	'Malindi Cluster',	'This is Malindi cluster',	23,	1,	8,	'2019-12-13',	'2019-12-13 04:14:01',	1,	1,	453,	66),
-(2,	'COER-83909',	'Kaloleni Cluster',	'This is a Kaloleni Cluster',	19,	2,	8,	'2019-12-14',	'2019-12-14 04:41:24',	1,	1,	458,	66);
 
 DROP TABLE IF EXISTS `context_cluster_user`;
 CREATE TABLE `context_cluster_user` (
@@ -811,12 +882,7 @@ CREATE TABLE `context_cluster_user` (
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_context_cluster_id` (`fk_context_cluster_id`),
   KEY `fk_designation_id` (`fk_designation_id`),
-  KEY `fk_user_id` (`fk_user_id`),
-  CONSTRAINT `context_cluster_user_ibfk_1` FOREIGN KEY (`fk_context_cluster_id`) REFERENCES `context_cluster` (`context_cluster_id`),
-  CONSTRAINT `context_cluster_user_ibfk_2` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `context_cluster_user_ibfk_3` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
-  CONSTRAINT `context_cluster_user_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `context_cluster_user_ibfk_5` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
+  KEY `fk_user_id` (`fk_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -849,10 +915,6 @@ CREATE TABLE `context_cohort` (
   CONSTRAINT `context_cohort_ibfk_6` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `context_cohort` (`context_cohort_id`, `context_cohort_track_number`, `context_cohort_name`, `context_cohort_description`, `fk_office_id`, `fk_context_country_id`, `fk_context_definition_id`, `context_cohort_created_date`, `context_cohort_last_modified_date`, `context_cohort_created_by`, `context_cohort_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'CORT-53318',	'Coast and Lower Eastern Cohort',	'This is Coast and Lower Eastern Cohort',	20,	1,	9,	'2019-12-13',	'2019-12-13 04:12:02',	1,	1,	451,	70),
-(2,	'CORT-19622',	'Nairobi Area Cohort',	'This is a Nairobi Area Cohort',	15,	1,	9,	'2019-12-14',	'2019-12-14 04:28:21',	1,	1,	457,	70),
-(3,	'CORT-57857',	'Uganda East Cohort Context',	'Uganda East Cohort Context',	25,	2,	9,	'2019-12-15',	'2019-12-15 09:06:40',	1,	1,	463,	70);
 
 DROP TABLE IF EXISTS `context_cohort_user`;
 CREATE TABLE `context_cohort_user` (
@@ -913,8 +975,7 @@ CREATE TABLE `context_country` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `context_country` (`context_country_id`, `context_country_track_number`, `context_country_name`, `context_country_description`, `fk_office_id`, `fk_context_region_id`, `fk_context_definition_id`, `context_country_created_date`, `context_country_last_modified_date`, `context_country_created_by`, `context_country_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'CORY-56399',	'Kenya Country Office',	'This is Kenya Country Office',	18,	2,	10,	'2019-12-13',	'2019-12-13 04:11:04',	1,	1,	450,	69),
-(2,	'CORY-88987',	'Uganda Country Office',	'Uganda Country Office',	24,	2,	10,	'2019-12-15',	'2019-12-15 08:18:39',	1,	1,	460,	69);
+(1,	'CORY-56399',	'Kenya Country Office',	'This is Kenya Country Office',	18,	2,	10,	'2019-12-13',	'2019-12-13 04:11:04',	1,	1,	450,	69);
 
 DROP TABLE IF EXISTS `context_country_user`;
 CREATE TABLE `context_country_user` (
@@ -945,8 +1006,7 @@ CREATE TABLE `context_country_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `context_country_user` (`context_country_user_id`, `context_country_user_track_number`, `context_country_user_name`, `fk_user_id`, `fk_context_country_id`, `fk_designation_id`, `context_country_user_is_active`, `context_country_user_created_date`, `context_country_user_last_modified_date`, `context_country_user_created_by`, `context_country_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'COER-3908',	'Nicodemus Karisa - System Admin',	1,	1,	7,	1,	'2019-12-13',	'2019-12-13 16:15:08',	1,	1,	456,	77),
-(2,	'COER-46484',	'Nicodemus Karisa for Uganda Sys Admin',	1,	2,	7,	1,	'2019-12-15',	'2019-12-15 08:23:05',	1,	1,	461,	77);
+(1,	'COER-3908',	'Nicodemus Karisa - System Admin',	1,	1,	7,	1,	'2019-12-13',	'2019-12-13 16:15:08',	1,	1,	456,	77);
 
 DROP TABLE IF EXISTS `context_definition`;
 CREATE TABLE `context_definition` (
@@ -1090,102 +1150,6 @@ CREATE TABLE `context_region_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `context_user`;
-CREATE TABLE `context_user` (
-  `context_user_id` int(100) NOT NULL AUTO_INCREMENT,
-  `context_user_track_number` varchar(100) NOT NULL,
-  `context_user_name` varchar(100) NOT NULL,
-  `fk_user_id` int(100) NOT NULL,
-  `fk_context_id` int(100) NOT NULL,
-  `context_user_created_date` date NOT NULL,
-  `context_user_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `context_user_created_by` int(11) NOT NULL,
-  `context_user_last_modified_by` int(11) NOT NULL,
-  PRIMARY KEY (`context_user_id`),
-  KEY `fk_user_id` (`fk_user_id`),
-  KEY `fk_context_id` (`fk_context_id`),
-  CONSTRAINT `context_user_ibfk_1` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `context_user_ibfk_2` FOREIGN KEY (`fk_context_id`) REFERENCES `context` (`context_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `customizable_table`;
-CREATE TABLE `customizable_table` (
-  `customizable_table_id` int(11) NOT NULL,
-  `customizable_table_name` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`customizable_table_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `custom_field`;
-CREATE TABLE `custom_field` (
-  `custom_field_id` int(100) NOT NULL,
-  `customizable_table_id` int(100) DEFAULT NULL,
-  `column_name` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  `custom_field_type_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`custom_field_id`),
-  KEY `fk_custom_field_customizable_table1_idx` (`customizable_table_id`),
-  KEY `fk_custom_field_custom_field_type1_idx` (`custom_field_type_id`),
-  CONSTRAINT `fk_custom_field_custom_field_type1` FOREIGN KEY (`custom_field_type_id`) REFERENCES `custom_field_type` (`custom_field_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_custom_field_customizable_table1` FOREIGN KEY (`customizable_table_id`) REFERENCES `customizable_table` (`customizable_table_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `custom_field_detail`;
-CREATE TABLE `custom_field_detail` (
-  `custom_field_detail_id` int(100) NOT NULL AUTO_INCREMENT,
-  `custom_field_id` int(100) DEFAULT NULL,
-  `custom_field_value` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`custom_field_detail_id`),
-  KEY `fk_custom_field_detail_custom_field1_idx` (`custom_field_id`),
-  CONSTRAINT `fk_custom_field_detail_custom_field1` FOREIGN KEY (`custom_field_id`) REFERENCES `custom_field` (`custom_field_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `custom_field_type`;
-CREATE TABLE `custom_field_type` (
-  `custom_field_type_id` int(100) NOT NULL AUTO_INCREMENT,
-  `custom_field_type_name` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`custom_field_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `custom_field_type_option`;
-CREATE TABLE `custom_field_type_option` (
-  `custom_field_type_option_id` int(100) NOT NULL AUTO_INCREMENT,
-  `custom_field_id` int(100) DEFAULT NULL,
-  `custom_field_type_option_name` varchar(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`custom_field_type_option_id`),
-  KEY `fk_custom_field_type_option_custom_field1_idx` (`custom_field_id`),
-  CONSTRAINT `fk_custom_field_type_option_custom_field1` FOREIGN KEY (`custom_field_id`) REFERENCES `custom_field` (`custom_field_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 DROP TABLE IF EXISTS `dashboard`;
 CREATE TABLE `dashboard` (
   `dashboard_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -1221,9 +1185,7 @@ CREATE TABLE `department` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `department` (`department_id`, `department_track_number`, `department_name`, `department_description`, `department_is_active`, `department_created_date`, `department_last_modified_date`, `department_created_by`, `department_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'DENT-63671',	'Health Promotion',	'Health Promotion Department',	1,	'2019-11-21',	'2019-11-21 16:12:57',	1,	1,	262,	73),
-(2,	'DENT-57933',	'Training Department',	'Training Department',	1,	'2019-11-21',	'2019-11-21 16:13:17',	1,	1,	263,	73),
-(3,	'DENT-46303',	'Finance',	'Finance department',	1,	'2019-12-16',	'2019-12-16 10:40:23',	1,	1,	470,	73);
+(2,	'DENT-57933',	'Training Department',	'Training Department',	1,	'2019-11-21',	'2019-11-21 16:13:17',	1,	1,	263,	73);
 
 DROP TABLE IF EXISTS `department_user`;
 CREATE TABLE `department_user` (
@@ -1250,12 +1212,7 @@ CREATE TABLE `department_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `department_user` (`department_user_id`, `department_user_track_number`, `department_user_name`, `fk_user_id`, `fk_department_id`, `department_user_created_date`, `department_user_last_modified_date`, `department_user_created_by`, `department_user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'DEER-5510',	'Mapenzi Hellen',	9,	1,	'2019-11-21',	'2019-11-21 17:08:57',	1,	1,	272,	74),
-(2,	'DEER-18515',	'Joyce Cherono',	4,	2,	'2019-11-21',	'2019-11-21 19:34:45',	1,	1,	273,	74),
-(3,	'DEER-84135',	'Nicodemus Karisa - Training Department',	1,	2,	'2019-12-15',	'2019-12-15 15:10:22',	1,	1,	467,	74),
-(4,	'DEER-3294',	'David Mbitsi - Finance Department',	5,	3,	'2019-12-16',	'2019-12-16 10:41:18',	1,	1,	471,	74),
-(5,	'DEER-69163',	'David Mbitsi - Training Department',	5,	2,	'2019-12-16',	'2019-12-16 10:59:09',	1,	1,	474,	74),
-(6,	'DEER-82742',	'Betty Kanze - Finance',	6,	3,	'2020-01-09',	'2020-01-09 11:39:48',	1,	1,	516,	74);
+(3,	'DEER-84135',	'Nicodemus Karisa - Training Department',	1,	2,	'2019-12-15',	'2019-12-15 15:10:22',	1,	1,	467,	74);
 
 DROP TABLE IF EXISTS `designation`;
 CREATE TABLE `designation` (
@@ -1279,13 +1236,7 @@ CREATE TABLE `designation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `designation` (`designation_id`, `designation_track_number`, `designation_name`, `fk_context_definition_id`, `designation_created_date`, `designation_last_modified_date`, `designation_created_by`, `designation_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'DEON-28178',	'Project Director',	13,	'2019-11-21',	'2019-11-21 16:40:33',	1,	1,	266,	76),
-(2,	'DEON-61891',	'Health Worker',	13,	'2019-11-21',	'2019-11-21 16:40:44',	1,	1,	267,	76),
-(3,	'DEON-85720',	'Project Accountant ',	13,	'2019-11-21',	'2019-11-21 16:40:59',	1,	1,	268,	76),
-(4,	'DEON-32456',	'Partnership Facilitator',	8,	'2019-11-21',	'2019-11-21 16:41:23',	1,	1,	269,	76),
-(5,	'DEON-63399',	'Manager of Partnership',	9,	'2019-11-21',	'2019-11-21 16:41:40',	1,	1,	270,	76),
-(6,	'DEON-8049',	'Health Specialist',	10,	'2019-11-21',	'2019-11-21 16:41:58',	1,	1,	271,	76),
-(7,	'DEON-68629',	'Country System Admin',	10,	'2019-12-13',	'2019-12-13 16:14:20',	1,	1,	455,	76);
+(7,	'DEON-68629',	'System Admin',	10,	'2019-12-13',	'2019-12-13 16:14:20',	1,	1,	455,	76);
 
 DROP TABLE IF EXISTS `expense_account`;
 CREATE TABLE `expense_account` (
@@ -1310,11 +1261,7 @@ CREATE TABLE `expense_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the expense accounts';
 
 INSERT INTO `expense_account` (`expense_account_id`, `expense_account_track_number`, `expense_account_name`, `expense_account_description`, `expense_account_code`, `expense_account_is_admin`, `expense_account_is_active`, `expense_account_is_budgeted`, `fk_income_account_id`, `fk_approval_id`, `fk_status_id`, `expense_account_created_date`, `expense_account_last_modified_date`, `expense_account_created_by`, `expense_account_last_modified_by`) VALUES
-(1,	'EAC-78285',	'Expense Account 1',	'Expense 1',	'E001',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(2,	'EAC-87922',	'Expense Account 2',	'Expense 2',	'E002',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(3,	'EAC-87020',	'Expense Account 3',	'Expense 3',	'E003',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(4,	'EXNT-30031',	'Expense 5',	'Expense 5',	'E004',	0,	1,	1,	2,	404,	64,	'2019-11-27',	NULL,	1,	1),
-(5,	'EXNT-77016',	'Salaries',	'Salaries',	'E005',	0,	1,	1,	3,	420,	64,	'2019-11-27',	NULL,	1,	1);
+(1,	'EAC-78285',	'Expense Account 1',	'Expense 1',	'E001',	0,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `financial_report`;
 CREATE TABLE `financial_report` (
@@ -1332,8 +1279,6 @@ CREATE TABLE `financial_report` (
   PRIMARY KEY (`financial_report_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `financial_report` (`financial_report_id`, `financial_report_track_number`, `financial_report_name`, `financial_report_month`, `fk_office_id`, `financial_report_created_date`, `financial_report_created_by`, `financial_report_last_modified_by`, `financial_report_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'FIRT-2326',	'November Financial Report',	'2019-11-30',	9,	'2020-01-08',	1,	1,	NULL,	512,	0);
 
 DROP TABLE IF EXISTS `funder`;
 CREATE TABLE `funder` (
@@ -1351,9 +1296,6 @@ CREATE TABLE `funder` (
   PRIMARY KEY (`funder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds donor (funders) bio-information';
 
-INSERT INTO `funder` (`funder_id`, `funder_track_number`, `funder_name`, `funder_description`, `funder_created_date`, `funder_last_modified_date`, `funder_created_by`, `funder_last_modified_by`, `funder_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
-(13,	'FUER-41174',	'Funder A',	'Funder A',	'2019-11-27',	NULL,	1,	1,	NULL,	400,	33),
-(14,	'FUER-49328',	'Funder B',	'This funder b',	'2019-11-27',	NULL,	1,	1,	NULL,	415,	33);
 
 DROP TABLE IF EXISTS `funding_status`;
 CREATE TABLE `funding_status` (
@@ -1372,21 +1314,6 @@ CREATE TABLE `funding_status` (
 
 INSERT INTO `funding_status` (`funding_status_id`, `funding_status_name`, `funding_status_is_active`, `funding_status_created_date`, `funding_status_created_by`, `funding_status_last_modified_by`, `funding_status_last_modified_date`, `funding_status_is_available`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'Fully Funded',	1,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	NULL);
-
-DROP TABLE IF EXISTS `handover`;
-CREATE TABLE `handover` (
-  `handover_id` int(100) NOT NULL AUTO_INCREMENT,
-  `handover_assignor` int(100) NOT NULL,
-  `handover_assignee` int(100) NOT NULL,
-  `handover_start_date` date NOT NULL,
-  `handover_end_date` date NOT NULL,
-  `handover_created_by` int(100) NOT NULL,
-  `handover_created_date` date NOT NULL,
-  `handover_last_modified_by` int(100) NOT NULL,
-  `handover_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`handover_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history` (
@@ -1408,19 +1335,20 @@ CREATE TABLE `income_account` (
   `income_account_is_active` int(5) DEFAULT NULL,
   `income_account_is_budgeted` int(5) DEFAULT NULL,
   `income_account_is_donor_funded` int(5) DEFAULT NULL,
+  `fk_account_system_id` int(100) DEFAULT NULL,
   `income_account_created_date` date DEFAULT NULL,
   `income_account_last_modified_date` date DEFAULT NULL,
   `income_account_created_by` int(100) DEFAULT NULL,
   `income_account_last_modified_by` int(100) DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`income_account_id`)
+  PRIMARY KEY (`income_account_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `income_account_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table contains the income accounts. ';
 
-INSERT INTO `income_account` (`income_account_id`, `income_account_track_number`, `income_account_name`, `income_account_description`, `income_account_code`, `income_account_is_active`, `income_account_is_budgeted`, `income_account_is_donor_funded`, `income_account_created_date`, `income_account_last_modified_date`, `income_account_created_by`, `income_account_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'INC-65627',	'Income Account 1',	'Project Cost',	'R100',	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(2,	'INNT-62852',	'Income Account 5',	'Income Account 5',	'R200',	1,	1,	1,	'2019-11-27',	NULL,	1,	1,	403,	0),
-(3,	'INNT-84810',	'Income 6 - Program ',	'Income 6',	'R300',	1,	1,	1,	'2019-11-27',	NULL,	1,	1,	419,	0);
+INSERT INTO `income_account` (`income_account_id`, `income_account_track_number`, `income_account_name`, `income_account_description`, `income_account_code`, `income_account_is_active`, `income_account_is_budgeted`, `income_account_is_donor_funded`, `fk_account_system_id`, `income_account_created_date`, `income_account_last_modified_date`, `income_account_created_by`, `income_account_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'INC-65627',	'Income Account 1',	'Project Cost',	'R100',	1,	1,	1,	1,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `journal`;
 CREATE TABLE `journal` (
@@ -1432,15 +1360,12 @@ CREATE TABLE `journal` (
   `journal_created_date` date DEFAULT NULL,
   `journal_created_by` int(100) DEFAULT NULL,
   `journal_last_modified_by` int(100) DEFAULT NULL,
-  `journal_last_modified_date` date DEFAULT NULL,
+  `journal_last_modified_date` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`journal_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `journal` (`journal_id`, `journal_track_number`, `journal_name`, `journal_month`, `fk_office_id`, `journal_created_date`, `journal_created_by`, `journal_last_modified_by`, `journal_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'JOAL-20975',	'GRC Shingila November Journal',	'2019-11-01',	9,	'2020-01-15',	1,	1,	NULL,	517,	90),
-(2,	'JOAL-34582',	'December Financial Rpeort for GRC Shingila',	'2019-12-01',	9,	'2020-01-15',	1,	1,	NULL,	531,	90);
 
 DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
@@ -1504,8 +1429,6 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (397,	'Voucher',	'Voucher',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
 (398,	'Workplan',	'Workplan',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
 (400,	'User',	'User',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
-(401,	'Approve_item',	'Approve_item',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
-(402,	'Status',	'Status',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
 (470,	'Menu_user_order',	'Menu_user_order',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
 (478,	'Bank_branch',	'Bank_branch',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
 (480,	'Department',	'Department',	1,	'2019-11-23',	'2019-11-23 17:30:57',	1,	1,	NULL,	NULL),
@@ -1529,7 +1452,18 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (529,	'Voucher_type',	'Voucher_type',	1,	NULL,	'2020-01-15 15:17:27',	NULL,	NULL,	NULL,	NULL),
 (531,	'Bank_contra_account',	'Bank_contra_account',	1,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
 (532,	'Cash_contra_account',	'Cash_contra_account',	1,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
-(533,	'Opening_cash_balance',	'Opening_cash_balance',	1,	NULL,	'2020-01-16 21:37:28',	NULL,	NULL,	NULL,	NULL);
+(533,	'Opening_cash_balance',	'Opening_cash_balance',	1,	NULL,	'2020-01-16 21:37:28',	NULL,	NULL,	NULL,	NULL),
+(535,	'Month',	'Month',	1,	NULL,	'2020-01-18 13:08:11',	NULL,	NULL,	NULL,	NULL),
+(536,	'Context_center',	'Context_center',	1,	NULL,	'2020-02-25 09:40:58',	NULL,	NULL,	NULL,	NULL),
+(537,	'Context_cluster',	'Context_cluster',	1,	NULL,	'2020-02-25 09:40:58',	NULL,	NULL,	NULL,	NULL),
+(538,	'Context_cohort',	'Context_cohort',	1,	NULL,	'2020-02-25 09:40:58',	NULL,	NULL,	NULL,	NULL),
+(539,	'Context_country',	'Context_country',	1,	NULL,	'2020-02-25 09:40:58',	NULL,	NULL,	NULL,	NULL),
+(540,	'Context_global',	'Context_global',	1,	NULL,	'2020-02-25 09:40:58',	NULL,	NULL,	NULL,	NULL),
+(541,	'Context_region',	'Context_region',	1,	NULL,	'2020-02-25 09:40:58',	NULL,	NULL,	NULL,	NULL),
+(542,	'Account_system',	'Account_system',	1,	NULL,	'2020-02-29 19:03:06',	NULL,	NULL,	NULL,	NULL),
+(545,	'Request_conversion',	'Request_conversion',	1,	NULL,	'2020-03-02 06:43:20',	NULL,	NULL,	NULL,	NULL),
+(547,	'Budget_item',	'Budget_item',	1,	NULL,	'2020-03-07 10:35:07',	NULL,	NULL,	NULL,	NULL),
+(550,	'Approve_item',	'Approve_item',	1,	NULL,	'2020-03-08 18:11:59',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -1551,378 +1485,54 @@ CREATE TABLE `menu_user_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`, `menu_user_order_is_active`, `menu_user_order_level`, `menu_user_order_priority_item`, `menu_user_order_created_date`, `menu_user_order_last_modified_date`, `menu_user_order_created_by`, `menu_user_order_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(622,	1,	380,	1,	5,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(623,	1,	381,	1,	2,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(624,	1,	382,	1,	3,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(626,	1,	384,	1,	1,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(627,	1,	385,	1,	6,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(628,	1,	386,	1,	7,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(632,	1,	390,	1,	11,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(633,	1,	391,	1,	12,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(634,	1,	392,	1,	13,	1,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(635,	1,	393,	1,	14,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(639,	1,	397,	1,	18,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(640,	1,	398,	1,	19,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(642,	1,	400,	1,	21,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(643,	1,	401,	1,	22,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(644,	1,	402,	1,	23,	0,	NULL,	'2019-11-07 16:39:04',	NULL,	NULL,	NULL,	NULL),
-(645,	4,	380,	1,	1,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(646,	4,	381,	1,	2,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(647,	4,	382,	1,	3,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(649,	4,	384,	1,	5,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(650,	4,	385,	1,	6,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(651,	4,	386,	1,	7,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(655,	4,	390,	1,	11,	1,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(656,	4,	391,	1,	12,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(657,	4,	392,	1,	13,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(658,	4,	393,	1,	14,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(662,	4,	397,	1,	18,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(663,	4,	398,	1,	19,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(665,	4,	400,	1,	21,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(666,	4,	401,	1,	22,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(667,	4,	402,	1,	23,	0,	NULL,	'2019-11-08 09:22:08',	NULL,	NULL,	NULL,	NULL),
-(668,	2,	380,	1,	1,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(669,	2,	381,	1,	2,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(670,	2,	382,	1,	3,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(672,	2,	384,	1,	5,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(673,	2,	385,	1,	6,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(674,	2,	386,	1,	7,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(678,	2,	390,	1,	11,	1,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(679,	2,	391,	1,	12,	0,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(680,	2,	392,	1,	13,	0,	NULL,	'2019-11-08 10:08:10',	NULL,	NULL,	NULL,	NULL),
-(681,	2,	393,	1,	14,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(685,	2,	397,	1,	18,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(686,	2,	398,	1,	19,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(688,	2,	400,	1,	21,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(689,	2,	401,	1,	22,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(690,	2,	402,	1,	23,	0,	NULL,	'2019-11-08 10:08:11',	NULL,	NULL,	NULL,	NULL),
-(691,	5,	380,	1,	1,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(692,	5,	381,	1,	2,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(693,	5,	382,	1,	3,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(695,	5,	384,	1,	5,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(696,	5,	385,	1,	6,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(697,	5,	386,	1,	7,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(701,	5,	390,	1,	11,	1,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(702,	5,	391,	1,	12,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(703,	5,	392,	1,	13,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(704,	5,	393,	1,	14,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(708,	5,	397,	1,	18,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(709,	5,	398,	1,	19,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(711,	5,	400,	1,	21,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(712,	5,	401,	1,	22,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(713,	5,	402,	1,	23,	0,	NULL,	'2019-11-08 12:40:36',	NULL,	NULL,	NULL,	NULL),
-(776,	12,	380,	1,	1,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(777,	12,	381,	1,	2,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(778,	12,	382,	1,	3,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(780,	12,	384,	1,	5,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(781,	12,	385,	1,	6,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(782,	12,	386,	1,	7,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(785,	12,	390,	1,	10,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(786,	12,	391,	1,	11,	1,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(787,	12,	392,	1,	12,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(788,	12,	393,	1,	13,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(789,	12,	397,	1,	14,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(790,	12,	398,	1,	15,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(791,	12,	400,	1,	16,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(792,	12,	401,	1,	17,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(793,	12,	402,	1,	18,	0,	NULL,	'2019-11-20 16:44:02',	NULL,	NULL,	NULL,	NULL),
-(849,	9,	380,	1,	1,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(850,	9,	381,	1,	2,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(851,	9,	382,	1,	3,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(853,	9,	384,	1,	5,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(854,	9,	385,	1,	6,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(855,	9,	386,	1,	7,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(856,	9,	390,	1,	8,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(857,	9,	391,	1,	9,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(858,	9,	392,	1,	10,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(859,	9,	393,	1,	11,	1,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(860,	9,	397,	1,	12,	0,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(861,	9,	398,	1,	13,	0,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(862,	9,	400,	1,	14,	0,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(863,	9,	401,	1,	15,	0,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(864,	9,	402,	1,	16,	0,	NULL,	'2019-11-21 17:50:01',	NULL,	NULL,	NULL,	NULL),
-(902,	1,	470,	1,	67,	0,	NULL,	'2019-11-21 19:39:33',	NULL,	NULL,	NULL,	NULL),
-(903,	5,	470,	1,	67,	0,	NULL,	'2019-11-21 19:51:55',	NULL,	NULL,	NULL,	NULL),
-(904,	4,	470,	1,	67,	0,	NULL,	'2019-11-21 22:28:49',	NULL,	NULL,	NULL,	NULL),
-(905,	6,	380,	1,	1,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(906,	6,	381,	1,	2,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(907,	6,	382,	1,	3,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(909,	6,	384,	1,	5,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(910,	6,	385,	1,	6,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(911,	6,	386,	1,	7,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(912,	6,	390,	1,	8,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(913,	6,	391,	1,	9,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(914,	6,	392,	1,	10,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(915,	6,	393,	1,	11,	1,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(916,	6,	397,	1,	12,	0,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(917,	6,	398,	1,	13,	0,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(918,	6,	400,	1,	14,	0,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(919,	6,	401,	1,	15,	0,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(920,	6,	402,	1,	16,	0,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(938,	6,	470,	1,	34,	0,	NULL,	'2019-11-22 07:24:48',	NULL,	NULL,	NULL,	NULL),
-(939,	8,	380,	1,	1,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(940,	8,	381,	1,	2,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(941,	8,	382,	1,	3,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(943,	8,	384,	1,	5,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(944,	8,	385,	1,	6,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(945,	8,	386,	1,	7,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(946,	8,	390,	1,	8,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(947,	8,	391,	1,	9,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(948,	8,	392,	1,	10,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(949,	8,	393,	1,	11,	1,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(950,	8,	397,	1,	12,	0,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(951,	8,	398,	1,	13,	0,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(952,	8,	400,	1,	14,	0,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(953,	8,	401,	1,	15,	0,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(954,	8,	402,	1,	16,	0,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(972,	8,	470,	1,	34,	0,	NULL,	'2019-11-22 07:25:42',	NULL,	NULL,	NULL,	NULL),
-(980,	1,	478,	1,	39,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(982,	1,	480,	1,	41,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(983,	1,	481,	1,	42,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(984,	1,	482,	1,	43,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(985,	1,	483,	1,	44,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(992,	1,	490,	1,	51,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(993,	1,	491,	1,	52,	0,	NULL,	'2019-11-22 11:03:23',	NULL,	NULL,	NULL,	NULL),
-(995,	5,	478,	1,	38,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(997,	5,	480,	1,	40,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(998,	5,	481,	1,	41,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(999,	5,	482,	1,	42,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(1000,	5,	483,	1,	43,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(1007,	5,	490,	1,	50,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(1008,	5,	491,	1,	51,	0,	NULL,	'2019-11-22 11:05:22',	NULL,	NULL,	NULL,	NULL),
-(1009,	1,	492,	1,	63,	0,	NULL,	'2019-11-23 08:19:43',	NULL,	NULL,	NULL,	NULL),
-(1011,	5,	492,	1,	63,	0,	NULL,	'2019-11-23 10:58:06',	NULL,	NULL,	NULL,	NULL),
-(1015,	1,	496,	1,	67,	0,	NULL,	'2019-11-23 14:31:44',	NULL,	NULL,	NULL,	NULL),
-(1016,	5,	496,	1,	65,	0,	NULL,	'2019-11-23 16:23:17',	NULL,	NULL,	NULL,	NULL),
-(1017,	4,	478,	1,	37,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1019,	4,	480,	1,	39,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1020,	4,	481,	1,	40,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1021,	4,	482,	1,	41,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1022,	4,	483,	1,	42,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1028,	4,	490,	1,	48,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1029,	4,	491,	1,	49,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1030,	4,	492,	1,	50,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1031,	4,	496,	1,	51,	0,	NULL,	'2019-11-23 16:35:38',	NULL,	NULL,	NULL,	NULL),
-(1032,	7,	380,	1,	1,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1033,	7,	381,	1,	2,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1034,	7,	382,	1,	3,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1036,	7,	384,	1,	5,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1037,	7,	385,	1,	6,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1038,	7,	386,	1,	7,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1039,	7,	390,	1,	8,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1040,	7,	391,	1,	9,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1041,	7,	392,	1,	10,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1042,	7,	393,	1,	11,	1,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1043,	7,	397,	1,	12,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1044,	7,	398,	1,	13,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1045,	7,	400,	1,	14,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1046,	7,	401,	1,	15,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1047,	7,	402,	1,	16,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1049,	7,	470,	1,	18,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1050,	7,	478,	1,	19,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1052,	7,	480,	1,	21,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1053,	7,	481,	1,	22,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1054,	7,	482,	1,	23,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1055,	7,	483,	1,	24,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1061,	7,	490,	1,	30,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1062,	7,	491,	1,	31,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1063,	7,	492,	1,	32,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1064,	7,	496,	1,	33,	0,	NULL,	'2019-11-25 03:12:39',	NULL,	NULL,	NULL,	NULL),
-(1065,	13,	380,	1,	1,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1066,	13,	381,	1,	2,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1067,	13,	382,	1,	3,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1069,	13,	384,	1,	5,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1070,	13,	385,	1,	6,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1071,	13,	386,	1,	7,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1072,	13,	390,	1,	8,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1073,	13,	391,	1,	9,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1074,	13,	392,	1,	10,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1075,	13,	393,	1,	11,	1,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1076,	13,	397,	1,	12,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1077,	13,	398,	1,	13,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1078,	13,	400,	1,	14,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1079,	13,	401,	1,	15,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1080,	13,	402,	1,	16,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1082,	13,	470,	1,	18,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1083,	13,	478,	1,	19,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1085,	13,	480,	1,	21,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1086,	13,	481,	1,	22,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1087,	13,	482,	1,	23,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1088,	13,	483,	1,	24,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1094,	13,	490,	1,	30,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1095,	13,	491,	1,	31,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1096,	13,	492,	1,	32,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1097,	13,	496,	1,	33,	0,	NULL,	'2019-11-25 07:28:51',	NULL,	NULL,	NULL,	NULL),
-(1098,	14,	380,	1,	1,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1099,	14,	381,	1,	2,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1100,	14,	382,	1,	3,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1102,	14,	384,	1,	5,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1103,	14,	385,	1,	6,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1104,	14,	386,	1,	7,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1105,	14,	390,	1,	8,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1106,	14,	391,	1,	9,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1107,	14,	392,	1,	10,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1108,	14,	393,	1,	11,	1,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1109,	14,	397,	1,	12,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1110,	14,	398,	1,	13,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1111,	14,	400,	1,	14,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1112,	14,	401,	1,	15,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1113,	14,	402,	1,	16,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1115,	14,	470,	1,	18,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1116,	14,	478,	1,	19,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1118,	14,	480,	1,	21,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1119,	14,	481,	1,	22,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1120,	14,	482,	1,	23,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1121,	14,	483,	1,	24,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1127,	14,	490,	1,	30,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1128,	14,	491,	1,	31,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1129,	14,	492,	1,	32,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1130,	14,	496,	1,	33,	0,	NULL,	'2019-11-25 14:09:06',	NULL,	NULL,	NULL,	NULL),
-(1131,	15,	380,	1,	1,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1132,	15,	381,	1,	2,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1133,	15,	382,	1,	3,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1135,	15,	384,	1,	5,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1136,	15,	385,	1,	6,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1137,	15,	386,	1,	7,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1138,	15,	390,	1,	8,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1139,	15,	391,	1,	9,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1140,	15,	392,	1,	10,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1141,	15,	393,	1,	11,	1,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1142,	15,	397,	1,	12,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1143,	15,	398,	1,	13,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1144,	15,	400,	1,	14,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1145,	15,	401,	1,	15,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1146,	15,	402,	1,	16,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1148,	15,	470,	1,	18,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1149,	15,	478,	1,	19,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1151,	15,	480,	1,	21,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1152,	15,	481,	1,	22,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1153,	15,	482,	1,	23,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1154,	15,	483,	1,	24,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1160,	15,	490,	1,	30,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1161,	15,	491,	1,	31,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1162,	15,	492,	1,	32,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1163,	15,	496,	1,	33,	0,	NULL,	'2019-11-26 13:04:26',	NULL,	NULL,	NULL,	NULL),
-(1164,	16,	380,	1,	1,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1165,	16,	381,	1,	2,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1166,	16,	382,	1,	3,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1168,	16,	384,	1,	5,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1169,	16,	385,	1,	6,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1170,	16,	386,	1,	7,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1171,	16,	390,	1,	8,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1172,	16,	391,	1,	9,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1173,	16,	392,	1,	10,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1174,	16,	393,	1,	11,	1,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1175,	16,	397,	1,	12,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1176,	16,	398,	1,	13,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1177,	16,	400,	1,	14,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1178,	16,	401,	1,	15,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1179,	16,	402,	1,	16,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1181,	16,	470,	1,	18,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1182,	16,	478,	1,	19,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1184,	16,	480,	1,	21,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1185,	16,	481,	1,	22,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1186,	16,	482,	1,	23,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1187,	16,	483,	1,	24,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1193,	16,	490,	1,	30,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1194,	16,	491,	1,	31,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1195,	16,	492,	1,	32,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1196,	16,	496,	1,	33,	0,	NULL,	'2019-11-26 14:12:58',	NULL,	NULL,	NULL,	NULL),
-(1197,	1,	497,	1,	67,	0,	NULL,	'2019-11-26 20:45:56',	NULL,	NULL,	NULL,	NULL),
-(1198,	1,	498,	1,	69,	0,	NULL,	'2019-11-26 22:05:45',	NULL,	NULL,	NULL,	NULL),
-(1199,	5,	497,	1,	67,	0,	NULL,	'2019-11-27 10:49:06',	NULL,	NULL,	NULL,	NULL),
-(1200,	5,	498,	1,	68,	0,	NULL,	'2019-11-27 10:49:06',	NULL,	NULL,	NULL,	NULL),
-(1202,	5,	500,	1,	71,	0,	NULL,	'2019-11-27 13:24:36',	NULL,	NULL,	NULL,	NULL),
-(1203,	1,	500,	1,	71,	0,	NULL,	'2019-11-27 13:27:03',	NULL,	NULL,	NULL,	NULL),
-(1204,	17,	380,	1,	1,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1205,	17,	381,	1,	2,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1206,	17,	382,	1,	3,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1208,	17,	384,	1,	5,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1209,	17,	385,	1,	6,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1210,	17,	386,	1,	7,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1211,	17,	390,	1,	8,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1212,	17,	391,	1,	9,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1213,	17,	392,	1,	10,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1214,	17,	393,	1,	11,	1,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1215,	17,	397,	1,	12,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1216,	17,	398,	1,	13,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1217,	17,	400,	1,	14,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1218,	17,	401,	1,	15,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1219,	17,	402,	1,	16,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1221,	17,	470,	1,	18,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1222,	17,	478,	1,	19,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1224,	17,	480,	1,	21,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1225,	17,	481,	1,	22,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1226,	17,	482,	1,	23,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1227,	17,	483,	1,	24,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1233,	17,	490,	1,	30,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1234,	17,	491,	1,	31,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1235,	17,	492,	1,	32,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1236,	17,	496,	1,	33,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1237,	17,	497,	1,	34,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1238,	17,	498,	1,	35,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1239,	17,	500,	1,	36,	0,	NULL,	'2019-11-27 13:39:02',	NULL,	NULL,	NULL,	NULL),
-(1240,	18,	380,	1,	1,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1241,	18,	381,	1,	2,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1242,	18,	382,	1,	3,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1244,	18,	384,	1,	5,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1245,	18,	385,	1,	6,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1246,	18,	386,	1,	7,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1247,	18,	390,	1,	8,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1248,	18,	391,	1,	9,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1249,	18,	392,	1,	10,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1250,	18,	393,	1,	11,	1,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1251,	18,	397,	1,	12,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1252,	18,	398,	1,	13,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1253,	18,	400,	1,	14,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1254,	18,	401,	1,	15,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1255,	18,	402,	1,	16,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1257,	18,	470,	1,	18,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1258,	18,	478,	1,	19,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1260,	18,	480,	1,	21,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1261,	18,	481,	1,	22,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1262,	18,	482,	1,	23,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1263,	18,	483,	1,	24,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1269,	18,	490,	1,	30,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1270,	18,	491,	1,	31,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1271,	18,	492,	1,	32,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1272,	18,	496,	1,	33,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1273,	18,	497,	1,	34,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1274,	18,	498,	1,	35,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1275,	18,	500,	1,	36,	0,	NULL,	'2019-11-28 11:15:26',	NULL,	NULL,	NULL,	NULL),
-(1297,	1,	521,	1,	90,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1298,	1,	522,	1,	91,	0,	NULL,	'2019-12-08 12:10:43',	NULL,	NULL,	NULL,	NULL),
-(1299,	1,	523,	1,	75,	0,	NULL,	'2019-12-08 12:20:30',	NULL,	NULL,	NULL,	NULL),
-(1301,	5,	521,	1,	57,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
-(1302,	5,	522,	1,	58,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
-(1303,	5,	523,	1,	59,	0,	NULL,	'2019-12-15 13:30:01',	NULL,	NULL,	NULL,	NULL),
-(1305,	1,	525,	1,	63,	0,	NULL,	'2020-01-06 10:11:55',	NULL,	NULL,	NULL,	NULL),
-(1306,	1,	526,	1,	65,	0,	NULL,	'2020-01-08 09:43:05',	NULL,	NULL,	NULL,	NULL),
-(1307,	5,	525,	1,	63,	0,	NULL,	'2020-01-09 11:32:01',	NULL,	NULL,	NULL,	NULL),
-(1308,	5,	526,	1,	64,	0,	NULL,	'2020-01-09 11:32:01',	NULL,	NULL,	NULL,	NULL),
-(1309,	6,	478,	1,	33,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1310,	6,	480,	1,	34,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1311,	6,	481,	1,	35,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1312,	6,	482,	1,	36,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1313,	6,	483,	1,	37,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1314,	6,	490,	1,	38,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1315,	6,	491,	1,	39,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1316,	6,	492,	1,	40,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1317,	6,	496,	1,	41,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1318,	6,	497,	1,	42,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1319,	6,	498,	1,	43,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1320,	6,	500,	1,	44,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1321,	6,	521,	1,	45,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1322,	6,	522,	1,	46,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1323,	6,	523,	1,	47,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1324,	6,	525,	1,	48,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1325,	6,	526,	1,	49,	0,	NULL,	'2020-01-09 11:34:53',	NULL,	NULL,	NULL,	NULL),
-(1326,	1,	527,	1,	67,	0,	NULL,	'2020-01-15 15:13:14',	NULL,	NULL,	NULL,	NULL),
-(1327,	1,	528,	1,	68,	0,	NULL,	'2020-01-15 15:13:14',	NULL,	NULL,	NULL,	NULL),
-(1328,	1,	529,	1,	71,	0,	NULL,	'2020-01-15 15:17:27',	NULL,	NULL,	NULL,	NULL),
-(1330,	1,	531,	1,	73,	0,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
-(1331,	1,	532,	1,	74,	0,	NULL,	'2020-01-16 20:31:19',	NULL,	NULL,	NULL,	NULL),
-(1332,	1,	533,	1,	77,	0,	NULL,	'2020-01-16 21:37:28',	NULL,	NULL,	NULL,	NULL);
+(1474,	1,	380,	1,	1,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1475,	1,	381,	1,	2,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1476,	1,	382,	1,	3,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1477,	1,	384,	1,	4,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1478,	1,	385,	1,	5,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1479,	1,	386,	1,	6,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1480,	1,	390,	1,	7,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1481,	1,	391,	1,	8,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1482,	1,	392,	1,	9,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1483,	1,	393,	1,	10,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1484,	1,	397,	1,	11,	1,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1485,	1,	398,	1,	12,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1486,	1,	400,	1,	13,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1487,	1,	470,	1,	14,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1488,	1,	478,	1,	15,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1489,	1,	480,	1,	16,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1490,	1,	481,	1,	17,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1491,	1,	482,	1,	18,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1492,	1,	483,	1,	19,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1493,	1,	490,	1,	20,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1494,	1,	491,	1,	21,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1495,	1,	492,	1,	22,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1496,	1,	496,	1,	23,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1497,	1,	497,	1,	24,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1498,	1,	498,	1,	25,	0,	NULL,	'2020-03-11 19:39:24',	NULL,	NULL,	NULL,	NULL),
+(1499,	1,	500,	1,	26,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1500,	1,	521,	1,	27,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1501,	1,	522,	1,	28,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1502,	1,	523,	1,	29,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1503,	1,	525,	1,	30,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1504,	1,	526,	1,	31,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1505,	1,	527,	1,	32,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1506,	1,	528,	1,	33,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1507,	1,	529,	1,	34,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1508,	1,	531,	1,	35,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1509,	1,	532,	1,	36,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1510,	1,	533,	1,	37,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1511,	1,	535,	1,	38,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1512,	1,	536,	1,	39,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1513,	1,	537,	1,	40,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1514,	1,	538,	1,	41,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1515,	1,	539,	1,	42,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1516,	1,	540,	1,	43,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1517,	1,	541,	1,	44,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1518,	1,	542,	1,	45,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1519,	1,	545,	1,	46,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1520,	1,	547,	1,	47,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
+(1521,	1,	550,	1,	48,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -1966,20 +1576,29 @@ CREATE TABLE `month` (
   `month_track_number` varchar(100) NOT NULL,
   `month_number` int(5) NOT NULL,
   `month_name` varchar(50) NOT NULL,
-  `fk_approval` int(100) NOT NULL,
   `fk_status_id` int(100) NOT NULL,
   `month_created_by` int(100) NOT NULL,
   `month_last_modified_by` int(100) NOT NULL,
   `month_created_date` date NOT NULL,
   `month_last_modified_date` date NOT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`month_id`)
+  PRIMARY KEY (`month_id`),
+  UNIQUE KEY `month_number` (`month_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `month` (`month_id`, `month_track_number`, `month_number`, `month_name`, `fk_approval`, `fk_status_id`, `month_created_by`, `month_last_modified_by`, `month_created_date`, `month_last_modified_date`, `fk_approval_id`) VALUES
-(1,	'',	1,	'January',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00',	NULL),
-(2,	'',	2,	'February',	0,	0,	0,	0,	'0000-00-00',	'0000-00-00',	NULL),
-(3,	'MOTH-60467',	3,	'March',	0,	61,	1,	1,	'2019-11-21',	'0000-00-00',	225);
+INSERT INTO `month` (`month_id`, `month_track_number`, `month_number`, `month_name`, `fk_status_id`, `month_created_by`, `month_last_modified_by`, `month_created_date`, `month_last_modified_date`, `fk_approval_id`) VALUES
+(5,	'MOTH-7084',	1,	'January',	61,	1,	1,	'2020-01-18',	'0000-00-00',	551),
+(6,	'MOTH-37428',	2,	'February',	61,	1,	1,	'2020-01-18',	'0000-00-00',	552),
+(7,	'MOTH-39917',	3,	'March',	61,	1,	1,	'2020-01-18',	'0000-00-00',	553),
+(8,	'MOTH-13132',	4,	'April',	61,	1,	1,	'2020-01-18',	'0000-00-00',	554),
+(10,	'MOTH-69289',	5,	'May',	61,	1,	1,	'2020-01-18',	'0000-00-00',	556),
+(11,	'MOTH-32857',	6,	'June',	61,	1,	1,	'2020-01-18',	'0000-00-00',	557),
+(12,	'MOTH-74947',	7,	'July',	61,	1,	1,	'2020-01-18',	'0000-00-00',	558),
+(13,	'MOTH-16217',	8,	'August',	61,	1,	1,	'2020-01-18',	'0000-00-00',	559),
+(14,	'MOTH-69410',	9,	'September',	61,	1,	1,	'2020-01-18',	'0000-00-00',	560),
+(15,	'MOTH-3346',	10,	'October',	61,	1,	1,	'2020-01-18',	'0000-00-00',	561),
+(16,	'MOTH-5851',	11,	'November',	61,	1,	1,	'2020-01-18',	'0000-00-00',	562),
+(17,	'MOTH-27020',	12,	'December',	61,	1,	1,	'2020-01-18',	'0000-00-00',	563);
 
 DROP TABLE IF EXISTS `office`;
 CREATE TABLE `office` (
@@ -1992,6 +1611,7 @@ CREATE TABLE `office` (
   `office_start_date` date NOT NULL,
   `office_end_date` date NOT NULL,
   `office_is_active` int(5) NOT NULL DEFAULT '0',
+  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `office_created_by` int(100) NOT NULL,
   `office_created_date` date NOT NULL,
   `office_last_modified_date` date NOT NULL,
@@ -2002,29 +1622,17 @@ CREATE TABLE `office` (
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_center_group_hierarchy_id` (`fk_context_definition_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
   CONSTRAINT `office_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `office_ibfk_2` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `office_ibfk_3` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
+  CONSTRAINT `office_ibfk_3` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`),
+  CONSTRAINT `office_ibfk_4` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the remote sites for the organization';
 
-INSERT INTO `office` (`office_id`, `office_track_number`, `office_name`, `office_description`, `office_code`, `fk_context_definition_id`, `office_start_date`, `office_end_date`, `office_is_active`, `office_created_by`, `office_created_date`, `office_last_modified_date`, `office_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(9,	'CEER-77415',	'GRC Shingila',	'',	'',	13,	'2019-11-07',	'0000-00-00',	1,	1,	'2019-11-07',	'0000-00-00',	1,	151,	45),
-(10,	'CEER-86769',	'Mtondia CDC',	'',	'',	13,	'2019-12-18',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	254,	45),
-(11,	'CEER-31976',	'Mnarani FPFK',	'',	'',	13,	'2003-10-16',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	255,	45),
-(12,	'CEER-86974',	'Githunguri PCEA',	'',	'',	13,	'1988-11-08',	'0000-00-00',	1,	1,	'2019-11-21',	'0000-00-00',	1,	275,	45),
-(13,	'CEER-58399',	'Light CDC',	'',	'',	13,	'2010-03-08',	'0000-00-00',	1,	1,	'2019-11-25',	'0000-00-00',	1,	356,	45),
-(14,	'CEER-84915',	'Center 1',	'',	'',	8,	'2019-11-25',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	372,	45),
-(15,	'CEER-40821',	'Center 2',	'',	'',	13,	'2019-11-26',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	373,	45),
-(16,	'CEER-45109',	'TAWK',	'',	'',	13,	'2016-01-01',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	384,	45),
-(17,	'CEER-82530',	'YWT',	'',	'',	13,	'2017-01-01',	'0000-00-00',	1,	1,	'2019-11-26',	'0000-00-00',	1,	385,	45),
-(18,	'CEER-5952',	'Kenya Head Office',	'',	'',	10,	'2019-10-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	433,	45),
-(19,	'CEER-29652',	'Kaloleni Cluster Unit',	'',	'',	8,	'2019-06-26',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	439,	45),
-(20,	'CEER-80112',	'Cohort 1 Unit',	'',	'',	9,	'2009-02-17',	'0000-00-00',	1,	1,	'2019-12-03',	'0000-00-00',	1,	441,	45),
-(21,	'OFCE-10254',	'Global Office ',	'',	'G001',	12,	'1990-10-11',	'0000-00-00',	1,	1,	'2019-12-08',	'0000-00-00',	1,	442,	45),
-(22,	'OFCE-18309',	'Africa Region Office',	'',	'AFR',	11,	'1979-06-06',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	448,	45),
-(23,	'OFCE-7255',	'Malindi Cluster',	'',	'MLD',	8,	'2008-07-31',	'0000-00-00',	1,	1,	'2019-12-13',	'0000-00-00',	1,	452,	45),
-(24,	'OFCE-76800',	'Uganda Country Office',	'',	'UG',	10,	'2019-07-10',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	459,	45),
-(25,	'OFCE-78129',	'Uganda East Cohort',	'',	'Uganda East Cohort',	9,	'1994-10-26',	'0000-00-00',	1,	1,	'2019-12-15',	'0000-00-00',	1,	462,	45);
+INSERT INTO `office` (`office_id`, `office_track_number`, `office_name`, `office_description`, `office_code`, `fk_context_definition_id`, `office_start_date`, `office_end_date`, `office_is_active`, `fk_account_system_id`, `office_created_by`, `office_created_date`, `office_last_modified_date`, `office_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(18,	'CEER-5952',	'Kenya Head Office',	'',	'',	10,	'2019-10-17',	'0000-00-00',	1,	1,	1,	'2019-12-03',	'0000-00-00',	1,	433,	45),
+(21,	'OFCE-10254',	'Global Office ',	'',	'G001',	12,	'1990-10-11',	'0000-00-00',	1,	1,	1,	'2019-12-08',	'0000-00-00',	1,	442,	45),
+(22,	'OFCE-18309',	'Africa Region Office',	'',	'AFR',	11,	'1979-06-06',	'0000-00-00',	1,	1,	1,	'2019-12-13',	'0000-00-00',	1,	448,	45);
 
 DROP TABLE IF EXISTS `office_bank`;
 CREATE TABLE `office_bank` (
@@ -2035,6 +1643,7 @@ CREATE TABLE `office_bank` (
   `fk_office_id` int(100) DEFAULT NULL,
   `fk_bank_id` int(100) DEFAULT NULL,
   `fk_bank_branch_id` int(100) DEFAULT NULL,
+  `is_office_bank_active` int(5) DEFAULT '1',
   `office_bank_created_date` date DEFAULT NULL,
   `office_bank_created_by` int(100) DEFAULT NULL,
   `office_bank_last_modified_date` timestamp NULL DEFAULT NULL,
@@ -2048,10 +1657,6 @@ CREATE TABLE `office_bank` (
   CONSTRAINT `office_bank_ibfk_2` FOREIGN KEY (`fk_bank_id`) REFERENCES `bank` (`bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `office_bank` (`office_bank_id`, `office_bank_track_number`, `office_bank_name`, `office_bank_account_number`, `fk_office_id`, `fk_bank_id`, `fk_bank_branch_id`, `office_bank_created_date`, `office_bank_created_by`, `office_bank_last_modified_date`, `office_bank_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(2,	'OFNK-55821',	'GRC Shingila Bank Account 1',	'11012364830',	9,	1,	5,	'2020-01-06',	1,	NULL,	1,	499,	88),
-(3,	'OFNK-30712',	'GRC Shingila Bank Account 2',	'32112123124',	9,	2,	4,	'2020-01-06',	1,	NULL,	1,	500,	88),
-(4,	'OFNK-80172',	'Mtondia Chess Bank',	'42353464564',	10,	2,	4,	'2020-01-06',	1,	NULL,	1,	510,	88);
 
 DROP TABLE IF EXISTS `opening_cash_balance`;
 CREATE TABLE `opening_cash_balance` (
@@ -2067,11 +1672,11 @@ CREATE TABLE `opening_cash_balance` (
   `opening_cash_balance_last_modified_date` date DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`opening_cash_balance_id`)
+  PRIMARY KEY (`opening_cash_balance_id`),
+  UNIQUE KEY `fk_office_id` (`fk_office_id`),
+  CONSTRAINT `opening_cash_balance_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `opening_cash_balance` (`opening_cash_balance_id`, `opening_cash_balance_track_number`, `opening_cash_balance_name`, `fk_office_id`, `opening_cash_balance_bank`, `opening_cash_balance_cash`, `opening_cash_balance_created_date`, `opening_cash_balance_created_by`, `opening_cash_balance_last_modified_by`, `opening_cash_balance_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'OPCE-41048',	'GRC Bank Opening',	9,	845560.27,	18700.00,	'2020-01-16',	1,	1,	NULL,	548,	0);
 
 DROP TABLE IF EXISTS `page_view`;
 CREATE TABLE `page_view` (
@@ -2096,16 +1701,6 @@ CREATE TABLE `page_view` (
   CONSTRAINT `page_view_ibfk_3` FOREIGN KEY (`fk_menu_id`) REFERENCES `menu` (`menu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `page_view` (`page_view_id`, `page_view_track_number`, `page_view_name`, `page_view_description`, `fk_menu_id`, `page_view_is_default`, `page_view_created_date`, `page_view_last_modified_date`, `page_view_created_by`, `page_view_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(14,	'PAEW-5870',	'New requests',	'A list of  new requests',	392,	1,	'2019-11-23',	'2019-11-23 10:48:12',	1,	1,	323,	82),
-(15,	'PAEW-78834',	'Requests submitted to head of department ',	'A list of all center submitted requests',	392,	0,	'2019-11-23',	'2019-11-23 11:14:54',	1,	1,	324,	82),
-(16,	'PAEW-55574',	'Requests approved by Head of department',	'List all requests approved by head of department',	392,	0,	'2019-11-23',	'2019-11-23 15:45:57',	1,	1,	329,	82),
-(17,	'PAEW-3009',	'Request declined by Head of Department',	'Request declined by Head of Department',	392,	1,	'2019-11-23',	'2019-11-23 15:49:09',	1,	1,	331,	82),
-(18,	'PAEW-43710',	'Requests approved by finance director',	'Requests approved by finance director',	392,	0,	'2019-11-23',	'2019-11-23 15:50:36',	1,	1,	333,	82),
-(19,	'PAEW-29222',	'Requests declined by finance director',	'Requests declined by finance director',	392,	0,	'2019-11-23',	'2019-11-23 15:52:20',	1,	1,	335,	82),
-(20,	'PAEW-1180',	'Requests paid by the accountant',	'Requests paid by the accountant',	392,	0,	'2019-11-23',	'2019-11-23 15:53:54',	1,	1,	337,	82),
-(21,	'PAEW-59679',	'Requests reinstated to head of department',	'Requests reinstated to head of department',	392,	0,	'2019-11-23',	'2019-11-23 15:54:58',	1,	1,	339,	82),
-(22,	'PAEW-44027',	'Requests reinstated to finance director',	'Requests reinstated to finance director',	392,	0,	'2019-11-23',	'2019-11-23 15:56:00',	1,	1,	341,	82);
 
 DROP TABLE IF EXISTS `page_view_condition`;
 CREATE TABLE `page_view_condition` (
@@ -2129,16 +1724,6 @@ CREATE TABLE `page_view_condition` (
   CONSTRAINT `page_view_condition_ibfk_3` FOREIGN KEY (`fk_page_view_id`) REFERENCES `page_view` (`page_view_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `page_view_condition` (`page_view_condition_id`, `page_view_condition_track_number`, `page_view_condition_name`, `page_view_condition_field`, `page_view_condition_operator`, `page_view_condition_value`, `fk_page_view_id`, `page_view_condition_created_date`, `page_view_condition_last_modified_date`, `page_view_condition_created_by`, `page_view_condition_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(12,	'PAIL-41326',	NULL,	'fk_status_id',	'equal',	'14',	14,	'2019-11-23',	'2019-11-23 10:48:12',	1,	1,	NULL,	83),
-(13,	'PAIL-80580',	NULL,	'fk_status_id',	'equal',	'15',	15,	'2019-11-23',	'2019-11-23 11:14:54',	1,	1,	NULL,	83),
-(14,	'PAON-31118',	'Page_view_condition # PAON-31118',	'fk_status_id',	'equal',	'16',	16,	'2019-11-23',	'2019-11-23 15:46:36',	1,	1,	330,	86),
-(15,	'PAON-45422',	'Page_view_condition # PAON-45422',	'fk_status_id',	'equal',	'17',	17,	'2019-11-23',	'2019-11-23 15:49:42',	1,	1,	332,	86),
-(16,	'PAON-63706',	'Page_view_condition # PAON-63706',	'fk_status_id',	'equal',	'18',	18,	'2019-11-23',	'2019-11-23 15:51:40',	1,	1,	334,	86),
-(17,	'PAON-20951',	'Page_view_condition # PAON-20951',	'fk_status_id',	'equal',	'19',	19,	'2019-11-23',	'2019-11-23 15:53:05',	1,	1,	336,	86),
-(18,	'PAON-64491',	'Page_view_condition # PAON-64491',	'fk_status_id',	'equal',	'20',	20,	'2019-11-23',	'2019-11-23 15:54:20',	1,	1,	338,	86),
-(19,	'PAON-36429',	'Page_view_condition # PAON-36429',	'fk_status_id',	'equal',	'21',	21,	'2019-11-23',	'2019-11-23 15:55:24',	1,	1,	340,	86),
-(20,	'PAON-86262',	'Page_view_condition # PAON-86262',	'fk_status_id',	'equal',	'22',	22,	'2019-11-23',	'2019-11-23 15:56:48',	1,	1,	342,	86);
 
 DROP TABLE IF EXISTS `page_view_role`;
 CREATE TABLE `page_view_role` (
@@ -2165,18 +1750,6 @@ CREATE TABLE `page_view_role` (
   CONSTRAINT `page_view_role_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `page_view_role` (`page_view_role_id`, `page_view_role_track_number`, `page_view_role_name`, `page_view_role_is_default`, `fk_page_view_id`, `fk_role_id`, `page_view_role_created_date`, `page_view_role_last_modified_date`, `page_view_role_created_by`, `page_view_role_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'PALE-58330',	'Page_view_role # PALE-58330',	0,	14,	3,	'2019-11-23',	'2019-11-23 14:18:13',	1,	1,	325,	84),
-(2,	'PALE-17074',	'Page_view_role # PALE-17074',	1,	15,	3,	'2019-11-23',	'2019-11-23 15:59:55',	1,	1,	343,	84),
-(3,	'PALE-70773',	'Page_view_role # PALE-70773',	1,	15,	1,	'2019-11-23',	'2019-11-23 16:00:34',	1,	1,	344,	84),
-(4,	'PALE-3178',	'Page_view_role # PALE-3178',	1,	14,	6,	'2019-11-25',	'2019-11-25 14:16:55',	1,	1,	365,	84),
-(5,	'PALE-84091',	'Page_view_role # PALE-84091',	0,	16,	3,	'2019-11-27',	'2019-11-27 12:30:12',	1,	1,	393,	84),
-(6,	'PALE-44630',	'Page_view_role # PALE-44630',	0,	15,	2,	'2019-11-27',	'2019-11-27 13:43:39',	1,	1,	412,	84),
-(7,	'PALE-71536',	'Page_view_role # PALE-71536',	0,	22,	2,	'2019-11-27',	'2019-11-27 13:44:22',	1,	1,	413,	84),
-(8,	'PALE-41828',	'Page_view_role # PALE-41828',	0,	16,	2,	'2019-11-27',	'2019-11-27 13:50:46',	1,	1,	414,	84),
-(9,	'PALE-16248',	'Page_view_role # PALE-16248',	0,	19,	2,	'2019-11-27',	'2019-11-27 16:34:39',	1,	1,	422,	84),
-(10,	'PALE-77323',	'Page_view_role # PALE-77323',	1,	19,	2,	'2019-11-27',	'2019-11-27 16:39:24',	1,	1,	423,	84),
-(11,	'PALE-51250',	'Page_view_role # PALE-51250',	0,	17,	3,	'2019-11-27',	'2019-11-27 16:45:22',	1,	1,	424,	84);
 
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
@@ -2208,28 +1781,6 @@ CREATE TABLE `permission` (
   CONSTRAINT `permission_ibfk_7` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `permission` (`permission_id`, `permission_track_number`, `permission_name`, `permission_description`, `permission_is_active`, `fk_permission_label_id`, `permission_type`, `permission_field`, `fk_menu_id`, `fk_approval_id`, `fk_status_id`, `permission_created_date`, `permission_created_by`, `permission_deleted_at`, `permission_last_modified_date`, `permission_last_modified_by`) VALUES
-(18,	'PEM-41448',	'show_bank',	'Show a list of bank records',	1,	2,	1,	'',	381,	146,	47,	'2019-11-07',	1,	NULL,	'2019-11-07 11:34:49',	1),
-(19,	'PEM-34619',	'add_bank',	'Add a new bank record',	1,	1,	1,	'',	381,	148,	47,	'2019-11-07',	1,	NULL,	'2019-11-07 12:03:32',	1),
-(20,	'PEON-46617',	'delete_bank',	'Deleting a bank',	1,	4,	1,	'',	381,	157,	47,	'2019-11-07',	1,	NULL,	'2019-11-07 14:06:25',	1),
-(21,	'PEON-47240',	'insert_bank_is_active',	'Show Bank Is Active Field on create',	1,	1,	2,	'bank_is_active',	381,	165,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 09:35:12',	1),
-(22,	'PEON-77845',	'show_request',	'Show a list of requests',	1,	2,	1,	'',	392,	171,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 11:32:48',	1),
-(23,	'PEON-53472',	'add_request',	'Add a new request',	1,	1,	1,	'',	392,	172,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 11:33:33',	1),
-(25,	'PEON-83225',	'show_center_name',	'Show center name field of the voucher form',	1,	1,	2,	'center_name',	397,	186,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 12:37:51',	1),
-(26,	'PEON-16620',	'show_voucher',	'Show a list of vouchers',	1,	2,	1,	'',	397,	188,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 12:43:11',	1),
-(27,	'PEON-21271',	'add_voucher',	'Add new voucher record',	1,	1,	1,	'',	397,	189,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 12:47:29',	1),
-(28,	'PEON-65200',	'show_voucher_detail_description',	'Show the voucher detail description',	1,	1,	2,	'voucher_detail_description',	397,	192,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 13:30:17',	1),
-(29,	'PEON-32089',	'update_bank_is_active',	'Show the bank is active field on update',	1,	3,	2,	'bank_is_active',	381,	197,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 17:26:32',	1),
-(30,	'PEON-2742',	'edit_bank',	'Editing a bank record',	1,	3,	1,	'',	381,	199,	47,	'2019-11-08',	1,	NULL,	'2019-11-08 17:29:44',	1),
-(31,	'PEON-58643',	'show_user_list',	'Show a list of users',	1,	2,	1,	'',	400,	205,	47,	'2019-11-11',	1,	NULL,	'2019-11-11 09:49:39',	1),
-(32,	'PEON-46125',	'show_permission_labels',	'Show a list of permission lables',	1,	2,	1,	'',	390,	220,	47,	'2019-11-20',	1,	NULL,	'2019-11-20 16:51:26',	1),
-(33,	'PEON-8856',	'list_users',	'List all users',	1,	1,	1,	'',	400,	222,	47,	'2019-11-20',	1,	NULL,	'2019-11-20 17:04:36',	1),
-(34,	'PEON-30929',	'show_my_menu',	'Show you menu items',	1,	2,	1,	'0',	470,	348,	47,	'2019-11-23',	1,	NULL,	'2019-11-23 18:11:34',	1),
-(35,	'PEON-68137',	'edit_request',	'Edit a request',	1,	3,	1,	'0',	392,	475,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 13:19:15',	1),
-(36,	'PEON-70801',	'edit_request',	'Edit request',	1,	3,	1,	'0',	392,	476,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 15:36:41',	1),
-(37,	'PEON-44169',	'delete_request',	'Delete request',	1,	4,	1,	'0',	392,	477,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 15:37:40',	1),
-(38,	'PEON-68222',	'create_voucher',	'Create a voucher',	1,	1,	1,	'0',	397,	480,	47,	'2019-12-16',	1,	NULL,	'2019-12-16 17:11:01',	1),
-(39,	'PEON-27267',	'View Financial Report',	'View Financial Report',	1,	2,	1,	'0',	526,	513,	47,	'2020-01-08',	1,	NULL,	'2020-01-08 09:56:30',	1);
 
 DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
@@ -2278,10 +1829,6 @@ CREATE TABLE `project` (
   CONSTRAINT `fk_project_id_funder_id` FOREIGN KEY (`fk_funder_id`) REFERENCES `funder` (`funder_id`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A project is a single funded proposal that need to be implemented and reported as a unit. It''s related to single funder\n ';
 
-INSERT INTO `project` (`project_id`, `project_track_number`, `project_name`, `project_code`, `project_description`, `project_start_date`, `project_end_date`, `fk_funder_id`, `project_cost`, `fk_funding_status_id`, `project_created_by`, `project_last_modified_by`, `project_created_date`, `project_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(7,	'PRCT-77292',	'Project 1',	'P001',	'Project 1',	'2019-11-01',	'2019-11-30',	13,	100000.00,	1,	1,	1,	'2019-11-27',	'0000-00-00',	401,	43),
-(8,	'PRCT-73281',	'Advocacy',	'ADV021',	'This is advocacy funding for funder b',	'2017-11-16',	'2022-07-28',	14,	45000000.00,	1,	1,	1,	'2019-11-27',	'0000-00-00',	416,	43),
-(9,	'PRCT-24953',	'WASH',	'WASH435',	'This is a wash project for funder b',	'2017-08-01',	'2022-07-27',	14,	8000000.00,	1,	1,	1,	'2019-11-27',	'0000-00-00',	417,	43);
 
 DROP TABLE IF EXISTS `project_allocation`;
 CREATE TABLE `project_allocation` (
@@ -2310,11 +1857,25 @@ CREATE TABLE `project_allocation` (
   CONSTRAINT `project_allocation_ibfk_4` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `project_allocation` (`project_allocation_id`, `project_allocation_track_number`, `fk_project_id`, `project_allocation_name`, `project_allocation_amount`, `project_allocation_is_active`, `fk_office_id`, `fk_status_id`, `fk_approval_id`, `project_allocation_extended_end_date`, `project_allocation_created_date`, `project_allocation_last_modified_date`, `project_allocation_created_by`, `project_allocation_last_modified_by`) VALUES
-(5,	'PRON-88526',	7,	'TAWK Project 1 ',	30000.00,	1,	16,	44,	402,	'2019-11-30',	'2019-11-27',	NULL,	1,	1),
-(6,	'PRON-66515',	7,	'YWT Project 1',	45000.00,	1,	17,	44,	405,	'2019-11-30',	'2019-11-27',	NULL,	1,	1),
-(7,	'PRON-2654',	8,	'TWAK Advocacy',	560000.00,	1,	16,	44,	418,	'2020-03-28',	'2019-11-27',	NULL,	1,	1),
-(8,	'PRON-62640',	9,	'GRC Shingila - WASH',	650000.00,	1,	9,	44,	469,	'2020-01-15',	'2019-12-15',	NULL,	1,	1);
+
+DROP TABLE IF EXISTS `project_allocation_detail`;
+CREATE TABLE `project_allocation_detail` (
+  `project_allocation_detail_id` int(11) NOT NULL,
+  `project_allocation_detail_track_number` varchar(100) NOT NULL,
+  `project_allocation_detail_name` varchar(100) NOT NULL,
+  `fk_project_allocation_id` int(100) NOT NULL,
+  `project_allocation_detail_month` date NOT NULL,
+  `project_allocation_detail_amount` decimal(10,2) NOT NULL,
+  `project_allocation_detail_created_date` date DEFAULT NULL,
+  `project_allocation_detail_created_by` int(100) DEFAULT NULL,
+  `project_allocation_detail_last_modified_by` int(100) DEFAULT NULL,
+  `project_allocation_detail_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  KEY `fk_project_allocation_id` (`fk_project_allocation_id`),
+  CONSTRAINT `project_allocation_detail_ibfk_1` FOREIGN KEY (`fk_project_allocation_id`) REFERENCES `project_allocation` (`project_allocation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 DROP TABLE IF EXISTS `project_cost_proportion`;
 CREATE TABLE `project_cost_proportion` (
@@ -2336,6 +1897,7 @@ DROP TABLE IF EXISTS `reconciliation`;
 CREATE TABLE `reconciliation` (
   `reconciliation_id` int(100) NOT NULL AUTO_INCREMENT,
   `reconciliation_track_number` varchar(100) DEFAULT NULL,
+  `reconciliation_name` varchar(100) DEFAULT NULL,
   `fk_office_id` int(100) DEFAULT NULL,
   `reconciliation_reporting_month` date DEFAULT NULL,
   `financial_report_is_submitted` int(5) DEFAULT '0',
@@ -2385,17 +1947,33 @@ CREATE TABLE `request` (
   CONSTRAINT `request_ibfk_5` FOREIGN KEY (`fk_request_type_id`) REFERENCES `request_type` (`request_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `request` (`request_id`, `request_track_number`, `request_name`, `fk_request_type_id`, `fk_status_id`, `fk_office_id`, `fk_approval_id`, `request_date`, `request_description`, `fk_department_id`, `request_created_date`, `request_created_by`, `request_last_modified_by`, `request_last_modified_date`, `request_deleted_at`) VALUES
-(1,	'REST-50733',	'Test',	2,	14,	9,	464,	'2019-12-15',	'Test',	1,	'2019-12-15',	'1',	'1',	'2019-12-15 09:53:15',	NULL),
-(2,	'REST-21224',	'Test 2',	1,	15,	9,	466,	'2019-12-15',	'Test 2',	1,	'2019-12-15',	'5',	'5',	'2019-12-15 14:29:53',	NULL),
-(3,	'REST-53097',	'Test 3',	2,	20,	9,	468,	'2019-12-15',	'Test 3',	2,	'2019-12-15',	'5',	'5',	'2020-01-07 09:45:07',	NULL),
-(4,	'REST-26709',	'Test 4',	1,	20,	10,	472,	'2019-12-16',	'Test 4',	2,	'2019-12-16',	'5',	'5',	'2020-01-07 09:46:25',	NULL),
-(5,	'REST-13572',	'Test 5',	1,	20,	9,	473,	'2019-12-16',	'Test 5',	3,	'2019-12-16',	'5',	'5',	'2019-12-20 09:18:45',	NULL);
+
+DROP TABLE IF EXISTS `request_conversion`;
+CREATE TABLE `request_conversion` (
+  `request_conversion_id` int(100) NOT NULL AUTO_INCREMENT,
+  `request_conversion_name` varchar(100) NOT NULL,
+  `request_conversion_track_number` varchar(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `conversion_status_id` int(100) NOT NULL,
+  `request_conversion_created_date` date DEFAULT NULL,
+  `request_conversion_created_by` int(100) DEFAULT NULL,
+  `request_conversion_last_modified_by` int(100) DEFAULT NULL,
+  `request_conversion_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`request_conversion_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  KEY `conversion_status_id` (`conversion_status_id`),
+  CONSTRAINT `request_conversion_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
+  CONSTRAINT `request_conversion_ibfk_2` FOREIGN KEY (`conversion_status_id`) REFERENCES `status` (`status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
   `request_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_detail_track_number` varchar(100) DEFAULT NULL,
+  `request_detail_name` varchar(100) DEFAULT NULL,
   `fk_request_id` int(100) DEFAULT NULL,
   `request_detail_description` varchar(45) DEFAULT NULL,
   `request_detail_quantity` int(10) DEFAULT NULL,
@@ -2415,36 +1993,32 @@ CREATE TABLE `request_detail` (
   KEY `fk_request_detail_request1_idx` (`fk_request_id`),
   KEY `fk_request_detail_expense_account1_idx` (`fk_expense_account_id`),
   CONSTRAINT `fk_request_detail_expense_account1` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_request_detail_request1` FOREIGN KEY (`fk_request_id`) REFERENCES `request` (`request_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `request_detail_ibfk_1` FOREIGN KEY (`fk_request_id`) REFERENCES `request` (`request_id`) ON DELETE CASCADE
+  CONSTRAINT `fk_request_detail_request1` FOREIGN KEY (`fk_request_id`) REFERENCES `request` (`request_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `request_detail` (`request_detail_id`, `request_detail_track_number`, `fk_request_id`, `request_detail_description`, `request_detail_quantity`, `request_detail_unit_cost`, `request_detail_total_cost`, `fk_expense_account_id`, `fk_project_allocation_id`, `fk_status_id`, `fk_approval_id`, `request_detail_conversion_set`, `request_detail_voucher_number`, `request_detail_created_date`, `request_detail_created_by`, `request_detail_last_modified_by`, `request_detail_last_modified_date`) VALUES
-(1,	'REIL-77347',	1,	'Test',	20,	200.00,	400.00,	1,	5,	1,	NULL,	0,	NULL,	'2019-12-15',	1,	1,	'2019-12-15 09:53:15'),
-(2,	'REIL-54941',	2,	'Test 2',	25,	500.00,	12500.00,	3,	6,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-15 14:29:53'),
-(3,	'REIL-8734',	3,	'Test 3',	20,	700.00,	14000.00,	1,	5,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-16 15:42:36'),
-(4,	'REIL-24712',	3,	'Test 3',	25,	850.00,	21250.00,	2,	7,	15,	NULL,	0,	NULL,	'2019-12-15',	5,	5,	'2019-12-16 15:42:36'),
-(5,	'REIL-85047',	4,	'Testing 4',	50,	1500.00,	75000.00,	3,	8,	1,	NULL,	0,	NULL,	'2019-12-16',	5,	5,	'2019-12-16 10:55:24'),
-(6,	'REIL-71669',	5,	'Test 5',	15,	2500.00,	37500.00,	1,	8,	1,	NULL,	0,	NULL,	'2019-12-16',	5,	5,	'2019-12-16 10:57:57');
 
 DROP TABLE IF EXISTS `request_type`;
 CREATE TABLE `request_type` (
   `request_type_id` int(11) NOT NULL AUTO_INCREMENT,
   `request_type_track_number` varchar(100) NOT NULL,
   `request_type_name` varchar(100) NOT NULL,
+  `request_type_is_active` int(5) NOT NULL DEFAULT '1',
+  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `request_type_created_date` date DEFAULT NULL,
   `request_type_created_by` int(100) DEFAULT NULL,
   `request_type_last_modified_by` int(100) DEFAULT NULL,
   `request_type_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`request_type_id`)
+  PRIMARY KEY (`request_type_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `request_type_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `request_type` (`request_type_id`, `request_type_track_number`, `request_type_name`, `request_type_created_date`, `request_type_created_by`, `request_type_last_modified_by`, `request_type_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'REPE-35675',	'General',	'2019-11-23',	1,	1,	'2019-11-23 14:37:14',	326,	85),
-(2,	'REPE-52210',	'Child Protection',	'2019-11-23',	1,	1,	'2019-11-23 14:37:52',	327,	85),
-(3,	'REPE-29451',	'Health',	'2019-11-23',	1,	1,	'2019-11-23 14:38:04',	328,	85);
+INSERT INTO `request_type` (`request_type_id`, `request_type_track_number`, `request_type_name`, `request_type_is_active`, `fk_account_system_id`, `request_type_created_date`, `request_type_created_by`, `request_type_last_modified_by`, `request_type_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'REPE-35675',	'General',	1,	1,	'2019-11-23',	1,	1,	'2019-11-23 14:37:14',	326,	85),
+(2,	'REPE-52210',	'Child Protection',	1,	1,	'2019-11-23',	1,	1,	'2019-11-23 14:37:52',	327,	85),
+(3,	'REPE-29451',	'Health',	1,	1,	'2019-11-23',	1,	1,	'2019-11-23 14:38:04',	328,	85);
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
@@ -2469,13 +2043,14 @@ CREATE TABLE `role` (
 INSERT INTO `role` (`role_id`, `role_track_number`, `role_name`, `role_shortname`, `role_description`, `role_is_active`, `role_is_new_status_default`, `role_is_department_strict`, `role_created_by`, `role_created_date`, `role_last_modified_date`, `role_last_modified_by`, `role_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'ROL-65362',	'Department Manager',	'departmentmanager',	'Department Manager',	1,	0,	1,	1,	'2019-11-04',	'2019-11-06 06:08:14',	'1',	NULL,	150,	46),
 (2,	'ROLE-86037',	'Finance Director',	'financedirector',	'Finance Director',	1,	0,	0,	1,	'2019-11-08',	'2019-11-08 10:06:09',	'1',	NULL,	167,	46),
-(3,	'ROLE-23190',	'Office Accountant',	'officeaccountant',	'An Office Accountant',	1,	1,	0,	1,	'2019-11-08',	'2019-11-08 11:38:04',	'1',	NULL,	175,	46),
+(3,	'ROLE-23190',	'Office Accountant',	'officeaccountant',	'An Office Accountant',	1,	0,	0,	1,	'2019-11-08',	'2019-11-08 11:38:04',	'1',	NULL,	175,	46),
 (4,	'ROLE-9951',	'Admin',	'admin',	'This is a country admin',	1,	0,	0,	1,	'2019-11-20',	'2019-11-20 16:41:17',	'1',	NULL,	219,	46),
 (5,	'ROLE-6494',	'National Office Accoutant',	'noaccountant',	'National Office Accoutant',	1,	0,	0,	1,	'2019-11-24',	'2019-11-24 21:53:12',	'1',	NULL,	353,	46),
 (6,	'ROLE-8522',	'Test Role',	'tesrole',	'This is a test role',	1,	0,	0,	1,	'2019-11-25',	'2019-11-25 13:57:26',	'1',	NULL,	360,	46),
 (7,	'ROLE-24515',	'Test Role 1',	'testrole1',	'Test Role 1',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 12:54:34',	'1',	NULL,	374,	46),
 (8,	'ROLE-10917',	'Test Role 2',	'testrole2',	'Test role 2',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 12:55:01',	'1',	NULL,	375,	46),
-(9,	'ROLE-80181',	'Affiliate Accountant',	'afficiliateaccountant',	'This is role which will allow holders add requests, vouchers etc',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 14:03:54',	'1',	NULL,	386,	46);
+(9,	'ROLE-80181',	'Affiliate Accountant',	'afficiliateaccountant',	'This is role which will allow holders add requests, vouchers etc',	1,	0,	0,	1,	'2019-11-26',	'2019-11-26 14:03:54',	'1',	NULL,	386,	46),
+(10,	'ROLE-53004',	'System',	'system',	'This is system role',	1,	1,	0,	1,	'2020-03-07',	'2020-03-07 04:21:56',	'1',	NULL,	691,	46);
 
 DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission` (
@@ -2498,40 +2073,6 @@ CREATE TABLE `role_permission` (
   CONSTRAINT `role_permission_ibfk_5` FOREIGN KEY (`fk_permission_id`) REFERENCES `permission` (`permission_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_number`, `role_permission_name`, `role_permission_is_active`, `fk_role_id`, `fk_permission_id`, `fk_approval_id`, `fk_status_id`, `role_permission_created_date`, `role_permission_created_by`, `role_permission_last_modified_date`, `role_permission_last_modified_by`) VALUES
-(1,	'ROON-32271',	'Department manager listing banks',	1,	1,	18,	163,	48,	'2019-11-08',	1,	'2019-11-08 09:23:41',	1),
-(2,	'ROON-23380',	'Department manager adding a bank',	1,	1,	19,	164,	48,	'2019-11-08',	1,	'2019-11-08 09:24:14',	1),
-(3,	'ROON-53265',	'Department manager can change bank status',	1,	1,	21,	166,	48,	'2019-11-08',	1,	'2019-11-08 09:57:44',	1),
-(4,	'ROON-88427',	'Finance Director listing banks',	1,	2,	18,	168,	48,	'2019-11-08',	1,	'2019-11-08 10:09:04',	1),
-(5,	'ROON-85843',	'Finance Director Adding banks',	1,	2,	19,	169,	48,	'2019-11-08',	1,	'2019-11-08 10:09:34',	1),
-(6,	'ROON-44018',	'List requests for Finance director',	1,	2,	22,	173,	48,	'2019-11-08',	1,	'2019-11-08 11:34:43',	1),
-(7,	'ROON-9358',	'Add requests by Finance director',	1,	2,	23,	174,	48,	'2019-11-08',	1,	'2019-11-08 11:35:07',	1),
-(8,	'ROON-30396',	'Finance Director can see the center name when adding a voucher on behalf of a center',	1,	2,	25,	187,	48,	'2019-11-08',	1,	'2019-11-08 12:39:25',	1),
-(9,	'ROON-41670',	'List vouchers to Center Accountant',	0,	3,	26,	190,	48,	'2019-11-08',	1,	'2019-11-08 12:48:05',	1),
-(10,	'ROON-77186',	'Allow center accountant to add a voucher',	1,	3,	27,	191,	48,	'2019-11-08',	1,	'2019-11-08 12:48:32',	1),
-(11,	'ROON-72193',	'Show the voucher detail description field',	1,	2,	28,	193,	48,	'2019-11-08',	1,	'2019-11-08 13:31:03',	1),
-(12,	'ROON-40527',	'Show voucher list to Finance Director',	1,	2,	26,	194,	48,	'2019-11-08',	1,	'2019-11-08 14:17:53',	1),
-(13,	'ROON-58711',	'Add a voucher by Finance Director',	1,	2,	27,	195,	48,	'2019-11-08',	1,	'2019-11-08 14:18:12',	1),
-(14,	'ROON-38943',	'Department manager able to update bank status',	1,	1,	29,	198,	48,	'2019-11-08',	1,	'2019-11-08 17:28:08',	1),
-(15,	'ROON-76668',	'Department Manager editing a bank',	1,	1,	30,	200,	48,	'2019-11-08',	1,	'2019-11-08 17:31:28',	1),
-(16,	'ROON-28987',	'Finance director editing a bank',	1,	2,	30,	201,	48,	'2019-11-08',	1,	'2019-11-08 17:31:49',	1),
-(17,	'ROON-63197',	'Finance Director Listing all users',	1,	2,	31,	206,	48,	'2019-11-11',	1,	'2019-11-11 09:50:29',	1),
-(18,	'ROON-77476',	'Show a list of permission labels',	1,	4,	32,	221,	48,	'2019-11-20',	1,	'2019-11-20 16:52:41',	1),
-(19,	'ROON-49919',	'List all users',	1,	4,	33,	223,	48,	'2019-11-20',	1,	'2019-11-20 17:05:06',	1),
-(20,	'ROON-67098',	'List all permission labels by an department head',	1,	1,	32,	224,	48,	'2019-11-20',	1,	'2019-11-20 17:12:14',	1),
-(21,	'ROON-85421',	'Listing requests to center accountant',	0,	3,	22,	274,	48,	'2019-11-21',	1,	'2019-11-21 19:51:30',	1),
-(22,	'ROON-78079',	'List requests',	1,	1,	22,	276,	48,	'2019-11-21',	1,	'2019-11-21 22:30:27',	1),
-(23,	'ROON-12657',	'Accountant adding a request',	0,	3,	23,	284,	48,	'2019-11-22',	1,	'2019-11-22 10:15:49',	1),
-(24,	'ROON-23493',	'Department manager adding a request',	1,	1,	23,	285,	48,	'2019-11-22',	1,	'2019-11-22 10:33:01',	1),
-(25,	'ROON-40361',	'Accountant able to view menu items',	1,	3,	34,	349,	48,	'2019-11-23',	1,	'2019-11-23 18:12:31',	1),
-(26,	'ROON-53893',	'Allowing listing of requests',	1,	6,	22,	361,	48,	'2019-11-25',	1,	'2019-11-25 13:59:46',	1),
-(27,	'ROON-44503',	'Tesr role 1 listing requests',	1,	7,	22,	376,	48,	'2019-11-26',	1,	'2019-11-26 12:56:58',	1),
-(28,	'ROON-34108',	'Role 1 Adding requests',	1,	7,	23,	377,	48,	'2019-11-26',	1,	'2019-11-26 12:57:18',	1),
-(29,	'ROON-3556',	'Show requests to affiliate accountant',	1,	9,	22,	387,	48,	'2019-11-26',	1,	'2019-11-26 14:06:58',	1),
-(30,	'ROON-43907',	'Add request by affiliate accountant',	1,	9,	23,	388,	48,	'2019-11-26',	1,	'2019-11-26 14:08:47',	1),
-(31,	'ROON-37252',	'Show requests to AC',	1,	5,	22,	427,	48,	'2019-11-28',	1,	'2019-11-28 10:02:02',	1),
-(32,	'ROON-52185',	'Edit request by Office accountant',	1,	3,	35,	479,	48,	'2019-12-16',	1,	'2019-12-16 15:39:14',	1),
-(33,	'ROON-25570',	'Department Manager View a Financial Report',	1,	1,	39,	514,	48,	'2020-01-08',	1,	'2020-01-08 09:57:35',	1);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -2561,12 +2102,14 @@ CREATE TABLE `status` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,
   `status_track_number` varchar(100) NOT NULL,
   `status_name` varchar(50) NOT NULL,
+  `fk_workflow_id` int(11) NOT NULL,
   `fk_approve_item_id` int(11) NOT NULL,
   `status_approval_sequence` int(10) NOT NULL,
   `status_backflow_sequence` int(10) NOT NULL,
   `status_approval_direction` int(5) NOT NULL COMMENT '1-straight jumps, 0 - return jumps, -1 - reverse jump',
   `status_is_requiring_approver_action` int(5) NOT NULL DEFAULT '1',
   `fk_role_id` int(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `status_created_date` date NOT NULL,
   `status_created_by` int(100) NOT NULL,
   `status_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -2576,90 +2119,23 @@ CREATE TABLE `status` (
   PRIMARY KEY (`status_id`),
   KEY `fk_approve_item_id` (`fk_approve_item_id`),
   KEY `fk_role_id` (`fk_role_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
   CONSTRAINT `status_ibfk_2` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
-  CONSTRAINT `status_ibfk_3` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`)
+  CONSTRAINT `status_ibfk_3` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`),
+  CONSTRAINT `status_ibfk_4` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_approve_item_id`, `status_approval_sequence`, `status_backflow_sequence`, `status_approval_direction`, `status_is_requiring_approver_action`, `fk_role_id`, `status_created_date`, `status_created_by`, `status_last_modified_date`, `status_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'',	'New',	1,	1,	0,	1,	1,	3,	'0000-00-00',	0,	'2019-11-27 12:03:26',	0,	NULL,	NULL),
-(2,	'',	'Submitted to Head of Department	',	1,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
-(3,	'',	'Approved By Head of Department',	1,	3,	0,	1,	1,	2,	'0000-00-00',	0,	'2019-11-27 12:04:17',	0,	NULL,	NULL),
-(4,	'',	'Declined By Head of Department',	1,	2,	1,	-1,	1,	1,	'0000-00-00',	0,	'2019-11-27 12:05:01',	0,	NULL,	NULL),
-(5,	'',	'Approved By Finance Director',	1,	4,	0,	1,	1,	5,	'0000-00-00',	0,	'2019-11-27 12:05:23',	0,	NULL,	NULL),
-(6,	'',	'Declined By Finance Director',	1,	3,	1,	-1,	1,	2,	'0000-00-00',	0,	'2019-11-27 12:08:44',	0,	NULL,	NULL),
-(7,	'',	'Paid By Accountant',	1,	5,	0,	1,	0,	5,	'0000-00-00',	0,	'2019-11-27 12:09:59',	0,	NULL,	NULL),
-(8,	'',	'Reinstated to Head of Department',	1,	2,	0,	0,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
-(9,	'',	'Reinstate to Finance Director',	1,	3,	0,	0,	1,	2,	'0000-00-00',	0,	'2019-11-27 12:09:59',	0,	NULL,	NULL),
-(10,	'',	'Submitted',	2,	1,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:05:19',	0,	NULL,	NULL),
-(11,	'',	'Approved By Finance Director',	2,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
-(12,	'',	'Declined By Finance Director',	2,	2,	0,	-1,	1,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
-(13,	'',	'Reinstated to Finance Director',	2,	2,	0,	0,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
-(14,	'',	'New',	3,	1,	0,	1,	1,	3,	'0000-00-00',	0,	'2019-11-24 21:57:03',	0,	NULL,	NULL),
-(15,	'',	'Submitted to Head of Department',	3,	2,	0,	1,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
-(16,	'',	'Approved By Head of Department',	3,	3,	0,	1,	1,	2,	'0000-00-00',	0,	'2019-11-24 23:07:03',	0,	NULL,	NULL),
-(17,	'',	'Declined By Head of Department',	3,	2,	1,	-1,	1,	1,	'0000-00-00',	0,	'2019-11-24 23:06:30',	0,	NULL,	NULL),
-(18,	'',	'Approved By Finance Director',	3,	4,	0,	1,	1,	5,	'0000-00-00',	0,	'2019-11-24 22:30:26',	0,	NULL,	NULL),
-(19,	'',	'Declined By Finance Director',	3,	3,	1,	-1,	1,	2,	'0000-00-00',	0,	'2019-11-24 23:07:03',	0,	NULL,	NULL),
-(20,	'',	'Paid By Accountant',	3,	5,	0,	1,	0,	5,	'0000-00-00',	0,	'2019-11-24 22:32:23',	0,	NULL,	NULL),
-(21,	'',	'Reinstated to Head of Department',	3,	2,	0,	0,	1,	1,	'0000-00-00',	0,	'2019-12-15 14:45:42',	0,	NULL,	NULL),
-(22,	'',	'Reinstated to Finance Director',	3,	3,	0,	0,	1,	2,	'0000-00-00',	0,	'2019-11-25 01:22:31',	0,	NULL,	NULL),
-(23,	'',	'New',	4,	1,	0,	1,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
-(30,	'',	'New',	5,	1,	0,	1,	0,	1,	'0000-00-00',	0,	'2019-11-07 17:00:11',	0,	NULL,	NULL),
-(33,	'',	'New',	8,	1,	0,	1,	0,	1,	'2019-10-22',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(34,	'',	'New',	9,	1,	0,	1,	0,	1,	'2019-10-22',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(38,	'',	'New',	13,	1,	0,	1,	0,	1,	'2019-10-22',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(39,	'',	'New',	14,	1,	0,	1,	0,	1,	'2019-10-22',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(43,	'',	'New',	18,	1,	0,	1,	0,	1,	'2019-10-25',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(44,	'',	'New',	19,	1,	0,	1,	0,	1,	'2019-11-03',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(45,	'',	'New',	20,	1,	0,	1,	0,	1,	'2019-11-03',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(46,	'',	'New',	21,	1,	0,	1,	0,	1,	'2019-11-04',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(47,	'',	'New',	22,	1,	0,	1,	0,	1,	'2019-11-04',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(48,	'',	'New',	23,	1,	0,	1,	0,	1,	'2019-11-04',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(49,	'',	'New',	24,	1,	0,	1,	0,	1,	'2019-11-05',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(50,	'',	'New',	25,	1,	0,	1,	0,	1,	'2019-11-06',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(51,	'',	'New',	26,	1,	0,	1,	0,	1,	'2019-11-06',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(52,	'',	'New',	27,	1,	0,	1,	0,	1,	'2019-11-07',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(53,	'',	'New',	28,	1,	0,	1,	0,	1,	'2019-11-07',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(54,	'',	'New',	29,	1,	0,	1,	0,	1,	'2019-11-07',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(55,	'',	'New',	30,	1,	0,	1,	0,	1,	'2019-11-07',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(56,	'',	'New',	31,	1,	0,	1,	0,	1,	'2019-11-07',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(57,	'',	'New',	32,	1,	0,	1,	0,	1,	'2019-11-07',	1,	'2019-11-07 17:00:11',	1,	NULL,	NULL),
-(58,	'',	'New',	33,	1,	0,	1,	0,	2,	'2019-11-13',	1,	'2019-11-13 18:19:46',	1,	NULL,	NULL),
-(59,	'',	'New',	34,	1,	0,	1,	0,	2,	'2019-11-13',	1,	'2019-11-13 18:19:58',	1,	NULL,	NULL),
-(61,	'',	'New',	36,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-20 23:15:01',	1,	NULL,	NULL),
-(62,	'',	'New',	37,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-20 23:15:43',	1,	NULL,	NULL),
-(63,	'',	'New',	38,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-20 23:17:28',	1,	NULL,	NULL),
-(64,	'',	'New',	39,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-20 23:54:46',	1,	NULL,	NULL),
-(65,	'',	'New',	40,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 00:12:27',	1,	NULL,	NULL),
-(66,	'',	'New',	41,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 05:43:37',	1,	NULL,	NULL),
-(67,	'',	'New',	42,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 05:45:54',	1,	NULL,	NULL),
-(68,	'',	'New',	43,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 05:48:36',	1,	NULL,	NULL),
-(69,	'',	'New',	44,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 05:52:00',	1,	NULL,	NULL),
-(70,	'',	'New',	45,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 05:56:56',	1,	NULL,	NULL),
-(71,	'',	'New',	46,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 14:51:30',	1,	NULL,	NULL),
-(72,	'',	'New',	47,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 15:40:57',	1,	NULL,	NULL),
-(73,	'',	'New',	48,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 16:09:50',	1,	NULL,	NULL),
-(74,	'',	'New',	49,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 16:14:04',	1,	NULL,	NULL),
-(75,	'',	'New',	50,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 16:31:45',	1,	NULL,	NULL),
-(76,	'',	'New',	51,	1,	0,	1,	0,	2,	'2019-11-21',	1,	'2019-11-21 16:37:42',	1,	NULL,	NULL),
-(77,	'',	'New',	52,	1,	0,	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 07:22:23',	1,	NULL,	NULL),
-(78,	'',	'New',	53,	1,	0,	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 07:52:16',	1,	NULL,	NULL),
-(79,	'',	'New',	54,	1,	0,	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 08:29:59',	1,	NULL,	NULL),
-(80,	'',	'New',	55,	1,	0,	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 08:35:26',	1,	NULL,	NULL),
-(81,	'',	'New',	56,	1,	0,	1,	0,	2,	'2019-11-22',	1,	'2019-11-22 22:07:30',	1,	NULL,	NULL),
-(82,	'',	'New',	57,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 08:19:50',	1,	NULL,	NULL),
-(83,	'',	'New',	58,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 08:19:50',	1,	NULL,	NULL),
-(84,	'',	'New',	59,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 14:11:51',	1,	NULL,	NULL),
-(85,	'',	'New',	60,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 14:31:51',	1,	NULL,	NULL),
-(86,	'',	'New',	61,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(87,	'',	'New',	62,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(88,	'',	'New',	68,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(89,	'',	'New',	67,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(90,	'',	'New',	71,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(91,	'',	'New',	72,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(92,	'',	'New',	73,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(93,	'',	'New',	74,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL),
-(94,	'',	'New',	75,	1,	0,	1,	0,	2,	'2019-11-23',	1,	'2019-11-23 15:32:11',	1,	NULL,	NULL);
+INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_workflow_id`, `fk_approve_item_id`, `status_approval_sequence`, `status_backflow_sequence`, `status_approval_direction`, `status_is_requiring_approver_action`, `fk_role_id`, `fk_account_system_id`, `status_created_date`, `status_created_by`, `status_last_modified_date`, `status_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(45,	'',	'New',	2,	20,	1,	0,	1,	0,	1,	1,	'2019-11-03',	1,	'2020-03-08 17:52:15',	1,	NULL,	NULL),
+(67,	'',	'New',	0,	42,	1,	0,	1,	0,	2,	1,	'2019-11-21',	1,	'2019-11-21 05:45:54',	1,	NULL,	NULL),
+(68,	'',	'New',	0,	43,	1,	0,	1,	0,	2,	1,	'2019-11-21',	1,	'2019-11-21 05:48:36',	1,	NULL,	NULL),
+(69,	'',	'New',	0,	44,	1,	0,	1,	0,	2,	1,	'2019-11-21',	1,	'2019-11-21 05:52:00',	1,	NULL,	NULL),
+(73,	'',	'New',	0,	48,	1,	0,	1,	0,	2,	1,	'2019-11-21',	1,	'2019-11-21 16:09:50',	1,	NULL,	NULL),
+(74,	'',	'New',	0,	49,	1,	0,	1,	0,	2,	1,	'2019-11-21',	1,	'2019-11-21 16:14:04',	1,	NULL,	NULL),
+(76,	'',	'New',	0,	51,	1,	0,	1,	0,	2,	1,	'2019-11-21',	1,	'2019-11-21 16:37:42',	1,	NULL,	NULL),
+(77,	'',	'New',	0,	52,	1,	0,	1,	0,	2,	1,	'2019-11-22',	1,	'2019-11-22 07:22:23',	1,	NULL,	NULL),
+(87,	'STUS-43859',	'New',	0,	62,	1,	0,	1,	0,	10,	1,	'2019-11-23',	1,	'2020-03-07 04:24:52',	1,	NULL,	NULL),
+(102,	'STUS-39265',	'Approval In-Progress',	0,	62,	2,	0,	1,	0,	10,	1,	'2020-03-07',	1,	'2020-03-07 04:23:50',	1,	692,	57);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -2669,20 +2145,15 @@ CREATE TABLE `status_role` (
   `fk_role_id` int(100) NOT NULL,
   `fk_status_id` int(11) NOT NULL,
   `status_role_created_by` int(100) NOT NULL,
-  `status_role_created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status_role_created_date` date NOT NULL DEFAULT '0000-00-00',
   `status_role_last_modified_by` int(100) NOT NULL,
-  `status_role_last_modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `status_role_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `fk_approval_id` int(11) NOT NULL,
   PRIMARY KEY (`status_role_id`),
   KEY `fk_role_id` (`fk_role_id`),
-  KEY `fk_status_id` (`fk_status_id`),
-  CONSTRAINT `status_role_ibfk_1` FOREIGN KEY (`fk_role_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `status_role_ibfk_4` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`) ON DELETE CASCADE,
-  CONSTRAINT `status_role_ibfk_5` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`) ON DELETE CASCADE
+  CONSTRAINT `status_role_ibfk_4` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `status_role` (`status_role_id`, `status_role_track_number`, `status_role_name`, `fk_role_id`, `fk_status_id`, `status_role_created_by`, `status_role_created_date`, `status_role_last_modified_by`, `status_role_last_modified_date`) VALUES
-(6,	'STR-55865',	'',	1,	3,	0,	'2019-10-16 22:44:55',	0,	'2019-10-16 22:39:16'),
-(7,	'STR-55865',	'',	1,	4,	0,	'2019-10-16 22:45:28',	0,	'2019-10-16 22:39:16');
 
 DROP TABLE IF EXISTS `transaction_effect`;
 CREATE TABLE `transaction_effect` (
@@ -2754,23 +2225,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `user` (`user_id`, `user_track_number`, `user_name`, `shortname`, `user_firstname`, `user_lastname`, `user_email`, `fk_context_definition_id`, `user_is_context_manager`, `user_is_system_admin`, `fk_language_id`, `user_is_active`, `fk_role_id`, `user_password`, `user_created_date`, `user_created_by`, `user_last_modified_date`, `user_last_modifed_by`, `user_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'USR-84763',	'Nicodemus Karisa',	'',	'Nicodemus',	'Karisa',	'nkmwambs@gmail.com',	10,	0,	1,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'0000-00-00',	0,	'2019-11-07 07:54:59',	NULL,	0,	NULL,	NULL),
-(2,	'USER-24279',	'Mwambire Karisa',	'',	'Mwambire',	'Karisa ',	'nkmwambs2@gmail.com',	8,	0,	0,	1,	1,	2,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 07:21:31',	NULL,	1,	160,	54),
-(4,	'USER-85054',	'Joyce Cherono',	'',	'Joyce',	'Cherono',	'jcherono@gmail.com',	8,	0,	0,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 07:55:20',	NULL,	1,	162,	54),
-(5,	'USER-35106',	'David Mbitsi',	'',	'David',	'Mbitsi',	'davidm@gmail.com',	13,	0,	0,	1,	1,	3,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 11:57:17',	NULL,	1,	176,	54),
-(6,	'USER-8011',	'Betty Kanze',	'',	'Betty',	'Kanze',	'byeri@gmail.com',	13,	0,	0,	1,	1,	3,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 12:14:22',	NULL,	1,	177,	54),
-(7,	'USER-74028',	'Livingstone Onduso',	'',	'Livingstone',	'Onduso',	'onduso@gmail.com',	8,	0,	1,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 12:16:01',	NULL,	1,	178,	54),
-(8,	'USER-56932',	'John Koi',	'',	'John',	'Koi',	'jkoi@gmail.com',	9,	0,	0,	1,	1,	3,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 12:18:44',	NULL,	1,	179,	54),
-(9,	'USER-42367',	'Mapenzi Amani',	'',	'Mapenzi',	'Amani',	'mapenzi@gmail.com',	8,	0,	0,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 12:23:24',	NULL,	1,	180,	54),
-(10,	'USER-14904',	'Hellen Bahati',	'',	'Hellen',	'Bahati',	'hellen@gmail.com',	8,	0,	0,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 12:24:18',	NULL,	1,	181,	54),
-(11,	'USER-45040',	'Trizer Bethuel',	'',	'Trizer',	'Bethuel',	'trizer@gmail.com',	12,	0,	0,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-08',	1,	'2019-11-08 12:26:22',	NULL,	1,	182,	54),
-(12,	'USER-19929',	'Admin Main',	'',	'Main',	'Admin',	'admin@gmail.com',	8,	0,	0,	1,	1,	4,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-20',	1,	'2019-11-20 16:40:43',	NULL,	1,	218,	54),
-(13,	'USER-13258',	'Joan Kampala',	'jkampala',	'Joan',	'Kampala',	'jkampala@gmail.com',	13,	0,	0,	1,	1,	3,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-25',	1,	'2019-11-25 07:26:30',	1,	1,	357,	54),
-(14,	'USER-39078',	'Test User',	'',	'Test',	'User',	'tuser@gmail.com',	10,	0,	0,	1,	1,	6,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-25',	1,	'2019-11-25 14:07:15',	NULL,	1,	363,	54),
-(15,	'USER-29419',	'Test User 2',	'',	'Test ',	'User 2',	'testuser2@gmail.com',	13,	0,	0,	1,	1,	7,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-26',	1,	'2019-11-26 13:03:56',	NULL,	1,	378,	54),
-(16,	'USER-72870',	'Wilson Gitonga',	'',	'Wilson ',	'Wilson Gitonga',	'wilson@gmail.com',	13,	0,	0,	1,	1,	9,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-26',	1,	'2019-11-26 14:12:12',	NULL,	1,	389,	54),
-(17,	'USER-1336',	'Mary Joy',	'',	'Mary',	'Joy',	'joy@gmail.com',	10,	0,	0,	1,	1,	2,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-27',	1,	'2019-11-27 13:37:07',	NULL,	1,	410,	54),
-(18,	'USER-20992',	'Ben Ken',	'',	'Ben',	'Ken',	'ben@gmail.com',	10,	0,	0,	1,	1,	5,	'fbdf9989ea636d6b339fd6b85f63e06e',	'2019-11-28',	1,	'2019-11-28 09:55:58',	NULL,	1,	426,	54);
+(1,	'USR-84763',	'Nicodemus Karisa',	'',	'Nicodemus',	'Karisa',	'nkmwambs@gmail.com',	10,	0,	1,	1,	1,	1,	'fbdf9989ea636d6b339fd6b85f63e06e',	'0000-00-00',	0,	'2019-11-07 07:54:59',	NULL,	0,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `variance_note`;
 CREATE TABLE `variance_note` (
@@ -2808,6 +2263,7 @@ CREATE TABLE `voucher` (
   `voucher_transaction_cleared_date` date DEFAULT '0000-00-00',
   `voucher_transaction_cleared_month` date DEFAULT '0000-00-00',
   `voucher_vendor` varchar(100) DEFAULT NULL,
+  `voucher_vendor_address` varchar(100) DEFAULT NULL,
   `voucher_description` varchar(200) DEFAULT NULL,
   `voucher_allow_edit` int(5) DEFAULT '0',
   `voucher_created_by` int(100) DEFAULT NULL,
@@ -2825,21 +2281,12 @@ CREATE TABLE `voucher` (
   CONSTRAINT `voucher_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
-INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `voucher_number`, `fk_office_id`, `voucher_date`, `fk_voucher_type_id`, `voucher_cleared`, `voucher_cleared_month`, `fk_approval_id`, `fk_status_id`, `fk_office_bank_id`, `voucher_cheque_number`, `voucher_transaction_cleared_date`, `voucher_transaction_cleared_month`, `voucher_vendor`, `voucher_description`, `voucher_allow_edit`, `voucher_created_by`, `voucher_created_date`, `voucher_last_modified_date`, `voucher_last_modified_by`) VALUES
-(1,	'VOER-1089',	'Voucher # VOER-1089',	191101,	9,	'2019-11-07',	2,	0,	NULL,	532,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 1',	'Test 1',	0,	1,	'2020-01-16',	'2020-01-16 11:06:17',	1),
-(2,	'VOER-53791',	'Voucher # VOER-53791',	191102,	9,	'2019-11-07',	3,	0,	NULL,	537,	10,	2,	1,	'0000-00-00',	'0000-00-00',	'Test 2',	'Test 2',	0,	1,	'2020-01-16',	'2020-01-16 18:01:57',	1),
-(3,	'VOER-5211',	'Voucher # VOER-5211',	191103,	9,	'2019-11-07',	4,	0,	NULL,	538,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 3',	'Test 3',	0,	1,	'2020-01-16',	'2020-01-16 18:02:46',	1),
-(4,	'VOER-54762',	'Voucher # VOER-54762',	191104,	9,	'2019-11-07',	9,	0,	NULL,	539,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 4',	'Test 4',	0,	1,	'2020-01-16',	'2020-01-16 18:03:29',	1),
-(5,	'VOER-8270',	'Voucher # VOER-8270',	191105,	9,	'2019-11-07',	5,	0,	NULL,	540,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 5',	'Test 5',	0,	1,	'2020-01-16',	'2020-01-16 18:04:14',	1),
-(6,	'VOER-69294',	'Voucher # VOER-69294',	191106,	9,	'2019-11-07',	6,	1,	'2019-11-01',	541,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 6',	'Test 6',	0,	1,	'2020-01-16',	'2020-01-16 18:05:05',	1),
-(7,	'VOER-89999',	'Voucher # VOER-89999',	191107,	9,	'2019-11-07',	7,	0,	NULL,	542,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 7',	'Test 7',	0,	1,	'2020-01-16',	'2020-01-16 18:05:53',	1),
-(8,	'VOER-1551',	'Voucher # VOER-1551',	191108,	9,	'2019-11-07',	8,	0,	NULL,	543,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 8',	'Test 8',	0,	1,	'2020-01-16',	'2020-01-16 18:06:37',	1),
-(9,	'VOER-9033',	'Voucher # VOER-9033',	191109,	9,	'2019-11-07',	2,	0,	NULL,	545,	10,	0,	0,	'0000-00-00',	'0000-00-00',	'Test 10',	'Test 10',	0,	1,	'2020-01-16',	'2020-01-16 19:16:54',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
   `voucher_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_detail_track_number` varchar(100) DEFAULT NULL,
+  `voucher_detail_name` varchar(100) DEFAULT NULL,
   `fk_voucher_id` int(100) DEFAULT NULL,
   `voucher_detail_description` varchar(45) DEFAULT NULL,
   `voucher_detail_quantity` int(10) DEFAULT NULL,
@@ -2848,10 +2295,11 @@ CREATE TABLE `voucher_detail` (
   `fk_expense_account_id` int(100) NOT NULL DEFAULT '0' COMMENT 'Can be income_account_id or expense_account_id depending on the selected voucher type',
   `fk_income_account_id` int(100) NOT NULL DEFAULT '0',
   `fk_bank_contra_account_id` int(100) NOT NULL DEFAULT '0',
-  `fk_cash_contra_account_id` int(100) NOT NULL,
-  `fk_approval_id` int(100) DEFAULT NULL,
-  `fk_status_id` int(100) DEFAULT NULL,
-  `fk_project_allocation_id` int(100) DEFAULT NULL,
+  `fk_cash_contra_account_id` int(100) NOT NULL DEFAULT '0',
+  `fk_approval_id` int(100) NOT NULL DEFAULT '0',
+  `fk_status_id` int(100) NOT NULL DEFAULT '0',
+  `fk_request_detail_id` int(100) NOT NULL DEFAULT '0',
+  `fk_project_allocation_id` int(100) NOT NULL DEFAULT '0',
   `voucher_detail_last_modified_date` date DEFAULT NULL,
   `voucher_detail_last_modified_by` varchar(45) DEFAULT NULL,
   `voucher_detail_created_by` int(100) DEFAULT NULL,
@@ -2859,21 +2307,9 @@ CREATE TABLE `voucher_detail` (
   PRIMARY KEY (`voucher_detail_id`),
   KEY `fk_voucher_detail_voucher1_idx` (`fk_voucher_id`),
   KEY `fk_voucher_detail_request_detail1_idx` (`fk_approval_id`),
-  CONSTRAINT `voucher_detail_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `request_detail` (`request_detail_id`),
   CONSTRAINT `voucher_detail_ibfk_3` FOREIGN KEY (`fk_voucher_id`) REFERENCES `voucher` (`voucher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`, `fk_voucher_id`, `voucher_detail_description`, `voucher_detail_quantity`, `voucher_detail_unit_cost`, `voucher_detail_total_cost`, `fk_expense_account_id`, `fk_income_account_id`, `fk_bank_contra_account_id`, `fk_cash_contra_account_id`, `fk_approval_id`, `fk_status_id`, `fk_project_allocation_id`, `voucher_detail_last_modified_date`, `voucher_detail_last_modified_by`, `voucher_detail_created_by`, `voucher_detail_created_date`) VALUES
-(1,	'VOIL-37322',	1,	'Test 11',	10,	4500.00,	45000.00,	1,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(3,	'VOIL-64285',	2,	'10',	5400,	5.00,	27000.00,	2,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(4,	'VOIL-71539',	3,	'Test 3',	1,	25000.00,	25000.00,	0,	0,	1,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(5,	'VOIL-69765',	4,	'Test 4',	1,	10000.00,	10000.00,	0,	0,	0,	1,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(6,	'VOIL-45509',	5,	'Test 5',	1,	150000.00,	150000.00,	0,	1,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(7,	'VOIL-21040',	6,	'Test 6',	1,	546.00,	546.00,	4,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(8,	'VOIL-30018',	7,	'Test 7',	1,	2400.00,	2400.00,	0,	3,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(9,	'VOIL-34090',	8,	'Test 8',	1,	8700.00,	8700.00,	0,	1,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(12,	'VOIL-71463',	9,	'Test 101',	10,	1500.00,	15000.00,	1,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16'),
-(13,	'VOIL-9518',	9,	'Test 101',	15,	2000.00,	30000.00,	4,	0,	0,	0,	NULL,	39,	0,	NULL,	'1',	1,	'2020-01-16');
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -2947,11 +2383,41 @@ INSERT INTO `voucher_type_effect` (`voucher_type_effect_id`, `voucher_type_effec
 (3,	'VOCT-51241',	'Bank Contra',	'bank_contra',	'2020-01-15',	1,	1,	NULL,	522,	0),
 (4,	'VOCT-12589',	'Cash Contra',	'cash_contra',	'2020-01-16',	1,	1,	NULL,	546,	0);
 
+DROP TABLE IF EXISTS `workflow`;
+CREATE TABLE `workflow` (
+  `workflow_id` int(100) NOT NULL AUTO_INCREMENT,
+  `workflow_name` varchar(100) NOT NULL,
+  `workflow_track_number` varchar(100) NOT NULL,
+  `fk_approve_item_id` int(100) NOT NULL,
+  `fk_context_definition_id` int(100) NOT NULL,
+  `workflow_is_active` int(5) NOT NULL DEFAULT '1',
+  `workflow_created_date` date DEFAULT NULL,
+  `workflow_created_by` int(100) DEFAULT NULL,
+  `workflow_last_modified_by` int(100) DEFAULT NULL,
+  `workflow_last_modified_date` date DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`workflow_id`),
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
+  CONSTRAINT `workflow_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
+  CONSTRAINT `workflow_ibfk_2` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `workflow` (`workflow_id`, `workflow_name`, `workflow_track_number`, `fk_approve_item_id`, `fk_context_definition_id`, `workflow_is_active`, `workflow_created_date`, `workflow_created_by`, `workflow_last_modified_by`, `workflow_last_modified_date`, `fk_approval_id`) VALUES
+(2,	'Dummy Process',	'WOOW-76767',	3,	13,	1,	'2020-03-08',	1,	1,	NULL,	758),
+(3,	'Center Request Approval Process',	'WOOW-25651',	3,	13,	1,	'2020-03-08',	1,	1,	NULL,	758),
+(4,	'Center Voucher Approval Process',	'WOOW-49336',	2,	13,	1,	'2020-03-08',	1,	1,	NULL,	759),
+(5,	'Center Budget Item Approval Process',	'WOOW-37060',	5,	13,	1,	'2020-03-08',	1,	1,	NULL,	760);
+
 DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
-  `workplan_id` int(11) NOT NULL,
+  `workplan_id` int(100) NOT NULL,
   `workplan_track_number` varchar(100) DEFAULT NULL,
+  `workplan_name` varchar(100) DEFAULT NULL,
   `fk_budget_id` int(100) DEFAULT NULL,
+  `workplan_description` longtext,
+  `workplan_start_date` date DEFAULT NULL,
+  `workplan_end_date` date DEFAULT NULL,
   `workplan_created_date` date DEFAULT NULL,
   `workplan_created_by` int(100) DEFAULT NULL,
   `workplan_last_modified_date` date DEFAULT NULL,
@@ -2962,4 +2428,24 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-01-16 23:10:22
+DROP TABLE IF EXISTS `workplan_task`;
+CREATE TABLE `workplan_task` (
+  `workplan_task_id` int(100) NOT NULL AUTO_INCREMENT,
+  `fk_workplan_id` int(100) NOT NULL,
+  `workplan_task_track_number` varchar(100) NOT NULL,
+  `workplan_task_name` varchar(100) NOT NULL,
+  `workplan_task_description` longtext NOT NULL,
+  `workplan_task_start_date` date NOT NULL,
+  `workplan_taskend_date` date NOT NULL,
+  `workplan_task_user` int(100) NOT NULL,
+  `workplan_task_status` int(5) NOT NULL DEFAULT '1',
+  `workplan_task_note` longtext NOT NULL,
+  PRIMARY KEY (`workplan_task_id`),
+  KEY `fk_workplan_id` (`fk_workplan_id`),
+  KEY `workplan_detail_task_user` (`workplan_task_user`),
+  CONSTRAINT `workplan_task_ibfk_1` FOREIGN KEY (`fk_workplan_id`) REFERENCES `workplan` (`workplan_id`),
+  CONSTRAINT `workplan_task_ibfk_2` FOREIGN KEY (`workplan_task_user`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- 2020-03-11 19:40:57
