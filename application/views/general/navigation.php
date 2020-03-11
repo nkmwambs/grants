@@ -29,7 +29,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 				<li class="sep"></li>
 
 				<li>
-					<a href="<?php echo base_url();?>Login/logout">
+					<a href="<?php echo base_url();?>login/logout">
 						<?=get_phrase('log_out');?> <i class="entypo-logout right"></i>
 					</a>
 				</li>
