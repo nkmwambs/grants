@@ -232,7 +232,7 @@
       },
       success:function(response){
         alert(response);
-        //window.location.reload();
+        
         on_record_post();
         //If Save , use the browser history and go back
         if(elem.hasClass('back')){
