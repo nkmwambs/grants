@@ -79,7 +79,7 @@ extract($result);
 
                             if(strpos($column,'track_number') == true ){
                               echo '<a href="'.base_url().$this->controller.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
-                            }elseif(strpos($column,'is_active') == true){
+                            }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
