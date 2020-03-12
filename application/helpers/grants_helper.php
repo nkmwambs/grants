@@ -80,14 +80,14 @@ if( ! function_exists('camel_case_header_element')){
 
 if( ! function_exists('render_list_table_header') ){
 	function render_list_table_header($table_name,$header_array){
-		$string = '<tr><th>'.get_phrase("action").'</th>';
+		$string = '<tr><th nowrap="nowrap">'.get_phrase("action").'</th>';
 
 		foreach ($header_array as $th_value) {
 			if(strpos($th_value,'key') == true || strpos($th_value,'_id') ==true  ) {
 				continue;
 			}
 
-			$string .= '<th>'.camel_case_header_element($th_value).'</th>';
+			$string .= '<th nowrap="nowrap">'.camel_case_header_element($th_value).'</th>';
 		}
 		$string .='</tr>';
 

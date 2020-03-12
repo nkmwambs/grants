@@ -135,7 +135,7 @@ function generate_item_track_number_and_name($approveable_item){
     $this->db->trans_begin();
 
     $approval = array();
-
+    $details = array();
     // Instatiate the $approval_id to 0
     $approval_id = 0;
 
@@ -183,7 +183,7 @@ function generate_item_track_number_and_name($approveable_item){
     }
 
     if(isset($this->session->master_table) && $this->session->master_table !== null){
-      $header_columns['fk_'.$this->session->master_table.'_id'] = hash_id($this->id,'decode');
+      $header_columns['fk_'.strtolower($this->session->master_table).'_id'] = hash_id($this->id,'decode');
     }
 
     $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
@@ -199,7 +199,7 @@ function generate_item_track_number_and_name($approveable_item){
     //echo json_encode($header_columns);
     // Get the insert id of the header record inserted
     $header_id = $this->db->insert_id();
-
+    
     // Proceed with inserting details after checking if $post_has_detail
     if($post_has_detail){
 
@@ -211,7 +211,7 @@ function generate_item_track_number_and_name($approveable_item){
 
       // Get the first element of the detail array to be used to determine the number of detail rows
       $shifted_element = array_shift($detail);
-
+      
       // Construct an insert batch array using the detail array
       for($i=0;$i<sizeof($shifted_element);$i++){
         foreach ($detail_array as $column => $values) {
@@ -236,7 +236,7 @@ function generate_item_track_number_and_name($approveable_item){
           $detail_columns[$i][$this->controller.'_detail_last_modified_by'] =  $this->session->user_id;
         }
       }
-      //echo json_encode($detail_columns);
+      $details = $detail_columns;
       // Insert the details using insert batch
       $this->db->insert_batch($this->controller.'_detail',$detail_columns);
 
@@ -249,11 +249,12 @@ function generate_item_track_number_and_name($approveable_item){
 
     // End the transaction and determine if successful
     //$this->db->trans_complete();
-
+    
     if ($this->db->trans_status() === FALSE)
-    {
+    {       
             $this->db->trans_rollback();
-            return "Insert not successful";
+            return json_encode($header_columns);
+            //return "Insert not successful";
     }
     else
     {
