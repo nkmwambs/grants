@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
  
-//print_r($this->grants_model->insert_status_if_missing('bank'));
+//print_r($this->grants->table_setup($this->grants->dependant_table($this->controller)));
 
 extract($result);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";

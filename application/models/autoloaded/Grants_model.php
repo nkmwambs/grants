@@ -98,7 +98,7 @@ function insert_approval_record($approveable_item){
 }
 
 function generate_item_track_number_and_name($approveable_item){
-   $header_random = record_prefix($this->controller).'-'.rand(1000,90000);
+   $header_random = record_prefix($approveable_item).'-'.rand(1000,90000);
     $columns[$approveable_item.'_track_number'] = $header_random;
     $columns[$approveable_item.'_name'] = ucfirst($approveable_item).' # '.$header_random;
 
@@ -167,9 +167,7 @@ function generate_item_track_number_and_name($approveable_item){
       $approval_id = $this->db->insert_id();
 
     //}
-    //echo $this->id;
-    //echo json_encode($approval);
-     //exit(); 
+
     // This array will hold the array with values for header record insert
     $header_columns = array();
 
@@ -202,6 +200,9 @@ function generate_item_track_number_and_name($approveable_item){
     
     // Proceed with inserting details after checking if $post_has_detail
     if($post_has_detail){
+      
+      // Table set up. Add missing mandatory fields and status
+      //$this->grants->table_setup($this->grants->dependant_table($this->controller));
 
       // The $detail_array is initial to hold the array of the for looped variable since the original $detail will be shifted
       $detail_array = $detail;
@@ -237,8 +238,12 @@ function generate_item_track_number_and_name($approveable_item){
         }
       }
       $details = $detail_columns;
+
+
       // Insert the details using insert batch
-      $this->db->insert_batch($this->controller.'_detail',$detail_columns);
+      //$this->db->insert_batch($this->controller.'_detail',$detail_columns);
+      $this->db->insert_batch($this->grants->dependant_table($this->controller),$detail_columns);
+      
 
     }
 
@@ -383,42 +388,51 @@ function generate_item_track_number_and_name($approveable_item){
     return ['ids'=>count($ids_array),'vals'=>count($value_array)];
   }
 
+  function insert_status_for_approveable_item($approve_item_name){
 
-  function insert_status_if_missing($approve_item_name){
-
-      $approve_item_id = $this->db->get_where('approve_item',
+    $approve_item_id = $this->db->get_where('approve_item',
       array('approve_item_name'=>strtolower($approve_item_name)))->row()->approve_item_id;
 
       $status = $this->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
 
-      $status_id = 0;
+    if($status->num_rows() == 0){
 
-      if($status->num_rows() == 0){
-       
-        $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];;
-        $status_data['fk_workflow_id'] = 0;
-        $status_data['status_name'] = get_phrase('new');
-        $status_data['fk_approve_item_id'] = $approve_item_id;
-        $status_data['status_approval_sequence'] = 1;
-        $status_data['status_approval_direction'] = 1;
-        $status_data['status_is_requiring_approver_action'] = 0;
-        $status_data['fk_account_system_id'] = 0;
-        
-        // Get the new_status_role_id if set otherwise use the logged in user role id
-        $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
-        $role_id = $new_status_default_role->num_rows() > 1 ? $new_status_default_role->row()->role_is_new_status_default : $this->session->role_id;
-        
-        $status_data['fk_role_id'] = $role_id;
-        $status_data['status_created_date'] =  date('Y-m-d');
-        $status_data['status_created_by'] = $this->session->user_id;
-        $status_data['status_last_modified_by']  = $this->session->user_id;
-        
-
-        $this->db->insert('status',$status_data);
-
-        $status_id =  $this->db->insert_id();
+      $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
+      $status_data['fk_workflow_id'] = 0;
+      $status_data['status_name'] = get_phrase('new');
+      $status_data['fk_approve_item_id'] = $approve_item_id;
+      $status_data['status_approval_sequence'] = 1;
+      $status_data['status_approval_direction'] = 1;
+      $status_data['status_is_requiring_approver_action'] = 0;
+      $status_data['fk_account_system_id'] = 0;
+      
+      // Get the new_status_role_id if set otherwise use the logged in user role id
+      $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
+      $role_id = $new_status_default_role->num_rows() > 1 ? $new_status_default_role->row()->role_is_new_status_default : $this->session->role_id;
+      
+      $status_data['fk_role_id'] = $role_id;
+      $status_data['status_created_date'] =  date('Y-m-d');
+      $status_data['status_created_by'] = $this->session->user_id;
+      $status_data['status_last_modified_by']  = $this->session->user_id;
+      
+  
+      $this->db->insert('status',$status_data);    
+    
+    }
+  
   }
-  return $status_id;
+
+  function insert_status_if_missing($approve_item_name){
+
+    $this->insert_status_for_approveable_item($approve_item_name);
+
+    // Check if has dependant table
+    $dependant_table_name = $this->grants->dependant_table($approve_item_name);
+
+    if(strlen($dependant_table_name) > 1){
+      $this->insert_status_for_approveable_item($dependant_table_name);    
+    } 
+
 }
 
 

@@ -236,7 +236,8 @@
         on_record_post();
         //If Save , use the browser history and go back
         if(elem.hasClass('back')){
-          window.history.back(1);        
+          //window.history.back(1); 
+          location.href = document.referrer         
         } else{
           document.getElementById('add_form').reset();
           //Remove all rows of the detail table

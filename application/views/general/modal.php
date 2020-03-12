@@ -211,8 +211,7 @@
     
 
 	function go_back(){
-			window.history.back();
-            window.location.reload();
+		window.history.back();
 	}
 
 	function go_forward() {
