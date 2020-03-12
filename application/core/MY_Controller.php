@@ -104,6 +104,9 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->model('approval_model');
     $this->load->model('general_model');
 
+    // Table set up. Add missing mandatory fields and status
+    $this->grants->table_setup($this->controller);
+
   }
   /**
    * result() 

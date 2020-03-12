@@ -110,8 +110,8 @@ $(".save, .save_new").on('click',function(ev){
 
           //If Save , use the browser history and go back
           if(elem.hasClass('back')){
-            window.history.back(1); 
-            window.location.reload();       
+            //window.history.back(1); 
+             location.href = document.referrer     
           } else{
             document.getElementById('edit_form').reset();
           }

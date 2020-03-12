@@ -229,6 +229,9 @@ function feature_model_list_table_visible_columns(): Array {
         $table = $this->controller;
       
         $this->CI->grants_model->mandatory_fields($table);
+
+        // Mandatory fields for details tables
+        
       
         $result = $this->toggle_list_query_results();
         $keys = $this->toggle_list_select_columns();

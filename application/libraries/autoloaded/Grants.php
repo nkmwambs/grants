@@ -1249,6 +1249,11 @@ function single_form_add_output($table_name = ""){
 
 }
 
+function table_setup($table){
+  $this->CI->grants_model->mandatory_fields($table);
+  $this->CI->grants_model->insert_status_if_missing($table);
+}
+
 /**
  * 
  * multi_form_add_output
@@ -1274,7 +1279,6 @@ function multi_form_add_output($table_name = ""){
       echo $this->CI->grants_model->add();
     }
   }else{
-    $this->CI->grants_model->mandatory_fields($table);
 
     // Adds mandatory fields if not present in the current table
     $visible_columns = $this->CI->grants_model->master_multi_form_add_visible_columns();

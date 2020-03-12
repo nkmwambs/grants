@@ -212,6 +212,7 @@
 
 	function go_back(){
 			window.history.back();
+            window.location.reload();
 	}
 
 	function go_forward() {

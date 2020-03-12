@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
  
-//print_r($this->user_model->get_user_permissions(2));
+//print_r($this->grants_model->insert_status_if_missing('bank'));
 
 extract($result);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
@@ -83,7 +83,6 @@ extract($result);
                                 echo $row[$column] == 1?"Yes":"No";
                             }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
-                              //////
                             }
 
                            ?>
