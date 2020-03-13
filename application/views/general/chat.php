@@ -144,7 +144,7 @@
 			</div>
 
 			<div class="col-xs-2 timestamp">
-				<div class='pull-right'><i class='fa fa-clock-o '></i> <?=$chat_message['message_date'];?></div>
+				<div class='pull-right'><i class='fa fa-clock-o '></i> <?=date('jS M Y h:i:s',strtotime($chat_message['message_date']));?></div>
 			</div>
 				
 			<div class="col-xs-1 icon_holder">
