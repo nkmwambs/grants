@@ -1534,40 +1534,50 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `fk_menu_id`,
 (1520,	1,	547,	1,	47,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL),
 (1521,	1,	550,	1,	48,	0,	NULL,	'2020-03-11 19:39:25',	NULL,	NULL,	NULL,	NULL);
 
+
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `chatable_table_id` int(100) DEFAULT NULL,
-  `customizable_table_item_primary_key` int(100) DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `is_thread_open` int(5) DEFAULT '1',
+  `message_track_number` int(100) DEFAULT NULL,
+  `message_name` int(100) DEFAULT NULL,
+  `fk_approve_item_id` int(100) DEFAULT NULL,
+  `message_record_key` int(100) DEFAULT NULL,
+  `message_created_by` int(100) DEFAULT NULL,
+  `message_last_modified_by` int(100) DEFAULT NULL,
+  `message_created_date` date DEFAULT NULL,
+  `message_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `message_deleted_date` date DEFAULT NULL,
+  `message_is_thread_open` int(5) DEFAULT '1',
+  `fk_status_id` int(100) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`message_id`),
-  KEY `fk_message_chatable_table1_idx` (`chatable_table_id`),
-  CONSTRAINT `fk_message_chatable_table1` FOREIGN KEY (`chatable_table_id`) REFERENCES `chatable_table` (`chatable_table_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `message_detail`;
 CREATE TABLE `message_detail` (
-  `message_detail_id` int(11) NOT NULL AUTO_INCREMENT,
-  `message_from_user_id` int(100) DEFAULT NULL,
-  `message_content` longtext,
-  `message_id` int(100) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `created_by` int(100) DEFAULT NULL,
-  `last_modified_by` int(100) DEFAULT NULL,
-  `is_reply` int(5) DEFAULT '0',
-  `replied_message_detail_id` int(100) DEFAULT NULL,
+  `message_detail_id` int(100) NOT NULL AUTO_INCREMENT,
+  `message_detail_track_number` varchar(100) NOT NULL,
+  `message_detail_name` varchar(100) NOT NULL,
+  `fk_user_id` int(100) DEFAULT NULL,
+  `message_detail_content` longtext,
+  `fk_message_id` int(100) DEFAULT NULL,
+  `message_detail_created_date` datetime DEFAULT NULL,
+  `message_detail_last_modified_date` date DEFAULT NULL,
+  `message_detail_deleted_date` date DEFAULT NULL,
+  `message_detail_created_by` int(100) DEFAULT NULL,
+  `message_detail_last_modified_by` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `message_detail_is_reply` int(5) DEFAULT '0',
+  `message_detail_replied_message_key` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`message_detail_id`),
-  KEY `fk_message_detail_message1_idx` (`message_id`),
-  CONSTRAINT `fk_message_detail_message1` FOREIGN KEY (`message_id`) REFERENCES `message` (`message_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_message_detail_message1_idx` (`fk_message_id`),
+  CONSTRAINT `fk_message_detail_message1` FOREIGN KEY (`fk_message_id`) REFERENCES `message` (`message_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 DROP TABLE IF EXISTS `month`;
