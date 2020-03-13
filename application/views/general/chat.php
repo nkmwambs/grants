@@ -140,7 +140,7 @@
 			</div>
 
 			<div class="col-xs-2 user">
-				<div class='pull-right'><i class='fa fa-user '></i> &nbsp; <?=$this->CI->user_model->get_user_full_name($chat_message['author']);?></div>
+				<div class='pull-right'><i class='fa fa-user '></i> &nbsp; <a target='__blank' href='<?=base_url();?>user/view/<?=hash_id($chat_message['author'],'encode');?>'><?=$this->CI->user_model->get_user_full_name($chat_message['author']);?></a></div>
 			</div>
 
 			<div class="col-xs-2 timestamp">
