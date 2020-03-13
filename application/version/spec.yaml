@@ -125,3 +125,7 @@ tables:
   project_allocation_detail:
 
   workplan_task:  
+
+  message_detail:
+    - message
+    - user

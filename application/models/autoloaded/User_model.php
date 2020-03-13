@@ -929,4 +929,10 @@ class User_model extends MY_Model
 }
   
 
+function get_user_full_name($user_id){
+  $user = $this->db->get_where('user',array('user_id'=>$user_id))->row();
+
+  return $user->user_firstname.' '.$user->user_lastname;
+}
+
 }

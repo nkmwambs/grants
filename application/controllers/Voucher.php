@@ -114,6 +114,8 @@ class Voucher extends MY_Controller
     $office = $this->db->get_where('office',array('office_id'=>$raw_result[0]['fk_office_id']))->row();
 
     $header['office_name'] = $office->office_code.' - '.$office->office_name;
+    $header['office_code'] = $office->office_code;
+    $header['office_id'] = $raw_result[0]['fk_office_id'];
     $header['voucher_date'] = $raw_result[0]['voucher_date'];
     $header['voucher_number'] = $raw_result[0]['voucher_number'];
     $header['voucher_type_name'] = $voucher_type->voucher_type_name;
@@ -161,8 +163,34 @@ class Voucher extends MY_Controller
     $voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_created_by'])['full_name'];
     //$voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_last_modified_by'])['full_name'];
 
-    return ["header"=>$header,"body"=>$body,'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name]];
+    return [
+      "header"=>$header,
+      "body"=>$body,
+      'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name],
+      //'chat_messages'=>$this->get_chat_messages($this->controller,$id),
+    ];
 
+  }
+
+  function get_chat_messages($approve_item_name,$record_primary_key){
+
+    $approve_item_id = $this->db->get_where('approve_item',
+    array('approve_item_name'=>$approve_item_name))->row()->approve_item_id;
+
+
+    $this->db->select(array(
+      'fk_user_id as author',
+      'message_detail_content as message',
+      'message_detail_created_date as message_date'));
+    
+      $this->db->join('message','message.message_id=message_detail.fk_message_id');  
+
+    $chat_messages = $this->db->get_where('message_detail',
+    array('fk_approve_item_id'=>$approve_item_id,
+    'message_record_key'=>1))->result_array();
+   
+    return $chat_messages;
+    
   }
 
   function record_raiser_info($user_id){

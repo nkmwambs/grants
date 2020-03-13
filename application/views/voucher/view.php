@@ -7,9 +7,10 @@
 
 <?php 
 
-    //print_r($this->voucher_model->office_has_vouchers_for_the_transacting_month(9,'2019-11-01'));
-
     extract($result);
+
+    //print_r($chat_messages);
+
     $logged_role_id = $this->session->role_id;
     $table = 'voucher';
     $primary_key = hash_id($this->id,'decode');
@@ -32,7 +33,7 @@
                 </div>
             </div>
                 
-            <div class="panel-body"  style="max-width:50; overflow: auto;padding-left: 30px;padding-right: 30px;">	
+            <div class="panel-body"  style="max-width:50; overflow: auto;padding-left: 60px;padding-right: 30px;">	
 
                 <div class="row form_rows">
                     <div class='col-xs-12'>
@@ -45,12 +46,28 @@
                 
                 <hr/>
                 <div id="voucher_print">
+
+                <div class='row form_rows visible-print'>
+                    <div class='col-xs-12' style='text-align:center;'>
+                        <?php if(!$this->config->item('use_default_logo') && file_exists(APPPATH."../uploads/office_logos/".$header['office_id'].".png")){?>
+                            <img src="<?=base_url();?>uploads/office_logos/<?=$header['office_id'];?>.png"  style="max-height:150px;" alt='Logo'/>
+                        <?php }else{?>
+                            <img src="<?=base_url();?>uploads/logo.png"  style="max-height:150px;" alt='Logo'/>
+                        <?php }?>
+                    </div>
+                    <div class='col-xs-12' style='text-align:center;margin-top:60px;'>
+                            <?=get_phrase('payment_voucher');?>
+                    </div>
+                </div>
+                
+                <hr class='visible-print'/>
+
                 <div class="row form_rows">
                     <div class="col-xs-4"><span class='span_label'><?=get_phrase('office_name');?>:</span> <?=$header['office_name']?></div>
                                     
                     <div class="col-xs-4"><span class='span_label'><?=get_phrase('voucher_date');?>:</span> <?=$header['voucher_date']?></div>
 
-                    <div class="col-xs-4"><span class='span_label'><?=get_phrase('voucher_number');?>:</span> <?=$header['voucher_number']?></div>
+                    <div class="col-xs-4"><span class='span_label'><?=get_phrase('voucher_number');?>:</span> <?=$this->config->item('append_office_code_to_voucher_number')?$header['office_code'].'-':"";?><?=$header['voucher_number']?></div>
                 </div>
                         
                 <hr/>
@@ -86,6 +103,7 @@
                 <hr/>
 
                 <div class="row form_rows">
+                   <div class="col-xs-12">
                    <table class='table table-striped'>
                         <thead>
                             <tr>
@@ -123,7 +141,8 @@
                                     <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('approved_by');?>:</span><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
                                 </tr>
                         </tfoot>
-                   </table>
+                    </table>
+                   </div>
                 </div>
 
             <div>

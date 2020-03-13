@@ -103,6 +103,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->model('office_model');
     $this->load->model('approval_model');
     $this->load->model('general_model');
+    $this->load->model('message_model');
 
     // Table set up. Add missing mandatory fields and status
     $this->grants->table_setup($this->controller);
@@ -410,5 +411,58 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function decline(){
     $this->status_change('decline');
   }
+
+  function post_chat(){
+
+    $this->grants->table_setup($this->controller);
+
+    $post = $this->input->post();
+    $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>$this->controller))->row()->approve_item_id;
+
+    $message['message_track_number'] = "";
+    $message['message_name'] = "";
+    $message['fk_approve_item_id'] = $approve_item_id;
+    $message['message_record_key'] = hash_id($post['item_id'],'decode');
+    $message['message_created_by'] = $this->session->user_id;
+    $message['message_last_modified_by'] =  $this->session->user_id;
+    $message['message_created_date'] = date('Y-m-d');
+    $message['message_is_thread_open'] = 1;
+
+    // Check if a message a thread is open for this item before posting
+    $open_thread = $this->db->get_where('message',
+    array('fk_approve_item_id'=>$approve_item_id,
+    'message_record_key'=>1,'message_is_thread_open'=>hash_id($post['item_id'],'decode')));
+
+    $message_id = 0;
+
+    if($open_thread->num_rows() == 0){
+      $this->db->insert('message',$message);
+      $message_id = $this->db->insert_id();
+    }else{
+      $message_id = $open_thread->row()->message_id;
+    }
+    
+    $message_detail['message_detail_track_number'] = '';
+    $message_detail['message_detail_name'] = '';
+    $message_detail['fk_user_id'] = $this->session->user_id;
+    $message_detail['message_detail_content'] = $post['message_detail_content'];
+    $message_detail['fk_message_id'] = $message_id;
+    $message_detail['message_detail_created_date'] = date('Y-m-d h:i:s');
+    $message_detail['message_detail_created_by'] = $this->session->user_id;
+    $message_detail['message_detail_last_modified_by'] = $this->session->user_id;
+    $message_detail['message_detail_is_reply'] = 0;
+    $message_detail['message_detail_replied_message_key'] = 0;
+
+    $this->db->insert('message_detail',$message_detail);
+
+    $returned_response = [
+      'message'=>$post['message_detail_content'],
+      'message_date'=> date('Y-m-d h:i:s'),
+      'creator' => $this->session->name,
+    ];
+    echo json_encode($returned_response);
+    //echo $post['item_id'];
+  }
+  
 
 }
