@@ -35,4 +35,10 @@ class Context_cohort_model extends MY_Model{
     public function detail_tables(){
         return array('context_cohort_user','context_cluster');
     }
+
+    function lookup_values_where($table){
+        return [
+            'fk_office_id'=>25
+        ];
+    }
 }

@@ -16,7 +16,7 @@
 	$config['use_voucher_type_abbreviation'] = true; 
 	$config['only_allow_voucher_details_from_request'] = false;
 	$config['append_office_code_to_voucher_number'] = true;
-	$config['use_default_logo'] = true;
+	$config['use_default_logo'] = false;
 
 
  

@@ -11,7 +11,7 @@
 class Budget_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'budget'; // you MUST mention the table name
-
+  public $dependant_table = 'budget_item';
 
   function __construct(){
     parent::__construct();

@@ -258,8 +258,8 @@ function generate_item_track_number_and_name($approveable_item){
     if ($this->db->trans_status() === FALSE)
     {       
             $this->db->trans_rollback();
-            return json_encode($header_columns);
-            //return "Insert not successful";
+            //return json_encode($header_columns);
+            return "Insert not successful";
     }
     else
     {
@@ -357,8 +357,8 @@ function generate_item_track_number_and_name($approveable_item){
     if( is_array($this->grants->lookup_values_where($table)) && 
         count($this->grants->lookup_values_where($table)) > 0)
     {
-      $this->create_table_join_statement(strtolower($this->controller),$table);
-      $this->db->where($this->grants->lookup_values_where($table));
+      //$this->create_table_join_statement(strtolower($this->controller),$this->grants->lookup_tables($this->controller));
+      //$this->db->where($this->grants->lookup_values_where($table));
     }
 
     $result = $this->db->get($table)->result_array();
@@ -370,23 +370,23 @@ function generate_item_track_number_and_name($approveable_item){
   }
 
   
-  function counts_of_looup($table){
-    $table = strtolower($table);
+  // function counts_of_lookup($table){
+  //   $table = strtolower($table);
 
-    if( is_array($this->grants->lookup_values_where($table)) && 
-        count($this->grants->lookup_values_where($table)) > 0)
-    {
-      $this->create_table_join_statement(strtolower($this->controller),$table);
-      $this->db->where($this->grants->lookup_values_where($table));
-    }
+  //   if( is_array($this->grants->lookup_values_where($table)) && 
+  //       count($this->grants->lookup_values_where($table)) > 0)
+  //   {
+  //     $this->create_table_join_statement(strtolower($this->controller),$table);
+  //     $this->db->where($this->grants->lookup_values_where($table));
+  //   }
 
-    $result = $this->db->get($table)->result_array();
+  //   $result = $this->db->get($table)->result_array();
 
-    $ids_array = array_column($result,$this->grants->primary_key_field($table));
-    $value_array = array_column($result,$this->grants->name_field($table));
+  //   $ids_array = array_column($result,$this->grants->primary_key_field($table));
+  //   $value_array = array_column($result,$this->grants->name_field($table));
 
-    return ['ids'=>count($ids_array),'vals'=>count($value_array)];
-  }
+  //   return ['ids'=>count($ids_array),'vals'=>count($value_array)];
+  // }
 
   function insert_status_for_approveable_item($approve_item_name){
 

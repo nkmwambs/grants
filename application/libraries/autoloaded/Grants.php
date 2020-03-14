@@ -1828,14 +1828,10 @@ function feature_model_list_table_visible_columns() {
      * 
      * **************************************************************************************************
      */
-     //public $testing = array(); 
-     //public $tested = array('begin_test');
 
      function lookup_values_where($table){
       
-      //array_push($this->testing,$table);
-      
-      $model = $table.'_model';//$this->load_detail_model($table);
+      $model = $table.'_model';
       $this->CI->load->model($model);
 
       
@@ -1845,7 +1841,6 @@ function feature_model_list_table_visible_columns() {
             && count($this->CI->$model->lookup_values_where($table)) > 0  
         )
       {
-          //array_push($this->tested,$this->CI->$model->lookup_values_where($table));
           return $this->CI->$model->lookup_values_where($table);
       }
 

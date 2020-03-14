@@ -35,4 +35,6 @@ class Context_cluster_model extends MY_Model{
     public function detail_tables(){
         return array('context_cluster_user','context_center');
     }
+
+    
 }
