@@ -9,6 +9,7 @@
 	$config['max_priority_menu_items'] = 10;
 	$config['default_launch_page'] = "Dashboard";
 	$config['use_context_office'] = false;
+	$config['use_select2_plugin'] = false;
 
 	//Voucher configurations
 	//If true cheque numbers can be skipped as long as are in the active cheque book
@@ -17,6 +18,8 @@
 	$config['only_allow_voucher_details_from_request'] = false;
 	$config['append_office_code_to_voucher_number'] = true;
 	$config['use_default_logo'] = false;
+
+
 
 
  

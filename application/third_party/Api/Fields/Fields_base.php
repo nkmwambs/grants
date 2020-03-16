@@ -63,6 +63,8 @@ class Fields_base{
         $field_type = "text";
       }elseif ($column_type == 'date') {
         $field_type = "date";
+      }elseif ($column_type == 'longtext') {
+        $field_type = "longtext";
       }elseif(strpos($this->column,'email') == true){  
         $field_type = "email";
       }else{
@@ -178,7 +180,9 @@ class Fields_base{
    
     $selected_option = ($selected_option == "" && $this->default_field_value !== 0 ) ? $this->default_field_value : $selected_option;
 
-    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
+    $select2 = $this->CI->config->item('use_select2_plugin')?'select2':'no-select';
+
+    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' required='required'>
             <option value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
