@@ -290,6 +290,72 @@ class User_model extends MY_Model
     }
 
     /**
+     * Need to update this to work with user_ids as well
+     */
+    function get_available_office_user_context_by_email_context_definition($user_email,$context_definition_id){
+          
+        $context_definition = $this->db->get_where('context_definition',array('context_definition_id'=>$context_definition_id))->row();
+        
+        $context_definition_table = 'context_'.$context_definition->context_definition_name;
+        $context_definition_user_table = $context_definition_table.'_user';
+
+        $this->db->select(array('user_id','user_email','fk_context_definition_id','context_definition_name'));
+        $this->db->join('context_definition','context_definition.context_definition_id=user.fk_context_definition_id');
+        $user_obj = $this->db->get_where('user',array('user_email'=>$user_email));
+
+        $user_id = 0;
+
+        $result = [];
+
+        // Check if user exists
+        if($user_obj->num_rows() > 0 ){
+          $error_message = 'A user can only have one office context assignment. The current user office context is "'.$user_obj->row()->context_definition_name .'" and you are attempting to assign "'.$context_definition->context_definition_name.'"';
+          // Check user has a context
+          if(count($this->user_model->get_user_context_association($user_obj->row()->user_id)) > 0){
+            // Check if user context matches the post context
+            
+            $array_key_exists = array_key_exists($context_definition_table.'_id',$this->user_model->get_user_context_association($user_obj->row()->user_id)[0]);
+
+            if($array_key_exists){
+              $user_assigned_context = array_column($this->user_model->get_user_context_association($user_obj->row()->user_id),$context_definition_table.'_id');
+              $this->db->select(array($context_definition_table.'_id as context_table_id',$context_definition_table.'_name as context_table_name'));
+              $this->db->where_not_in($context_definition_table.'_id',$user_assigned_context);
+              $this->db->where(array('office_is_active'=>1));
+              $this->db->join('office','office.office_id='.$context_definition_table.'.fk_office_id');//office_is_active
+              $result_obj = $this->db->get($context_definition_table);
+              
+              if($result_obj->num_rows() > 0){
+                $result['result'] = $result_obj->result_array();
+                $result['message'] = true;
+              }else{
+                $result['result'] = [];
+                $result['message'] = 'All active offices in the context '.$context_definition->context_definition_name.' definition are assigned to this user with email '.$user_email;
+              }
+              
+            }else{
+              $result['result'] = [];
+              $result['message'] = $error_message;
+            }
+            
+          }elseif($context_definition->context_definition_id == $user_obj->row()->fk_context_definition_id){
+            $this->db->select(array($context_definition_table.'_id as context_table_id',$context_definition_table.'_name as context_table_name'));
+            $result['result'] = $this->db->get($context_definition_table)->result_array();
+            $result['message'] = true;
+          }else{
+            $result['result'] = [];
+            $result['message'] = $error_message;
+          }
+
+        }else{
+          $this->db->select(array($context_definition_table.'_id as context_table_id',$context_definition_table.'_name as context_table_name'));
+          $result['result'] = $this->db->get($context_definition_table)->result_array();
+          $result['message'] = true;
+        }
+
+        return $result;
+    }
+
+    /**
      * user_hierarchy_offices
      * 
      * This method crreates an array of all office ids in the entire context hierachy of the user.

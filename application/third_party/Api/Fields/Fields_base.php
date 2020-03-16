@@ -63,6 +63,8 @@ class Fields_base{
         $field_type = "text";
       }elseif ($column_type == 'date') {
         $field_type = "date";
+      }elseif(strpos($this->column,'email') == true){  
+        $field_type = "email";
       }else{
         $field_type = "text";
       }
@@ -148,7 +150,11 @@ class Fields_base{
     return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
-  function select_field($options, $selected_option = 0, $show_only_selected_value = false){
+  function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = ''){
+
+    if($onchange_function_name == ''){
+     $onchange_function_name =  'onchange_'.$this->column;
+    } 
 
     $id = "";
 
@@ -172,7 +178,7 @@ class Fields_base{
    
     $selected_option = ($selected_option == "" && $this->default_field_value !== 0 ) ? $this->default_field_value : $selected_option;
 
-    $select =  "<select id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
+    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ' required='required'>
             <option value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){

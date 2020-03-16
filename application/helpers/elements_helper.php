@@ -6,7 +6,7 @@ if ( ! function_exists('select_element')){
                     <option>".get_phrase('select_'.$placeholder)."</option>";
                     
                     foreach($elements as $element_key=>$element_value){
-                        $select .= "<option value='".$element_key."'>".$element_value."</option>";    
+                        $select .= "<option value='".$element_key."'>".ucfirst($element_value)."</option>";    
                     }
     
             $select .= "</select>";

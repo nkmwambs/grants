@@ -258,8 +258,8 @@ function generate_item_track_number_and_name($approveable_item){
     if ($this->db->trans_status() === FALSE)
     {       
             $this->db->trans_rollback();
-            //return json_encode($header_columns);
-            return "Insert not successful";
+            return json_encode($header_columns);
+            //return "Insert not successful";
     }
     else
     {
@@ -1091,6 +1091,24 @@ function reset_system(){
       //$this->db->truncate($table);
   }
 
+}
+
+function merge_with_history_fields(String $approve_item_name, Array $array_to_merge, bool $add_name_to_array = true){
+
+  $data = [];
+
+  $data[$approve_item_name.'_track_number'] = $this->generate_item_track_number_and_name($approve_item_name)[$approve_item_name.'_track_number'];
+  $data[$approve_item_name.'_created_by'] = $this->session->user_id;
+  $data[$approve_item_name.'_last_modified_by'] = $this->session->user_id;
+  $data[$approve_item_name.'_created_date'] = date('Y-m-d');
+  $data['fk_approval_id'] = $this->insert_approval_record($approve_item_name);
+  $data['fk_status_id'] = $this->initial_item_status($approve_item_name);
+
+  if($add_name_to_array){
+    $data[$approve_item_name.'_name'] = $this->generate_item_track_number_and_name($approve_item_name)[$approve_item_name.'_name'];
+  }
+
+  return array_merge($array_to_merge,$data);
 }
 
 
