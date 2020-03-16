@@ -72,7 +72,7 @@
 
                         <label class='col-xs-2 control-label'>Is User a Context Manager</label>
                         <div class='col-xs-4'>
-                            <?=$this->grants->header_row_field('user_is_context_manager');?>
+                            <?=$this->grants->header_row_field('user_is_context_manager',0);?>
                         </div>
                     </div>
 
@@ -131,7 +131,7 @@
                         </div>
                     </div>
 
-                    <div class='form-group'>
+                    <!-- <div class='form-group'>
                         <label style='text-align:center;' class='col-xs-12 control-label'>Page Access Permissions</label>
                         <div class='col-xs-12'>
                             
@@ -143,7 +143,7 @@
                         <div class='col-xs-12'>
                             
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class='form-group'>
                         <div class='col-xs-12 user_message'>
@@ -207,7 +207,7 @@ $("#user_email").on('change',function(){
     
             if(is_valid_email){
                 $('#fk_context_definition_id').val('0').prop('selected', true);
-                $('#user_is_context_manager').val('0').prop('selected', true);
+                $('#user_is_context_manager').val(1).prop('selected', true);
 
                 if($("#office_context")){
                     $("#office_context").empty().prop('disabled','disabled');
@@ -255,8 +255,8 @@ $(document).ready(function(){
     $("#confirm_user_password, #user_password, #user_name, #user_email").val(null);
 });
 
-$(".btn-save").on('click',function(ev){
-
+$(".btn-save, .btn-save-new").on('click',function(ev){
+    var btn = $(this);
     var url = "<?=base_url();?>user/create_new_user";
     var data = $("#frm_user").serializeArray();
 
@@ -268,7 +268,13 @@ $(".btn-save").on('click',function(ev){
         type:"POST",
         success:function(response){
             alert(response);
-            location.href = document.referrer  
+
+            if(btn.hasClass('btn-save')){
+                location.href = document.referrer 
+            }else{
+                reset_form();
+            }
+             
         }
     });
 
@@ -276,5 +282,27 @@ $(".btn-save").on('click',function(ev){
 
 });
 
+$(".btn-reset").on('click',function(ev){
+    reset_form();
+    ev.preventDefault();
+});
+
+function reset_form(){
+    $('input').val(null);
+    $("#fk_context_definition_id").val(0).prop('selected',true);
+    $("#user_is_context_manager").val(0).prop('selected',true);
+    $("#user_is_context_manager").val(0).prop('selected',true);
+    $("#user_is_system_admin").val(0).prop('selected',true);
+    $("#fk_language_id").val(1).prop('selected',true);
+    $("#user_is_active").val(1).prop('selected',true);
+    $("#fk_role_id").val(0).prop('selected',true);
+    $("#user_password").val(null).prop('selected',true);
+    $("#confirm_user_password").val(null).prop('selected',true);
+
+    $("#office_context").empty().prop('disabled','disabled');
+    $("#department").empty().prop('disabled','disabled');
+
+    $(".user_message").html(null);
+}
 
 </script>
