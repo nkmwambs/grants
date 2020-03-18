@@ -80,9 +80,10 @@ class Permission_label extends MY_Controller
     $this->db->trans_complete();
 
     if($this->db->trans_status() == false){
-
+      $message = "Error occurred when mass creating system page access permissions";
+      show_error($message,500,'An Error As Encountered');
     }else{
-
+      
     }
 
   }
