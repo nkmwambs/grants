@@ -371,6 +371,7 @@ class User_model extends MY_Model
      */
 
     function user_hierarchy_offices($user_id,$show_context = false){
+      $user_hierarchy_offices_ids = [];
       
       $user_context_definition = $this->get_user_context_definition($user_id);
 
