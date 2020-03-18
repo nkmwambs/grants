@@ -130,7 +130,12 @@ class Permission_label extends MY_Controller
     
     $permission_id  = $this->input->post('permission_id');
 
+    // Used roles in the current permission
+    $this->db->select(array('fk_role_id as role_id'));
+    $used_roles = $this->db->get_where('role_permission',array('fk_permission_id'=>$permission_id))->result_array();
+
     $this->db->select(array('role_id','role_name'));
+    $this->db->where_not_in('role_id',array_column($used_roles,'role_id'));
     $role = $this->db->get_where('role',array('role_is_active'=>1))->result_object();
 
     $ids = array_column($role,'role_id');

@@ -1,7 +1,11 @@
 <?php 
-    extract($result);
+    // $permission_id = 4;
+    // $this->db->select(array('fk_role_id as role_id'));
+    // $used_roles = $this->db->get_where('role_permission',array('fk_permission_id'=>$permission_id))->result_array();
 
-    //print_r($roles_permission);
+    // print_r($used_roles);
+
+    extract($result);
 ?>
 
 <style>
