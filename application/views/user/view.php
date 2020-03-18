@@ -1,5 +1,12 @@
 <?php
-//print_r($result);
+
+$status_workflows = $result['approval_workflow_assignments'];
+
+$user_departments = $result['user_departments'];
+
+$office_hierarchy = $result['user_hierarchy_offices'];
+
+$role_permissions = $result['role_permission'];
 
 extract($result['user_info']);
 
@@ -45,41 +52,115 @@ extract($result['user_info']);
                         
                         );
 
-
                     ?>
+                    
+                    <hr/>
 
                     <div class='form-group'>
-                        <label style='text-align:center;' class='col-xs-12 control-label'>Page Access Permissions</label>
+                        <label style='text-align:center;' class='col-xs-12 control-label'>Page and Field Permissions</label>
                         <div class='col-xs-12'>
-                            
-                        </div>
-                    </div>
+                            <table class='table datatable'>
+                                <thead>
+                                    <tr>
+                                        <th><?=get_phrase('permission_item');?></th>
+                                        <th><?=get_phrase('permission_type');?></th>
+                                        <th><?=get_phrase('permission_label');?></th>
+                                        <th><?=get_phrase('permission_name');?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                    <div class='form-group'>
-                        <label style='text-align:center;' class='col-xs-12 control-label'>Field Access Permission</label>
-                        <div class='col-xs-12'>
-                            
+                                <?php
+                                    foreach($role_permissions as $permission_item => $role_permission){
+                                        foreach($role_permission as $permission_type => $labelled_permission){
+                                            foreach($labelled_permission as $permission_label => $permission){
+                                ?>  
+                                        <tr>
+                                            <td><?=ucwords(str_replace('_',' ',$permission_item));?></td>
+                                            <td><?=$permission_type == 1?get_phrase('field_access'):get_phrase('field_access');?></td>
+                                            <td><?=ucfirst($permission_label);?></td>
+                                            <td><?=ucwords(str_replace('_',' ',$permission[0]));?></td>
+                                        </tr>
+                                <?php 
+                                            }
+                                        }
+                                    }
+                                ?>
+                                    
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <label style='text-align:center;' class='col-xs-12 control-label'>Office Hierachy and Designation</label>
                         <div class='col-xs-12'>
-                            
+                            <table class='table datatable'>
+                            <thead> 
+                                <tr>
+                                    <th><?=get_phrase('office_context');?></th>
+                                    <th><?=get_phrase('office_name');?></th>
+                                    <th><?=get_phrase('user_designation');?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    foreach($office_hierarchy as $context => $offices){
+                                        foreach($offices as $office){
+                                ?>
+                                            <tr>
+                                                <td><?=ucfirst($context);?></td>
+                                                <td><?=$office['office_name'];?></td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                    <?php 
+                                            }
+                                        }
+                                    ?>
+                            </tbody>
+                            </table>
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <label style='text-align:center;' class='col-xs-12 control-label'>User Departments</label>
                         <div class='col-xs-12'>
-                            
+                            <table class='table datatable'>
+                                <thead>
+                                    <tr>
+                                        <th><?=get_phrase('department');?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($user_departments as $user_department){?>
+                                        <tr>
+                                            <td><?=$user_department['department_name'];?></td>
+                                        </tr>
+                                    <?php }?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     
                     <div class='form-group'>
                         <label style='text-align:center;' class='col-xs-12 control-label'>Approval Workflow Assignments</label>
                         <div class='col-xs-12'>
-                            
+                            <table class='table datatable'>
+                                <thead>
+                                    <tr>
+                                        <th><?=get_phrase('approveable_item');?></th>
+                                        <th><?=get_phrase('status_name');?></th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($status_workflows as $status_workflow){?>
+                                        <tr>
+                                            <td><?=$status_workflow['approve_item_name'];?></td>
+                                            <td><?=$status_workflow['status_name'];?></td>
+                                        </tr>
+                                    <?php }?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 

@@ -23,7 +23,7 @@ class User extends MY_Controller
 
   private function _get_user_info(){
     $this->db->select(array('user_id','user_firstname','user_lastname','user_name','user_email','user_is_context_manager','user_is_system_admin','user_is_active'));
-    $this->db->select(array('context_definition_name','language_name','role_name'));
+    $this->db->select(array('context_definition_id','context_definition_name','language_id','language_name','role_id','role_name'));
     $this->db->join('context_definition','context_definition.context_definition_id=user.fk_context_definition_id');
     $this->db->join('language','language.language_id=user.fk_language_id');
     $this->db->join('role','role.role_id=user.fk_role_id');
@@ -32,11 +32,36 @@ class User extends MY_Controller
     return $user;
   }
 
+  private function _get_user_departments($user_id){
+    // User can raise a request to any department irrespective of which he/she belongs
+    $this->db->select(array('department_id','department_name'));
+    $this->db->join('department_user','department_user.fk_department_id=department.department_id');
+    $result = $this->db->get_where('department',array('department_is_active'=>1,'fk_user_id'=>$user_id))->result_array();
+
+    return $result;
+  
+}
+
+/**
+ * @todo - This will change with the approval status update 
+ */
+private function _get_approval_assignments($role_id){
+  $this->db->select(array('status_name','approve_item_name'));
+  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  $status = $this->db->get_where('status',array('fk_role_id'=>$role_id,'status_is_requiring_approver_action'=>1))->result_array();
+
+  return $status;
+}
+
   function result($id = ""){
     $result = [];
     
     if($this->action == 'view'){
         $result['user_info'] = $this->_get_user_info();
+        $result['role_permission'] = $this->user_model->get_user_permissions($this->_get_user_info()['role_id']);
+        $result['user_hierarchy_offices'] = $this->user_model->user_hierarchy_offices($this->_get_user_info()['user_id'],true);
+        $result['user_departments'] = $this->_get_user_departments($this->_get_user_info()['user_id']);
+        $result['approval_workflow_assignments'] = $this->_get_approval_assignments($this->_get_user_info()['role_id']);
     }else{
       $result = parent::result($id);
     }

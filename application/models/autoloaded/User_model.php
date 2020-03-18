@@ -466,7 +466,11 @@ class User_model extends MY_Model
 
             $looped_context_offices = $this->_user_hierarchy_offices($user_context, $user_context_id, $hierarchy_context);
 
-            $user_hierarchy_offices = array_merge($user_hierarchy_offices,$looped_context_offices);
+            if($show_context){
+              $user_hierarchy_offices[$hierarchy_context] = $looped_context_offices;
+            }else{
+              $user_hierarchy_offices = array_merge($user_hierarchy_offices,$looped_context_offices);
+            }
               
             $cnt++;
             
@@ -537,6 +541,7 @@ class User_model extends MY_Model
         if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
 
       }
+      
       $this->db->join('office','office.office_id=context_'.$looping_context.'.fk_office_id');
       $hierarchy_offices = $this->db->get_where($user_context_table,array($user_context_table.'_id'=>$user_context_id))->result_array();
       
@@ -783,7 +788,8 @@ class User_model extends MY_Model
       $role_permission_array = array();
 
       // Get role permissions for the role
-      $this->db->select(array('menu_derivative_controller','permission_type','permission_label_name','permission_field','permission_name'));
+      $this->db->select(array('menu_derivative_controller','permission_type','permission_label_name',
+      'permission_field','permission_name'));
       //$this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));    
       
       $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
