@@ -1097,6 +1097,8 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
 
   $data = [];
 
+  $this->grants->table_setup($approve_item_name);
+
   $data[$approve_item_name.'_track_number'] = $this->generate_item_track_number_and_name($approve_item_name)[$approve_item_name.'_track_number'];
   $data[$approve_item_name.'_created_by'] = $this->session->user_id;
   $data[$approve_item_name.'_last_modified_by'] = $this->session->user_id;
