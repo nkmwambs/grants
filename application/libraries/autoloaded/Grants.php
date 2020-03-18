@@ -1938,15 +1938,36 @@ function feature_model_list_table_visible_columns() {
 
     function context_definitions(){
       // List all context foreign keys name and with their tables
-      return [
-        'center'=>['context_table'=>'context_center','context_user_table'=>'context_center_user','fk'=>'fk_context_center_id'],
-        'cluster'=>['context_table'=>'context_cluster','context_user_table'=>'context_cluster_user','fk'=>'fk_context_cluster_id'],
-        'cohort'=>['context_table'=>'context_cohort','context_user_table'=>'context_cohort_user','fk'=>'fk_context_cohort_id'],
-        'country'=>['context_table'=>'context_country','context_user_table'=>'context_country_user','fk'=>'fk_context_country_id'],
-        'region'=>['context_table'=>'context_region','context_user_table'=>'context_region_user','fk'=>'fk_context_region_id'],
-        'global'=>['context_table'=>'context_global','context_user_table'=>'context_global_user','fk'=>'fk_context_global_id']
+      // return [
+      //   'center'=>['context_table'=>'context_center','context_user_table'=>'context_center_user','fk'=>'fk_context_center_id','context_definition_level'=>1],
+      //   'cluster'=>['context_table'=>'context_cluster','context_user_table'=>'context_cluster_user','fk'=>'fk_context_cluster_id','context_definition_level'=>2],
+      //   'cohort'=>['context_table'=>'context_cohort','context_user_table'=>'context_cohort_user','fk'=>'fk_context_cohort_id','context_definition_level'=>3],
+      //   'country'=>['context_table'=>'context_country','context_user_table'=>'context_country_user','fk'=>'fk_context_country_id','context_definition_level'=>4],
+      //   'region'=>['context_table'=>'context_region','context_user_table'=>'context_region_user','fk'=>'fk_context_region_id','context_definition_level'=>5],
+      //   'global'=>['context_table'=>'context_global','context_user_table'=>'context_global_user','fk'=>'fk_context_global_id','context_definition_level'=>6]
       
-      ];
+      // ];
+      
+      //$this->db->select(array('context_definition_name','context_definition_level','context_definition_is_active'));
+      $context_definition = $this->CI->db->order_by('context_definition_level ASC')->get_where('context_definition',
+      array('context_definition_is_active'=>1))->result_array();
+
+      $order_array = [];
+
+      foreach($context_definition as $definition){
+        $context_definition_name = $definition['context_definition_name'];
+        $context_definition_level = $definition['context_definition_level'];
+       
+        $context_table = "context_".$context_definition_name;
+        $context_user_table = $context_table.'_user';
+        $fk = 'fk_'.$context_table.'_id';
+        $context_level = $context_definition_level;
+
+        $order_array[$context_definition_name] = ['context_table'=>$context_table,'context_user_table'=>$context_user_table,'fk'=>$fk,'context_definition_level'=>$context_level];
+      }
+
+      return $order_array;
+
     }
 
     // /**
