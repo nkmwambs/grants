@@ -27,7 +27,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
 <div class="row">
   <div class="col-xs-12">
-    <table class="table table-striped">
+    <table class="table">
       <thead>
         <tr>
           <th colspan="<?=$this->config->item('master_table_columns');?>" style="text-align:center;"><?=get_phrase($this->uri->segment(1).'_master_record');?>

@@ -21,25 +21,22 @@ class User extends MY_Controller
 
   function index(){}
 
-  // private function _get_context_definition(){
-
-  //   $this->db->select(array('context_definition_id','context_definition_name'));
-  //   $this->db->order_by('context_definition_level ASC');
-  //   $context_definitions = $this->db->get('context_definition')->result_array();
-
-  //   // $ids = array_column($context_definitions,'context_definition_id');
-  //   // $vals = array_column($context_definitions,'context_definition_name');
-
-  //   return combine_name_with_ids($context_definitions,'context_definition_id','context_definition_name');
-
-  //   //return array_combine($ids,$vals);
-  // }
+  private function _get_user_info(){
+    $this->db->select(array('user_id','user_firstname','user_lastname','user_name','user_email','user_is_context_manager','user_is_system_admin','user_is_active'));
+    $this->db->select(array('context_definition_name','language_name','role_name'));
+    $this->db->join('context_definition','context_definition.context_definition_id=user.fk_context_definition_id');
+    $this->db->join('language','language.language_id=user.fk_language_id');
+    $this->db->join('role','role.role_id=user.fk_role_id');
+    $user = $this->db->get_where('user',array('user_id'=>hash_id($this->id,'decode')))->row_array();
+    
+    return $user;
+  }
 
   function result($id = ""){
     $result = [];
     
-    if($this->action == 'single_form_add'){
-      // $result['context_definition'] = $this->_get_context_definition();
+    if($this->action == 'view'){
+        $result['user_info'] = $this->_get_user_info();
     }else{
       $result = parent::result($id);
     }
