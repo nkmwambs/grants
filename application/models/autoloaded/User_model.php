@@ -407,10 +407,12 @@ class User_model extends MY_Model
         }
         
       }
-      
-      $user_hierarchy_offices = $this->db->where_in('office_id',$user_hierarchy_offices_ids)
+      if(is_array($user_hierarchy_offices_ids) && count($user_hierarchy_offices_ids) > 0){
+        $user_hierarchy_offices = $this->db->where_in('office_id',$user_hierarchy_offices_ids)
           ->select(array('office_name','office_id'))
           ->get('office')->result_array();
+      }
+      
 
       return $user_hierarchy_offices;
     }

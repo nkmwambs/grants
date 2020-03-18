@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-  //print_r(explode('/',$_SERVER['REQUEST_URI']));
+  print_r($this->session->user_hierarchy_offices);
 ?>
 
   <div class="row">
