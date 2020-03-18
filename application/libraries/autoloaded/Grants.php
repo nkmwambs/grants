@@ -892,7 +892,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
       $field = $field_type."_field";
 
-      $lib = $this->current_library;
+      $lib = strtolower($this->current_library);
 
       if(array_key_exists($column,$this->set_field_type)){
 
