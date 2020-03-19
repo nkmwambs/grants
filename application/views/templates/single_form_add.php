@@ -1,5 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-  print_r($this->grants->set_change_field_type($this->current_library));
+  //print_r($this->grants->set_change_field_type($this->current_library));
   extract($result);
 
 ?>

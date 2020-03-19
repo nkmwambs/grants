@@ -50,7 +50,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   public function master_table_hidden_columns(){}
 
   public function list_table_visible_columns(){
-    //return ['office_name','office_code'];
+      return ['office_track_number','office_code','office_name','context_definition_name','office_start_date','status_name'];
   }
 
   public function list_table_hidden_columns(){}

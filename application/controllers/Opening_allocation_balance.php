@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Reconciliation extends MY_Controller
+class Opening_allocation_balance extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('reconciliation_library');
+    $this->load->library('opening_allocation_balance_library');
   }
 
   function index(){}

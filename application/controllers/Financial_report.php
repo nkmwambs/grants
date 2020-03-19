@@ -127,6 +127,10 @@ class Financial_report extends MY_Controller
     parent::view();
   }
 
+  function merge_financial_report(){
+    echo json_encode($this->input->post());
+  }
+
   static function get_menu_list(){}
 
 }

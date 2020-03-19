@@ -1,5 +1,13 @@
 <?php
-//print_r($result);
+
+$user_office_hierarchy = $this->user_model->user_hierarchy_offices($this->session->user_id,true);
+
+if($this->config->item('only_combined_center_financial_reports')){
+    $centers = $user_office_hierarchy[$this->user_model->get_lowest_office_context()->context_definition_name];
+    unset($user_office_hierarchy);
+    $user_office_hierarchy[$this->user_model->get_lowest_office_context()->context_definition_name] = $centers;
+}
+
 extract($result);
 ?>
 <style>
@@ -22,8 +30,35 @@ extract($result);
 
 <div class="row">
     <div class="col-xs-12 header">
-        <?=get_phrase('office');?>: <?=$additional_information['office_name'];?> </br>
+        <span id='office_names'><?=get_phrase('office');?>: <?=$additional_information['office_name'];?> </span></br>
         <?=get_phrase('month');?>: <?=date('F Y',strtotime($additional_information['financial_report_month']));?> 
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-xs-12'>
+        <form id='frm_selected_offices'>
+            <div class='form-group'>
+                <label class='col-xs-2 control-label'><?=get_phrase('choose_offices');?></label>
+                
+                <div class='col-xs-8'>
+                    <select name='selected_offices[]' id='selected_offices' class='form-control select2' multiple>
+                        <?php foreach($user_office_hierarchy as $context => $offices){?>
+                            <optgroup label='<?=ucfirst($context);?>'>
+                                
+                                <?php foreach($offices as $office){?>
+                                    <option value='<?=$office['office_id'];?>'><?=$office['office_name'];?></option>
+                                <?php }?>
+                            </optgroup>
+                        <?php }?>
+                    </select>
+                </div>
+
+                <div class='col-xs-2'>
+                    <div id='merge_reports' class='btn btn-default'><?=get_phrase('run');?></div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -434,6 +469,22 @@ $(document).ready(function(){
 
 });
 
+$("#merge_reports").on('click',function(){
+    //alert('Hello');
+    var selected_offices = $("#selected_offices").text();
+    
 
+    var url = "<?=base_url();?>financial_report/merge_financial_report";
+
+    $.ajax({
+        url:url,
+        data:$("#frm_selected_offices").serializeArray(),
+        type:"POST",
+        success:function(response){
+            alert(response);
+            $("#office_names").html('A combined report of:<br/> ' + selected_offices);
+        }
+    });
+});
 
 </script>

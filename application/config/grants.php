@@ -19,6 +19,9 @@
 	$config['append_office_code_to_voucher_number'] = true;
 	$config['use_default_logo'] = false;
 
+	//Financial Report Configs
+	$config['only_combined_center_financial_reports'] = true;
+
 
 
 

@@ -373,6 +373,16 @@ class Voucher extends MY_Controller
 
 
       $this->db->insert('journal',$new_journal);
+
+      // Insert the month MFR Record
+
+      $new_mfr['financial_report_month'] = date("Y-m-01",strtotime($this->input->post('voucher_date')));
+      $new_mfr['fk_office_id'] = $this->input->post('fk_office_id');
+
+      $new_mfr_to_insert = $this->grants_model->merge_with_history_fields('financial_report',$new_mfr);
+
+      $this->db->insert('financial_report',$new_mfr_to_insert);
+
     }
 
     // Check voucher type
@@ -395,9 +405,9 @@ class Voucher extends MY_Controller
     $header['voucher_vendor_address'] = $this->input->post('voucher_vendor_address');
     $header['voucher_description'] = $this->input->post('voucher_description');
 
-    $header['voucher_created_by'] = $this->session_user_id;
+    $header['voucher_created_by'] = $this->session->user_id;
     $header['voucher_created_date'] = date('Y-m-d');
-    $header['voucher_last_modified_by'] = $this->session_user_id;
+    $header['voucher_last_modified_by'] = $this->session->user_id;
 
     $header['fk_approval_id'] = $this->grants_model->insert_approval_record('voucher');
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');

@@ -129,3 +129,17 @@ tables:
   message_detail:
     - message
     - user
+
+  system_opening_balance:
+    - office
+
+  opening_fund_balance:
+    - system_opening_balance
+    - income_account
+
+  opening_allocation_balance:
+    - system_opening_balance
+    - project_allocation
+
+
+

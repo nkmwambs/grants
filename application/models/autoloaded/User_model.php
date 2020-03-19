@@ -364,6 +364,15 @@ class User_model extends MY_Model
       return $hierachy_context;
     }
 
+    function get_lowest_office_context(){
+      return $this->db->get_where('context_definition',array('context_definition_level'=>1))->row();
+    }
+
+    function get_highest_office_context(){
+      $context_definition_level = $this->db->select_max('context_definition_level')->get('context_definition')->row()->context_definition_level;
+      return $this->db->get_where('context_definition',array('context_definition_level'=>$context_definition_level))->row();
+    }
+
     /**
      * user_hierarchy_offices
      * 

@@ -785,6 +785,7 @@ function saveVoucher(){
         },
         success:function(response){
             alert(response);
+            //location.href = document.referrer 
         },
         error:function(){
             alert('Error occurred');
@@ -795,7 +796,8 @@ function saveVoucher(){
 
 $(".btn-save").on('click',function(){
     saveVoucher();
-    go_back();
+    //go_back();
+    location.href = document.referrer 
 });
 
 $(".btn-save-new").on('click',function(){

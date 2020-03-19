@@ -55,9 +55,9 @@ class Voucher_library extends Grants
 
   function page_position(){
 
-    $widget['position_5'][] = $this->approved_unvouched_request_details();
+    //$widget['position_5'][] = $this->approved_unvouched_request_details();
 
-    return $widget;
+    //return $widget;
   }
 
 

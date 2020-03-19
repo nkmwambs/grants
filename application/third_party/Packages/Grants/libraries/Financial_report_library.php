@@ -44,4 +44,11 @@ class Financial_report_library extends Grants
     return $this->CI->financial_report_model->income_accounts();
   }
 
+  function page_position(){
+
+    //$widget['position_1'][] = Widget_base::load('button','Show Combined Report',base_url().'financial_report/view/');
+
+    //return $widget;
+  }
+
 } 

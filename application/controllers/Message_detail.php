@@ -21,6 +21,6 @@ class Message_detail extends MY_Controller
 
   function index(){}
 
-  static function get_menu_list(){}
+  // static function get_menu_list(){}
 
 }

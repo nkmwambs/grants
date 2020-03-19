@@ -75,6 +75,17 @@ class Office extends MY_Controller
 
     $this->db->insert('context_'.$context_definition_name,$office_context_to_insert);
 
+    // Create office System Opening Balance Record
+    $system_opening_balance['system_opening_balance_name'] = 'Financial Opening Balance for '.$post['office_name'];
+    $system_opening_balance['fk_office_id'] = $office_id;
+    $system_opening_balance['month'] = $post['office_start_date'];
+
+    $system_opening_balance_to_insert = $this->grants_model->merge_with_history_fields('system_opening_balance',$system_opening_balance,false);
+
+    $this->db->insert('system_opening_balance',$system_opening_balance_to_insert);
+
+
+
     $this->db->trans_complete();
 
     if($this->db->trans_status() == false){

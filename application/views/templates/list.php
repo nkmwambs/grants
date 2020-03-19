@@ -22,8 +22,10 @@ extract($result);
       echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
     }
     ?>
+    <?=Widget_base::load('position','position_1');?>
   </div>
 </div>
+
 
 <div class="row">
   <div class="col-xs-12">

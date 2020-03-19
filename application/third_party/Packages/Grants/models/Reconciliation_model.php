@@ -23,6 +23,10 @@ class Reconciliation_model extends MY_Model
     return array('office','status');
   }
 
+  function show_add_button(){
+    return false;
+  }
+
   public function detail_tables(){}
 
     public function master_table_visible_columns(){}
