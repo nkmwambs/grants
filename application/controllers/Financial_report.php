@@ -22,10 +22,10 @@ class Financial_report extends MY_Controller
 
   function index(){}
 
-  private function income_accounts(){
+  private function income_accounts($office_id){
 
     // Should be moved to Income accounts library
-    return $this->financial_report_library->income_accounts();
+    return $this->financial_report_library->income_accounts($office_id);
   }
 
   private function month_income_account_receipts($office_id,$start_date_of_month){
@@ -42,7 +42,7 @@ class Financial_report extends MY_Controller
 
   private function fund_balance_report($office_id, $start_date_of_month){
 
-    $income_accounts =  $this->income_accounts();
+    $income_accounts =  $this->income_accounts($office_id);
     $month_opening_balance = $this->month_income_opening_balance($office_id, $start_date_of_month);
     $month_income = $this->month_income_account_receipts($office_id, $start_date_of_month);
     $month_expense = $this->month_income_account_expenses($office_id, $start_date_of_month);
@@ -52,9 +52,9 @@ class Financial_report extends MY_Controller
     foreach($income_accounts as $account){
        $report[] = [
         'account_name'=>$account['income_account_name'],
-        'month_opening_balance'=>$month_opening_balance[$account['income_account_id']],
-        'month_income'=>$month_income[$account['income_account_id']],
-        'month_expense'=>$month_expense[$account['income_account_id']],
+        'month_opening_balance'=>isset($month_opening_balance[$account['income_account_id']])?$month_opening_balance[$account['income_account_id']]:0,
+        'month_income'=>isset($month_income[$account['income_account_id']])?$month_income[$account['income_account_id']]:0,
+        'month_expense'=>isset($month_expense[$account['income_account_id']])?$month_expense[$account['income_account_id']]:0,
        ]; 
     }  
     

@@ -69,8 +69,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   
   function month_opening_cash_balance($office_id,$transacting_month){
-    $system_opening_bank = $this->system_opening_cash_balance($office_id)['bank']; 
-    $system_opening_cash = $this->system_opening_cash_balance($office_id)['cash']; 
+    $system_opening_bank = $this->system_opening_cash_balance($office_id)->bank; 
+    $system_opening_cash = $this->system_opening_cash_balance($office_id)->cash; 
 
     $bank_to_date_income = $this->get_cash_income_or_expense_to_date($office_id,$transacting_month,'bank','income');
     $cash_to_date_income = $this->get_cash_income_or_expense_to_date($office_id,$transacting_month,'cash','income');

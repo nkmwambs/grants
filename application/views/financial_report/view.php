@@ -1,5 +1,7 @@
 <?php
 
+print_r($this->financial_report_model->_get_income_account_month_expense(34,1,'2015-05-01'));
+
 $user_office_hierarchy = $this->user_model->user_hierarchy_offices($this->session->user_id,true);
 
 if($this->config->item('only_combined_center_financial_reports')){

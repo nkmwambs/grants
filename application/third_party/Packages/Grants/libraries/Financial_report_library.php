@@ -40,8 +40,8 @@ class Financial_report_library extends Grants
     return $this->CI->financial_report_model->month_income_opening_balance($office_id, $start_date_of_month);
   }
 
-  function income_accounts(){
-    return $this->CI->financial_report_model->income_accounts();
+  function income_accounts($office_id){
+    return $this->CI->financial_report_model->income_accounts($office_id);
   }
 
   function page_position(){

@@ -199,7 +199,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                               echo '<a href="'.base_url().$detail_table_name.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_active') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            }elseif(is_integer($row[$column])){
+                            }elseif(is_integer($row[$column]) || is_float($row[$column]) || is_numeric($row[$column])){
                                   echo number_format($row[$column],2);
                             }elseif($column_key > 0){ 
                                echo '<a href="'.base_url().$lookup_table.'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
