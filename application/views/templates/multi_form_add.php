@@ -126,7 +126,9 @@
 
   <script type="text/javascript">
 
-  
+  // $(document).on('.datepicker','click',function(){
+  //   $(this).datepicker();
+  // });
 
     $('.insert_row').click(function(ev){
 

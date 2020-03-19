@@ -34,5 +34,7 @@ class Project_allocation_detail_model extends MY_Model{
 
     public function detail_tables(){}
 
-    public function detail_multi_form_add_visible_columns(){}
+    public function detail_multi_form_add_visible_columns(){
+        return ['project_allocation_detail_month','project_allocation_detail_amount'];
+    }
 }

@@ -149,7 +149,10 @@ class Fields_base{
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $field =  '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $field .= "<script>$('.datepicker').datepicker({format:'yyyy-mm-dd'});</script>"; 
+    
+    return $field;
   }
 
   function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = ''){
