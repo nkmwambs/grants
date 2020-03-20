@@ -1,16 +1,7 @@
 <?php
 
-print_r($this->financial_report_model->_get_income_account_month_expense(34,1,'2015-05-01'));
-
-$user_office_hierarchy = $this->user_model->user_hierarchy_offices($this->session->user_id,true);
-
-if($this->config->item('only_combined_center_financial_reports')){
-    $centers = $user_office_hierarchy[$this->user_model->get_lowest_office_context()->context_definition_name];
-    unset($user_office_hierarchy);
-    $user_office_hierarchy[$this->user_model->get_lowest_office_context()->context_definition_name] = $centers;
-}
-
 extract($result);
+
 ?>
 <style>
 .header{
@@ -32,32 +23,42 @@ extract($result);
 
 <div class="row">
     <div class="col-xs-12 header">
-        <span id='office_names'><?=get_phrase('office');?>: <?=$additional_information['office_name'];?> </span></br>
-        <?=get_phrase('month');?>: <?=date('F Y',strtotime($additional_information['financial_report_month']));?> 
+        <span id='office_names'><?=get_phrase('office');?>: <?=$office_names;?> </span></br>
+        <?=get_phrase('month');?>: <?=date('F Y',strtotime($reporting_month));?> 
     </div>
 </div>
 
 <div class='row'>
     <div class='col-xs-12'>
-        <form id='frm_selected_offices'>
+        <form id='frm_selected_offices' action='<?=base_url().ltrim($_SERVER['REQUEST_URI'],'/grants');?>' method='POST'>
             <div class='form-group'>
                 <label class='col-xs-2 control-label'><?=get_phrase('choose_offices');?></label>
                 
                 <div class='col-xs-8'>
-                    <select name='selected_offices[]' id='selected_offices' class='form-control select2' multiple>
+                    <select name='office_ids[]' id='office_ids' class='form-control select2' multiple>
                         <?php foreach($user_office_hierarchy as $context => $offices){?>
                             <optgroup label='<?=ucfirst($context);?>'>
                                 
-                                <?php foreach($offices as $office){?>
-                                    <option value='<?=$office['office_id'];?>'><?=$office['office_name'];?></option>
-                                <?php }?>
+                                <?php 
+                                    foreach($offices as $office){
+                                        $selected = "";
+                                        if(in_array($office['office_id'],$office_ids)) $selected = "selected";
+                                        
+                                ?>
+
+                                    <option value='<?=$office['office_id'];?>' <?=$selected;?>><?=$office['office_name'];?></option>
+                                <?php 
+                                        
+                                    }
+                                ?>
                             </optgroup>
                         <?php }?>
                     </select>
                 </div>
 
                 <div class='col-xs-2'>
-                    <div id='merge_reports' class='btn btn-default'><?=get_phrase('run');?></div>
+                     <i class='badge badge-info'><?=count($offices);?></i>               
+                    <button type='submit' id='merge_reports' class='btn btn-default'><?=get_phrase('run');?></button>
                 </div>
             </div>
         </form>
@@ -161,7 +162,13 @@ extract($result);
                 </tr>
                 <tr>
                     <td><?=get_phrase('bank_statement_closing_balance');?></td>
-                    <td><input type="text" class="form-control" value="2,702,668.87"/></td>
+                    <td>
+                        <?php if($multiple_offices_report){?>
+                            2,702,668.87
+                        <?php }else{?>
+                            <input type="text" class="form-control" value="2,702,668.87"/>
+                        <?php }?>
+                    </td>
                 </tr>
                 <tr>
                     <td><?=get_phrase('book_closing_balance');?></td>
@@ -466,27 +473,27 @@ $(document).ready(function(){
         let month_expense = parseFloat($(el).find('.fund_month_expense').html().split(',').join(""));
         let closing_opening_balance = (opening_balance + month_income) - month_expense; 
         
-        $(this).find('.fund_month_closing_balance').html(closing_opening_balance);
+        $(this).find('.fund_month_closing_balance').html(accounting.formatNumber(closing_opening_balance,2));
     });
 
 });
 
-$("#merge_reports").on('click',function(){
-    //alert('Hello');
-    var selected_offices = $("#selected_offices").text();
+// $("#merge_reports").on('click',function(){
+//     //alert('Hello');
+//     var selected_offices = $("#selected_offices").text();
     
 
-    var url = "<?=base_url();?>financial_report/merge_financial_report";
+//     var url = "<?=base_url();?>financial_report/merge_financial_report";
 
-    $.ajax({
-        url:url,
-        data:$("#frm_selected_offices").serializeArray(),
-        type:"POST",
-        success:function(response){
-            alert(response);
-            $("#office_names").html('A combined report of:<br/> ' + selected_offices);
-        }
-    });
-});
+//     $.ajax({
+//         url:url,
+//         data:$("#frm_selected_offices").serializeArray(),
+//         type:"POST",
+//         success:function(response){
+//             alert(response);
+//             $("#office_names").html('A combined report of:<br/> ' + selected_offices);
+//         }
+//     });
+// });
 
 </script>

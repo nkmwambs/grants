@@ -22,30 +22,30 @@ class Financial_report extends MY_Controller
 
   function index(){}
 
-  private function income_accounts($office_id){
+  private function income_accounts($office_ids){
 
     // Should be moved to Income accounts library
-    return $this->financial_report_library->income_accounts($office_id);
+    return $this->financial_report_library->income_accounts($office_ids);
   }
 
-  private function month_income_account_receipts($office_id,$start_date_of_month){
-    return $this->financial_report_library->month_income_account_receipts($office_id, $start_date_of_month);
+  private function month_income_account_receipts($office_ids,$start_date_of_month){
+    return $this->financial_report_library->month_income_account_receipts($office_ids, $start_date_of_month);
   }
 
-  private function month_income_account_expenses($office_id, $start_date_of_month){
-    return $this->financial_report_library->month_income_account_expenses($office_id, $start_date_of_month);
+  private function month_income_account_expenses($office_ids, $start_date_of_month){
+    return $this->financial_report_library->month_income_account_expenses($office_ids, $start_date_of_month);
   }
 
-  private function month_income_opening_balance($office_id, $start_date_of_month){
-    return $this->financial_report_library->month_income_opening_balance($office_id, $start_date_of_month);
+  private function month_income_opening_balance($office_ids, $start_date_of_month){
+    return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month);
   }
 
-  private function fund_balance_report($office_id, $start_date_of_month){
+  private function fund_balance_report($office_ids, $start_date_of_month){
 
-    $income_accounts =  $this->income_accounts($office_id);
-    $month_opening_balance = $this->month_income_opening_balance($office_id, $start_date_of_month);
-    $month_income = $this->month_income_account_receipts($office_id, $start_date_of_month);
-    $month_expense = $this->month_income_account_expenses($office_id, $start_date_of_month);
+    $income_accounts =  $this->income_accounts($office_ids);
+    $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month);
+    $month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month);
+    $month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month);
     
     $report = array();
 
@@ -97,18 +97,96 @@ class Financial_report extends MY_Controller
     
   }
 
-  private function financial_report_information($report_id){
-    return $this->financial_report_library->financial_report_information($report_id);
+
+  function financial_report_office_hierarchy($reporting_month){
+    $user_office_hierarchy = $this->user_model->user_hierarchy_offices($this->session->user_id,true);
+
+    // Remove offices with a financial reporting in the selected reporting month
+
+    $user_hierarchy_offices_with_report = $this->_user_hierarchy_offices_with_financial_report_for_selected_month($reporting_month);
+
+    foreach($user_office_hierarchy as $office_context => $offices){
+      foreach($offices as $key => $office){
+        if(!in_array($office['office_id'],$user_hierarchy_offices_with_report)){
+          unset($user_office_hierarchy[$office_context][$key]);
+        }
+      }
+    }
+
+
+    if($this->config->item('only_combined_center_financial_reports')){
+        $centers = $user_office_hierarchy[$this->user_model->get_lowest_office_context()->context_definition_name];
+        unset($user_office_hierarchy);
+        $user_office_hierarchy[$this->user_model->get_lowest_office_context()->context_definition_name] = $centers;
+    }
+
+    return $user_office_hierarchy;
+  }
+
+  private function _user_hierarchy_offices_with_financial_report_for_selected_month($reporting_month){
+    $context_ungrouped_user_hierarchy_offices = $this->user_model->user_hierarchy_offices($this->session->user_id);
+    
+    $offices_ids = array_column($context_ungrouped_user_hierarchy_offices,'office_id');
+
+    $this->db->select('fk_office_id');
+    $this->db->where_in('fk_office_id',$offices_ids);
+    $office_ids_with_report = $this->db->get_where('financial_report',array('financial_report_month'=>$reporting_month))->result_array();
+
+    return array_column($office_ids_with_report,'fk_office_id');
+  }
+  
+  private function financial_report_information(){
+
+    $additional_information = $this->financial_report_library->financial_report_information($this->id);
+
+    if(isset($_POST) && count($_POST) > 0){
+      $additional_information = $this->financial_report_library->financial_report_information($this->id, $_POST['office_ids']);
+    }
+
+    $offices_ids = array_column($additional_information,'office_id');
+
+    $reporting_month = $additional_information[0]['financial_report_month'];
+
+    $office_ids = array_column($additional_information,'office_id');
+
+    $multiple_offices_report = false;
+
+    // if(array_keys($additional_information) !== range(0, count($additional_information) - 1)) {
+    //     // One Office
+    //     $office_names = $additional_information[0]['office_name'];
+        
+    // }
+
+    $office_names = implode(', ',array_column($additional_information,'office_name'));
+
+    if(count($additional_information) > 1){  
+        // Multiple Office
+        $multiple_offices_report = true;
+    }
+
+    return [
+            'office_names'=>$office_names,
+            'reporting_month'=>$reporting_month,
+            'office_ids'=>$office_ids,
+            'multiple_offices_report'=>$multiple_offices_report,
+            //'test'=>$additional_information,
+          ];
   }
 
   function result($id = ''){
 
     if($this->action == 'view'){
-      $additional_information = $this->financial_report_information($this->id);
       
+     extract($this->financial_report_information());
+
       return [
-        'additional_information'=>$additional_information,
-        'fund_balance_report'=>$this->fund_balance_report($additional_information['office_id'],$additional_information['financial_report_month']),
+        //'test'=>$test,
+        'multiple_offices_report'=>$multiple_offices_report,
+        'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
+        'office_names'=>$office_names,
+        'office_ids'=>$office_ids,
+        'reporting_month'=>$reporting_month,
+        'fund_balance_report'=>$this->fund_balance_report($office_ids,$reporting_month),
         'proof_of_cash'=>$this->proof_of_cash(),
         'financial_ratios'=>$this->financial_ratios(),
         'bank_reconciliation'=>$this->bank_reconciliation(),

@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Opening_cash_balance extends MY_Controller
+class Opening_outstanding_cheque extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('opening_cash_balance_library');
+    $this->load->library('opening_outstanding_cheque_library');
   }
 
   function index(){}

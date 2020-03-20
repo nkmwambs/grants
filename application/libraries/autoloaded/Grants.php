@@ -986,7 +986,7 @@ function edit_form_fields(Array $visible_columns_array): Array {
     // Aray format for the change_field_type method in feature library: 
     //array('field_type'=>$new_type,'options'=>$options);
 
-    $library = $this->controller.'_library';
+    $library = strtolower($this->controller).'_library';
 
     if($detail_table !== ""){
       $this->CI->load->library($detail_table.'_library');

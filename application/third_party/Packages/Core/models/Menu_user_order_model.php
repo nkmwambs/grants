@@ -48,8 +48,12 @@ class Menu_user_order_model extends MY_Model implements CrudModelInterface, Tabl
     return false;
   }
 
+  function list_table_visible_columns(){
+    return ['menu_name','user_name','menu_user_order_is_active','menu_user_order_level','menu_user_order_priority_item'];
+  }
+
   function edit_visible_columns(){
-    //return ['menu_name','menu_user_order_is_active','menu_user_order_level','menu_user_order_priority_item'];
+    return ['menu_user_order_track_number','menu_name','menu_user_order_is_active','menu_user_order_level','menu_user_order_priority_item'];
   }
 
 }

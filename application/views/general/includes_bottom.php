@@ -19,7 +19,8 @@
     <script src="<?php echo base_url();?>assets/js/selectboxit/jquery.selectBoxIt.min.js"></script>
 
 	<script src="<?php echo base_url();?>assets/js/printThis.js"></script>
-    
+
+    <script src="<?php echo base_url();?>assets/js/accounting.js"></script>
    
     
 	<script src="<?php echo base_url();?>assets/js/neon-calendar.js"></script>

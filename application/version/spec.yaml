@@ -141,5 +141,11 @@ tables:
     - system_opening_balance
     - project_allocation
 
+  opening_outstanding_cheque: 
+    - system_opening_balance
+
+  opening_deposit_transit:
+    - system_opening_balance
+
 
 

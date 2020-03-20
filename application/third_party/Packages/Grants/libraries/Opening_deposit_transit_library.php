@@ -1,5 +1,6 @@
 <?php
 
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -10,17 +11,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-
-class Opening_cash_balance extends MY_Controller
+class Opening_deposit_transit_library extends Grants
 {
+
+  private $CI;
 
   function __construct(){
     parent::__construct();
-    $this->load->library('opening_cash_balance_library');
+    $this->CI =& get_instance();
   }
 
   function index(){}
 
-  // static function get_menu_list(){}
-
-}
+} 

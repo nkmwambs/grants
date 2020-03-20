@@ -24,7 +24,7 @@ $chunk = array_chunk($this->session->user_more_menu,$this->config->item('extra_m
         ?>  
                 
                     <td>
-                    <a href="<?=base_url().$user_menu;?>/list">
+                    <a href="<?=base_url().strtolower($user_menu);?>/list">
                             <i class="<?=$menu_icon;?>"></i>
                             <span class="title"><?=get_phrase(strtolower($user_menu));?></span>
                     </a>
