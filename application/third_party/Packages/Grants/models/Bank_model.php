@@ -35,7 +35,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function detail_tables(){
-    return ['bank_branch','office_bank'];
+    return ['bank_branch'];
   }
 
   function list(){

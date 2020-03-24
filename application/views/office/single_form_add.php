@@ -115,6 +115,7 @@
         //alert('Saving');
         var url = "<?=base_url();?>office/create_new_office";
         var data = $("#frm_office").serializeArray();
+        var btn = $(this);
 
         $.ajax({
             url:url,
@@ -150,4 +151,18 @@ function reset_form(){
     $("#office_context").empty().prop('disabled','disabled');
 
 }
+
+
+function onchange_fk_context_definition_id(elem){
+
+}
+
+function onchange_office_context(){
+
+}
+
+function onchange_fk_account_system_id(){
+
+}
+
 </script>      

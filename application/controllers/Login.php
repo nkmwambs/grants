@@ -16,6 +16,7 @@ if (!defined('BASEPATH'))
 class Login extends CI_Controller {
 
 public $auth;
+public $controller;
 
     function __construct() {
         parent::__construct();
@@ -31,6 +32,8 @@ public $auth;
         $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
         $this->output->set_header("Cache-Control: post-check=0, pre-check=0", false);
         $this->output->set_header("Pragma: no-cache"); 
+
+        $this->controller = $this->session->default_launch_page;
     }
 
     //Default function, redirects to logged in user area
@@ -38,11 +41,14 @@ public $auth;
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-                // Consider working on this !!!
              if(parse_url(base_url())['host'] == 'localhost'){
                 $this->grants->create_missing_system_files(); 
               }
             //$this->load->library($this->session->default_launch_page.'_library');
+
+            // Check if system set up has been completed before logging in
+            $this->system_setup_check();
+            
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
           
@@ -50,6 +56,28 @@ public $auth;
         $this->load->view('general/login');
 
     }
+
+    function system_setup_check(){
+        $system_setup_state = $this->db->get_where('setting',
+        array('type'=>'system_setup_completed'))->row()->description;
+      
+        if($system_setup_state == false){
+          $db_tables = $this->db->list_tables();
+            
+          foreach($db_tables as $db_table){
+              if(!in_array($db_table,['approval','status','approve_item','ci_sessions']) && $db_table != ""){
+                $this->grants_model->mandatory_fields($db_table);
+                $this->grants_model->insert_status_if_missing($db_table);
+              }
+            
+          }
+      
+          //Update system_setup_completed setting to true if all tables are set up
+          $this->db->update('setting',array('description'=>true),array('type'=>'system_setup_completed'));
+        }
+      
+
+      }
 
     //Ajax login function
     function ajax_login() {

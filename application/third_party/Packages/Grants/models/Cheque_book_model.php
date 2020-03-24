@@ -33,7 +33,7 @@ class Cheque_book_model extends MY_Model{
     }
 
     function single_form_add_visible_columns(){
-        return ['cheque_book_start_serial_number','cheque_book_count_of_leaves','cheque_book_use_start_date'];
+        return ['cheque_book_start_serial_number','cheque_book_count_of_leaves','cheque_book_use_start_date','office_bank_name'];
     }
 
     public function detail_tables(){}

@@ -74,8 +74,17 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     }
 
     if($table = 'department'){
-      $this->db->where_in('department_id',$this->session->departments);
-      $lookup_values['department'] = $this->db->get('department')->result_array(); 
+      $lookup_values['department'] = [];
+       
+      if(count($this->session->departments) == 0){
+          $message = "The system does not have departments. 
+          Kindly ask the administrator to add departments or <a href='".$_SERVER['HTTP_REFERER']."'/>go back</a>";         
+          show_error($message,500,'An Error As Encountered'); 
+        }else{
+          $this->db->where_in('department_id',$this->session->departments);
+          $lookup_values['department']  = $this->db->get('department')->result_array();
+        } 
+
     }
 
     return $lookup_values;

@@ -142,12 +142,13 @@ function __construct(){
   $this->CI->load->model('autoloaded/grants_model');
   $this->CI->load->model('autoloaded/user_model');
 
-  // Load the main/ feature controller model
-  $this->CI->load->model($this->current_model);
+  if($this->CI->uri->segment(1) != 'api'){
+    // Load the main/ feature controller model
+    $this->CI->load->model($this->current_model);
 
-  // Loading the main feature library
-  $this->CI->load->library($this->current_library);
-
+    // Loading the main feature library
+    $this->CI->load->library($this->current_library);
+  }
 
   if(isset($this->session->user_id)){
     $this->CI->session->sess_destroy();
@@ -290,7 +291,8 @@ public function dependant_table($table_name = ""){
 
   if(property_exists($this->CI->$model,'dependant_table')){
       $dependant_table = $this->CI->$model->dependant_table;
-  }elseif($this->CI->grants_model->table_exists($table_name."_detail")){
+  }elseif($this->CI->grants_model->table_exists($table_name."_detail") &&  
+    (!method_exists($this->CI->$model,'detach_detail_table') || !$this->CI->$model->detach_detail_table())){
     //Legacy way of implementing dependancy table was to create a table suffixed with _detail.
     // This part checks if this has been implemented if the dependant_table property is not defined
       $dependant_table = $table_name."_detail";
@@ -298,6 +300,24 @@ public function dependant_table($table_name = ""){
 
   return $dependant_table; 
 }
+
+public function has_dependant_table($table_name = ""){
+
+  $model = $this->load_detail_model($table_name);
+
+  $has_dependant_table = false;
+
+  if(
+      property_exists($this->CI->$model,'dependant_table') || 
+      $this->CI->grants_model->table_exists($table_name."_detail"))
+    {
+
+    $has_dependant_table = true;
+  }
+
+  return $has_dependant_table; 
+}
+
 /**
  * primary_key_field
  * 
@@ -1342,7 +1362,7 @@ function edit_output($id = ""){
       echo $this->CI->grants_model->edit($id);
     }
   }else{
-    $this->CI->grants_model->mandatory_fields($table);
+    //$this->CI->grants_model->mandatory_fields($table);
 
     $edit_query = $this->edit_query($table);
     $fields = $this->edit_form_fields($edit_query);// Go this place
@@ -1488,7 +1508,6 @@ function config_list($config_name, $config_file = "config", $config_array_name =
   return $this->CI->load->view('templates/config_list',$data,true);
 }
 
-
 // Auto create Model and Library fields if missing
 
 function create_missing_system_files(){
@@ -1630,7 +1649,24 @@ function initial_item_status(){
   return $this->CI->grants_model->initial_item_status();
 }
 
+/**
+ * @todo - See why not working in the List_output API feature_model_list_table_visible_columns method
+ */
+function unset_status_if_item_not_approveable($list_table_visible_columns){
 
+  $list_table_visible_columns = $this->$model->list_table_visible_columns();
+  if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
+    $columns = ['status_name','approval_name'];
+
+    foreach($columns as $column){
+      if(in_array($column,$list_table_visible_columns)){
+        $column_name_key = array_search($column,$list_table_visible_columns);
+        unset($list_table_visible_columns[$column_name_key]);
+      }
+    }
+  }
+  
+}
 
 
 /******************************************************************************************************
@@ -1662,6 +1698,20 @@ function feature_model_list_table_visible_columns() {
   ){
     $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
 
+    // This part couldn't work as the function $this->unset_status_if_item_not_approveable()
+    
+    if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
+      $columns = ['status_name','approval_name'];
+
+      foreach($columns as $column){
+        if(in_array($column,$list_table_visible_columns)){
+          $column_name_key = array_search($column,$list_table_visible_columns);
+          unset($list_table_visible_columns[$column_name_key]);
+        }
+      }
+    }
+
+
      //Add the table id columns if does not exist in $columns
     if(   is_array($list_table_visible_columns) && 
           !in_array($this->primary_key_field($this->controller),
@@ -1682,12 +1732,12 @@ function feature_model_list_table_visible_columns() {
         
         //print_r($all_fields);exit();
 
-        // if(!in_array($_column,$all_fields)){
-        //   $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
-        //   $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
-        //   show_error($message,500,'An Error As Encountered');
+        if(!in_array($_column,$all_fields)){
+          $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
+          $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
+          show_error($message,500,'An Error As Encountered');
           
-        // }
+        }
 
       }
     }

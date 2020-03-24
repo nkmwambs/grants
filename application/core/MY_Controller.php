@@ -63,7 +63,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants');
     //$this->widget = new Widget_base();
 
-    $segment = $this->uri->segment(1, 'approval');
+    $segment = $this->uri->segment(1, 'dashboard');
     $action = $this->uri->segment(2, 'list');
 
     $this->current_library = strtolower($segment.'_library');
@@ -109,7 +109,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->model('message_model');
 
     // Table set up. Add missing mandatory fields and status
-    $this->grants->table_setup($this->controller);
+    //$this->grants->table_setup($this->controller);
 
   }
   /**

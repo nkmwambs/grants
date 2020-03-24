@@ -11,8 +11,9 @@
 class Funder_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'funder';
-  public $hidden_columns = array();
-  private $lookup_tables = array();
+  public $dependant_table = "";
+  // public $hidden_columns = array();
+  // private $lookup_tables = array();
 
   function __construct(){
     parent::__construct();

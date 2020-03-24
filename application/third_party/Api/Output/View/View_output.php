@@ -471,7 +471,7 @@ function detail_list_output(String $table): Array {
     function _output(){
         $table = $this->controller;
     
-        $this->CI->grants_model->mandatory_fields($table);
+        //$this->CI->grants_model->mandatory_fields($table);
     
         $query_output = $this->toggle_master_view_query_result();
         

@@ -68,7 +68,8 @@ function get_approve_item_name_by_status($item_status){
 
   $this->db->select(array('approve_item_name'));
   $this->db->join('status','status.fk_approve_item_id=approve_item.approve_item_id');
-  $result =  $this->db->get_where('approve_item',array('status_id'=>$item_status))->row()->approve_item_name;
+  $result =  $this->db->get_where('approve_item',
+  array('status_id'=>$item_status))->row()->approve_item_name;
 
   return $result;
 }

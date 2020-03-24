@@ -14,7 +14,8 @@ class Permission_label extends MY_Controller
 
   function __construct(){
     parent::__construct();
-    
+
+    $this->grants->table_setup('permission');
   }
   function index(){}
 
@@ -48,7 +49,10 @@ class Permission_label extends MY_Controller
     $count_of_page_access_permissions = $page_access_permissions->num_rows();
     $count_of_permission_labels = $permission_labels->num_rows();
 
+    //$this->grants_model->mandatory_fields('permission');
+
     $this->db->trans_start();
+    
     // Only create a permission if count of menus are more that the permissions available
     if(($count_of_page_access_permissions * $count_of_permission_labels) < ($count_of_menus * $count_of_permission_labels) ){
       foreach($menus->result_array() as $menu_item){
@@ -132,10 +136,14 @@ class Permission_label extends MY_Controller
 
     // Used roles in the current permission
     $this->db->select(array('fk_role_id as role_id'));
-    $used_roles = $this->db->get_where('role_permission',array('fk_permission_id'=>$permission_id))->result_array();
+    $used_roles_obj = $this->db->get_where('role_permission',
+    array('fk_permission_id'=>$permission_id));
 
     $this->db->select(array('role_id','role_name'));
-    $this->db->where_not_in('role_id',array_column($used_roles,'role_id'));
+    if($used_roles_obj->num_rows() > 0){
+      $this->db->where_not_in('role_id',array_column($used_roles_obj->result_array(),'role_id'));
+    }
+    
     $role = $this->db->get_where('role',array('role_is_active'=>1))->result_object();
 
     $ids = array_column($role,'role_id');

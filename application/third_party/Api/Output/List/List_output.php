@@ -76,6 +76,18 @@ function feature_model_list_table_visible_columns(): Array {
       is_array($this->CI->$model->list_table_visible_columns())
     ){
       $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+
+      // This part couldn't work as the function $this->CI->grants->unset_status_if_item_not_approveable()
+      if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
+        $columns = ['status_name','approval_name'];
+
+        foreach($columns as $column){
+          if(in_array($column,$list_table_visible_columns)){
+            $column_name_key = array_search($column,$list_table_visible_columns);
+            unset($list_table_visible_columns[$column_name_key]);
+          }
+        }
+      }
   
        //Add the table id columns if does not exist in $columns
       if(   is_array($list_table_visible_columns) && 
@@ -228,7 +240,7 @@ function feature_model_list_table_visible_columns(): Array {
 
         $table = $this->controller;
       
-        $this->CI->grants_model->mandatory_fields($table);
+        //$this->CI->grants_model->mandatory_fields($table);
 
         // Mandatory fields for details tables
         

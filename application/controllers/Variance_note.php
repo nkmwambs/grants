@@ -11,16 +11,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Cheque_book extends MY_Controller
+class Variance_note extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('Cheque_book_library');
+    $this->load->library('Variance_note_library');
   }
 
   function index(){}
 
-  // static function get_menu_list(){}
+  static function get_menu_list(){}
 
 }

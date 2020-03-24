@@ -281,12 +281,16 @@ class Voucher extends MY_Controller
 
   }
 
-  function get_office_banks($office_id){
+  function get_office_banks(){
+
+    $office_id = $this->input->post('office_id');
+    
     //echo $office_id;
     $this->db->select(array('office_bank_id','bank_name','office_bank_account_number '));
-    $this->db->join('bank','bank.bank_id=office_bank.fk_bank_id');
+    $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
+    $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
     $office_banks = $this->db->get_where('office_bank',
-    array('fk_office_id'=>$office_id,'is_office_bank_active'=>1))->result_object();
+    array('fk_office_id'=>$office_id,'office_bank_is_active'=>1))->result_object();
 
     echo json_encode($office_banks);
   }
@@ -328,11 +332,14 @@ class Voucher extends MY_Controller
   }
 
 
-  function compute_next_voucher_number($office_id){
-   echo $this->voucher_model->get_voucher_number($office_id);
+  function compute_next_voucher_number(){
+    $office_id = $this->input->post('office_id');
+    echo $this->voucher_model->get_voucher_number($office_id);
   }
    
-  function get_office_voucher_date($office_id){
+  function get_office_voucher_date(){
+
+    $office_id = $this->input->post('office_id');
 
     $next_vouching_date = $this->voucher_model->get_voucher_date($office_id);
     $last_vouching_month_date = date('Y-m-t',strtotime($this->voucher_model->get_voucher_date($office_id)));

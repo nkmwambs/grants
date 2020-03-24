@@ -109,7 +109,7 @@ function upsert_user_menu(){
 function get_user_menu_items(){
   $this->db->select(array('menu_name','menu_derivative_controller','menu_user_order_priority_item'));
   $this->db->join('menu','menu.menu_id=menu_user_order.fk_menu_id');
-  $this->db->order_by('menu_user_order_level');
+  $this->db->order_by('menu_name ASC,menu_user_order_level');
   return $this->db->get_where('menu_user_order',
   array('fk_user_id'=>$this->session->user_id,'menu_user_order_is_active'=>1))->result_array();
 

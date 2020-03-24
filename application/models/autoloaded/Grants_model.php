@@ -299,6 +299,7 @@ function generate_item_track_number_and_name($approveable_item){
    * @return Array - Array of table fields
    */
   public function get_all_table_fields(String $table_name = ""):Array{
+    //$this->controller = 'dashboard';
     $table = $table_name == ""?$this->controller:$table_name;
     return $this->db->table_exists($table)?$this->db->list_fields($table):array();
   }
@@ -427,10 +428,10 @@ function generate_item_track_number_and_name($approveable_item){
     $this->insert_status_for_approveable_item($approve_item_name);
 
     // Check if has dependant table
-    $dependant_table_name = $this->grants->dependant_table($approve_item_name);
 
-    if(strlen($dependant_table_name) > 1){
-      $this->insert_status_for_approveable_item($dependant_table_name);    
+    if($this->grants->has_dependant_table($approve_item_name)){
+      $this->mandatory_fields($this->grants->dependant_table($approve_item_name));
+      $this->insert_status_for_approveable_item($this->grants->dependant_table($approve_item_name));    
     } 
 
 }
@@ -470,6 +471,7 @@ function mandatory_fields(String $table): Void{
         $data['approve_item_created_by'] = $this->session->user_id;
         $data['approve_item_last_modified_by'] = $this->session->user_id;
 
+        //$approve_item_data_to_insert = $this->merge_with_history_fields('approve_item',$data,false);
         $this->db->insert('approve_item',$data);
 
         $approve_item_id = $this->db->insert_id();
@@ -1084,20 +1086,100 @@ function update_status(){
  */
 function reset_system(){
 
-  $tables = $this->db->list_tables();
+  $hard_resetable_tables = [
+    'bank_contra_account',
+    'cash_contra_account',
+    'transaction_effect',
+    'voucher_type',
+    'voucher_type_account',
+    'voucher_type_effect',
+    'expense_account',
+    'income_account',
+    'approve_item',
+    'menu',
+    'context_definition',
+    'approval',
+    'permission_label',
+    'setting',
+  ];
 
-  foreach ($tables as $table)
-  {
-      //$this->db->truncate($table);
-  }
+  $soft_resetable_tables = [
+    'voucher_detail',
+    'voucher',
+    'request_type',
+    'request',
+    'request_detail',
+    'cheque_book',
+    'office_bank',
+    'bank_branch',
+    'bank',
+    'budget_item_detail',
+    'budget_item',
+    'budget',
+    'context_center_user',
+    'context_center',
+    'context_cluster_user',
+    'context_cluster',
+    'context_cohort_user',
+    'context_cohort',
+    'context_country_user',
+    'context_country',
+    'context_region_user',
+    'context_region',
+    'context_global_user',
+    'context_global',
+    'dashboard',
+    'department_user',
+    'department',
+    'designation',
+    'reconciliation',
+    'variance_note',
+    'financial_report',
+    'opening_allocation_balance',
+    'opening_cash_balance',
+    'opening_fund_balance',
+    'opening_outstanding_cheque',
+    'opening_deposit_transit',
+    'system_opening_balance',
+    'project_allocation_detail',
+    'project_allocation',
+    'project',
+    'funder',
+    'funding_status',
+    'journal',
+    'menu_user_order',
+    'message_detail',
+    'message',
+    'month',
+    'page_view_condition',
+    'page_view_role',
+    'page_view',
+    'permission',
+    'role_permission',
+    'workplan_task',
+    'workplan',    
+    'month',
+    'office',
+    'status_role',
+    'role',
+    'status',
+    'workflow',
+    'language',
+    'language_phrase',
+    'menu',
+    'account_system',
+    'user',
+  ];
 
 }
+
+
 
 function merge_with_history_fields(String $approve_item_name, Array $array_to_merge, bool $add_name_to_array = true){
 
   $data = [];
 
-  $this->grants->table_setup($approve_item_name);
+  //$this->grants->table_setup($approve_item_name);
 
   $data[$approve_item_name.'_track_number'] = $this->generate_item_track_number_and_name($approve_item_name)[$approve_item_name.'_track_number'];
   $data[$approve_item_name.'_created_by'] = $this->session->user_id;
