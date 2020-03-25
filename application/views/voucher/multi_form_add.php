@@ -764,6 +764,8 @@ $(document).on('change','.account',function(){
                 $.each(response_allocation,function(i,el){
                     allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
                 });
+            }else{
+                $(".allocation").prop('disabled','disabled');
             }
 
             $(".allocation").html(allocation_select_option);
