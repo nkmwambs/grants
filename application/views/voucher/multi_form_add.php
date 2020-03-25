@@ -454,10 +454,6 @@ function getAccountsByVoucherType(voucherTypeSelect){
     var voucher_type_id = $(voucherTypeSelect).val();// Can be expense, income, cash_contra or bank_contra
 
     var url = "<?=base_url();?>voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
-    
-    var account_select_option = "<option value=''>Select an account</option>";
-
-    var allocation_select_option = "<option value=''>Select an allocation code</option>";
 
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
    
@@ -469,6 +465,10 @@ function getAccountsByVoucherType(voucherTypeSelect){
         },
         success:function(response){
 
+            var account_select_option = "<option value=''>Select an account</option>";
+
+            var allocation_select_option = "<option value=''>Select an allocation code</option>";
+
             var response_objects = JSON.parse(response);
 
             var response_accounts = response_objects['accounts'];
@@ -476,6 +476,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_is_bank_payment = response_objects['is_bank_payment'];
             var response_is_expense = response_objects['is_expense'];
             var response_approved_requests = response_objects['approved_requests'];
+            //var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
 
             if(response_accounts.length > 0){
                 $.each(response_accounts,function(i,el){
@@ -484,6 +485,9 @@ function getAccountsByVoucherType(voucherTypeSelect){
             }
 
             if(response_allocation.length > 0){
+
+                $(".allocation").removeAttr('disabled');
+
                 $.each(response_allocation,function(i,el){
                     allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
                 });
@@ -644,6 +648,7 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
             }
 
             if(response_allocation.length > 0){
+                $(".allocation").removeAttr('disabled');
                 $.each(response_allocation,function(i,el){
                     allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
                 });
@@ -653,16 +658,6 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
 
             $(".account").html(account_select_option);
             
-            // last_added_row = $("#tbl_voucher_body tbody tr").last().find('select');
-
-            // $.each(last_added_row,function(i,el){
-                
-            //     if(i == 0){
-            //         // Not working in the mean time
-            //         $(el).val() = expense_account_id;;
-            //     }
-                
-            // });
 
         },
         error:function(){
@@ -745,6 +740,37 @@ function clearRow(el){
     $(el).closest('tr').find(".number-fields").val(0);
 }
 
+$(document).on('change','.account',function(){
+
+    var office_id = $("#office").val();
+    var account_id = $(this).val();
+    var voucher_type_id = $("#voucher_type").val();
+    var transaction_date = $("#transaction_date").val();
+    
+    var url = "<?=base_url();?>voucher/get_project_details_account/";
+
+    $.ajax({
+        url:url,
+        data:{'office_id':office_id,'account_id':account_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date},
+        type:"POST",
+        success:function(response){
+
+            var response_allocation = JSON.parse(response);
+
+            var allocation_select_option = "<option value=''>Select an allocation code</option>";
+
+            if(response_allocation.length > 0){
+                $(".allocation").removeAttr('disabled');
+                $.each(response_allocation,function(i,el){
+                    allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
+                });
+            }
+
+            $(".allocation").html(allocation_select_option);
+        }
+    });
+});
+
 function actionCell(){
     return "<td><div class='btn btn-danger action' onclick='removeRow(this);'>Remove Row</div> &nbsp; <span onclick='clearRow(this);' class='fa fa-trash'></span> </td>";
 }
@@ -770,7 +796,7 @@ function accountCell(value = 0){
 }
 
 function allocatioCodeCell(value = 0){
-    return "<td><select name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
+    return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
 }
 
 function requestIdCell(value = 0){

@@ -229,29 +229,45 @@ class Voucher extends MY_Controller
 
   // Custom voucher form functions
 
+  function voucher_type_effect_and_code($voucher_type_id){
+    $this->db->select(array('voucher_type_account_code','voucher_type_effect_code','voucher_type_account_code '));
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+    $voucher_type_effect_and_code = $this->db->get_where('voucher_type',array('voucher_type_id'=>$voucher_type_id))->row();
+
+    return $voucher_type_effect_and_code;
+  }
+
   function get_voucher_accounts_and_allocation($office_id, $voucher_type_id,$transaction_date){
 
     $response = [];
     $response['is_bank_payment'] = false;
     $response['is_expense'] = false;
     $response['approved_requests'] = 0;
+    //$response['is_allocation_linked_to_account'] = true;
 
-    $office_accounting_system = $this->db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
+    $this->db->join('account_system','account_system.account_system_id=office.fk_account_system_id');
+    $office_accounting_system = $this->db->get_where('office',array('office_id'=>$office_id))->row();
 
-    $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
-    $this->db->select(array('project_allocation_id','project_allocation_name'));
-    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
-    $this->db->where($query_condition);
-    $project_allocation = $this->db->get('project_allocation')->result_object();
+    $project_allocation = [];
+
+    if(!$office_accounting_system->account_system_is_allocation_linked_to_account){
+
+        //$response['is_allocation_linked_to_account'] = false;
+
+        $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
+        $this->db->select(array('project_allocation_id','project_allocation_name'));
+        $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+        $this->db->where($query_condition);
+        $project_allocation = $this->db->get('project_allocation')->result_object();
+    }
     
-    $this->db->select(array('voucher_type_account_code','voucher_type_effect_code','voucher_type_account_code '));
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-    $voucher_type_effect_and_code = $this->db->get_where('voucher_type',array('voucher_type_id'=>$voucher_type_id))->row();
+    $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($voucher_type_id);
 
     $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
+    // Check if the voucher type is a bank payment
     if($voucher_type_account == 'bank' && $voucher_type_effect == 'expense'){
       $response['is_bank_payment'] = true;
     }
@@ -261,7 +277,8 @@ class Voucher extends MY_Controller
       $response['project_allocation'] = $project_allocation;
       
       $this->db->select(array('income_account_id as account_id','income_account_name as account_name','income_account_code as account_code'));
-      $response['accounts'] = $this->db->get_where('income_account',array('income_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system))->result_object();
+      $response['accounts'] = $this->db->get_where('income_account',
+      array('income_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system->fk_account_system_id))->result_object();
     
     }elseif($voucher_type_effect == 'expense'){
       $response['is_expense'] = true;
@@ -458,7 +475,7 @@ class Voucher extends MY_Controller
       }
   
       
-      $detail['fk_project_allocation_id'] = $this->input->post('fk_project_allocation_id')[$i];
+      $detail['fk_project_allocation_id'] = isset($this->input->post('fk_project_allocation_id')[$i])?$this->input->post('fk_project_allocation_id')[$i]:0;
       $detail['fk_request_detail_id'] = $this->input->post('fk_request_detail_id')[$i];
       $detail['fk_approval_id'] = 0;//$this->grants_model->insert_approval_record('voucher_detail');
       $detail['fk_status_id'] = $this->grants_model->initial_item_status('voucher_detail');      
@@ -490,6 +507,38 @@ class Voucher extends MY_Controller
     }else{
       echo "Voucher posted successfully";
     }
+
+  }
+
+  function get_project_details_account(){
+    
+    $post = $this->input->post();
+
+    $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($post['voucher_type_id']);
+
+    $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
+    $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
+    
+    $project_allocation = [];
+
+    $income_account_id = $post['account_id'];
+
+    if($voucher_type_effect == 'expense'){
+      
+      $this->db->select('income_account_id');
+      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+      $income_account_id = $this->db->get_where('expense_account',
+      array('expense_account_id'=>$post['account_id']))->row()->income_account_id;
+    }
+
+    $query_condition = "fk_office_id = ".$post['office_id']." AND (project_end_date >= '".$post['transaction_date']."' OR  project_allocation_extended_end_date >= '".$post['transaction_date']."')";
+    $this->db->select(array('project_allocation_id','project_allocation_name'));
+    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+    $this->db->where(array('fk_income_account_id'=>$income_account_id));
+    $this->db->where($query_condition);
+    $project_allocation = $this->db->get('project_allocation')->result_object();
+
+    echo json_encode($project_allocation);
 
   }
 
