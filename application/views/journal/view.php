@@ -1,7 +1,8 @@
 <?php
-//print_r($this->journal_model->_voucher_max_status_id_where('2020-03-01'));
+print_r($result);
 
 extract($result);
+
 
 $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
@@ -166,7 +167,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
             </tbody>
             <tfoot>
                   <tr>
-                    <td colspan='7'>Total and Balance b/d</td>
+                    <td colspan='7'><?=get_phrase('total_and_balance_b/d');?></td>
 
                     <td class='align-right'><?=number_format($sum_bank_income,2);?></td>
                     <td class='align-right'><?=number_format($sum_bank_expense,2);?></td>

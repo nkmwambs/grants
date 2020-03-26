@@ -62,29 +62,58 @@ class Journal_library extends Grants
   function journal_spread($spread,$account_type = 'bank',$transaction_effect = 'income'){
 
     $financial_accounts = $this->CI->journal_model->financial_accounts();
-    
-    $spread_cells = "";
 
     $accounts = $transaction_effect == 'income'?$financial_accounts['income']:$financial_accounts['expense'];
 
-    // Fill up empty cells in spread when the account type is an expense type
-    if($transaction_effect == 'expense' || strpos($transaction_effect,'contra')) echo $this->empty_journal_cells('income');
+    $spread_cells = "";
+    
+    if($transaction_effect == 'expense'){
       
-      foreach($accounts as $account_id => $account_code){
-        $transacted_amount = 0;
-        foreach($spread as $spread_transaction){
-            if(in_array($account_id,$spread_transaction)){
-                $transacted_amount += $spread_transaction['transacted_amount'];
-            }
-        }
-        if( !strpos($transaction_effect,'contra')){
-          $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
-        }
-        
-    }
+      $spread_cells = "";
+      
+      // Fill up empty cells in spread when the account type is an expense type
+      $spread_cells .= $this->empty_journal_cells('income');
 
-    // Fill up empty cells in spread when the account type is an income type
-    if($transaction_effect == 'income' || strpos($transaction_effect,'contra')) echo $this->empty_journal_cells('expense');
+      foreach($accounts as $account_id => $account_code){
+          $transacted_amount = 0;
+          foreach($spread as $spread_transaction){
+              if(in_array($account_id,$spread_transaction) && $transaction_effect == 'expense'){
+                  $transacted_amount += $spread_transaction['transacted_amount'];
+              }
+          }
+          if( !strpos($transaction_effect,'contra')){
+            $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
+          }
+          
+      } 
+
+    }elseif($transaction_effect == 'income'){
+      
+      $spread_cells = "";
+
+      foreach($accounts as $account_id => $account_code){
+          $transacted_amount = 0;
+          foreach($spread as $spread_transaction){
+              if(in_array($account_id,$spread_transaction) && $transaction_effect == 'income'){
+                  $transacted_amount += $spread_transaction['transacted_amount'];
+              }
+          }
+          if( !strpos($transaction_effect,'contra')){
+            $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
+          }
+          
+      } 
+       // Fill up empty cells in spread when the account type is an income type
+      $spread_cells .= $this->empty_journal_cells('expense');
+    }elseif(strpos($transaction_effect,'contra')){
+
+      $spread_cells = "";
+      $spread_cells .= $this->empty_journal_cells('income');
+      $spread_cells .= $this->empty_journal_cells('expense');
+
+    }
+      
+     
     
 
     return $spread_cells;
