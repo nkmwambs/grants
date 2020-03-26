@@ -255,10 +255,13 @@ function remove_request_derived_voucher_details(){
     });
 }
 
-function showHiddenButtons(response_is_expense){
-    
-    $('.btn-save').show();
-    $('.btn-save-new').show();
+function showHiddenButtons(response_is_expense, show_insert_buttons = false){
+
+    if(show_insert_buttons){
+        $('.btn-save').show();
+        $('.btn-save-new').show();
+    }    
+
     $('.btn-insert').show();
 
     var only_allow_voucher_details_from_request = '<?=$this->config->item('only_allow_voucher_details_from_request');?>';
@@ -493,7 +496,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 });
             }
 
-            showHiddenButtons(response_is_expense);
+            showHiddenButtons(response_is_expense,false);
             
             $(".allocation").html(allocation_select_option);
 
@@ -613,6 +616,8 @@ $(".btn-insert").on('click',function(){
     }else{
         copyRow();   
     }  
+
+    showHiddenButtons(false,true);
 });
 
 function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
