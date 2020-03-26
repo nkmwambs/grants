@@ -11,16 +11,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Cash_contra_account extends MY_Controller
+class Contra_account extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('cash_contra_account_library');
+    $this->load->library('Contra_account_library');
   }
 
   function index(){}
 
-  // static function get_menu_list(){}
+  static function get_menu_list(){}
 
 }

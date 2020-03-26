@@ -258,8 +258,9 @@ function generate_item_track_number_and_name($approveable_item){
     if ($this->db->trans_status() === FALSE)
     {       
             $this->db->trans_rollback();
-            return json_encode($header_columns);
+            //return json_encode($header_columns);
             //return "Insert not successful";
+            return get_phrase('insert_failed');
     }
     else
     {
