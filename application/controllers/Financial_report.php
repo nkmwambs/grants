@@ -187,6 +187,7 @@ class Financial_report extends MY_Controller
         'office_ids'=>$office_ids,
         'reporting_month'=>$reporting_month,
         'fund_balance_report'=>$this->fund_balance_report($office_ids,$reporting_month),
+        'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
         'proof_of_cash'=>$this->proof_of_cash(),
         'financial_ratios'=>$this->financial_ratios(),
         'bank_reconciliation'=>$this->bank_reconciliation(),
@@ -207,6 +208,204 @@ class Financial_report extends MY_Controller
 
   function merge_financial_report(){
     echo json_encode($this->input->post());
+  }
+
+  function _projects_balance_report($office_ids,$reporting_month){
+    $headers = [];
+    $body = [];
+
+
+    $projects = $this->_office_projects($office_ids,$reporting_month);
+
+    foreach($projects as $project_id => $project){
+      $body[$project_id]['funder'] = $project['funder_name'];
+      $body[$project_id]['project'] = $project['project_name'];
+      $body[$project_id]['month_expense'] = $this->_projects_month_expense($office_ids,$reporting_month,$project_id) == null?0:$this->_projects_month_expense($office_ids,$reporting_month,$project_id);
+      $body[$project_id]['allocation_target'] = $this->_projects_allocation_target($office_ids,$project_id) == null?0:$this->_projects_allocation_target($office_ids,$project_id);      
+    }
+
+    if($this->config->item('funding_balance_report_aggregate_method') == 'receipt'){
+      $headers = [
+                  "funder"=>get_phrase("funder"),
+                  "project"=>get_phrase("project"),
+                  "allocation_target"=>get_phrase("allocation_target"),
+                  "opening_balance"=>get_phrase("opening_balance"),
+                  "month_income"=>get_phrase("month_income"),
+                  "month_expense"=>get_phrase("month_expense"),
+                  "closing_balance"=>get_phrase("closing_balance")
+                ];
+
+      foreach($projects as $project_id => $project){
+        $body[$project_id]['opening_balance'] = $this->_projects_opening_balances($office_ids,$reporting_month,$project_id) == null?0:$this->_projects_opening_balances($office_ids,$reporting_month,$project_id); 
+        $body[$project_id]['month_income'] = $this->_projects_month_income($office_ids,$reporting_month,$project_id) == null?0:$this->_projects_month_income($office_ids,$reporting_month,$project_id); 
+        $body[$project_id]['closing_balance'] = $this->_projects_receipt_closing_balance($office_ids,$reporting_month,$project_id) == null?0:$this->_projects_receipt_closing_balance($office_ids,$reporting_month,$project_id); 
+      }                
+
+    }elseif($this->config->item('funding_balance_report_aggregate_method') == 'allocation'){
+      $headers = [
+                  "funder"=>get_phrase("funder"),
+                  "project"=>get_phrase("project"),
+                  "allocation_target"=>get_phrase("allocation_target"),
+                  "month_expense"=>get_phrase("month_expense"),
+                  "month_expense_to_date"=>get_phrase("month_expense_to_date"),
+                  "closing_balance"=>get_phrase("closing_balance")
+                ];
+
+        foreach($projects as $project_id => $project){
+          $body[$project_id]['month_expense_to_date'] = $this->_projects_month_expense_to_date($office_ids,$reporting_month,$project_id); 
+          $body[$project_id]['closing_balance'] = $this->_projects_allocation_closing_balance($office_ids,$reporting_month,$project_id); 
+        }         
+                   
+    }
+
+    return ['headers'=>$headers,'body'=>$body];
+  }
+
+  function _projects_allocation_closing_balance($office_ids,$reporting_month,$project_id){
+    $closing_balance = $this->_projects_allocation_target($office_ids,$project_id) - $this->_projects_month_expense_to_date($office_ids,$reporting_month,$project_id);
+    
+    return $closing_balance;
+  }
+
+  function _projects_month_expense_to_date($office_ids,$reporting_month,$project_id){
+    //return 15;
+
+    $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+    $project_allocations = $this->db->select('project_allocation_id')->get_where('project_allocation',
+    array('fk_project_id'=>$project_id))->result_array();
+
+    $project_allocation_ids = array_column($project_allocations,'project_allocation_id');
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->where(array('voucher_type_effect_code'=>'expense'));
+    $this->db->where(array('voucher_date<='=>$end_of_reporting_month));
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
+
+    return $voucher_detail_total_cost;
+  }
+
+  function _projects_allocation_target($office_ids,$project_id){
+
+    $this->db->select_sum('project_allocation_amount');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where(array('project_id'=>$project_id));
+    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+    $sum_project_allocation_amount = $this->db->get('project_allocation')->row()->project_allocation_amount;
+
+    return $sum_project_allocation_amount;
+  }
+
+  function _projects_receipt_closing_balance($office_ids,$reporting_month,$project_id){
+    $opening_balance = $this->_projects_opening_balances($office_ids,$reporting_month,$project_id);
+    $month_income = $this->_projects_month_income($office_ids,$reporting_month,$project_id);
+    $month_expense = $this->_projects_month_expense($office_ids,$reporting_month,$project_id);
+
+    $closing_balance = $opening_balance + $month_income - $month_expense;
+
+    return $closing_balance;
+  } 
+
+  function _projects_month_income($office_ids,$reporting_month,$project_id){
+    //return 12;
+    $project_allocations = $this->db->select('project_allocation_id')->get_where('project_allocation',
+    array('fk_project_id'=>$project_id))->result_array();
+
+    $project_allocation_ids = array_column($project_allocations,'project_allocation_id');
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->where(array('voucher_type_effect_code'=>'income'));
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
+
+    return $voucher_detail_total_cost;
+  }
+
+  function _projects_opening_balances($office_ids,$reporting_month,$project_id){
+    $target_allocation = $this->_projects_allocation_target($office_ids,$project_id);
+    $projects_previous_months_expense_to_date = $this->_projects_previous_months_expense_to_date($office_ids,$reporting_month,$project_id);
+
+    $opening_balance = $target_allocation - $projects_previous_months_expense_to_date;
+
+    return $opening_balance;
+  }
+
+  function _projects_previous_months_expense_to_date($office_ids,$reporting_month,$project_id){
+    //return 15;
+
+    $start_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
+
+    $project_allocations = $this->db->select('project_allocation_id')->get_where('project_allocation',
+    array('fk_project_id'=>$project_id))->result_array();
+
+    $project_allocation_ids = array_column($project_allocations,'project_allocation_id');
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->where(array('voucher_type_effect_code'=>'expense'));
+    $this->db->where(array('voucher_date<'=>$start_of_reporting_month));
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
+
+    return $voucher_detail_total_cost;
+  }
+
+  function _projects_month_expense($office_ids,$reporting_month,$project_id){
+
+    $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
+    $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+    
+    $project_allocations = $this->db->select('project_allocation_id')->get_where('project_allocation',
+    array('fk_project_id'=>$project_id))->result_array();
+
+    $project_allocation_ids = array_column($project_allocations,'project_allocation_id');
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->where(array('voucher_type_effect_code'=>'expense'));
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+    $this->db->where(array('voucher_date>='=>$start_date_of_reporting_month,'voucher_date<='=>$end_date_of_reporting_month));
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
+
+    return $voucher_detail_total_cost;
+  }
+
+  function _office_projects($office_ids,$reporting_month){
+
+    $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
+    $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+    $this->db->select(array('project_id','project_name','funder_name','fk_office_id'));
+    $this->db->join('funder','funder.funder_id=project.fk_funder_id');
+    $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where(array('project_start_date <='=>$start_date_of_reporting_month,
+    'project_end_date>='=>$end_date_of_reporting_month));
+    $projects = $this->db->get('project')->result_array();
+
+    $ordered_array = [];
+
+    foreach($projects as $project){
+      $ordered_array[$project['project_id']]['project_name'] = $project['project_name'];
+      $ordered_array[$project['project_id']]['funder_name'] = $project['funder_name'];
+    }
+
+    return $ordered_array;
   }
 
   static function get_menu_list(){}

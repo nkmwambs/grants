@@ -21,6 +21,7 @@
 
 	//Financial Report Configs
 	$config['only_combined_center_financial_reports'] = true;
+	$config['funding_balance_report_aggregate_method'] = "receipt"; // receipt or allocation
 
 
 

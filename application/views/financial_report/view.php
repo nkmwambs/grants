@@ -2,6 +2,8 @@
 
 extract($result);
 
+//print_r($projects_balance_report);
+
 ?>
 <style>
 .header{
@@ -99,6 +101,37 @@ extract($result);
             </tr>
         </tfoot>
         </table>
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-xs-12 header'><?=get_phrase('projects_balance_report');?></div>
+    <div class='col-xs-12'>
+           
+            <table class="table table-striped" id="project_balance_table">
+                <thead>
+                    <tr>
+                        <?php foreach($projects_balance_report['headers'] as $header){?>
+                            <th><?=$header;?></th>
+                        <?php }?>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                <?php 
+                    foreach($projects_balance_report['body'] as $project){
+                ?>
+                    <tr>
+                        <?php foreach($projects_balance_report['headers'] as $header_key => $header){?>
+                            <td><?=is_numeric($project[$header_key])?number_format($project[$header_key],2):$project[$header_key];?></td>
+                        <?php }?>
+                    </tr>
+                <?php               
+                    }
+                ?>
+                </tbody>
+            </table>     
+      
     </div>
 </div>
 
