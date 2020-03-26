@@ -1,5 +1,5 @@
 <?php
-//print_r($result);
+//print_r($this->journal_model->_voucher_max_status_id_where('2020-03-01'));
 
 extract($result);
 
@@ -22,7 +22,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
 <div class="row">
   <div class="col-xs-12">
-      <a href='<?=base_url();?>Voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
+      <a href='<?=base_url();?>voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
   </div>
 </div>
 
@@ -61,23 +61,23 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                     <th colspan='7'>Balance b/f</th>
                     <th colspan='3'><?=number_format($month_opening_balance['bank'],2);?></th>
                     <th colspan='3'><?=number_format($month_opening_balance['cash'],2);?></th>
-                    <th colspan='<?=count($accounts['income']);?>'>Income</th>
-                    <th colspan='<?=count($accounts['expense']);?>'>Expense</th>
+                    <th colspan='<?=count($accounts['income']);?>'><?=get_phrase('income');?></th>
+                    <th colspan='<?=count($accounts['expense']);?>'><?=get_phrase('expense');?></th>
                 </tr>
                 <tr>
-                    <th>Action</th>
-                    <th>Date</th>
-                    <th>Voucher Type</th>
-                    <th>Voucher Number</th>
-                    <th>Payee</th>
-                    <th>Description</th>
-                    <th>Cheque Number</th>
-                    <th>Bank Income</th>
-                    <th>Bank Expense</th>
-                    <th>Bank Balance</th>
-                    <th>Cash Income</th>
-                    <th>Cash Expense</th>
-                    <th>Cash Balance</th>
+                    <th></th>
+                    <th><?=get_phrase('date');?></th>
+                    <th><?=get_phrase('voucher_type');?></th>
+                    <th><?=get_phrase('voucher_number');?></th>
+                    <th><?=get_phrase('payee');?></th>
+                    <th><?=get_phrase('description');?></th>
+                    <th><?=get_phrase('cheque_number');?></th>
+                    <th><?=get_phrase('bank_income');?></th>
+                    <th><?=get_phrase('bank_expense');?></th>
+                    <th><?=get_phrase('bank_balance');?></th>
+                    <th><?=get_phrase('cash_income');?></th>
+                    <th><?=get_phrase('cash_expense');?></th>
+                    <th><?=get_phrase('cash_balance');?></th>
                     
                     <?php foreach($accounts['income'] as $income_account_code){ ?>
                         <th><?=$income_account_code;?></th>
@@ -113,7 +113,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                         <td><?=date('jS M Y',strtotime($date));?></td>
                         <td><span title="<?=$voucher_type_name;?>" class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>
                         <td>
-                            <a href="<?=base_url();?>Voucher/view/<?=hash_id($voucher_id);?>" target="__blank">
+                            <a href="<?=base_url();?>voucher/view/<?=hash_id($voucher_id);?>" target="__blank">
                                 <div class='btn btn-default'><?=$voucher_number;?></div>
                             </a>    
                         </td>

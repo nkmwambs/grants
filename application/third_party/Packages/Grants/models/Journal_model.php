@@ -184,9 +184,11 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $month_start_date = date('Y-m-01',strtotime($transacting_month));
     $month_end_date = date('Y-m-t',strtotime($transacting_month));
 
+    //$this->_voucher_max_status_id_where($month_start_date);
+
     $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
     'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
-    'voucher_cleared_month'));
+    'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date'));
     $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
     $this->db->select(array('voucher_type_account_code'));
     $this->db->select(array('voucher_type_effect_code'));
@@ -198,7 +200,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->db->where('voucher_date <=', $month_end_date);
     $this->db->where('fk_office_id',$office_id);
     //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
-    $this->db->where(array('voucher.fk_status_id'=>11));
+    
+    
 
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
@@ -211,6 +214,9 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
   function reorder_office_month_vouchers($office_id,$transacting_month){
+
+    $approveable_item = $this->db->get_where('approve_item',
+    array('approve_item_name'=>'voucher'))->row();
     
     $raw_array_of_vouchers = $this->get_all_office_month_vouchers($office_id,$transacting_month);
 
@@ -219,6 +225,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     foreach($raw_array_of_vouchers as $voucher_detail){
         
         extract($voucher_detail);
+
+        if(!$this->general_model->check_if_item_has_max_status_by_created_date($approveable_item,$voucher_created_date, $fk_status_id)) continue;
 
         $voucher_record[$voucher_id] = [
           'date'=>$voucher_date,

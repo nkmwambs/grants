@@ -461,5 +461,48 @@ function has_approval_status_been_set(String $approveable_item):Bool{
 
 }
 
+/**
+ * check_if_item_has_max_status_by_created_date
+ * 
+ * Check if an item has attained the max approval status based on the date the status was created and the item created date.
+ * The final approval status of any item must be lower or equal to the date the item was created to have it take effect. 
+ * If the max status doesn't meet the condition above the lower status will be matched against the item status as the final
+ * 
+ * @param $approveable_item - Approveable item object
+ * @param $item_created_date - Date item was created
+ * @param $status_id - Item status
+ * 
+ * @return bool
+ */
+function check_if_item_has_max_status_by_created_date(Object $approveable_item,String $item_created_date,int $status_id):bool{
+    
+  $is_approved_item =  true;
+
+  if($approveable_item->approve_item_is_active){
+    // The use of the status_check_date  is to prevent a new final status created in later days
+    // affect old vouchers appearance or disappearance from the journal
+
+    $max_status_approval_sequence = $this->db->select_max('status_approval_sequence')->
+    get_where('status',
+    array('fk_approve_item_id'=>$approveable_item->approve_item_id,
+    'status_approval_direction'=>1,
+    'status_created_date <= '=>$item_created_date))->row();
+  
+    if(!empty($max_status_approval_sequence->status_approval_sequence)){
+      $max_status_id = $this->db->get_where('status',
+      array('status_approval_sequence'=>$max_status_approval_sequence->status_approval_sequence,
+      'fk_approve_item_id'=>$approveable_item->approve_item_id))->row()->status_id;
+
+      if($max_status_id != $status_id){
+        $is_approved_item = false;
+      }
+
+    }
+  }
+
+  return $is_approved_item;
+  
+}
+
 
 }
