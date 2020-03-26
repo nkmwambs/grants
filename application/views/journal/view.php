@@ -177,9 +177,14 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                     <td class='align-right'><?=number_format($sum_petty_cash_expense,2);?></td>
                     <td class='align-right'><?=number_format($running_petty_cash_balance,2);?></td>
 
-                    <?php for($i=0;$i<$sum_of_accounts;$i++){?>
-                        <td>0</td> 
-                    <?php }?> 
+                    <!-- Spread totals -->
+                    <?php foreach($accounts['income'] as $income_account_id=>$income_account_code){?>
+                        <td class='total_income total_income_<?=$income_account_id;?>'>0</td>
+                    <?php }?>
+
+                    <?php foreach($accounts['expense'] as $expense_account_id=>$expense_account_code){?>
+                        <td class='total_expense total_expense_<?=$expense_account_id;?>'>0</td>
+                    <?php }?>
 
                   </tr>  
             </tfoot>
@@ -188,6 +193,35 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 </div>
 
 <script>
+
+$(document).ready(function(){
+    var income_account_ids = JSON.parse("<?=json_encode(array_keys($result['accounts']['income']));?>");
+    var expense_account_ids = JSON.parse("<?=json_encode(array_keys($result['accounts']['expense']));?>");
+    
+    //alert(income_account_ids.length);
+    
+    $.each(income_account_ids,function(index,elem){
+
+        var spread_income = $(".spread_income_"+elem);
+        var sum = 0;
+        $.each(spread_income,function(idx,el){
+            sum += parseFloat($(el).html().replace(',',""));
+        });
+        $(".total_income_"+elem).html(accounting.formatNumber(sum,2));
+    });
+
+    $.each(expense_account_ids,function(index,elem){
+        var spread_expense = $(".spread_expense_"+elem);
+        var sum = 0;
+        $.each(spread_expense,function(idx,el){
+            sum += parseFloat($(el).html().replace(',',""));
+        });
+        $(".total_expense_"+elem).html(accounting.formatNumber(sum,2));
+    });
+    
+});
+
+
 $('.table').DataTable({
         dom: 'Bfrtip',
         //fixedHeader: true,

@@ -81,9 +81,9 @@ class Journal_library extends Grants
                   $transacted_amount += $spread_transaction['transacted_amount'];
               }
           }
-          if( !strpos($transaction_effect,'contra')){
-            $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
-          }
+          //if( !strpos($transaction_effect,'contra')){
+            $spread_cells .=  "<td class='align-right spread_".$transaction_effect." spread_".$transaction_effect."_".$account_id."'>".number_format($transacted_amount,2)."</td>";
+          //}
           
       } 
 
@@ -98,9 +98,9 @@ class Journal_library extends Grants
                   $transacted_amount += $spread_transaction['transacted_amount'];
               }
           }
-          if( !strpos($transaction_effect,'contra')){
-            $spread_cells .=  "<td class='align-right'>".number_format($transacted_amount,2)."</td>";
-          }
+          //if( !strpos($transaction_effect,'contra')){
+            $spread_cells .=  "<td class='align-right spread_".$transaction_effect." spread_".$transaction_effect."_".$account_id."'>".number_format($transacted_amount,2)."</td>";
+          //}
           
       } 
        // Fill up empty cells in spread when the account type is an income type
