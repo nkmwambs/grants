@@ -1,0 +1,62 @@
+<table class="table table-striped">
+        <thead>
+            <tr>
+                <th><?=get_phrase('expense_account');?></th>
+                <th><?=get_phrase('month_expense');?></th>
+                <th><?=get_phrase('year_to_date_expense');?></th>
+                <th><?=get_phrase('budget_to_date');?></th>
+                <th><?=get_phrase('budget_variance');?></th>
+                <th><?=get_phrase('percent_variance');?></th>
+                <th><?=get_phrase('comment');?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Expense Account 1</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+            </tr>
+            <tr>
+                <td>Expense Account 2</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+            </tr>
+            <tr>
+                <td>Expense Account 2</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+            </tr>
+            <tr>
+                <td>Expense Account 3</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Total</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+            </tr>
+        </tfoot>
+    </table>
