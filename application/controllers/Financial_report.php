@@ -61,8 +61,70 @@ class Financial_report extends MY_Controller
     return $report;
   }
 
-  private function proof_of_cash(){
+  private function _proof_of_cash($office_ids,$reporting_month){
+    $cash_at_bank = $this->_compute_cash_at_bank($office_ids,$reporting_month);
+    $cash_at_hand = $this->_compute_cash_at_hand($office_ids,$reporting_month);
 
+    return ['cash_at_bank'=>$cash_at_bank,'cash_at_hand'=>$cash_at_hand];
+  }
+
+  function _compute_cash_at_bank($office_ids,$reporting_month){
+    $opening_bank_balance = $this->_opening_cash_balance($office_ids);
+    $bank_income_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month,'income','cash_contra','bank');//$this->_cash_income_to_date($office_ids,$reporting_month);
+    $bank_expenses_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month,'expense','bank_contra','bank');//$this->_cash_expense_to_date($office_ids,$reporting_month);
+    
+    return $opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
+  }
+
+  function _cash_transactions_to_date($office_ids,$reporting_month, $transaction_type,$contra_type, $voucher_type_account){
+    // bank_income = voucher of voucher_type_effect_code == income or cash_contra and voucher_type_account_code == bank 
+    // bank_expense = voucher of voucher_type_effect_code == expense or bank_contra and voucher_type_account_code == bank 
+    // cash_income = voucher of voucher_type_effect_code == income or bank_contra and voucher_type_account_code == cash 
+    // cash_expense = voucher of voucher_type_effect_code == expense or cash_contra and voucher_type_account_code == cash 
+
+    $voucher_detail_total_cost = 0;
+    $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+    $this->db->where(array('voucher_type_account_code'=>$voucher_type_account,'voucher_date<='=>$end_of_reporting_month));
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+    $voucher_detail_total_cost_obj = $this->db->get('voucher_detail');
+
+    if($voucher_detail_total_cost_obj->num_rows() > 0){
+      $voucher_detail_total_cost = $voucher_detail_total_cost_obj->row()->voucher_detail_total_cost;
+    }
+  
+    return $voucher_detail_total_cost;
+  }
+
+  function _opening_cash_balance($office_ids,$balance_type = "opening_cash_balance_bank"){
+    $this->db->select_sum($balance_type);
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
+    //$this->db->group_by('fk_office_id');
+    $opening_balance = $this->db->get('opening_cash_balance');
+
+    $balance = 0;
+
+    if($opening_balance->num_rows() > 0){
+      $balance = $opening_balance->row()->$balance_type;
+    }
+
+    return $balance;
+  }
+
+  function _compute_cash_at_hand($office_ids,$reporting_month){
+    //return 15000;
+    $opening_cash_balance = $this->_opening_cash_balance($office_ids,'opening_cash_balance_cash');
+    $cash_income_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month, 'income','bank_contra','cash');//$this->_cash_income_to_date($office_ids,$reporting_month,'bank_contra','cash');
+    $cash_expenses_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month, 'expense','cash_contra','cash');//$this->_cash_expense_to_date($office_ids,$reporting_month,'cash_contra','cash');
+    
+    return $opening_cash_balance + $cash_income_to_date - $cash_expenses_to_date;
   }
 
   private function financial_ratios(){
@@ -188,7 +250,7 @@ class Financial_report extends MY_Controller
         'reporting_month'=>$reporting_month,
         'fund_balance_report'=>$this->fund_balance_report($office_ids,$reporting_month),
         'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
-        'proof_of_cash'=>$this->proof_of_cash(),
+        'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month),
         'financial_ratios'=>$this->financial_ratios(),
         'bank_reconciliation'=>$this->bank_reconciliation(),
         'outstanding_cheques'=>$this->oustanding_cheques(),
