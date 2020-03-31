@@ -173,4 +173,48 @@ $(document).ready(function(){
 //     });
 // });
 
+$("#bank_statement_balance").on('click',function(){
+    $(this).val(null);
+});
+
+$("#bank_statement_balance").on('change',function(){
+    ///alert('Hello');
+    var bank_statement_balance = $(this).val();
+    var url = "<?=base_url();?>financial_report/update_bank_statement_balance";
+    var reporting_month = "<?=$reporting_month;?>";
+    var statement_date = $('#bank_statement_date').val();
+    var book_closing_balance = '<?=$bank_reconciliation['book_closing_balance'];?>';
+    var month_outstanding_cheques = '<?=$bank_reconciliation['month_outstanding_cheques'];?>';
+    var month_transit_deposit = '<?=$bank_reconciliation['month_transit_deposit'];?>';
+    var office_id = "<?=$office_ids[0];?>";
+
+    var reconciled_balance = parseFloat(bank_statement_balance) - parseFloat(month_outstanding_cheques) + parseFloat(month_transit_deposit);
+
+    $("#reconciled_bank_balance").html(reconciled_balance);
+
+    var oldClass = "label-danger";
+    var newClass = "label-success";
+    var oldLabel = "Not Balanced";
+    var newLabel = "Balanced";
+ 
+    if(parseFloat(reconciled_balance) == parseFloat(book_closing_balance)){
+        newClass = "label-success";newLabel = "Balanced";
+    }else{
+        newClass = "label-danger";newLabel = "Not Balanced";
+    }
+        
+    $("#reconciliation_flag").removeClass(oldClass).addClass(newClass);
+    $("#reconciliation_flag").html(newLabel);
+
+    $.ajax({
+        url:url,
+        type:"POST",
+        data:{'bank_statement_balance':bank_statement_balance,'reporting_month':reporting_month,'statement_date':statement_date,'office_id':office_id},
+        success:function(response){
+            alert(response);
+        }
+    });
+});
+
 </script>
+

@@ -131,25 +131,113 @@ class Financial_report extends MY_Controller
 
   }
 
-  private function bank_reconciliation(){
+  private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report){
+    $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report);
+    $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month);
+    $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month);//$this->_book_closing_balance($office_ids,$reporting_month);
+    $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','bank_contra','bank');
+    $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','cash_contra','bank');//$this->_deposit_in_transit($office_ids,$reporting_month);
+    $bank_reconciled_balance = $bank_statement_balance - $month_outstanding_cheques + $month_transit_deposit;
 
+    $is_book_reconciled = false;
+
+    if(round($bank_reconciled_balance,2) == round($book_closing_balance,2)){
+      $is_book_reconciled = true;
+    }
+
+    return [
+            'bank_statement_date'=>$bank_statement_date,
+            'bank_statement_balance'=>$bank_statement_balance,
+            'book_closing_balance'=>$book_closing_balance,
+            'month_outstanding_cheques'=>$month_outstanding_cheques,
+            'month_transit_deposit'=>$month_transit_deposit,
+            'bank_reconciled_balance'=>$bank_reconciled_balance,
+            'is_book_reconciled'=>$is_book_reconciled
+          ];
   }
+
+  function _bank_statement_date($office_ids,$reporting_month,$multiple_offices_report){
+    
+    $reconciliation_reporting_month = date('Y-m-t',strtotime($reporting_month));
+    
+    if(!$multiple_offices_report){
+      $this->db->select(array('reconciliation_reporting_month'));
+      $this->db->where(array('fk_office_id'=>$office_ids[0],
+      'reconciliation_reporting_month'=>date('Y-m-t',strtotime($reporting_month))));
+      $reconciliation_reporting_month_obj = $this->db->get('reconciliation');
+
+      if($reconciliation_reporting_month_obj->num_rows() > 0){
+        $reconciliation_reporting_month = $reconciliation_reporting_month_obj->row()->reconciliation_reporting_month;
+      }
+
+    }else{
+      $reconciliation_reporting_month = "This field cannot be populated for multiple offices report";
+    }
+
+    return $reconciliation_reporting_month;
+  }
+
+  function _bank_statement_balance($office_ids,$reporting_month){
+    //return 345000.34;
+    $reconciliation_statement_amount = 0;
+
+    $this->db->select_sum('reconciliation_statement_amount');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where(array('reconciliation_reporting_month'=>date('Y-m-t',strtotime($reporting_month))));
+    $reconciliation_statement_amount_obj = $this->db->get('reconciliation');
+
+    if($reconciliation_statement_amount_obj->row()->reconciliation_statement_amount != null){
+      $reconciliation_statement_amount = $reconciliation_statement_amount_obj->row()->reconciliation_statement_amount;
+    }
+
+    return $reconciliation_statement_amount;
+    
+  }
+
+  // function _book_closing_balance($office_ids,$reporting_month){
+  //   return 245980.12;
+  // }
+
 
   private function bank_statements(){
 
   }
 
-  private function oustanding_cheques(){
+  function _sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,$transaction_type,$contra_type,$voucher_type_account_code){
+    return array_sum(array_column($this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,$transaction_type,$contra_type,$voucher_type_account_code),'voucher_detail_total_cost'));
+  }
+  
 
+  private function _list_oustanding_cheques_and_deposits($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code){
+
+    $list_oustanding_cheques = [];
+    
+    //return 145890.00;
+    $cleared_condition = " `voucher_cleared` = 0 OR (`voucher_cleared` = 1  AND `voucher_cleared_month` > '".date('Y-m-t',strtotime($reporting_month))."' )";
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->select(array('voucher_id','voucher_cleared','office_code','office_name','voucher_date'));
+    $this->db->group_by('office_id','voucher_id');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+    $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
+    $this->db->where($cleared_condition);
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('office','office.office_id=voucher.fk_office_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+    $list_oustanding_cheques = $this->db->get('voucher_detail')->result_array();
+
+    return $list_oustanding_cheques;
   }
 
   private function cleared_oustanding_cheques(){
     
   }
 
-  private function deposit_in_transit(){
-
-  }
+  // private function _deposit_in_transit($office_ids,$reporting_month){
+  //   return 12000;
+  // }
 
   private function cleared_deposit_in_transit(){
 
@@ -252,10 +340,10 @@ class Financial_report extends MY_Controller
         'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
         'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month),
         'financial_ratios'=>$this->financial_ratios(),
-        'bank_reconciliation'=>$this->bank_reconciliation(),
-        'outstanding_cheques'=>$this->oustanding_cheques(),
+        'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
+        'outstanding_cheques'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
         'clear_outstanding_cheques'=>$this->cleared_oustanding_cheques(),
-        'deposit_in_transit'=>$this->deposit_in_transit(),
+        'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
         'cleared_deposit_in_transit'=>$this->cleared_deposit_in_transit(),
         'expense_report'=>$this->expense_report()
       ];
@@ -468,6 +556,43 @@ class Financial_report extends MY_Controller
     }
 
     return $ordered_array;
+  }
+
+  function update_bank_statement_balance(){
+    $post = $this->input->post();
+
+    $insert_reconciliation_data['reconciliation_name'] = "Reconciliation for  ".$post['reporting_month'];
+    $insert_reconciliation_data['fk_office_id'] = $post['office_id'];
+    $insert_reconciliation_data['reconciliation_reporting_month'] = $post['reporting_month'];
+    $insert_reconciliation_data['financial_report_is_submitted'] = 0;
+    $insert_reconciliation_data['reconciliation_statement_amount'] = $post['bank_statement_balance'];
+    $insert_reconciliation_data['reconciliation_statement_date'] = $post['statement_date'];
+    $insert_reconciliation_data['reconciliation_suspense_amount'] = 0;
+
+    $insert_reconciliation_data_to_insert = $this->grants_model->merge_with_history_fields('reconciliation',$insert_reconciliation_data,false);
+
+    $reconciliation_obj = $this->db->get_where('reconciliation',
+      array('fk_office_id'=>$post['office_id'],'reconciliation_reporting_month'=>$post['reporting_month']));
+
+    $this->db->trans_start();
+
+      if($reconciliation_obj->num_rows() == 0){
+        $this->db->insert('reconciliation',$insert_reconciliation_data_to_insert);
+      }else{
+        $this->db->where(array('reconciliation_id'=>$reconciliation_obj->row()->reconciliation_id));
+        $update_reconciliation_data['reconciliation_statement_amount'] = $post['bank_statement_balance'];
+        $update_reconciliation_data['reconciliation_statement_date'] = $post['statement_date'];
+        $this->db->update('reconciliation',$update_reconciliation_data);
+      }
+     
+    $this->db->trans_complete();
+    
+    if($this->db->trans_status() == false){
+      echo "Reconcialition update failed";
+    }else{
+      echo "Reconcialition updated";
+    }
+
   }
 
   static function get_menu_list(){}

@@ -19,7 +19,6 @@
 	<meta name="author" content="" />
 
 
-
 	<?php include 'includes_top.php';?>
 
 </head>
