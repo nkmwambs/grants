@@ -1,5 +1,5 @@
 
-    <table class="table table-striped" id='tbl_outstanding_cheques'>
+    <table class="table table-striped tbl_cleared_outstanding_cheque_connector" id='tbl_outstanding_cheque'>
            <thead>
                 <tr>
                     <th><?=get_phrase('action');?></th>
@@ -25,7 +25,7 @@
                             }
                         ?>
                         <td>
-                            <div id="<?=$outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$oustanding_state_color;?> <?=$oustanding_state_clear_class;?> outstanding_cheque state_<?=$outstanding_cheque['voucher_cleared'];?>'>
+                            <div id="<?=$outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$oustanding_state_color;?> <?=$oustanding_state_clear_class;?> outstanding_cheque active_effect state_<?=$outstanding_cheque['voucher_cleared'];?>'>
                                 <?=$oustanding_state_label;?>
                             </div>
                         </td>

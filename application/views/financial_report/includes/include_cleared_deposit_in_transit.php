@@ -1,4 +1,4 @@
-<table class="table table-striped" id='tbl_cleared_transit_deposit'>
+<table class="table table-striped tbl_transit_deposit_connector" id='tbl_cleared_transit_deposit'>
            <thead>
                 <tr>
                     <th><?=get_phrase('action');?></th>
@@ -23,7 +23,7 @@
                             }
                         ?>
                         <td>
-                            <div id="<?=$cleared_deposit_in_transit_row['voucher_id'];?>" class='btn btn-<?=$cleared_deposit_in_transit_state_color;?> <?=$cleared_deposit_in_transit_state_clear_class;?> deposit_in_transit state_<?=$cleared_deposit_in_transit_row['voucher_cleared'];?>'>
+                            <div id="<?=$cleared_deposit_in_transit_row['voucher_id'];?>" class='btn btn-<?=$cleared_deposit_in_transit_state_color;?> <?=$cleared_deposit_in_transit_state_clear_class;?> deposit_in_transit cleared_effect state_<?=$cleared_deposit_in_transit_row['voucher_cleared'];?>'>
                                 <?=$cleared_deposit_in_transit_state_label;?>
                             </div>
                         </td>

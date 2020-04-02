@@ -1,4 +1,4 @@
-<table class="table table-striped" id="tbl_cleared_outstanding_cheques">
+<table class="table table-striped tbl_outstanding_cheque_connector" id="tbl_cleared_outstanding_cheque">
            <thead>
                 <tr>
                     <th><?=get_phrase('action');?></th>
@@ -24,7 +24,7 @@
                             }
                         ?>
                         <td>
-                            <div id="<?=$clear_outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$clear_outstanding_cheque_state_color;?> <?=$clear_outstanding_cheque_state_clear_class;?> cleared_outstanding_cheque state_<?=$clear_outstanding_cheque['voucher_cleared'];?>'>
+                            <div id="<?=$clear_outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$clear_outstanding_cheque_state_color;?> <?=$clear_outstanding_cheque_state_clear_class;?> cleared_outstanding_cheque cleared_effect state_<?=$clear_outstanding_cheque['voucher_cleared'];?>'>
                                 <?=$clear_outstanding_cheque_state_label;?>
                             </div>
                         </td>

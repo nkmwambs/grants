@@ -216,51 +216,50 @@ $("#bank_statement_balance").on('change',function(){
     });
 });
 
-$(".to_clear").on('click',function(){
+$(document).on('click',".to_clear",function(){
     var btn = $(this);
     var id = $(this).attr('id');
     var url = "<?=base_url();?>financial_report/clear_transactions";
     var voucher_state = btn.hasClass('state_0')?0:1;//$(this).attr('data-state');
-    var data = {'voucher_id':id,'is_outstanding_cheque':$(this).hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>'};
+    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>'};
+    var from_class = "active_effect";
+    var to_class = "cleared_effect";
+    var current_table = btn.closest('table');
+    var connector_table =  current_table.attr('id')+"_connector";
+    var from_color = 'danger';
+    var to_color = 'success';
+    var to_label = "<?=get_phrase('unclear');?>";
 
+    if(btn.hasClass('cleared_effect')){
+        from_class = 'cleared_effect';
+        to_class = "active_effect";
+        from_color = 'success';
+        to_color = 'danger';
+        to_label = "<?=get_phrase('clear');?>";
+    }
+    
     $.ajax({
         url:url,
         data:data,
         type:"POST",
         success:function(response){
-            //alert(voucher_state);
 
-            if(response == 1){
-                if(btn.hasClass('state_0')){
-                    btn.removeClass('btn-danger').removeClass('state_0').addClass('state_1').addClass('btn-success');
-                    btn.html('<?=get_phrase('unclear');?>');
-
-                }else if(btn.hasClass('state_1')){
-                    btn.removeClass('btn-success').removeClass('state_1').addClass('state_0').addClass('btn-danger');
-                    btn.html('<?=get_phrase('clear');?>');
-
-                }
+            if(response){
 
                 var cloned_tr = btn.closest('tr').clone();
-                    btn.closest('tr').remove();
-
-                    if(btn.hasClass('outstanding_cheque')){
-                        $("#tbl_cleared_outstanding_cheques tbody").append(cloned_tr);
-                    }else{
-                        $("#tbl_outstanding_cheques tbody").append(cloned_tr);
-                    }
-
-                    if(btn.hasClass('deposit_in_transit')){
-                        $("#tbl_cleared_transit_deposit tbody").append(cloned_tr);
-                    }else{
-                        $("#tbl_transit_deposit tbody").append(cloned_tr);
-                    }
+            
+                var action_div = cloned_tr.find(':first-child').find('div');
+            
+                btn.closest('tr').remove();
+                        
+                action_div.removeClass(from_class).removeClass('btn-'+from_color).addClass(to_class).addClass('btn-'+to_color).html(to_label);
+                        
+                $("."+connector_table+" tbody").append(cloned_tr);
 
             }else{
                 alert('<?=get_phrase('update_failed');?>');
             }
 
-            
         }
     });
 });
