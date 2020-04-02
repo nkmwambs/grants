@@ -2,7 +2,7 @@
 
 extract($result);
 
-//print_r($outstanding_cheques);
+//print_r($expense_report);
 
 ?>
 <style>

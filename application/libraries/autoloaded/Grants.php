@@ -2027,4 +2027,12 @@ function feature_model_list_table_visible_columns() {
     //   return (object)['office_id'=>9,'office_name'=>'GRC Shingila'];
     // }
 
+    function fy_start_date($reporting_month){
+      return '2020-01-01';
+    }
+
+    function get_fy($reporting_month){
+      return '2020';
+    }
+
 }

@@ -22,7 +22,7 @@ class Financial_report extends MY_Controller
 
   function index(){}
 
-  private function income_accounts($office_ids){
+  private function _income_accounts($office_ids){
 
     // Should be moved to Income accounts library
     return $this->financial_report_library->income_accounts($office_ids);
@@ -40,9 +40,9 @@ class Financial_report extends MY_Controller
     return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month);
   }
 
-  private function fund_balance_report($office_ids, $start_date_of_month){
+  private function _fund_balance_report($office_ids, $start_date_of_month){
 
-    $income_accounts =  $this->income_accounts($office_ids);
+    $income_accounts =  $this->_income_accounts($office_ids);
     $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month);
     $month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month);
     $month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month);
@@ -266,8 +266,179 @@ class Financial_report extends MY_Controller
 
   }
 
-  private function expense_report(){
+  private function _expense_report($office_ids,$reporting_month){
+    // $income_accounts =  $this->income_accounts($office_ids);
+    // $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month);
+    // $month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month);
+    // $month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month);
     
+    // $report = array();
+
+    // foreach($income_accounts as $account){
+    //    $report[] = [
+    //     'account_name'=>$account['income_account_name'],
+    //     'month_opening_balance'=>isset($month_opening_balance[$account['income_account_id']])?$month_opening_balance[$account['income_account_id']]:0,
+    //     'month_income'=>isset($month_income[$account['income_account_id']])?$month_income[$account['income_account_id']]:0,
+    //     'month_expense'=>isset($month_expense[$account['income_account_id']])?$month_expense[$account['income_account_id']]:0,
+    //    ]; 
+    // }  
+    
+    // return $report;
+
+    $expense_account_grid = [];
+
+    $income_grouped_expense_accounts = $this->_income_grouped_expense_accounts($office_ids);
+    $month_expense = $this->_month_expense_by_expense_account($office_ids,$reporting_month);
+    $month_expense_to_date = $this->_expense_to_date_by_expense_account($office_ids,$reporting_month);
+    $budget_to_date = $this->_bugdet_to_date_by_expense_account($office_ids,$reporting_month);
+    $budget_variance = $this->_budget_variance_by_expense_account($office_ids,$reporting_month);
+    $budget_variance_percent = $this->_budget_variance_percent_by_expense_account($office_ids,$reporting_month);
+    $expense_account_comment = $this->_expense_account_comment($office_ids,$reporting_month);
+    
+    foreach($income_grouped_expense_accounts as $income_account_id => $income_account){
+      foreach($income_account['expense_accounts'] as $expense_account){
+        $income_account_id =  $income_account['income_account']['income_account_id'];
+        $expense_account_id = $expense_account['expense_account_id'];
+
+        $expense_account_grid[$income_account_id]['income_account'] = $income_account['income_account'];
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['expense_account'] = $expense_account;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['month_expense'] = isset($month_expense[$income_account_id][$expense_account_id])?$month_expense[$income_account_id][$expense_account_id]:0;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['month_expense_to_date'] = isset($month_expense_to_date[$income_account_id][$expense_account_id])?$month_expense_to_date[$income_account_id][$expense_account_id]:0;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_to_date'] = isset($budget_to_date[$income_account_id][$expense_account_id])?$budget_to_date[$income_account_id][$expense_account_id]:0;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance'] = $budget_variance;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance_percent'] = $budget_variance_percent;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['expense_account_comment'] = $expense_account_comment;
+      }
+    }
+    
+    return $expense_account_grid;
+  }
+
+  function _income_grouped_expense_accounts($office_ids){
+    $income_accounts = $this->_income_accounts($office_ids);    
+
+    $expense_accounts = [];
+
+    foreach($income_accounts as $income_account){
+
+      $expense_accounts[$income_account['income_account_id']]['income_account'] = $income_account;
+
+      $this->db->select(array('expense_account_id','expense_account_code','expense_account_name'));
+      $expense_accounts[$income_account['income_account_id']]['expense_accounts'] = $this->db->get_where('expense_account',
+      array('fk_income_account_id'=>$income_account['income_account_id']))->result_array();
+      
+    }
+
+    return $expense_accounts;
+  }
+
+  function _month_expense_by_expense_account($office_ids,$reporting_month){
+    
+    $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
+    $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->select(array('income_account_id','expense_account_id'));
+    $this->db->group_by('expense_account_id');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$start_date_of_reporting_month,
+    'voucher_date<='=>$end_date_of_reporting_month));
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
+    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $result = $this->db->get('voucher_detail');
+
+    $order_array = [];
+
+    if($result->num_rows() > 0){
+      $rows = $result->result_array();
+
+      foreach($rows as $record){
+        $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['voucher_detail_total_cost'];
+      }
+    }
+
+    return $order_array;
+  }
+
+  function _expense_to_date_by_expense_account($office_ids,$reporting_month){
+    
+    $fy_start_date = $this->grants->fy_start_date($reporting_month);
+    $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->select(array('income_account_id','expense_account_id'));
+    $this->db->group_by('expense_account_id');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$fy_start_date,
+    'voucher_date<='=>$end_date_of_reporting_month));
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
+    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $result = $this->db->get('voucher_detail');
+
+    $order_array = [];
+
+    if($result->num_rows() > 0){
+      $rows = $result->result_array();
+
+      foreach($rows as $record){
+        $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['voucher_detail_total_cost'];
+      }
+    }
+
+    return $order_array;
+  }
+
+  function _bugdet_to_date_by_expense_account($office_ids,$reporting_month){
+    //return 400;
+
+    $financial_year = $this->grants->get_fy($reporting_month);
+    $month_number = date('m',strtotime($reporting_month));
+    $month_order = $this->db->get_where('month',array('month_number'=>$month_number))->row()->month_order;
+
+    $this->db->select_sum('budget_item_detail_amount');
+    $this->db->select(array('income_account_id','expense_account_id'));
+    $this->db->group_by('expense_account_id');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where(array('month_order<='=>$month_order));
+    $this->db->where(array('budget_year'=>$financial_year));
+
+    $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
+    $this->db->join('budget','budget.budget_id=budget_item.fk_budget_id');
+    $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
+    $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+
+    $result = $this->db->get('budget_item_detail');
+
+    $order_array = [];
+
+    if($result->num_rows() > 0){
+      $rows = $result->result_array();
+
+      foreach($rows as $record){
+        $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['budget_item_detail_amount'];
+      }
+    }
+
+    return $order_array;
+  }
+
+  function _budget_variance_by_expense_account($office_ids,$reporting_month){
+    return 150;
+  }
+
+  function _budget_variance_percent_by_expense_account($office_ids,$reporting_month){
+    return 0.65;
+  }
+
+  function _expense_account_comment($office_ids,$reporting_month){
+    return "Good work";
   }
 
 
@@ -359,7 +530,7 @@ class Financial_report extends MY_Controller
         'office_names'=>$office_names,
         'office_ids'=>$office_ids,
         'reporting_month'=>$reporting_month,
-        'fund_balance_report'=>$this->fund_balance_report($office_ids,$reporting_month),
+        'fund_balance_report'=>$this->_fund_balance_report($office_ids,$reporting_month),
         'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
         'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month),
         'financial_ratios'=>$this->financial_ratios(),
@@ -368,7 +539,7 @@ class Financial_report extends MY_Controller
         'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
         'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
         'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
-        'expense_report'=>$this->expense_report()
+        'expense_report'=>$this->_expense_report($office_ids,$reporting_month)
       ];
     }else{
       return parent::result($id = '');
