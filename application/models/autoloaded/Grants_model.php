@@ -389,6 +389,7 @@ function generate_item_track_number_and_name($approveable_item){
 
   //   return ['ids'=>count($ids_array),'vals'=>count($value_array)];
   // }
+  
 
   function insert_status_for_approveable_item($approve_item_name){
 
@@ -1066,6 +1067,59 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
 function center_start_date($center_id){
    return $this->db->get_where('office',array('office_id'=>$center_id))->row()->office_start_date;
+}
+
+function create_missing_page_access_permission(){
+  // Get all menu items
+  $menus = $this->db->get('menu');
+  $page_access_permissions = $this->db->get_where('permission',array('permission_type'=>1));
+  $permission_labels = $this->db->get('permission_label');
+
+  $count_of_menus = $menus->num_rows();
+  $count_of_page_access_permissions = $page_access_permissions->num_rows();
+  $count_of_permission_labels = $permission_labels->num_rows();
+
+  //$this->grants_model->mandatory_fields('permission');
+
+  $this->db->trans_start();
+  
+  // Only create a permission if count of menus are more that the permissions available
+  if(($count_of_page_access_permissions * $count_of_permission_labels) < ($count_of_menus * $count_of_permission_labels) ){
+    foreach($menus->result_array() as $menu_item){
+      
+      // Only create a missing permission for a given menu item and permission label
+      foreach($permission_labels->result_array() as $permission_label){
+        if($this->db->get_where('permission',
+        array('fk_permission_label_id'=>$permission_label['permission_label_id'],
+        'permission_type'=>1,'fk_menu_id'=>$menu_item['menu_id']))->num_rows() == 0){
+
+            $permission_data['permission_name'] = ucfirst($permission_label['permission_label_name']).' '.str_replace('_',' ',$menu_item['menu_name']);
+            $permission_data['permission_description'] = ucfirst($permission_label['permission_label_name']).' '.str_replace('_',' ',$menu_item['menu_name']);
+            $permission_data['permission_is_active'] = 1;
+            $permission_data['fk_permission_label_id'] = $permission_label['permission_label_id'];
+            $permission_data['permission_type'] = 1; // Page Access
+            $permission_data['permission_field'] = 0; // Always 0 for Page Access
+            $permission_data['fk_menu_id'] = str_replace('_',' ',$menu_item['menu_id']);
+
+            $permission_data_to_insert = $this->merge_with_history_fields('permission',$permission_data,false);
+
+
+            $this->db->insert('permission',$permission_data_to_insert);
+        
+          }
+      }
+    }
+  }
+
+  $this->db->trans_complete();
+
+  if($this->db->trans_status() == false){
+    $message = "Error occurred when mass creating system page access permissions";
+    show_error($message,500,'An Error As Encountered');
+  }else{
+    
+  }
+
 }
 
 

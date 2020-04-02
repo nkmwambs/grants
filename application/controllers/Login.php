@@ -48,6 +48,8 @@ public $controller;
 
             // Check if system set up has been completed before logging in
             $this->system_setup_check();
+
+            $this->create_mandatory_role_permissions();
             
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
@@ -55,6 +57,36 @@ public $controller;
 
         $this->load->view('general/login');
 
+    }
+
+    function create_mandatory_role_permissions(){
+        
+        $default_page = $this->config->item('default_launch_page');
+        
+        $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
+        $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+        $role_permission_obj = $this->db->get_where('role_permission',
+        array('menu.menu_name'=>$default_page,
+        'role_permission.fk_role_id'=>$this->session->role_id));
+
+        $role_name = $this->db->get_where('role',
+        array('role_id'=>$this->session->role_id))->row()->role_name;
+        
+        if($role_permission_obj->num_rows() == 0){
+            
+            $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+            $permission_obj = $this->db->get_where('permission',
+            array('menu_name'=>$default_page));
+
+            $role_permission_data['role_permission_name'] = "Read permission for ".$default_page." by ".$role_name;
+            $role_permission_data['role_permission_is_active'] = 1;
+            $role_permission_data['fk_role_id'] = $this->session->role_id;
+            $role_permission_data['fk_permission_id'] = $permission_obj->row()->permission_id;
+            
+            $role_permission_data_to_insert = $this->grants_model->merge_with_history_fields('role_permission',$role_permission_data,false);
+
+            $this->db->insert('role_permission',$role_permission_data_to_insert);
+        }
     }
 
     function system_setup_check(){
@@ -68,6 +100,7 @@ public $controller;
               if(!in_array($db_table,['approval','status','approve_item','ci_sessions']) && $db_table != ""){
                 $this->grants_model->mandatory_fields($db_table);
                 $this->grants_model->insert_status_if_missing($db_table);
+                $this->grants_model->create_missing_page_access_permission();
               }
             
           }

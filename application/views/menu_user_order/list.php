@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <?php 
-//print_r($this->session->user_priority_menu);
+//print_r($result);
 
 extract($result);
 
@@ -62,7 +62,7 @@ extract($result);
   <h3><span id = "sortable-9"></span></h3>
       <ul id = "sortable-main-menu"><h4 style='text-align:center;'>Top Menu</h4>
         <?php foreach($main_menu as $menu_item){?>
-          <li id='<?=$menu_item['menu_id'];?>' class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><?=str_replace('_',' ',$menu_item['menu_name']);?></li>
+          <li id='<?=$menu_item['menu_id'];?>' class="ui-state-default <?=strtolower($menu_item['menu_name']);?>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><?=str_replace('_',' ',$menu_item['menu_name']);?></li>
         <?php }?>
         
       </ul>
@@ -71,7 +71,7 @@ extract($result);
   <div class='col-xs-6'>
       <ul id = "sortable-sub-menu"><h4 style='text-align:center;'>Sub Menu</h4>
         <?php foreach($sub_menu as $menu_item){?>
-          <li id='<?=$menu_item['menu_id'];?>' class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><?=str_replace('_',' ',$menu_item['menu_name']);?></li>
+          <li id='<?=$menu_item['menu_id'];?>' class="ui-state-default <?=strtolower($menu_item['menu_name']);?>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><?=str_replace('_',' ',$menu_item['menu_name']);?></li>
         <?php }?>
       </ul>
   </div>
@@ -84,6 +84,8 @@ extract($result);
         connectWith: "#sortable-main-menu, #sortable-sub-menu",
         placeholder: "highlight",
         dropOnEmpty: false,
+        cancel: ".<?=strtolower($this->config->item('default_launch_page'));?>",
+        //items: "li:not(.dashboard)",
         update: function(event, ui) {
                   var menu_name = $(this).sortable('widget').attr('id');
                   var menuorder = $(this).sortable('toArray').toString();
@@ -107,5 +109,7 @@ extract($result);
                   
                }
       });
+      
   });
+  
 </script>

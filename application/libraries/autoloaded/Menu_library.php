@@ -108,25 +108,27 @@ class Menu_library {
         }
     }
 
-    function getMenuItems(){
+    /**
+     * getMenuItems
+     * 
+     * Read all controller classes that have the static method get_menu_list and add it as member of an array
+     * 
+     * @return Array
+     */
+    function getMenuItems():Array{
 
       $controllers = $this->getControllers();
 
-      $top_menu_items = array();
+      $menu_items = array();
 
       foreach($controllers as $controller => $methods){
-        //$interfaces = class_implements($controller);
 
-        //if (isset($interfaces['CrudModelInterface']) && in_array('get_menu_list',$methods) ) {
         if (in_array('get_menu_list',$methods) ) {
-            $top_menu_items[$controller] = $controller::get_menu_list();
+            $menu_items[$controller] = $controller::get_menu_list();
         }
       }
-        // Forcefully add Menu controller to menu table
-        //$top_menu_items['Menu'] = array();
         
-        return $top_menu_items;
-        //return array('Approval'=>[],'Bank'=>[],'Budget'=>[],'Center'=>[],'Workplan'=>[],'Voucher'=>[]);
+        return $menu_items;
     }
 
     function set_menu_sessions(){
@@ -136,8 +138,6 @@ class Menu_library {
       $sizeOfMenuItemsByDatabase = $this->CI->menu_model->get_count_of_menu_items();
 
       if($sizeOfMenuItemsByController !== $sizeOfMenuItemsByDatabase){
-        // $this->CI->db->where(array('menu_derivative_controller'=>'Role'));
-        // $this->CI->db->delete('menu',$data);
           $this->CI->session->unset_userdata('user_menu');
           $this->CI->session->unset_userdata('user_priority_menu');
           $this->CI->session->unset_userdata('user_more_menu');

@@ -37,12 +37,20 @@ class Menu_user_order extends MY_Controller
 
   function _get_user_menu_items($priority){
 
+    $query_condition = " `menu_user_order_priority_item`= ".$priority." AND `fk_user_id` = ".$this->session->user_id;
     $this->db->select(array('menu_id','menu_name'));
     $this->db->join('menu','menu.menu_id=menu_user_order.fk_menu_id');
-    $this->db->order_by('menu_user_order_level ASC');
-    $menu_user_order = $this->db->get_where('menu_user_order',
-      array('menu_user_order_priority_item'=>$priority,'fk_user_id'=>$this->session->user_id))->result_array();
+   
+    if(!$this->session->system_admin){
+      $query_condition .= " AND `fk_role_id` = ".$this->session->role_id;
+      $this->db->join('permission','permission.fk_menu_id=menu.menu_id');
+      $this->db->join('role_permission','role_permission.fk_permission_id=permission.permission_id');
+    }
     
+    $this->db->order_by('menu_user_order_level ASC');
+    $this->db->where($query_condition);
+    $menu_user_order = $this->db->get('menu_user_order')->result_array();
+
     return $menu_user_order;
   }
 
