@@ -1,4 +1,4 @@
-<table class="table table-striped">
+<table class="table table-striped" id="tbl_cleared_outstanding_cheques">
            <thead>
                 <tr>
                     <th><?=get_phrase('action');?></th>
@@ -9,26 +9,36 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><div class="btn btn-danger"><?=get_phrase('unclear');?></div></td>
-                    <td>25th November 2019</td>
-                    <td>Salaries</td>
-                    <td>2311</td>
-                    <td>345,000.00</td>
-                </tr>
-                <tr>
-                    <td><div class="btn btn-danger"><?=get_phrase('unclear');?></div></td>
-                    <td>20th November 2019</td>
-                    <td>Stationary</td>
-                    <td>2310</td>
-                    <td>15,000.00</td>
-                </tr>
-    
+               <?php foreach($clear_outstanding_cheques as $clear_outstanding_cheque){?>
+                    <tr>
+                        <?php 
+                            $clear_outstanding_cheque_state_color = "danger";
+                            //$oustanding_state_disabled = "";
+                            $clear_outstanding_cheque_state_clear_class = 'to_clear';
+                            $clear_outstanding_cheque_state_label = get_phrase('clear');
+                            if($clear_outstanding_cheque['voucher_cleared'] == 1){
+                                $clear_outstanding_cheque_state_color = "success";
+                                //$oustanding_state_disabled = "disabled";
+                                //$oustanding_state_clear_class = '';
+                                $clear_outstanding_cheque_state_label = get_phrase('unclear');
+                            }
+                        ?>
+                        <td>
+                            <div id="<?=$clear_outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$clear_outstanding_cheque_state_color;?> <?=$clear_outstanding_cheque_state_clear_class;?> cleared_outstanding_cheque state_<?=$clear_outstanding_cheque['voucher_cleared'];?>'>
+                                <?=$clear_outstanding_cheque_state_label;?>
+                            </div>
+                        </td>
+                        <td><?=$clear_outstanding_cheque['voucher_date'];?></td>
+                        <td><?=$clear_outstanding_cheque['voucher_description'];?></td>
+                        <td><?=$clear_outstanding_cheque['voucher_cheque_number'];?></td>
+                        <td><?=number_format($clear_outstanding_cheque['voucher_detail_total_cost'],2);?></td>
+                    </tr>
+               <?php }?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4"><?=get_phrase('total');?></td>
-                    <td>165,400.00</td>
+                    <td colspan='4'><?=get_phrase('total');?></td>
+                    <td><?=number_format(array_sum(array_column($clear_outstanding_cheques,'voucher_detail_total_cost')),2);?></td>
                 </tr>
             </tfoot>
         </table>

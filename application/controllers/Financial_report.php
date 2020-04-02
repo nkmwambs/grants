@@ -210,13 +210,13 @@ class Financial_report extends MY_Controller
 
   private function _list_oustanding_cheques_and_deposits($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code){
 
-    $list_oustanding_cheques = [];
+    $list_oustanding_cheques_and_deposit = [];
     
     //return 145890.00;
     $cleared_condition = " `voucher_cleared` = 0 OR (`voucher_cleared` = 1  AND `voucher_cleared_month` > '".date('Y-m-t',strtotime($reporting_month))."' )";
     $this->db->select_sum('voucher_detail_total_cost');
-    $this->db->select(array('voucher_id','voucher_cleared','office_code','office_name','voucher_date'));
-    $this->db->group_by('office_id','voucher_id');
+    $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number','voucher_description','voucher_cleared','office_code','office_name','voucher_date','voucher_cleared'));
+    $this->db->group_by('voucher_id');
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
     $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
@@ -226,9 +226,32 @@ class Financial_report extends MY_Controller
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-    $list_oustanding_cheques = $this->db->get('voucher_detail')->result_array();
+    $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
 
-    return $list_oustanding_cheques;
+    return $list_oustanding_cheques_and_deposit;
+  }
+
+  private function _list_cleared_effects($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code){
+
+    $list_cleared_effects = [];
+    
+    //return 145890.00;
+    $cleared_condition = " `voucher_cleared` = 1 AND `voucher_cleared_month` = '".date('Y-m-t',strtotime($reporting_month))."' ";
+    $this->db->select_sum('voucher_detail_total_cost');
+    $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number','voucher_description','voucher_cleared','office_code','office_name','voucher_date','voucher_cleared'));
+    $this->db->group_by('voucher_id');
+    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+    $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
+    $this->db->where($cleared_condition);
+    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    $this->db->join('office','office.office_id=voucher.fk_office_id');
+    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+    $list_cleared_effects = $this->db->get('voucher_detail')->result_array();
+
+    return $list_cleared_effects;
   }
 
   private function cleared_oustanding_cheques(){
@@ -342,9 +365,9 @@ class Financial_report extends MY_Controller
         'financial_ratios'=>$this->financial_ratios(),
         'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
         'outstanding_cheques'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
-        'clear_outstanding_cheques'=>$this->cleared_oustanding_cheques(),
+        'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
         'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
-        'cleared_deposit_in_transit'=>$this->cleared_deposit_in_transit(),
+        'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
         'expense_report'=>$this->expense_report()
       ];
     }else{
@@ -593,6 +616,33 @@ class Financial_report extends MY_Controller
       echo "Reconcialition updated";
     }
 
+  }
+
+  function clear_transactions(){
+    $post = $this->input->post();
+
+    $update_data['voucher_cleared'] = 1;
+    $update_data['voucher_cleared_month'] = date('Y-m-t',strtotime($post['reporting_month']));//date('Y-m-t');
+
+    if($post['voucher_state'] == 1){
+      $update_data['voucher_cleared'] = 0;
+      $update_data['voucher_cleared_month'] = null;
+    }
+    
+
+    $this->db->trans_start();
+
+    $this->db->where(array('voucher_id'=>$post['voucher_id']));
+
+    $this->db->update('voucher',$update_data);
+
+    $this->db->trans_complete();
+
+    if($this->db->trans_status() == false){
+      echo false;
+    }else{
+      echo true;
+    }
   }
 
   static function get_menu_list(){}

@@ -2,7 +2,7 @@
 
 extract($result);
 
-//print_r($projects_balance_report);
+//print_r($outstanding_cheques);
 
 ?>
 <style>
@@ -212,6 +212,55 @@ $("#bank_statement_balance").on('change',function(){
         data:{'bank_statement_balance':bank_statement_balance,'reporting_month':reporting_month,'statement_date':statement_date,'office_id':office_id},
         success:function(response){
             alert(response);
+        }
+    });
+});
+
+$(".to_clear").on('click',function(){
+    var btn = $(this);
+    var id = $(this).attr('id');
+    var url = "<?=base_url();?>financial_report/clear_transactions";
+    var voucher_state = btn.hasClass('state_0')?0:1;//$(this).attr('data-state');
+    var data = {'voucher_id':id,'is_outstanding_cheque':$(this).hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>'};
+
+    $.ajax({
+        url:url,
+        data:data,
+        type:"POST",
+        success:function(response){
+            //alert(voucher_state);
+
+            if(response == 1){
+                if(btn.hasClass('state_0')){
+                    btn.removeClass('btn-danger').removeClass('state_0').addClass('state_1').addClass('btn-success');
+                    btn.html('<?=get_phrase('unclear');?>');
+
+                }else if(btn.hasClass('state_1')){
+                    btn.removeClass('btn-success').removeClass('state_1').addClass('state_0').addClass('btn-danger');
+                    btn.html('<?=get_phrase('clear');?>');
+
+                }
+
+                var cloned_tr = btn.closest('tr').clone();
+                    btn.closest('tr').remove();
+
+                    if(btn.hasClass('outstanding_cheque')){
+                        $("#tbl_cleared_outstanding_cheques tbody").append(cloned_tr);
+                    }else{
+                        $("#tbl_outstanding_cheques tbody").append(cloned_tr);
+                    }
+
+                    if(btn.hasClass('deposit_in_transit')){
+                        $("#tbl_cleared_transit_deposit tbody").append(cloned_tr);
+                    }else{
+                        $("#tbl_transit_deposit tbody").append(cloned_tr);
+                    }
+
+            }else{
+                alert('<?=get_phrase('update_failed');?>');
+            }
+
+            
         }
     });
 });

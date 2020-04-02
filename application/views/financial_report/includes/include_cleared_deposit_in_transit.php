@@ -1,4 +1,4 @@
-<table class="table table-striped">
+<table class="table table-striped" id='tbl_cleared_transit_deposit'>
            <thead>
                 <tr>
                     <th><?=get_phrase('action');?></th>
@@ -8,24 +8,35 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><div class="btn btn-danger"><?=get_phrase('unclear');?></div></td>
-                    <td>25th November 2019</td>
-                    <td>Salaries</td>
-                    <td>345,000.00</td>
-                </tr>
-                <tr>
-                    <td><div class="btn btn-danger"><?=get_phrase('unclear');?></div></td>
-                    <td>20th November 2019</td>
-                    <td>Stationary</td>
-                    <td>15,000.00</td>
-                </tr>
-    
+               <?php foreach($cleared_deposit_in_transit as $cleared_deposit_in_transit_row){?>
+                    <tr>
+                        <?php 
+                            $cleared_deposit_in_transit_state_color = "danger";
+                            //$oustanding_state_disabled = "";
+                            $cleared_deposit_in_transit_state_clear_class = 'to_clear';
+                            $cleared_deposit_in_transit_state_label = get_phrase('clear');
+                            if($cleared_deposit_in_transit_row['voucher_cleared'] == 1){
+                                $cleared_deposit_in_transit_state_color = "success";
+                                //$oustanding_state_disabled = "disabled";
+                                //$oustanding_state_clear_class = '';
+                                $cleared_deposit_in_transit_state_label = get_phrase('unclear');
+                            }
+                        ?>
+                        <td>
+                            <div id="<?=$cleared_deposit_in_transit_row['voucher_id'];?>" class='btn btn-<?=$cleared_deposit_in_transit_state_color;?> <?=$cleared_deposit_in_transit_state_clear_class;?> deposit_in_transit state_<?=$cleared_deposit_in_transit_row['voucher_cleared'];?>'>
+                                <?=$cleared_deposit_in_transit_state_label;?>
+                            </div>
+                        </td>
+                        <td><?=$cleared_deposit_in_transit_row['voucher_date'];?></td>
+                        <td><?=$cleared_deposit_in_transit_row['voucher_description'];?></td>
+                        <td><?=number_format($cleared_deposit_in_transit_row['voucher_detail_total_cost'],2);?></td>
+                    </tr>
+               <?php }?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3"><?=get_phrase('total');?></td>
-                    <td>165,400.00</td>
+                    <td colspan='3'><?=get_phrase('total');?></td>
+                    <td><?=number_format(array_sum(array_column($cleared_deposit_in_transit,'voucher_detail_total_cost')),2);?></td>
                 </tr>
             </tfoot>
         </table>
