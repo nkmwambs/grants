@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
   extract($result);
-  //print_r($detail_false_keys);
+  //print_r($this->session->context_offices);
   //echo count((array)$this->voucher_model->get_office_last_voucher(9));
   //print_r($this->voucher_model->get_approveable_item_last_status(3));
 ?>

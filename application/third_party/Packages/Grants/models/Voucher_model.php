@@ -53,6 +53,12 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     'voucher_cheque_number','voucher_vendor','voucher_description');
   }
 
+  // function lookup_values($table){
+  //   return [
+  //     'office'=>['office_id'=>1,'office_name'=>'ABC']
+  //   ];
+  // }
+
   public function list(){}
 
   public function view(){}

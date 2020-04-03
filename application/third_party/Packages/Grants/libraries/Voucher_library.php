@@ -99,6 +99,18 @@ function form_field_text($label, $default_value = '', $classes = [], $id = '', $
   return $return;
 }
 
+// function change_field_type(){
+//   $change_field_type = array();
+
+//   $change_field_type['voucher_number']['field_type'] = 'select';
+//   $change_field_type['voucher_number']['options'] = ['200301','20030'];
+
+//   return $change_field_type;
+// }
+
+function default_field_value(){
+  return ['fk_office_id'=>29];
+}
 
 }
 
