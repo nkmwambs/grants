@@ -500,7 +500,16 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (2386,	'APAL-15930',	'Approval Ticket # APAL-15930',	346,	87,	2,	'2020-04-01',	'2020-04-01 06:31:07',	2),
 (2387,	'APAL-77082',	'Approval Ticket # APAL-77082',	354,	87,	1,	'2020-04-02',	'2020-04-02 07:54:50',	1),
 (2388,	'APAL-73269',	'Approval Ticket # APAL-73269',	301,	87,	1,	'2020-04-02',	'2020-04-02 18:16:53',	1),
-(2389,	'APAL-34378',	'Approval Ticket # APAL-34378',	302,	87,	1,	'2020-04-02',	'2020-04-02 18:17:51',	1);
+(2389,	'APAL-34378',	'Approval Ticket # APAL-34378',	302,	87,	1,	'2020-04-02',	'2020-04-02 18:17:51',	1),
+(2390,	'APAL-65768',	'Approval Ticket # APAL-65768',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:34:10',	1),
+(2391,	'APAL-11287',	'Approval Ticket # APAL-11287',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:40:34',	1),
+(2392,	'APAL-39981',	'Approval Ticket # APAL-39981',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:46:13',	1),
+(2393,	'APAL-16376',	'Approval Ticket # APAL-16376',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:50:26',	1),
+(2394,	'APAL-75274',	'Approval Ticket # APAL-75274',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:50:54',	1),
+(2395,	'APAL-31774',	'Approval Ticket # APAL-31774',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:56:44',	1),
+(2396,	'APAL-74564',	'Approval Ticket # APAL-74564',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:58:52',	1),
+(2397,	'APAL-4134',	'Approval Ticket # APAL-4134',	340,	87,	1,	'2020-04-03',	'2020-04-03 19:08:43',	1),
+(2398,	'APAL-65475',	'Approval Ticket # APAL-65475',	340,	87,	1,	'2020-04-03',	'2020-04-03 19:09:34',	1);
 
 DROP TABLE IF EXISTS `approve_item`;
 CREATE TABLE `approve_item` (
@@ -1370,6 +1379,9 @@ CREATE TABLE `financial_report` (
   `financial_report_name` varchar(100) NOT NULL,
   `financial_report_month` date NOT NULL,
   `fk_office_id` int(100) NOT NULL,
+  `financial_report_statement_balance` int(100) NOT NULL DEFAULT '0',
+  `financial_report_statement_date` date NOT NULL DEFAULT '0000-00-00',
+  `financial_report_is_submitted` int(5) NOT NULL DEFAULT '0',
   `financial_report_created_date` date DEFAULT NULL,
   `financial_report_created_by` int(100) DEFAULT NULL,
   `financial_report_last_modified_by` int(100) DEFAULT NULL,
@@ -1381,9 +1393,9 @@ CREATE TABLE `financial_report` (
   CONSTRAINT `financial_report_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `financial_report` (`financial_report_id`, `financial_report_track_number`, `financial_report_name`, `financial_report_month`, `fk_office_id`, `financial_report_created_date`, `financial_report_created_by`, `financial_report_last_modified_by`, `financial_report_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'FIRT-42206',	'Financial_report # FIRT-45548',	'2020-03-01',	29,	'2020-03-24',	1,	1,	NULL,	2353,	331),
-(2,	'FIRT-30181',	'Financial_report # FIRT-78548',	'2020-03-01',	27,	'2020-03-26',	1,	1,	NULL,	2360,	331);
+INSERT INTO `financial_report` (`financial_report_id`, `financial_report_track_number`, `financial_report_name`, `financial_report_month`, `fk_office_id`, `financial_report_statement_balance`, `financial_report_statement_date`, `financial_report_is_submitted`, `financial_report_created_date`, `financial_report_created_by`, `financial_report_last_modified_by`, `financial_report_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'FIRT-42206',	'Financial_report # FIRT-45548',	'2020-03-01',	29,	415250,	'2020-03-31',	0,	'2020-03-24',	1,	1,	NULL,	2353,	331),
+(2,	'FIRT-30181',	'Financial_report # FIRT-78548',	'2020-03-01',	27,	4501,	'2020-03-31',	0,	'2020-03-26',	1,	1,	NULL,	2360,	331);
 
 DROP TABLE IF EXISTS `funder`;
 CREATE TABLE `funder` (
@@ -2384,11 +2396,11 @@ CREATE TABLE `reconciliation` (
   `reconciliation_name` varchar(100) DEFAULT NULL,
   `fk_office_id` int(100) DEFAULT NULL,
   `reconciliation_reporting_month` date DEFAULT NULL,
-  `financial_report_is_submitted` int(5) DEFAULT '0',
+  `reconciliation_is_submitted` int(5) DEFAULT '0',
   `fk_status_id` int(5) DEFAULT NULL,
   `reconciliation_statement_amount` decimal(10,2) DEFAULT NULL,
-  `reconciliation_statement_date` decimal(10,2) DEFAULT NULL,
-  `reconciliation_suspense_amount` decimal(10,2) DEFAULT NULL,
+  `reconciliation_statement_date` int(11) DEFAULT NULL,
+  `reconciliation_suspense_amount` int(11) DEFAULT NULL,
   `reconciliation_created_by` int(100) DEFAULT NULL,
   `reconciliation_created_date` date DEFAULT NULL,
   `reconciliation_last_modified_by` int(100) DEFAULT NULL,
@@ -2396,9 +2408,9 @@ CREATE TABLE `reconciliation` (
   `fk_approval_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`reconciliation_id`),
   KEY `fk_reconciliation_center1_idx` (`fk_office_id`),
-  KEY `financial_report_is_submitted` (`financial_report_is_submitted`),
+  KEY `financial_report_is_submitted` (`reconciliation_is_submitted`),
   CONSTRAINT `fk_reconciliation_center1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `reconciliation_ibfk_1` FOREIGN KEY (`financial_report_is_submitted`) REFERENCES `financial_report` (`financial_report_id`)
+  CONSTRAINT `reconciliation_ibfk_1` FOREIGN KEY (`reconciliation_is_submitted`) REFERENCES `financial_report` (`financial_report_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -3070,4 +3082,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-04-03 13:29:54
+-- 2020-04-03 19:45:40
