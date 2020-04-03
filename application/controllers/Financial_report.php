@@ -178,19 +178,19 @@ class Financial_report extends MY_Controller
   }
 
   function _bank_statement_balance($office_ids,$reporting_month){
-    //return 345000.34;
-    $reconciliation_statement_amount = 0;
 
-    $this->db->select_sum('reconciliation_statement_amount');
+    $financial_report_statement_amount = 0;
+
+    $this->db->select_sum('financial_report_statement_balance');
     $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->where(array('reconciliation_reporting_month'=>date('Y-m-t',strtotime($reporting_month))));
-    $reconciliation_statement_amount_obj = $this->db->get('reconciliation');
+    $this->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
+    $financial_report_statement_amount_obj = $this->db->get('financial_report');
 
-    if($reconciliation_statement_amount_obj->row()->reconciliation_statement_amount != null){
-      $reconciliation_statement_amount = $reconciliation_statement_amount_obj->row()->reconciliation_statement_amount;
+    if($financial_report_statement_amount_obj->row()->financial_report_statement_balance != null){
+      $financial_report_statement_amount = $financial_report_statement_amount_obj->row()->financial_report_statement_balance;
     }
 
-    return $reconciliation_statement_amount;
+    return $financial_report_statement_amount;
     
   }
 
@@ -760,38 +760,26 @@ class Financial_report extends MY_Controller
   }
 
   function update_bank_statement_balance(){
+
     $post = $this->input->post();
 
-    $insert_reconciliation_data['reconciliation_name'] = "Reconciliation for  ".$post['reporting_month'];
-    $insert_reconciliation_data['fk_office_id'] = $post['office_id'];
-    $insert_reconciliation_data['reconciliation_reporting_month'] = $post['reporting_month'];
-    $insert_reconciliation_data['financial_report_is_submitted'] = 0;
-    $insert_reconciliation_data['reconciliation_statement_amount'] = $post['bank_statement_balance'];
-    $insert_reconciliation_data['reconciliation_statement_date'] = $post['statement_date'];
-    $insert_reconciliation_data['reconciliation_suspense_amount'] = 0;
-
-    $insert_reconciliation_data_to_insert = $this->grants_model->merge_with_history_fields('reconciliation',$insert_reconciliation_data,false);
-
-    $reconciliation_obj = $this->db->get_where('reconciliation',
-      array('fk_office_id'=>$post['office_id'],'reconciliation_reporting_month'=>$post['reporting_month']));
+    $financial_report_obj = $this->db->get_where('financial_report',
+      array('fk_office_id'=>$post['office_id'],
+      'financial_report_month'=>date('Y-m-01',strtotime($post['reporting_month']))));
 
     $this->db->trans_start();
 
-      if($reconciliation_obj->num_rows() == 0){
-        $this->db->insert('reconciliation',$insert_reconciliation_data_to_insert);
-      }else{
-        $this->db->where(array('reconciliation_id'=>$reconciliation_obj->row()->reconciliation_id));
-        $update_reconciliation_data['reconciliation_statement_amount'] = $post['bank_statement_balance'];
-        $update_reconciliation_data['reconciliation_statement_date'] = $post['statement_date'];
-        $this->db->update('reconciliation',$update_reconciliation_data);
-      }
+        $this->db->where(array('financial_report_id'=>$financial_report_obj->row()->financial_report_id));
+        $update_financial_report_data['financial_report_statement_balance'] = $post['bank_statement_balance'];
+        $update_financial_report_data['financial_report_statement_date'] = $post['statement_date'];
+        $this->db->update('financial_report',$update_financial_report_data);
      
     $this->db->trans_complete();
     
     if($this->db->trans_status() == false){
-      echo "Reconcialition update failed";
+      echo "Update failed";
     }else{
-      echo "Reconcialition updated";
+      echo "Updated successful";
     }
 
   }

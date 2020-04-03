@@ -391,6 +391,9 @@ class Voucher extends MY_Controller
     $new_journal['journal_created_date'] = date('Y-m-d');
     $new_journal['journal_created_by'] = $this->session->user_id;
     $new_journal['journal_last_modified_by'] = $this->session->user_id;
+    $new_journal['financial_report_statement_balance'] = 0;
+    $new_journal['financial_report_statement_date'] = '0000-00-00';
+    $new_journal['financial_report_is_submitted'] = 0;
     $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
     $new_journal['fk_status_id'] = $detail['fk_status_id'] = $this->grants_model->initial_item_status('journal');;
 

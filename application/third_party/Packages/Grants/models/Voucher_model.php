@@ -143,9 +143,9 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
       // then use the start date of the next month as the transacting date
       // *** Modify the query by checking if it has been submitted - Not yet done ****
   
-    $check_month_reconciliation = $this->db->get_where('reconciliation',
-      array('fk_office_id'=>$office_id,
-      'reconciliation_reporting_month'=>date('Y-m-t',strtotime($date_of_month))))->num_rows();
+    $check_month_reconciliation = $this->db->get_where('financial_report',
+      array('financial_report_is_submitted'=>1,'fk_office_id'=>$office_id,
+      'financial_report_month'=>date('Y-m-t',strtotime($date_of_month))))->num_rows();
 
       return $check_month_reconciliation > 0 ? true : false; 
 
