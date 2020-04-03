@@ -2,7 +2,7 @@
 
 extract($result);
 
-//print_r($expense_report);
+//print_r(directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.'1'));
 
 ?>
 <style>
@@ -263,6 +263,40 @@ $(document).on('click',".to_clear",function(){
         }
     });
 });
+
+// $("#drop_statements").dropzone({
+//     url: "<?=base_url()?>financial_report/upload_statements",
+// });
+
+
+    var myDropzone = new Dropzone("#drop_statements", { 
+        url: "<?=base_url()?>financial_report/upload_statements",
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 5, // MB
+        uploadMultiple:true,
+        acceptedFiles:'image/*,application/pdf',    
+    });
+
+    myDropzone.on("complete", function(file) {
+        //myDropzone.removeFile(file);
+        myDropzone.removeAllFiles();
+        //alert(myDropzone.getAcceptedFiles());
+    }); 
+
+    myDropzone.on("success", function(file,response) {
+
+        if(response == 0){
+            alert('Error in uploading files');
+            return false;
+        }
+        var table_tbody = $("#tbl_list_statements tbody");
+        var obj = JSON.parse(response);
+
+        for (let i = 0; i < obj.file.name.length; i++) {
+            table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/1/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
+        }
+
+    });   
 
 </script>
 

@@ -3,6 +3,8 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+define('DS',DIRECTORY_SEPARATOR);    
+
 /*
  *	@author 	: Nicodemus Karisa
  *	date		: 6th June, 2018

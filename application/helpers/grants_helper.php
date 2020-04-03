@@ -269,3 +269,40 @@ if ( ! function_exists('approval_action_buttons')){
 		return $buttons;
     }
 }
+
+if(! function_exists('directory_iterator')){
+	function directory_iterator($path){
+		$array = array();
+
+		foreach ($iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($path, 
+				RecursiveDirectoryIterator::SKIP_DOTS),
+			RecursiveIteratorIterator::SELF_FIRST) as $item) {
+			// Note SELF_FIRST, so array keys are in place before values are pushed.
+
+				$subPath = $iterator->getSubPathName();
+					if($item->isDir()) {
+						// Create a new array key of the current directory name.
+						$array[$subPath] = array();
+					}
+					else {
+						// Add a new element to the array of the current file name.
+						$array[$subPath]['file_name'] = $subPath;
+						$array[$subPath]['file_size'] = human_filesize(filesize($path.DIRECTORY_SEPARATOR.$subPath));
+						$array[$subPath]['last_modified_date'] = date('Y-m-d',filemtime($path.DIRECTORY_SEPARATOR.$subPath));
+						$array[$subPath]['url'] = $path.DIRECTORY_SEPARATOR.$subPath;
+					}
+			}
+
+			return $array;
+		}
+}
+
+
+if(!function_exists('human_filesize')){
+	function human_filesize($bytes, $decimals = 2) {
+		$sz = 'BKMGTP';
+		$factor = floor((strlen($bytes) - 1) / 3);
+		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+	  }
+}

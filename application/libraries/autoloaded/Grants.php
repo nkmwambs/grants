@@ -2027,6 +2027,60 @@ function feature_model_list_table_visible_columns() {
     //   return (object)['office_id'=>9,'office_name'=>'GRC Shingila'];
     // }
 
+    function retrieve_file_uploads_info($item,$office_ids = array(),$month = ""){
+
+      $files_array = [];
+  
+      $this->CI->db->select(array($item.'_id'));
+      if(count($office_ids) > 0){
+        $this->CI->db->where_in('fk_office_id',$office_ids);
+      }
+      
+      if($month != ""){
+        $this->CI->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($month))));
+      }
+      
+      $records = $this->CI->db->get($item)->result_array();
+  
+      foreach($records as $record){
+        $record_uploads = directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id']);
+        
+        $files_array = array_merge($files_array,$record_uploads);
+      }
+  
+      return $files_array;
+    }
+
+    function upload_files($storeFolder){
+      
+      $path_array = explode(DS,$storeFolder);
+
+      //$path = "uploads";
+      
+      // foreach($path_array as $dir_name){
+      //    if(!file_exists($dir_name)){
+      //     mkdir($path);
+      //    } 
+
+      //    $dir_name .= DS.$dir_name;
+      // }
+
+      if (!empty($_FILES)) {
+
+        for($i=0;$i<count($_FILES['file']['name']);$i++){
+          $tempFile = $_FILES['file']['tmp_name'][$i];   
+            
+          $targetPath = BASEPATH .DS.'..'.DS. $storeFolder . DS; 
+          
+          $targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
+      
+          move_uploaded_file($tempFile,$targetFile);
+        }
+
+        return $_FILES;
+      }
+    }
+
     function fy_start_date($reporting_month){
       return '2020-01-01';
     }

@@ -84,6 +84,11 @@
 <script src="<?php echo base_url();?>assets/js/amcharts/exporting/filesaver.js" type="text/javascript"></script>
 <script src="<?php echo base_url();?>assets/js/amcharts/exporting/jspdf.plugin.addimage.js" type="text/javascript"></script>
 
+<!--Dropzone-->
+<link rel="stylesheet" href="<?php echo base_url();?>assets/js/dropzone/dist/min/dropzone.min.css">
+
+<script src="<?php echo base_url();?>assets/js/dropzone/dist/min/dropzone.min.js" type="text/javascript"></script>
+
 <script>
     function checkDelete()
     {

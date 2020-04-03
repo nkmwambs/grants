@@ -374,11 +374,13 @@ class Financial_report extends MY_Controller
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$fy_start_date,
     'voucher_date<='=>$end_date_of_reporting_month));
+    
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
     $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+
     $result = $this->db->get('voucher_detail');
 
     $order_array = [];
@@ -534,6 +536,7 @@ class Financial_report extends MY_Controller
         'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
         'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month),
         'financial_ratios'=>$this->financial_ratios(),
+        'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
         'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
         'outstanding_cheques'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
         'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
@@ -552,6 +555,10 @@ class Financial_report extends MY_Controller
 
   function merge_financial_report(){
     echo json_encode($this->input->post());
+  }
+
+  function _bank_statements_uploads($office_ids,$reporting_month){
+    return $this->grants->retrieve_file_uploads_info('financial_report',$office_ids,$reporting_month);
   }
 
   function _projects_balance_report($office_ids,$reporting_month){
@@ -815,6 +822,18 @@ class Financial_report extends MY_Controller
       echo true;
     }
   }
+
+  function upload_statements(){
+
+    $storeFolder = 'uploads'.DS.'attachments'.DS.'financial_report'.DS.'1'; 
+    
+    if(is_array($this->grants->upload_files($storeFolder)) && count($this->grants->upload_files($storeFolder))>0){
+      echo json_encode($this->grants->upload_files($storeFolder));
+    }else{
+      echo 0;
+    }
+    
+}
 
   static function get_menu_list(){}
 

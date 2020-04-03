@@ -1,28 +1,25 @@
-<div class="col-xs-12" style="margin-bottom:20px;">
-            <input class="form-control" type="file" multiple="multiple" placeholder="<?=get_phrase('upload_bank_statement_here');?>"/>
-        </div>
-
-        <table class="table table-striped">
+<?php if(!$multiple_offices_report){?>
+    <div class="col-xs-12" style="margin-bottom:20px;">
+        <form id="drop_statements"  class="dropzone"></form>
+    </div>
+<?php }?>
+        <table class="table table-striped" id="tbl_list_statements">
             <thead>
                 <tr>
                     <th><?=get_phrase('action');?></th>
                     <th><?=get_phrase('file_name');?></th>
                     <th><?=get_phrase('file_size');?></th>
-                    <th><?=get_phrase('upload_date');?></th>
+                    <th><?=get_phrase('last_modified_date');?></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><a href="#" class="fa fa-trash-o"></a></td>
-                    <td>Page 1</td>
-                    <td>2.0 MB</td>
-                    <td>30th November 2019</td>
-                </tr>
-                <tr>
-                    <td><a href="#" class="fa fa-trash-o"></a></td>
-                    <td>Page 2</td>
-                    <td>2.3 MB</td>
-                    <td>30th November 2019</td>
-                </tr>
+                <?php foreach($bank_statements_uploads as $bank_statements_upload){?>
+                    <tr>
+                        <td><a href="#" class="fa fa-trash-o"></a></td>
+                        <td><a target='__blank' href='<?=base_url();?><?=$bank_statements_upload['url'];?>'><?=$bank_statements_upload['file_name'];?></a></td>
+                        <td><?=$bank_statements_upload['file_size'];?></td>
+                        <td><?=$bank_statements_upload['last_modified_date'];?></td>
+                    </tr>
+                <?php }?>
             </tbody>
         </table>
