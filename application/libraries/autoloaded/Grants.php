@@ -2054,16 +2054,20 @@ function feature_model_list_table_visible_columns() {
     function upload_files($storeFolder){
       
       $path_array = explode(DS,$storeFolder);
-
-      //$path = "uploads";
       
-      // foreach($path_array as $dir_name){
-      //    if(!file_exists($dir_name)){
-      //     mkdir($path);
-      //    } 
+      $path = [];
 
-      //    $dir_name .= DS.$dir_name;
-      // }
+      for ($i=0; $i < count($path_array) ; $i++) { 
+      
+        array_push($path,$path_array[$i]);
+      
+        $modified_path = implode(DS,$path);
+      
+        if(!file_exists($modified_path)){
+          mkdir($modified_path);
+        }
+      
+      }
 
       if (!empty($_FILES)) {
 

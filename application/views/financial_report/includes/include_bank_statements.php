@@ -15,7 +15,7 @@
             <tbody>
                 <?php foreach($bank_statements_uploads as $bank_statements_upload){?>
                     <tr>
-                        <td><a href="#" class="fa fa-trash-o"></a></td>
+                        <td><a href="#" class="fa fa-trash-o delete_statement" id="<?=$bank_statements_upload['url'];?>"></a></td>
                         <td><a target='__blank' href='<?=base_url();?><?=$bank_statements_upload['url'];?>'><?=$bank_statements_upload['file_name'];?></a></td>
                         <td><?=$bank_statements_upload['file_size'];?></td>
                         <td><?=$bank_statements_upload['last_modified_date'];?></td>

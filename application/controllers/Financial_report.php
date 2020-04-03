@@ -825,16 +825,36 @@ class Financial_report extends MY_Controller
 
   function upload_statements(){
 
-    $storeFolder = 'uploads'.DS.'attachments'.DS.'financial_report'.DS.'1'; 
+    $post = $this->input->post();
+
+    $financial_report_id = $this->db->get_where('financial_report',
+    array('fk_office_id'=>$post['office_id'],
+    'financial_report_month'=>$post['reporting_month']))->row()->financial_report_id;
+
+    $storeFolder = upload_url('financial_report',$financial_report_id); 
     
-    if(is_array($this->grants->upload_files($storeFolder)) && count($this->grants->upload_files($storeFolder))>0){
-      echo json_encode($this->grants->upload_files($storeFolder));
+    if(is_array($this->grants->upload_files($storeFolder)) && 
+        count($this->grants->upload_files($storeFolder))>0){
+          $report_info = ['financial_report_id'=>$financial_report_id];
+          $files_array = array_merge($this->grants->upload_files($storeFolder),$report_info);
+
+          echo json_encode($files_array);
     }else{
       echo 0;
     }
-    
 }
 
-  static function get_menu_list(){}
+function delete_statement(){
+  $path = $this->input->post('path');
+  
+  if(unlink($path)){
+    echo "File deleted successful";
+  }else{
+    echo "File deletion failed";
+  }
+
+}
+
+static function get_menu_list(){}
 
 }
