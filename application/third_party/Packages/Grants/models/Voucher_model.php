@@ -145,7 +145,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   
     $check_month_reconciliation = $this->db->get_where('financial_report',
       array('financial_report_is_submitted'=>1,'fk_office_id'=>$office_id,
-      'financial_report_month'=>date('Y-m-t',strtotime($date_of_month))))->num_rows();
+      'financial_report_month'=>date('Y-m-01',strtotime($date_of_month))))->num_rows();
 
       return $check_month_reconciliation > 0 ? true : false; 
 
