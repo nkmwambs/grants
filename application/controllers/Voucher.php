@@ -381,29 +381,31 @@ class Voucher extends MY_Controller
     echo $this->voucher_library->approved_unvouched_request_details($office_id);
   }
 
-  function create_new_journal($journal_date){
+  function create_new_journal($journal_date,$office_id){
     $new_journal = [];
 
     $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
     $new_journal['journal_name'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_name'];
     $new_journal['journal_month'] = $journal_date;
-    $new_journal['fk_office_id'] = $this->input->post('fk_office_id');
+    $new_journal['fk_office_id'] = $office_id;
     $new_journal['journal_created_date'] = date('Y-m-d');
     $new_journal['journal_created_by'] = $this->session->user_id;
     $new_journal['journal_last_modified_by'] = $this->session->user_id;
-    $new_journal['financial_report_statement_balance'] = 0;
-    $new_journal['financial_report_statement_date'] = '0000-00-00';
-    $new_journal['financial_report_is_submitted'] = 0;
     $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
     $new_journal['fk_status_id'] = $detail['fk_status_id'] = $this->grants_model->initial_item_status('journal');;
 
 
     $this->db->insert('journal',$new_journal);
+
+    //return $this->db->insert_id();
   }
 
   function create_financial_report($financial_report_date){
       $new_mfr['financial_report_month'] = $financial_report_date;
       $new_mfr['fk_office_id'] = $this->input->post('fk_office_id');
+      // $new_mfr['financial_report_statement_balance'] = 0;
+      // $new_mfr['financial_report_statement_date'] = '0000-00-00';
+      // $new_mfr['financial_report_is_submitted'] = 0;
 
       $new_mfr_to_insert = $this->grants_model->merge_with_history_fields('financial_report',$new_mfr);
 
@@ -423,11 +425,11 @@ class Voucher extends MY_Controller
     if(!$this->voucher_model->office_has_vouchers_for_the_transacting_month($this->input->post('fk_office_id'),$this->input->post('voucher_date'))){
       
       // Create a journal record
-      $this->create_new_journal(date("Y-m-01",strtotime($this->input->post('voucher_date'))));
+      $this->create_new_journal(date("Y-m-01",strtotime($this->input->post('voucher_date'))),$this->input->post('fk_office_id'));
 
       // Insert the month MFR Record
 
-      $this->db->create_financial_report(date("Y-m-01",strtotime($this->input->post('voucher_date'))));
+      $this->create_financial_report(date("Y-m-01",strtotime($this->input->post('voucher_date'))));
 
     }
 
