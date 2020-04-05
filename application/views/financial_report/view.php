@@ -1,5 +1,6 @@
 <?php
     extract($result);
+    //print_r($financial_report_submitted);
 ?>
 <style>
 .header{
@@ -137,17 +138,45 @@
 </div>
 
 <hr/>
-<?php if(!$multiple_offices_report){?>
+<?php if(!$multiple_offices_report && !$financial_report_submitted){?>
     <div class="row">
         <div class="col-xs-12" style="text-align:center;">
-            <div class='btn btn-default'><?=get_phrase('submit');?></div>
+            <div class='btn btn-default' id="submit_report"><?=get_phrase('submit');?></div>
         </div>
     </div>    
 <?php }?>
 
 <script>
 
+$("#submit_report").on('click',function(){
+    var url = "<?=base_url();?>financial_report/submit_financial_report";
+    var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
+
+    $.ajax({
+        url:url,
+        data:data,
+        type:"POST",
+        success:function(response){
+
+            if(response){
+                alert('Report submitted successfully');
+                location.href = document.referrer;
+            }else{
+                alert(response);
+            }
+            
+            
+        }
+    });
+});
+
 $(document).ready(function(){
+
+    if('<?=$financial_report_submitted?>' == 1){
+        $("#bank_statement_balance").prop('disabled','disabled');
+        $(".clear_btn").addClass('disabled');
+        $(".delete_statement").removeClass('delete_statement');
+    }
 
     $('#fund_balance_table tbody tr').each(function(i,el){
         let opening_balance = parseFloat($(el).find('.fund_month_opening_balance').html().split(',').join(""));
@@ -179,7 +208,7 @@ $(document).ready(function(){
 // });
 
 $("#bank_statement_balance").on('click',function(){
-    $(this).val(null);
+    //$(this).val(null);
 });
 
 $("#bank_statement_balance").on('change',function(){

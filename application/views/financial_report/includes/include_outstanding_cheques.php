@@ -25,7 +25,7 @@
                             }
                         ?>
                         <td>
-                            <div id="<?=$outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$oustanding_state_color;?> <?=$oustanding_state_clear_class;?> outstanding_cheque active_effect state_<?=$outstanding_cheque['voucher_cleared'];?>'>
+                            <div id="<?=$outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$oustanding_state_color;?> clear_btn <?=$oustanding_state_clear_class;?> outstanding_cheque active_effect state_<?=$outstanding_cheque['voucher_cleared'];?>'>
                                 <?=$oustanding_state_label;?>
                             </div>
                         </td>

@@ -37,7 +37,7 @@ class Financial_report_model extends MY_Model{
     }
 
     function list_table_visible_columns(){
-        return ['financial_report_track_number','office_name','financial_report_month','financial_report_created_date','status_name'];
+        return ['financial_report_track_number','office_name','financial_report_month','financial_report_created_date','financial_report_is_submitted','status_name'];
     }
 
     /**

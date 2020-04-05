@@ -23,7 +23,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   function __construct(){
     parent::__construct();
     $this->load->database();
-
+    
   }
 
   function index(){}
@@ -580,6 +580,22 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
     $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
     //$this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+  }
+
+  function check_if_month_vouchers_are_approved($office_id,$month){
+    
+    $start_month_date = date('Y-m-01',strtotime($month));
+    $end_month_date = date('Y-m-t',strtotime($month));
+
+    $this->load->model('journal_model');
+
+    $approved_vouchers = count($this->journal_model->journal_records($office_id,$month));
+
+    $count_of_month_raised_vouchers = $this->db->get_where('voucher',
+      array('fk_office_id'=>$office_id,'voucher_date>='=>$start_month_date,
+      'voucher_date<='=>$end_month_date))->num_rows();
+
+    return  $approved_vouchers == $count_of_month_raised_vouchers ? true : false;
   }
   
 }

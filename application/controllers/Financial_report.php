@@ -528,6 +528,7 @@ class Financial_report extends MY_Controller
       return [
         //'test'=>$test,
         'multiple_offices_report'=>$multiple_offices_report,
+        'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
         'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
         'office_names'=>$office_names,
         'office_ids'=>$office_ids,
@@ -555,6 +556,25 @@ class Financial_report extends MY_Controller
 
   function merge_financial_report(){
     echo json_encode($this->input->post());
+  }
+
+  function _check_if_financial_report_is_submitted($office_ids,$reporting_month){
+    
+    $report_is_submitted = false;
+
+    if(count($office_ids) == 1 ){
+
+      $financial_report_is_submitted = $this->db->get_where('financial_report',
+      array('fk_office_id'=>$office_ids[0],
+      'financial_report_month'=>date('Y-m-01',strtotime($reporting_month))))->row()->financial_report_is_submitted;
+      
+      if($financial_report_is_submitted){
+        $report_is_submitted = true;
+      }
+    }
+
+    return $report_is_submitted;
+    
   }
 
   function _bank_statements_uploads($office_ids,$reporting_month){
@@ -841,6 +861,62 @@ function delete_statement(){
     echo "File deletion failed";
   }
 
+}
+
+function submit_financial_report(){
+  $post = $this->input->post();
+  $message = true;
+
+  // Check if the report has reconciled
+  $report_reconciled = $this->_check_if_report_has_reconciled($post['office_id'],$post['reporting_month']);
+
+  // Check if the all vouchers have been approved
+  $vouchers_approved = $this->_check_if_month_vouchers_are_approved($post['office_id'],$post['reporting_month']);
+
+  // Check if their is a bank statement
+  $bank_statements_uploaded = $this->_check_if_bank_statements_are_uploaded($post['office_id'],$post['reporting_month']);
+
+  if(!$report_reconciled || !$vouchers_approved || !$bank_statements_uploaded){
+    $message = "You have missing requirements and report is not submitted. Check the following items:\n";
+
+    $items = "";
+    
+    if(!$report_reconciled) $items .= "-> Report is reconciled\n";
+    if(!$vouchers_approved) $items .= "-> All vouchers in the month are approved\n";
+    if(!$bank_statements_uploaded) $items .= "-> Bank statement uploaded\n";
+
+    $message .= $items;
+
+  }else{
+    // Update financial report table
+    $this->db->where(array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']));
+    $update_data = ['financial_report_is_submitted'=>1];
+    $this->db->update('financial_report',$update_data);
+  }
+
+  echo $message;
+}
+
+function _check_if_report_has_reconciled($office_id,$reporting_month){
+  //return false;
+  $bank_reconciliation_statement = $this->_bank_reconciliation([$office_id],$reporting_month,false);
+
+  $is_book_reconciled = $bank_reconciliation_statement['is_book_reconciled'];
+  
+  return $is_book_reconciled;
+}
+
+function _check_if_month_vouchers_are_approved($office_id,$reporting_month){
+  //return false;
+  $this->load->model('voucher_model');
+  return $this->voucher_model->check_if_month_vouchers_are_approved($office_id,$reporting_month);
+}
+
+function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
+  //return false;
+  $statements_uploaded = $this->grants->retrieve_file_uploads_info('financial_report',[$office_id],$reporting_month);
+
+  return count($statements_uploaded) > 0? true : false;
 }
 
 static function get_menu_list(){}

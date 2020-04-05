@@ -9,11 +9,7 @@
 </style>
 
 <?php 
-   //print_r($this->voucher_model->get_request_to_voucher_conversion_approval_status(9));
-   //$approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
-        
-  // print_r($this->voucher_model->get_approveable_item_last_status($approve_item_id));
-      
+   //echo $this->voucher_model->check_if_month_vouchers_are_approved(29,'2020-03-01');   
 ?>
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>

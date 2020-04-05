@@ -23,7 +23,7 @@
                             }
                         ?>
                         <td>
-                            <div id="<?=$cleared_deposit_in_transit_row['voucher_id'];?>" class='btn btn-<?=$cleared_deposit_in_transit_state_color;?> <?=$cleared_deposit_in_transit_state_clear_class;?> deposit_in_transit cleared_effect state_<?=$cleared_deposit_in_transit_row['voucher_cleared'];?>'>
+                            <div id="<?=$cleared_deposit_in_transit_row['voucher_id'];?>" class='btn btn-<?=$cleared_deposit_in_transit_state_color;?> clear_btn <?=$cleared_deposit_in_transit_state_clear_class;?> deposit_in_transit cleared_effect state_<?=$cleared_deposit_in_transit_row['voucher_cleared'];?>'>
                                 <?=$cleared_deposit_in_transit_state_label;?>
                             </div>
                         </td>

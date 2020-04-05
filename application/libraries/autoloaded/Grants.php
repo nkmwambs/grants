@@ -2032,6 +2032,7 @@ function feature_model_list_table_visible_columns() {
       $files_array = [];
   
       $this->CI->db->select(array($item.'_id'));
+      
       if(count($office_ids) > 0){
         $this->CI->db->where_in('fk_office_id',$office_ids);
       }
