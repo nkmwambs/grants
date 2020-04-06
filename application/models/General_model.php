@@ -395,20 +395,21 @@ function get_max_approval_status_id(String $approveable_item):Int{
 
   //Get the maximum status_approval_sequence of an approveable item
 
-  // $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
-  // $max_status_approval_sequence_obj = $this->db
-  // ->select_max('status_approval_sequence')
-  // //->select("max(status_approval_sequence) as status_approval_sequence")
-  // ->get_where('status',array('approve_item_name'=>$approveable_item));
+  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  $max_status_approval_sequence_obj = $this->db
+  ->select_max('status_approval_sequence')
+  //->select("max(status_approval_sequence) as status_approval_sequence")
+  ->get_where('status',array('approve_item_name'=>$approveable_item));
 
-  // if($max_status_approval_sequence_obj->num_rows() >0){
-  //   // Get the status_id
-  //   $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
-  //   $this->db->select('status_id');
-  //   $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
-  //   $max_status_id = $this->db->get_where('status',
-  //   array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
-  // }
+  if($max_status_approval_sequence_obj->num_rows() >0){
+    // Get the status_id
+    $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
+    $this->db->select('status_id');
+    $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+
+    $max_status_id = $this->db->get_where('status',
+    array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
+  }
   return $max_status_id;
 }
 
@@ -504,5 +505,33 @@ function check_if_item_has_max_status_by_created_date(Object $approveable_item,S
   
 }
 
+
+function get_item_max_status_by_created_date(String $item,String $item_created_date):int{
+
+    $approveable_item = $this->db->get_where('approve_item',array('approve_item_name'=>$item))->row();
+
+    $max_status_approval_sequence = $this->db->select_max('status_approval_sequence')->
+    get_where('status',
+    array('fk_approve_item_id'=>$approveable_item->approve_item_id,
+    'status_approval_direction'=>1,
+    'status_created_date <= '=>$item_created_date))->row();
+
+    if(!empty($max_status_approval_sequence->status_approval_sequence)){
+      $max_status_id = $this->db->get_where('status',
+      array('status_approval_sequence'=>$max_status_approval_sequence->status_approval_sequence,
+      'fk_approve_item_id'=>$approveable_item->approve_item_id))->row()->status_id;
+    }else{
+      $max_status_id = $this->get_max_approval_status_id('voucher');
+    }  
+    return $max_status_id;
+  
+}
+
+function max_status_id_where_condition_by_created_date($item,$item_created_date){
+  
+  $max_status_id = $this->general_model->get_item_max_status_by_created_date($item,$item_created_date);
+  
+  return array($item.'.fk_status_id'=>$max_status_id);
+}
 
 }

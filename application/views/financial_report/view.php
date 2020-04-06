@@ -1,6 +1,6 @@
 <?php
     extract($result);
-    //print_r($financial_report_submitted);
+    //print_r($this->general_model->get_item_max_status_by_created_date('voucher','2020-04-01'));
 ?>
 <style>
 .header{

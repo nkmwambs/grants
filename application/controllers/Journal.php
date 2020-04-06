@@ -72,6 +72,7 @@ class Journal extends MY_Controller
     parent::view();
   }
 
+
   static function get_menu_list(){
 
   }
