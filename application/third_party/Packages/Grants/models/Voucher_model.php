@@ -443,6 +443,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    * @param Int $approveable_item_id 
    * @todo - to be transferred to the approve_item model. You will have to load the approve_item model in the voucher model class for this to work
    * @return Int - $status_id
+   * 
+   * @todo - Refactor it by calling the "get_max_approval_status_id" from general model
    */
   function get_approveable_item_last_status(Int $approveable_item_id):Int{
     
@@ -456,6 +458,9 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     return $status_id;  
   }
 
+  /**
+   * @todo - Not in use
+   */
   function conversion_approval_status($office_id):int{
 
     $approval_status_id = 0;

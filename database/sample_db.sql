@@ -1394,8 +1394,9 @@ CREATE TABLE `financial_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `financial_report` (`financial_report_id`, `financial_report_track_number`, `financial_report_name`, `financial_report_month`, `fk_office_id`, `financial_report_statement_balance`, `financial_report_statement_date`, `financial_report_is_submitted`, `financial_report_created_date`, `financial_report_created_by`, `financial_report_last_modified_by`, `financial_report_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'FIRT-42206',	'Financial_report # FIRT-45548',	'2020-03-01',	29,	415250,	'2020-03-31',	0,	'2020-03-24',	1,	1,	NULL,	2353,	331),
+(1,	'FIRT-42206',	'Financial_report # FIRT-45548',	'2020-03-01',	29,	415250,	'2020-03-31',	1,	'2020-03-24',	1,	1,	NULL,	2353,	331),
 (2,	'FIRT-30181',	'Financial_report # FIRT-78548',	'2020-03-01',	27,	4501,	'2020-03-31',	0,	'2020-03-26',	1,	1,	NULL,	2360,	331);
+
 
 DROP TABLE IF EXISTS `funder`;
 CREATE TABLE `funder` (
