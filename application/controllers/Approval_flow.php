@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 
-class Workflow extends MY_Controller
+class Approval_flow extends MY_Controller
 {
 
   function __construct(){
     parent::__construct();
-    $this->load->library('Workflow_library');
+    $this->load->library('approval_flow_library');
   }
 
   function index(){}

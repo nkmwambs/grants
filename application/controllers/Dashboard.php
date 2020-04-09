@@ -24,6 +24,9 @@ public $auth;
 
     public function index(){}
 
+    function api(){
+        echo json_encode($this->general_model->get_max_approval_status_id('voucher'));
+    }
 
     static function get_menu_list(){
 

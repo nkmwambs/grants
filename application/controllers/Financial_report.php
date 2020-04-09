@@ -267,24 +267,7 @@ class Financial_report extends MY_Controller
   }
 
   private function _expense_report($office_ids,$reporting_month){
-    // $income_accounts =  $this->income_accounts($office_ids);
-    // $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month);
-    // $month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month);
-    // $month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month);
     
-    // $report = array();
-
-    // foreach($income_accounts as $account){
-    //    $report[] = [
-    //     'account_name'=>$account['income_account_name'],
-    //     'month_opening_balance'=>isset($month_opening_balance[$account['income_account_id']])?$month_opening_balance[$account['income_account_id']]:0,
-    //     'month_income'=>isset($month_income[$account['income_account_id']])?$month_income[$account['income_account_id']]:0,
-    //     'month_expense'=>isset($month_expense[$account['income_account_id']])?$month_expense[$account['income_account_id']]:0,
-    //    ]; 
-    // }  
-    
-    // return $report;
-
     $expense_account_grid = [];
 
     $income_grouped_expense_accounts = $this->_income_grouped_expense_accounts($office_ids);
@@ -343,11 +326,15 @@ class Financial_report extends MY_Controller
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$start_date_of_reporting_month,
     'voucher_date<='=>$end_date_of_reporting_month));
+    
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
     $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    
+    //$this->grants_model->create_table_join_statement_with_depth('voucher_detail',['voucher','voucher_type','voucher_type_effect','expense_account','income_account']);
+
     $result = $this->db->get('voucher_detail');
 
     $order_array = [];
@@ -380,7 +367,9 @@ class Financial_report extends MY_Controller
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
     $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-
+    
+    //$this->grants_model->create_table_join_statement_with_depth('voucher_detail',['voucher','voucher_type','voucher_type_effect','expense_account','income_account']);
+    
     $result = $this->db->get('voucher_detail');
 
     $order_array = [];
@@ -415,6 +404,9 @@ class Financial_report extends MY_Controller
     $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
     $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+
+    // $this->grants_model->create_table_join_statement_with_depth('budget_item_detail',
+    // ['budget_item','budget','month','expense_account','income_account']);
 
     $result = $this->db->get('budget_item_detail');
 
@@ -485,7 +477,7 @@ class Financial_report extends MY_Controller
 
     $additional_information = $this->financial_report_library->financial_report_information($this->id);
 
-    if(isset($_POST) && count($_POST) > 0){
+    if(isset($_POST['office_ids']) && count($_POST) > 0){
       $additional_information = $this->financial_report_library->financial_report_information($this->id, $_POST['office_ids']);
     }
 
@@ -653,9 +645,14 @@ class Financial_report extends MY_Controller
     $this->db->where(array('voucher_date<='=>$end_of_reporting_month));
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+   
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    
+    // $this->grants_model->create_table_join_statement_with_depth('voucher_detail',
+    // ['voucher','voucher_type','voucher_type_effect']);
+
     $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
 
     return $voucher_detail_total_cost;
@@ -693,9 +690,14 @@ class Financial_report extends MY_Controller
     $this->db->where(array('voucher_type_effect_code'=>'income'));
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+    
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    
+    // $this->grants_model->create_table_join_statement_with_depth('voucher_detail',
+    // ['voucher','voucher_type','voucher_type_effect']);
+
     $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
 
     return $voucher_detail_total_cost;
@@ -725,9 +727,14 @@ class Financial_report extends MY_Controller
     $this->db->where(array('voucher_date<'=>$start_of_reporting_month));
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    
+    // $this->grants_model->create_table_join_statement_with_depth('voucher_detail',
+    // ['voucher','voucher_type','voucher_type_effect']);
+
     $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
 
     return $voucher_detail_total_cost;
@@ -748,9 +755,14 @@ class Financial_report extends MY_Controller
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
     $this->db->where(array('voucher_date>='=>$start_date_of_reporting_month,'voucher_date<='=>$end_date_of_reporting_month));
+    
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+
+    // $this->grants_model->create_table_join_statement_with_depth('voucher_detail',
+    // ['voucher','voucher_type','voucher_type_effect']);
+
     $voucher_detail_total_cost = $this->db->get('voucher_detail')->row()->voucher_detail_total_cost;
 
     return $voucher_detail_total_cost;
@@ -760,14 +772,18 @@ class Financial_report extends MY_Controller
 
     $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
     $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
-
+    
     $this->db->select(array('project_id','project_name','funder_name','fk_office_id'));
-    $this->db->join('funder','funder.funder_id=project.fk_funder_id');
-    $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where(array('project_start_date <='=>$start_date_of_reporting_month,
     'project_end_date>='=>$end_date_of_reporting_month));
-    $projects = $this->db->get('project')->result_array();
+
+    // $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+    // $this->db->join('funder','funder.funder_id=project.fk_funder_id');
+
+    $this->grants_model->create_table_join_statement_with_depth('project_allocation',['project','funder']);
+
+    $projects = $this->db->get('project_allocation')->result_array();
 
     $ordered_array = [];
 

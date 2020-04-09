@@ -105,7 +105,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
       $voucher_date = $this->get_office_last_voucher($office_id)['voucher_date'];
     }
 
-    if(strtotime($office_transaction_date) > $voucher_date){
+    if(strtotime($office_transaction_date) > strtotime($voucher_date)){
       $voucher_date = $office_transaction_date;
     }
 
@@ -222,7 +222,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     $office_transacting_month  = date('Y-m-01');
 
     // If the office has not voucher yet, then the transacting month equals the office start date
-    $count_of_vouchers = $this->db->get_where('voucher',array('fk_office_id'=>$office_id))->num_rows(); 
+    //$count_of_vouchers = $this->db->get_where('voucher',array('fk_office_id'=>$office_id))->num_rows(); 
 
     //If count_of_vouchers eq to 0 then get the start date if the office
     if(!$this->check_if_office_has_started_transacting($office_id)){
@@ -266,6 +266,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
       if(!$this->check_if_office_transacting_month_has_been_closed($office_id,$last_voucher_date)){
         // Get the serial number of the last voucher, replace the month and year part of the 
         // voucher number with an empty string to remain with only the voucher serial number
+        //voucher format - yymmss or yymmsss
         $current_voucher_serial_number = substr_replace($last_voucher_number,'',0,4);  
         $next_serial = $current_voucher_serial_number + 1;
       }
@@ -448,7 +449,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    */
   function get_approveable_item_last_status(Int $approveable_item_id):Int{
     
-    $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+    $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
     $max_status_approval_sequence = $this->db->select_max('status_approval_sequence')->get_where('status',
       array('approve_item_id'=>$approveable_item_id))->row()->status_approval_sequence;
 
@@ -582,9 +584,9 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
     $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
     // Only list vouchers without not yet in the cash journal 
-
+   
     $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
-    //$this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+ 
   }
 
   function check_if_month_vouchers_are_approved($office_id,$month){
@@ -602,5 +604,6 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
     return  $approved_vouchers == $count_of_month_raised_vouchers ? true : false;
   }
+
   
 }

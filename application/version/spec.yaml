@@ -147,7 +147,10 @@ tables:
   opening_deposit_transit:
     - system_opening_balance
 
-  workflow:
-    - approve_item
+  # workflow:
+  #   - approve_item
+
+  approval_flow:
+    - approve_item 
 
 

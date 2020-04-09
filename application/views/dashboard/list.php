@@ -1,6 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-  //print_r($this->db->list_tables());
+//echo strtotime(date('Y-m-t',strtotime('2016-06-30')));
 ?>
 
   <div class="row">

@@ -180,9 +180,11 @@ function where_condition($condition_type,...$args){
 }
 
 function list_table_where($table = ""){
+
   $model = $table == ""?$this->current_model:$this->load_detail_model($table);
 
   if(method_exists($this->CI->$model,'list_table_where')){
+   
     $this->CI->$model->list_table_where();
   }
 }

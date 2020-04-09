@@ -25,7 +25,7 @@ class Status_model extends MY_Model implements CrudModelInterface, TableRelation
   function index(){}
 
 public function lookup_tables(){
-  return array('approve_item','role');
+  return array('role');
 }
 
 public function detail_tables(){
@@ -43,6 +43,10 @@ public function master_table_hidden_columns(){}
 public function list(){}
 
 public function view(){}
+
+public function single_form_add_visible_columns(){
+  return ['status_name','approval_flow_name','status_approval_sequence','status_approval_direction','status_backflow_sequence','status_is_requiring_approver_action','role_name'];
+}
 
 
 }

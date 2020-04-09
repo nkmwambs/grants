@@ -9,7 +9,7 @@
 </style>
 
 <?php 
-   //echo $this->voucher_model->check_if_month_vouchers_are_approved(29,'2020-03-01');   
+    //print_r($this->session->hierarchy_offices);
 ?>
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
@@ -404,27 +404,26 @@ $('#transaction_date').on('click',function(){
 
 $("#office").on('change',function(){
     
-    var rows = $("#tbl_voucher_body tbody tr");
+    //var rows = $("#tbl_voucher_body tbody tr");
+
+    resetVoucher();
 
     if($(this).val() == "") {
-        resetVoucher();
+        //resetVoucher();
         return false;
     }
     
     if($(".split_screen").hasClass('col-xs-6')) load_approved_requests();
     
-
-    resetVoucher();
-
     computeNextVoucherNumber($(this).val());
 
     computeCurrentTransactingDate($(this).val());
 
     getOfficeBanks($(this).val());
 
-    $.each(rows,function(i,el){
-        el.remove();
-    });
+    // $.each(rows,function(i,el){
+    //     el.remove();
+    // });
 
     $("#voucher_type").val('');
 
@@ -459,9 +458,6 @@ function getAccountsByVoucherType(voucherTypeSelect){
     checkIfDateIfSelected()?$.ajax({
         url:url,
         type:"POST",
-        beforeSend:function(){
-
-        },
         success:function(response){
 
             var account_select_option = "<option value=''>Select an account</option>";
@@ -535,9 +531,9 @@ function resetVoucher(){
     
     if(count_body_rows > 1){
         $.each(tbl_body_rows,function(i,el){
-            if(i != 0){
+           // if(i != 0){
                 $(el).remove();
-            }
+            //}
         });
     }
 

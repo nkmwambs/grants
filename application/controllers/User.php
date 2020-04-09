@@ -47,7 +47,9 @@ class User extends MY_Controller
  */
 private function _get_approval_assignments($role_id){
   $this->db->select(array('status_name','approve_item_name'));
-  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  
+  $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+  $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
   $status = $this->db->get_where('status',array('fk_role_id'=>$role_id,'status_is_requiring_approver_action'=>1))->result_array();
 
   return $status;

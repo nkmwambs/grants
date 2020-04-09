@@ -84,5 +84,6 @@ class Voucher_detail_model extends MY_Model implements CrudModelInterface, Table
   function show_add_button(){
       return false;
    }
+   
 
 }

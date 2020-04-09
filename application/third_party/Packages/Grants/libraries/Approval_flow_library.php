@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-class Workflow_library extends Grants
+class Approval_flow_library extends Grants
 {
 
   private $CI;

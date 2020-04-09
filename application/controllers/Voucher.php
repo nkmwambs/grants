@@ -230,7 +230,7 @@ class Voucher extends MY_Controller
   // Custom voucher form functions
 
   function voucher_type_effect_and_code($voucher_type_id){
-    $this->db->select(array('voucher_type_account_code','voucher_type_effect_code','voucher_type_account_code '));
+    $this->db->select(array('voucher_type_account_code','voucher_type_effect_code'));
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
     $voucher_type_effect_and_code = $this->db->get_where('voucher_type',array('voucher_type_id'=>$voucher_type_id))->row();
@@ -285,8 +285,9 @@ class Voucher extends MY_Controller
       $response['approved_requests'] = count($this->voucher_model->get_approved_unvouched_request_details($office_id));
       
       $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name','expense_account_code as account_code'));
+      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
       $response['accounts'] = $this->db->get_where('expense_account',
-      array('expense_account_is_active'=>1))->result_object();
+      array('expense_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system->fk_account_system_id))->result_object();
     
     }elseif($voucher_type_effect == 'cash_contra'){
 
@@ -314,8 +315,12 @@ class Voucher extends MY_Controller
     
     //echo $office_id;
     $this->db->select(array('office_bank_id','bank_name','office_bank_account_number '));
+  
     $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
     $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
+    
+    //$this->grants_model->create_table_join_statement_with_depth('office_bank',['bank_branch','bank']);
+
     $office_banks = $this->db->get_where('office_bank',
     array('fk_office_id'=>$office_id,'office_bank_is_active'=>1))->result_object();
 
@@ -369,7 +374,7 @@ class Voucher extends MY_Controller
     $office_id = $this->input->post('office_id');
 
     $next_vouching_date = $this->voucher_model->get_voucher_date($office_id);
-    $last_vouching_month_date = date('Y-m-t',strtotime($this->voucher_model->get_voucher_date($office_id)));
+    $last_vouching_month_date = date('Y-m-t',strtotime($next_vouching_date));
     
     $voucher_date_field_dates = ['next_vouching_date'=>$next_vouching_date,'last_vouching_month_date'=>$last_vouching_month_date];
   

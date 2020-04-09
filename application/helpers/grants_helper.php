@@ -159,7 +159,7 @@ if( ! function_exists('create_breadcrumb') ){
 		$string = '<b>'.get_phrase('you_are_here').":</b> ";
 
 		foreach ($breadcrumb_list as $menuItem) {
-			$string .= '<a href="'.base_url().ucfirst($menuItem).'/list">'.get_phrase($menuItem).'</a> <i style="font-size:15pt;font-weight:bolder;" class="fa fa-angle-right"></i> ';
+			$string .= '<a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a> <i style="font-size:15pt;font-weight:bolder;" class="fa fa-angle-right"></i> ';
 		}
 
 		return $string;

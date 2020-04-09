@@ -22,7 +22,7 @@
                     if( $this->grants->is_primary_key_field($this->controller,$column) == true ||
                         $this->grants->is_history_tracking_field($this->controller,$column) ||
                         $column == 'approval_name' ||
-                        $column == 'status_name'
+                        ($column == 'status_name' && $this->controller != 'status')
                     ){
                       continue;
                     }

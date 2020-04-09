@@ -396,6 +396,7 @@ function generate_item_track_number_and_name($approveable_item){
     $approve_item_id = $this->db->get_where('approve_item',
       array('approve_item_name'=>strtolower($approve_item_name)))->row()->approve_item_id;
 
+      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $status = $this->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
 
     if($status->num_rows() == 0){
@@ -403,7 +404,7 @@ function generate_item_track_number_and_name($approveable_item){
       $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
       $status_data['fk_workflow_id'] = 0;
       $status_data['status_name'] = get_phrase('new');
-      $status_data['fk_approve_item_id'] = $approve_item_id;
+      //$status_data['fk_approve_item_id'] = $approve_item_id;
       $status_data['status_approval_sequence'] = 1;
       $status_data['status_approval_direction'] = 1;
       $status_data['status_is_requiring_approver_action'] = 0;
@@ -483,7 +484,7 @@ function mandatory_fields(String $table): Void{
       }
 
       // Check is the the table has a status with status_approval_sequence 1 if not create it with status name
-
+      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $status = $this->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
 
       $status_id = 0;
@@ -561,6 +562,125 @@ function create_table_join_statement(String $table,Array $lookup_tables){
     }
   }
 
+}
+
+function create_table_join_statement_with_depth($base_table,$labeled_tables){
+ 
+//https://codeigniter.com/userguide3/database/query_builder.html
+//$this->db->reset_query();
+
+ $join_array = $this->_create_table_join_statement_with_depth($base_table,$labeled_tables);
+ 
+  foreach($join_array as $join_tables_depth){
+    foreach($join_tables_depth as $primary_table => $join_tables){
+        foreach($join_tables as $join_table){
+            $this->db->join($join_table,$join_table.'.'.$join_table.'_id='.$primary_table.'.fk_'.$join_table.'_id');
+        }
+    }   
+ }
+
+}
+
+function test_create_table_join_statement_with_depth($base_table,$labeled_tables){
+ 
+  //https://codeigniter.com/userguide3/database/query_builder.html
+  //$this->db->reset_query();
+
+  $str = "";
+  
+   $join_array = $this->_create_table_join_statement_with_depth($base_table,$labeled_tables);
+   
+    foreach($join_array as $join_tables_depth){
+      foreach($join_tables_depth as $primary_table => $join_tables){
+          foreach($join_tables as $join_table){
+              $this->db->join($join_table,$join_table.'.'.$join_table.'_id='.$primary_table.'.fk_'.$join_table.'_id');
+          }
+      }   
+   }
+   
+   //return $str;
+  }
+
+
+function _create_table_join_statement_with_depth($base_table,$labeled_tables){
+  
+  $leveled_fields[1][$base_table] = [];
+
+  foreach($labeled_tables as $labeled_table){
+    if(in_array("fk_".$labeled_table."_id",$this->get_all_table_fields($base_table))){
+      unset($labeled_tables[array_search($labeled_table,$labeled_tables)]);
+      $level_one_labeled_tables = $labeled_tables;
+      array_push($leveled_fields[1][$base_table],$labeled_table);
+
+      
+      //Second Level
+      if(count($level_one_labeled_tables) == 0) break;
+      foreach($leveled_fields[1][$base_table] as $level_two_base_table){
+        $leveled_fields[2][$level_two_base_table] = [];
+         foreach($level_one_labeled_tables as $level_two_labeled_table){
+          if(in_array('fk_'.$level_two_labeled_table.'_id',$this->get_all_table_fields($level_two_base_table))){
+              unset($level_one_labeled_tables[array_search($level_two_labeled_table,$level_one_labeled_tables)]);
+              $level_two_labeled_tables = $level_one_labeled_tables;
+              array_push($leveled_fields[2][$level_two_base_table],$level_two_labeled_table);
+
+            
+              //Third Level
+              if(count($level_two_labeled_tables) == 0) break;
+              foreach($leveled_fields[2][$level_two_base_table] as $level_three_base_table){
+                $leveled_fields[3][$level_three_base_table] = [];
+                  foreach($level_two_labeled_tables as $level_three_labeled_table){
+                    if(in_array('fk_'.$level_three_labeled_table.'_id',$this->get_all_table_fields($level_three_base_table))){
+                      unset($level_two_labeled_tables[array_search($level_three_labeled_table,$level_two_labeled_tables)]);
+                      $level_three_labeled_tables = $level_two_labeled_tables;
+                      array_push($leveled_fields[3][$level_three_base_table],$level_three_labeled_table);
+
+
+                      // Fourth level
+                      if(count($level_three_labeled_tables) == 0) break;
+                      foreach($leveled_fields[3][$level_three_base_table] as $level_four_base_table){
+                        $leveled_fields[4][$level_four_base_table] = [];
+                        foreach($level_three_labeled_tables as $level_four_labeled_table){
+                          if(in_array('fk_'.$level_four_labeled_table.'_id',$this->get_all_table_fields($level_four_base_table))){
+                            unset($level_three_labeled_tables[array_search($level_four_labeled_table,$level_three_labeled_tables)]);
+                            $level_four_labeled_tables = $level_three_labeled_tables;
+                            array_push($leveled_fields[4][$level_four_base_table],$level_four_labeled_table);
+
+                            
+                            // Fifth level
+                            if(count($level_four_labeled_tables) == 0) break;
+                            foreach($leveled_fields[4][$level_three_base_table] as $level_five_base_table){
+                              $leveled_fields[5][$level_five_base_table] = [];
+                              foreach($level_four_labeled_tables as $level_five_labeled_table){
+                                if(in_array('fk_'.$level_five_labeled_table.'_id',$this->get_all_table_fields($level_five_base_table))){
+                                  unset($level_four_labeled_tables[array_search($level_five_labeled_table,$level_four_labeled_tables)]);
+                                  $level_five_labeled_tables = $level_four_labeled_tables;
+                                  array_push($leveled_fields[5][$level_five_base_table],$level_five_labeled_table);
+
+
+                                  //Sixth Level
+                                }
+                              }
+                            }
+
+
+
+
+                          }
+                        }
+                      } 
+                      
+                    }
+                  }
+              }
+              
+          }
+        }
+      }
+      //return $labeled_tables;
+    }
+  }
+  
+  return $leveled_fields;
 }
 
 function get_record_office_id($table,$primary_key){
@@ -661,6 +781,14 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
 
   // Run column selector
   $this->db->select($selected_columns);
+ 
+  // Model defined where condition
+  $model = $table.'_model';
+  $this->load->model($model);
+
+  if(method_exists($this->$model,$model_where_method)){
+    $this->$model->$model_where_method();
+  }
 
   if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
     foreach ($lookup_tables as $lookup_table) {
@@ -674,18 +802,14 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
     }
   }
 
+  
+
   //View OUTPUT API defined condition array
   if(is_array($filter_where_array) && count($filter_where_array) > 0){
     $this->db->where($filter_where_array);
   }
   
-  // Model defined where condition
-  $model = $table.'_model';
-  $this->load->model($model);
-
-  if(method_exists($this->$model,$model_where_method)){
-    $this->$model->$model_where_method();
-  }
+  
 }
 
 /**
@@ -1052,6 +1176,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
     if($approveable_item->num_rows() > 0 ){
       $approveable_item_id = $approveable_item->row()->approve_item_id;
+      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $initial_status = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id,
       'status_approval_sequence'=>1));
 

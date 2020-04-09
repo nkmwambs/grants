@@ -51,14 +51,16 @@ class General_model extends CI_Model{
 
 function range_of_status_approval_sequence($approve_item_name){
   $this->db->select('MAX(status_approval_sequence) as status_approval_sequence');
-  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+  $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+  $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
   $max_range = $this->db->get_where('status',array('approve_item_name'=>$approve_item_name))->row()->status_approval_sequence;
   return $max_range;
 }
 
 function get_approveable_item_id_by_status($item_status){
     $this->db->select(array('approve_item_id'));
-    $this->db->join('status','status.fk_approve_item_id=approve_item.approve_item_id');
+    $this->db->join('approval_flow','approval_flow.fk_approve_item_id=approve_item.approve_item_id');
+    $this->db->join('status','status.fk_approval_flow_id=approval_flow.approval_flow_id');
     $result =  $this->db->get_where('approve_item',array('status_id'=>$item_status))->row()->approve_item_id;
 
     return $result;
@@ -67,7 +69,8 @@ function get_approveable_item_id_by_status($item_status){
 function get_approve_item_name_by_status($item_status){
 
   $this->db->select(array('approve_item_name'));
-  $this->db->join('status','status.fk_approve_item_id=approve_item.approve_item_id');
+  $this->db->join('approval_flow','approval_flow.fk_approve_item_id=approve_item.approve_item_id');
+  $this->db->join('status','status.fk_approval_flow_id=approval_flow.approval_flow_id');
   $result =  $this->db->get_where('approve_item',
   array('status_id'=>$item_status))->row()->approve_item_name;
 
@@ -99,6 +102,7 @@ function next_approval_actor($item_status){
   $next_status_record = array();
   if($next_possible_sequence_number < $range_of_status_approval_sequence){
 
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $next_status_record = $this->db->get_where('status',
     array('status_approval_sequence'=>$next_possible_sequence_number,
     'fk_approve_item_id'=>$approveable_item_id))->row_array();
@@ -145,6 +149,7 @@ function current_approval_actor($item_status){
 
   // Check if backflow is gt 0 and if yes get record role id of its sequence
   if($status_record_backflow > 0){
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $status_record_role_id = $this->db->get_where('status',
       array('status_approval_sequence'=>$status_record_backflow,
       'fk_approve_item_id'=>$approveable_item_id))->row()->fk_role_id;
@@ -257,6 +262,7 @@ function next_status($item_status){
     
     $next_approval_seq = $status_approval_sequence + 1;
     
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $next_status_id_obj = $this->db->get_where('status',
     array('status_approval_sequence'=>$next_approval_seq,
     'fk_approve_item_id'=>$approveable_item_id));
@@ -272,6 +278,7 @@ function next_status($item_status){
   //Check if the backflow seq > 0 and get and return its status id or else return the record status id
   if($backflow_sequence > 0){
 
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $next_status_id = $this->db->get_where('status',
     array('status_approval_sequence'=>$status_approval_sequence,
     'fk_approve_item_id'=>$approveable_item_id,'status_approval_direction'=>0))->row()->status_id;
@@ -294,6 +301,7 @@ function decline_status($item_status){
   $approval_sequence = $status_record->status_approval_sequence;
   
   // Decline status
+  $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
   $decline_status_record = $this->db->get_where('status',
   array('status_approval_sequence'=>$approval_sequence,'status_approval_direction'=>-1,
   'fk_approve_item_id'=>$approveable_item_id));
@@ -393,24 +401,29 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
 function get_max_approval_status_id(String $approveable_item):Int{
   $max_status_id = 0;
 
+  //https://codeigniter.com/userguide3/database/query_builder.html
+  $this->db->reset_query();
   //Get the maximum status_approval_sequence of an approveable item
-
-  $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
-  $max_status_approval_sequence_obj = $this->db
-  ->select_max('status_approval_sequence')
-  //->select("max(status_approval_sequence) as status_approval_sequence")
+  $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+  $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
+  
+  $max_status_approval_sequence_obj = $this->db->select_max('status_approval_sequence')
   ->get_where('status',array('approve_item_name'=>$approveable_item));
 
   if($max_status_approval_sequence_obj->num_rows() >0){
     // Get the status_id
     $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
     $this->db->select('status_id');
-    $this->db->join('approve_item','approve_item.approve_item_id=status.fk_approve_item_id');
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+    $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
 
     $max_status_id = $this->db->get_where('status',
     array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
+  
   }
+  
   return $max_status_id;
+ 
 }
 
 /**
@@ -449,7 +462,8 @@ function has_approval_status_been_set(String $approveable_item):Bool{
 
   $has_approval_status_been_set = false;
 
-  $this->db->join('approve_item','approve_item_id=status.fk_approve_item_id');
+  $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+  $this->db->join('approve_item','approve_item_id=approval_flow.fk_approve_item_id');
   $count_of_status = $this->db
   ->get_where('status',array('approve_item_name'=>$approveable_item))
   ->num_rows();
@@ -482,7 +496,7 @@ function check_if_item_has_max_status_by_created_date(Object $approveable_item,S
   if($approveable_item->approve_item_is_active){
     // The use of the status_check_date  is to prevent a new final status created in later days
     // affect old vouchers appearance or disappearance from the journal
-
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $max_status_approval_sequence = $this->db->select_max('status_approval_sequence')->
     get_where('status',
     array('fk_approve_item_id'=>$approveable_item->approve_item_id,
@@ -490,6 +504,7 @@ function check_if_item_has_max_status_by_created_date(Object $approveable_item,S
     'status_created_date <= '=>$item_created_date))->row();
   
     if(!empty($max_status_approval_sequence->status_approval_sequence)){
+      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $max_status_id = $this->db->get_where('status',
       array('status_approval_sequence'=>$max_status_approval_sequence->status_approval_sequence,
       'fk_approve_item_id'=>$approveable_item->approve_item_id))->row()->status_id;
@@ -509,7 +524,8 @@ function check_if_item_has_max_status_by_created_date(Object $approveable_item,S
 function get_item_max_status_by_created_date(String $item,String $item_created_date):int{
 
     $approveable_item = $this->db->get_where('approve_item',array('approve_item_name'=>$item))->row();
-
+    
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $max_status_approval_sequence = $this->db->select_max('status_approval_sequence')->
     get_where('status',
     array('fk_approve_item_id'=>$approveable_item->approve_item_id,
@@ -517,6 +533,8 @@ function get_item_max_status_by_created_date(String $item,String $item_created_d
     'status_created_date <= '=>$item_created_date))->row();
 
     if(!empty($max_status_approval_sequence->status_approval_sequence)){
+      
+      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $max_status_id = $this->db->get_where('status',
       array('status_approval_sequence'=>$max_status_approval_sequence->status_approval_sequence,
       'fk_approve_item_id'=>$approveable_item->approve_item_id))->row()->status_id;
