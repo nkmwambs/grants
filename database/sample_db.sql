@@ -509,7 +509,76 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (2395,	'APAL-31774',	'Approval Ticket # APAL-31774',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:56:44',	1),
 (2396,	'APAL-74564',	'Approval Ticket # APAL-74564',	340,	87,	1,	'2020-04-03',	'2020-04-03 18:58:52',	1),
 (2397,	'APAL-4134',	'Approval Ticket # APAL-4134',	340,	87,	1,	'2020-04-03',	'2020-04-03 19:08:43',	1),
-(2398,	'APAL-65475',	'Approval Ticket # APAL-65475',	340,	87,	1,	'2020-04-03',	'2020-04-03 19:09:34',	1);
+(2398,	'APAL-65475',	'Approval Ticket # APAL-65475',	340,	87,	1,	'2020-04-03',	'2020-04-03 19:09:34',	1),
+(2400,	'APAL-59160',	'Approval Ticket # APAL-59160',	354,	87,	1,	'2020-04-05',	'2020-04-05 05:43:21',	1),
+(2427,	'APAL-26980',	'Approval Ticket # APAL-26980',	354,	87,	1,	'2020-04-05',	'2020-04-05 05:55:26',	1),
+(2428,	'APAL-47111',	'Approval Ticket # APAL-47111',	313,	87,	1,	'2020-04-05',	'2020-04-05 05:55:40',	1),
+(2429,	'APAL-2940',	'Approval Ticket # APAL-2940',	354,	87,	1,	'2020-04-05',	'2020-04-05 05:55:40',	1),
+(2433,	'APAL-62676',	'Approval Ticket # APAL-62676',	318,	87,	1,	'2020-04-05',	'2020-04-05 05:59:11',	1),
+(2434,	'APAL-49906',	'Approval Ticket # APAL-49906',	318,	87,	1,	'2020-04-05',	'2020-04-05 06:00:19',	1),
+(2435,	'APAL-15999',	'Approval Ticket # APAL-15999',	318,	87,	1,	'2020-04-05',	'2020-04-05 06:00:42',	1),
+(2436,	'APAL-56246',	'Approval Ticket # APAL-56246',	318,	87,	1,	'2020-04-05',	'2020-04-05 06:00:52',	1),
+(2437,	'APAL-22040',	'Approval Ticket # APAL-22040',	318,	87,	1,	'2020-04-05',	'2020-04-05 06:01:19',	1),
+(2438,	'APAL-58170',	'Approval Ticket # APAL-58170',	318,	87,	1,	'2020-04-05',	'2020-04-05 06:02:09',	1),
+(2439,	'APAL-32273',	'Approval Ticket # APAL-32273',	318,	87,	1,	'2020-04-05',	'2020-04-05 06:03:33',	1),
+(2440,	'APAL-88273',	'Approval Ticket # APAL-88273',	313,	87,	1,	'2020-04-05',	'2020-04-05 06:03:33',	1),
+(2441,	'APAL-54640',	'Approval Ticket # APAL-54640',	354,	87,	1,	'2020-04-05',	'2020-04-05 06:03:33',	1),
+(2445,	'APAL-74771',	'Approval Ticket # APAL-74771',	314,	87,	1,	'2020-04-06',	'2020-04-06 05:34:05',	1),
+(2446,	'APAL-89149',	'Approval Ticket # APAL-89149',	363,	87,	1,	'2020-04-09',	'2020-04-09 07:22:41',	1),
+(2447,	'APAL-77926',	'Approval Ticket # APAL-77926',	363,	87,	1,	'2020-04-09',	'2020-04-09 07:32:45',	1),
+(2448,	'APAL-37921',	'Approval Ticket # APAL-37921',	363,	87,	1,	'2020-04-09',	'2020-04-09 07:35:10',	1),
+(2449,	'APAL-68196',	'Approval Ticket # APAL-68196',	363,	87,	1,	'2020-04-09',	'2020-04-09 07:37:56',	1),
+(2450,	'APAL-18122',	'Approval Ticket # APAL-18122',	346,	87,	1,	'2020-04-09',	'2020-04-09 12:13:19',	1),
+(2451,	'APAL-86285',	'Approval Ticket # APAL-86285',	346,	87,	1,	'2020-04-09',	'2020-04-09 12:47:22',	1),
+(2452,	'APAL-82297',	'Approval Ticket # APAL-82297',	346,	87,	1,	'2020-04-09',	'2020-04-09 15:34:55',	1),
+(2453,	'APAL-37017',	'Approval Ticket # APAL-37017',	363,	87,	1,	'2020-04-09',	'2020-04-09 16:12:13',	1),
+(2454,	'APAL-71250',	'Approval Ticket # APAL-71250',	364,	87,	1,	'2020-04-09',	'2020-04-09 16:12:49',	1),
+(2455,	'APAL-79541',	'Approval Ticket # APAL-79541',	363,	87,	1,	'2020-04-09',	'2020-04-09 16:22:51',	1),
+(2456,	'APAL-71347',	'Approval Ticket # APAL-71347',	364,	87,	1,	'2020-04-09',	'2020-04-09 16:23:26',	1),
+(2457,	'APAL-89599',	'Approval Ticket # APAL-89599',	363,	87,	1,	'2020-04-09',	'2020-04-09 16:25:22',	1),
+(2458,	'APAL-43315',	'Approval Ticket # APAL-43315',	364,	87,	1,	'2020-04-09',	'2020-04-09 16:26:00',	1);
+
+DROP TABLE IF EXISTS `approval_flow`;
+CREATE TABLE `approval_flow` (
+  `approval_flow_id` int(100) NOT NULL AUTO_INCREMENT,
+  `approval_flow_name` varchar(100) NOT NULL,
+  `approval_flow_track_number` varchar(100) NOT NULL,
+  `fk_approve_item_id` int(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `approval_flow_created_by` int(100) NOT NULL,
+  `approval_flow_created_date` date NOT NULL,
+  `approval_flow_last_modified_by` int(100) NOT NULL,
+  `approval_flow_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`approval_flow_id`),
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `approval_flow_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
+  CONSTRAINT `approval_flow_ibfk_2` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `approval_flow` (`approval_flow_id`, `approval_flow_name`, `approval_flow_track_number`, `fk_approve_item_id`, `fk_account_system_id`, `approval_flow_created_by`, `approval_flow_created_date`, `approval_flow_last_modified_by`, `approval_flow_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(3,	'KE Voucher Approval ',	'APOW-43054',	354,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(5,	'KE Office Approval ',	'APOW-43055',	20,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(6,	'KE Context Global Approval ',	'APOW-43056',	42,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(7,	'KE Context Region Approval ',	'APOW-43057',	43,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(8,	'KE Context Country Approval ',	'APOW-43058',	44,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(9,	'KE Designation Approval ',	'APOW-43059',	51,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(10,	'KE Approve Approval ',	'APOW-43060',	62,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(11,	'KE Context Global User Approval ',	'APOW-43061',	54,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(12,	'KE Context Cluster Approval ',	'APOW-43062',	41,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(13,	'KE Context Cohort Approval ',	'APOW-43063',	45,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(14,	'KE Bank Branch Approval ',	'APOW-43064',	299,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(15,	'KE Budget Approval ',	'APOW-43065',	301,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(16,	'KE Budget Item Detail Approval ',	'APOW-43066',	303,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(17,	'KE Context Definition Approval ',	'APOW-43067',	309,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(18,	'KE Department Approval ',	'APOW-43068',	310,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(19,	'KE Department User Approval ',	'APOW-43069',	311,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(20,	'KE Project Allocation Approval ',	'APOW-43070',	337,	2,	1,	'2020-04-09',	1,	'2020-04-09 07:35:10',	2448,	0),
+(21,	'KE Financial Report Approval',	'APOW-77550',	313,	2,	1,	'2020-04-09',	1,	'2020-04-09 16:12:13',	2453,	0),
+(22,	'KE Funder Approval Flow',	'APOW-36643',	314,	2,	1,	'2020-04-09',	1,	'2020-04-09 16:22:51',	2455,	0),
+(23,	'KE Projects Approval Flow',	'APOW-33565',	336,	2,	1,	'2020-04-09',	1,	'2020-04-09 16:25:22',	2457,	0);
 
 DROP TABLE IF EXISTS `approve_item`;
 CREATE TABLE `approve_item` (
@@ -560,7 +629,7 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (310,	'',	'department',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
 (311,	'',	'department_user',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
 (312,	'',	'expense_account',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(313,	'',	'financial_report',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
+(313,	'',	'financial_report',	1,	'2020-03-23',	1,	'2020-04-04 15:55:49',	1,	NULL,	NULL),
 (314,	'',	'funder',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
 (315,	'',	'funding_status',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
 (316,	'',	'history',	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
@@ -609,7 +678,9 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (359,	'',	'workflow',	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
 (360,	'',	'workplan',	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
 (361,	'',	'workplan_task',	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(362,	'',	'contra_account',	0,	'2020-03-26',	1,	'2020-03-26 08:09:33',	1,	NULL,	NULL);
+(362,	'',	'contra_account',	0,	'2020-03-26',	1,	'2020-03-26 08:09:33',	1,	NULL,	NULL),
+(363,	'',	'approval_flow',	0,	'2020-04-09',	1,	'2020-04-09 07:11:33',	1,	NULL,	NULL),
+(364,	'',	'Status',	0,	'2020-04-09',	1,	'2020-04-09 16:12:28',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
@@ -1108,12 +1179,12 @@ CREATE TABLE `context_definition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `context_definition` (`context_definition_id`, `context_definition_track_number`, `context_definition_name`, `context_definition_level`, `context_definition_is_implementing`, `context_definition_is_active`, `context_definition_created_date`, `context_definition_last_modified_date`, `context_definition_created_by`, `context_definition_last_modified_by`, `context_definition_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
-(8,	'CEHY-27364',	'cluster',	2,	1,	1,	'2019-11-21',	'2019-11-21 06:49:58',	1,	1,	NULL,	433,	326),
+(8,	'CEHY-27364',	'cluster',	2,	0,	1,	'2019-11-21',	'2019-11-21 06:49:58',	1,	1,	NULL,	433,	326),
 (9,	'CEHY-40087',	'cohort',	3,	0,	1,	'2019-11-21',	'2019-11-21 06:50:26',	1,	1,	NULL,	433,	326),
 (10,	'CEHY-76588',	'country',	4,	0,	1,	'2019-11-21',	'2019-11-21 06:50:34',	1,	1,	NULL,	433,	326),
 (11,	'CEHY-37430',	'region',	5,	0,	1,	'2019-11-21',	'2019-11-21 06:50:43',	1,	1,	NULL,	433,	326),
 (12,	'CEHY-72349',	'global',	6,	0,	1,	'2019-11-21',	'2019-11-21 06:50:52',	1,	1,	NULL,	433,	326),
-(13,	'CEHY-56809',	'center',	1,	0,	1,	'2019-11-21',	'2019-11-21 16:39:07',	1,	1,	NULL,	433,	326);
+(13,	'CEHY-56809',	'center',	1,	1,	1,	'2019-11-21',	'2019-11-21 16:39:07',	1,	1,	NULL,	433,	326);
 
 DROP TABLE IF EXISTS `context_global`;
 CREATE TABLE `context_global` (
@@ -1394,9 +1465,9 @@ CREATE TABLE `financial_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `financial_report` (`financial_report_id`, `financial_report_track_number`, `financial_report_name`, `financial_report_month`, `fk_office_id`, `financial_report_statement_balance`, `financial_report_statement_date`, `financial_report_is_submitted`, `financial_report_created_date`, `financial_report_created_by`, `financial_report_last_modified_by`, `financial_report_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'FIRT-42206',	'Financial_report # FIRT-45548',	'2020-03-01',	29,	415250,	'2020-03-31',	1,	'2020-03-24',	1,	1,	NULL,	2353,	331),
-(2,	'FIRT-30181',	'Financial_report # FIRT-78548',	'2020-03-01',	27,	4501,	'2020-03-31',	0,	'2020-03-26',	1,	1,	NULL,	2360,	331);
-
+(1,	'FIRT-42206',	'Financial_report # FIRT-45548',	'2020-03-01',	29,	415250,	'2020-03-31',	1,	'2020-03-24',	1,	1,	NULL,	2353,	374),
+(2,	'FIRT-30181',	'Financial_report # FIRT-78548',	'2020-03-01',	27,	4501,	'2020-03-31',	0,	'2020-03-26',	1,	1,	NULL,	2360,	374),
+(12,	'FIRT-17013',	'Financial_report # FIRT-26758',	'2020-04-01',	29,	0,	'0000-00-00',	0,	'2020-04-05',	1,	1,	NULL,	2440,	374);
 
 DROP TABLE IF EXISTS `funder`;
 CREATE TABLE `funder` (
@@ -1416,7 +1487,8 @@ CREATE TABLE `funder` (
 
 INSERT INTO `funder` (`funder_id`, `funder_track_number`, `funder_name`, `funder_description`, `funder_created_date`, `funder_last_modified_date`, `funder_created_by`, `funder_last_modified_by`, `funder_deleted_at`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'FUER-6082',	'Global Image',	'Global Image',	'2020-03-23',	NULL,	1,	1,	NULL,	2298,	332),
-(2,	'FUER-77395',	'AWAKE',	'AWAKE Fund',	'2020-03-24',	NULL,	1,	1,	NULL,	2347,	332);
+(2,	'FUER-77395',	'AWAKE',	'AWAKE Fund',	'2020-03-24',	NULL,	1,	1,	NULL,	2347,	332),
+(3,	'FUER-32267',	'Instant Funders',	'Instant Funders',	'2020-04-06',	NULL,	1,	1,	NULL,	2445,	332);
 
 DROP TABLE IF EXISTS `funding_status`;
 CREATE TABLE `funding_status` (
@@ -1476,7 +1548,7 @@ CREATE TABLE `income_account` (
 
 INSERT INTO `income_account` (`income_account_id`, `income_account_track_number`, `income_account_name`, `income_account_description`, `income_account_code`, `income_account_is_active`, `income_account_is_budgeted`, `income_account_is_donor_funded`, `fk_account_system_id`, `income_account_created_date`, `income_account_last_modified_date`, `income_account_created_by`, `income_account_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'INNT-86711',	'Income Account 1',	'Income Account 1',	'R100',	1,	1,	0,	2,	'2020-03-24',	NULL,	1,	1,	2336,	335),
-(2,	'INNT-59988',	'Income Account 2',	'Income Account 2',	'R200',	1,	1,	0,	2,	'2020-03-24',	NULL,	1,	1,	2337,	335),
+(2,	'INNT-59988',	'Income Account 2',	'Income Account 2',	'R200',	1,	1,	0,	1,	'2020-03-24',	NULL,	1,	1,	2337,	335),
 (3,	'INNT-85259',	'Income Account 3',	'Income Account 3',	'R300',	1,	1,	0,	2,	'2020-03-24',	NULL,	1,	1,	2338,	335);
 
 DROP TABLE IF EXISTS `journal`;
@@ -1499,7 +1571,8 @@ CREATE TABLE `journal` (
 
 INSERT INTO `journal` (`journal_id`, `journal_track_number`, `journal_name`, `journal_month`, `fk_office_id`, `journal_created_date`, `journal_created_by`, `journal_last_modified_by`, `journal_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'JOAL-58690',	'Journal # JOAL-25751',	'2020-03-01',	29,	'2020-03-24',	1,	1,	NULL,	2352,	336),
-(2,	'JOAL-44766',	'Journal # JOAL-73734',	'2020-03-01',	27,	'2020-03-26',	1,	1,	NULL,	2359,	336);
+(2,	'JOAL-44766',	'Journal # JOAL-73734',	'2020-03-01',	27,	'2020-03-26',	1,	1,	NULL,	2359,	336),
+(4,	'JOAL-31930',	'Journal # JOAL-26614',	'2020-04-01',	29,	'2020-04-05',	1,	1,	NULL,	2439,	336);
 
 DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
@@ -1601,8 +1674,8 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (560,	'Transaction_effect',	'Transaction_effect',	1,	NULL,	'2020-03-23 16:56:25',	NULL,	NULL,	NULL,	NULL),
 (561,	'Translation',	'Translation',	1,	NULL,	'2020-03-23 16:56:25',	NULL,	NULL,	NULL,	NULL),
 (562,	'Variance_note',	'Variance_note',	1,	NULL,	'2020-03-23 16:56:25',	NULL,	NULL,	NULL,	NULL),
-(563,	'Workflow',	'Workflow',	1,	NULL,	'2020-03-23 16:56:25',	NULL,	NULL,	NULL,	NULL),
-(564,	'Contra_account',	'Contra_account',	1,	NULL,	'2020-03-26 08:09:35',	NULL,	NULL,	NULL,	NULL);
+(564,	'Contra_account',	'Contra_account',	1,	NULL,	'2020-03-26 08:09:35',	NULL,	NULL,	NULL,	NULL),
+(565,	'Approval_flow',	'Approval_flow',	1,	NULL,	'2020-04-09 07:11:22',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -1671,7 +1744,6 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `menu_user_or
 (1795,	1,	NULL,	NULL,	560,	1,	36,	0,	NULL,	'2020-03-30 13:24:36',	NULL,	NULL,	NULL,	NULL),
 (1796,	1,	NULL,	NULL,	561,	1,	37,	0,	NULL,	'2020-03-30 13:24:36',	NULL,	NULL,	NULL,	NULL),
 (1797,	1,	NULL,	NULL,	562,	1,	38,	0,	NULL,	'2020-03-30 13:24:36',	NULL,	NULL,	NULL,	NULL),
-(1798,	1,	NULL,	NULL,	563,	1,	39,	0,	NULL,	'2020-03-30 13:24:36',	NULL,	NULL,	NULL,	NULL),
 (1799,	1,	NULL,	NULL,	564,	1,	40,	0,	NULL,	'2020-03-30 13:24:36',	NULL,	NULL,	NULL,	NULL),
 (1800,	2,	NULL,	NULL,	380,	1,	1,	1,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
 (1801,	2,	NULL,	NULL,	381,	1,	2,	1,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
@@ -1718,8 +1790,8 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `menu_user_or
 (1842,	2,	NULL,	NULL,	560,	1,	43,	0,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
 (1843,	2,	NULL,	NULL,	561,	1,	44,	0,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
 (1844,	2,	NULL,	NULL,	562,	1,	45,	0,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
-(1845,	2,	NULL,	NULL,	563,	1,	46,	0,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
-(1846,	2,	NULL,	NULL,	564,	1,	47,	0,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL);
+(1846,	2,	NULL,	NULL,	564,	1,	47,	0,	NULL,	'2020-03-31 04:41:26',	NULL,	NULL,	NULL,	NULL),
+(1847,	1,	NULL,	NULL,	565,	1,	95,	0,	NULL,	'2020-04-09 07:11:22',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -1853,7 +1925,9 @@ CREATE TABLE `office_bank` (
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`office_bank_id`),
   KEY `fk_office_id` (`fk_office_id`),
-  CONSTRAINT `office_bank_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
+  KEY `fk_bank_branch_id` (`fk_bank_branch_id`),
+  CONSTRAINT `office_bank_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `office_bank_ibfk_2` FOREIGN KEY (`fk_bank_branch_id`) REFERENCES `bank_branch` (`bank_branch_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `office_bank` (`office_bank_id`, `office_bank_track_number`, `office_bank_name`, `office_bank_account_number`, `fk_office_id`, `fk_bank_branch_id`, `office_bank_is_active`, `office_bank_created_date`, `office_bank_created_by`, `office_bank_last_modified_date`, `office_bank_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
@@ -2075,191 +2149,6 @@ CREATE TABLE `permission` (
   CONSTRAINT `permission_ibfk_7` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `permission` (`permission_id`, `permission_track_number`, `permission_name`, `permission_description`, `permission_is_active`, `fk_permission_label_id`, `permission_type`, `permission_field`, `fk_menu_id`, `fk_approval_id`, `fk_status_id`, `permission_created_date`, `permission_created_by`, `permission_deleted_at`, `permission_last_modified_date`, `permission_last_modified_by`) VALUES
-(1641,	'PEON-41870',	'Create Approval',	'Create Approval',	1,	1,	1,	'0',	380,	2097,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1642,	'PEON-18328',	'Read Approval',	'Read Approval',	1,	2,	1,	'0',	380,	2098,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1643,	'PEON-33210',	'Update Approval',	'Update Approval',	1,	3,	1,	'0',	380,	2099,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1644,	'PEON-52725',	'Delete Approval',	'Delete Approval',	1,	4,	1,	'0',	380,	2100,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1645,	'PEON-78772',	'Create Bank',	'Create Bank',	1,	1,	1,	'0',	381,	2101,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1646,	'PEON-84398',	'Read Bank',	'Read Bank',	1,	2,	1,	'0',	381,	2102,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1647,	'PEON-17457',	'Update Bank',	'Update Bank',	1,	3,	1,	'0',	381,	2103,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1648,	'PEON-27731',	'Delete Bank',	'Delete Bank',	1,	4,	1,	'0',	381,	2104,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1649,	'PEON-60613',	'Create Budget',	'Create Budget',	1,	1,	1,	'0',	382,	2105,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1650,	'PEON-78634',	'Read Budget',	'Read Budget',	1,	2,	1,	'0',	382,	2106,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1651,	'PEON-40372',	'Update Budget',	'Update Budget',	1,	3,	1,	'0',	382,	2107,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1652,	'PEON-78614',	'Delete Budget',	'Delete Budget',	1,	4,	1,	'0',	382,	2108,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1653,	'PEON-34535',	'Create Dashboard',	'Create Dashboard',	1,	1,	1,	'0',	384,	2109,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1654,	'PEON-62419',	'Read Dashboard',	'Read Dashboard',	1,	2,	1,	'0',	384,	2110,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1655,	'PEON-56655',	'Update Dashboard',	'Update Dashboard',	1,	3,	1,	'0',	384,	2111,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1656,	'PEON-33132',	'Delete Dashboard',	'Delete Dashboard',	1,	4,	1,	'0',	384,	2112,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:46',	1),
-(1657,	'PEON-79582',	'Create Funder',	'Create Funder',	1,	1,	1,	'0',	385,	2113,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1658,	'PEON-34922',	'Read Funder',	'Read Funder',	1,	2,	1,	'0',	385,	2114,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1659,	'PEON-89230',	'Update Funder',	'Update Funder',	1,	3,	1,	'0',	385,	2115,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1660,	'PEON-42829',	'Delete Funder',	'Delete Funder',	1,	4,	1,	'0',	385,	2116,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1661,	'PEON-74423',	'Create Journal',	'Create Journal',	1,	1,	1,	'0',	386,	2117,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1662,	'PEON-38936',	'Read Journal',	'Read Journal',	1,	2,	1,	'0',	386,	2118,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1663,	'PEON-52259',	'Update Journal',	'Update Journal',	1,	3,	1,	'0',	386,	2119,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1664,	'PEON-6324',	'Delete Journal',	'Delete Journal',	1,	4,	1,	'0',	386,	2120,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1665,	'PEON-78826',	'Create Permission label',	'Create Permission label',	1,	1,	1,	'0',	390,	2121,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1666,	'PEON-15309',	'Read Permission label',	'Read Permission label',	1,	2,	1,	'0',	390,	2122,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1667,	'PEON-21782',	'Update Permission label',	'Update Permission label',	1,	3,	1,	'0',	390,	2123,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1668,	'PEON-81480',	'Delete Permission label',	'Delete Permission label',	1,	4,	1,	'0',	390,	2124,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1669,	'PEON-70411',	'Create Project allocation',	'Create Project allocation',	1,	1,	1,	'0',	391,	2125,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1670,	'PEON-59228',	'Read Project allocation',	'Read Project allocation',	1,	2,	1,	'0',	391,	2126,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1671,	'PEON-31827',	'Update Project allocation',	'Update Project allocation',	1,	3,	1,	'0',	391,	2127,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1672,	'PEON-35275',	'Delete Project allocation',	'Delete Project allocation',	1,	4,	1,	'0',	391,	2128,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1673,	'PEON-45128',	'Create Request',	'Create Request',	1,	1,	1,	'0',	392,	2129,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1674,	'PEON-47089',	'Read Request',	'Read Request',	1,	2,	1,	'0',	392,	2130,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1675,	'PEON-47937',	'Update Request',	'Update Request',	1,	3,	1,	'0',	392,	2131,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1676,	'PEON-10077',	'Delete Request',	'Delete Request',	1,	4,	1,	'0',	392,	2132,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1677,	'PEON-51914',	'Create Role',	'Create Role',	1,	1,	1,	'0',	393,	2133,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1678,	'PEON-12017',	'Read Role',	'Read Role',	1,	2,	1,	'0',	393,	2134,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1679,	'PEON-59298',	'Update Role',	'Update Role',	1,	3,	1,	'0',	393,	2135,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1680,	'PEON-73271',	'Delete Role',	'Delete Role',	1,	4,	1,	'0',	393,	2136,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1681,	'PEON-83461',	'Create Voucher',	'Create Voucher',	1,	1,	1,	'0',	397,	2137,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1682,	'PEON-28489',	'Read Voucher',	'Read Voucher',	1,	2,	1,	'0',	397,	2138,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1683,	'PEON-81800',	'Update Voucher',	'Update Voucher',	1,	3,	1,	'0',	397,	2139,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1684,	'PEON-13979',	'Delete Voucher',	'Delete Voucher',	1,	4,	1,	'0',	397,	2140,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1685,	'PEON-40430',	'Create Workplan',	'Create Workplan',	1,	1,	1,	'0',	398,	2141,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1686,	'PEON-28350',	'Read Workplan',	'Read Workplan',	1,	2,	1,	'0',	398,	2142,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1687,	'PEON-14690',	'Update Workplan',	'Update Workplan',	1,	3,	1,	'0',	398,	2143,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1688,	'PEON-68448',	'Delete Workplan',	'Delete Workplan',	1,	4,	1,	'0',	398,	2144,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1689,	'PEON-89443',	'Create User',	'Create User',	1,	1,	1,	'0',	400,	2145,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1690,	'PEON-25207',	'Read User',	'Read User',	1,	2,	1,	'0',	400,	2146,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1691,	'PEON-56592',	'Update User',	'Update User',	1,	3,	1,	'0',	400,	2147,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1692,	'PEON-81888',	'Delete User',	'Delete User',	1,	4,	1,	'0',	400,	2148,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1693,	'PEON-38673',	'Create Menu user order',	'Create Menu user order',	1,	1,	1,	'0',	470,	2149,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1694,	'PEON-13251',	'Read Menu user order',	'Read Menu user order',	1,	2,	1,	'0',	470,	2150,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1695,	'PEON-80964',	'Update Menu user order',	'Update Menu user order',	1,	3,	1,	'0',	470,	2151,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1696,	'PEON-65978',	'Delete Menu user order',	'Delete Menu user order',	1,	4,	1,	'0',	470,	2152,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1697,	'PEON-73664',	'Create Bank branch',	'Create Bank branch',	1,	1,	1,	'0',	478,	2153,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1698,	'PEON-39221',	'Read Bank branch',	'Read Bank branch',	1,	2,	1,	'0',	478,	2154,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1699,	'PEON-47669',	'Update Bank branch',	'Update Bank branch',	1,	3,	1,	'0',	478,	2155,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:47',	1),
-(1700,	'PEON-33384',	'Delete Bank branch',	'Delete Bank branch',	1,	4,	1,	'0',	478,	2156,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1701,	'PEON-42974',	'Create Department',	'Create Department',	1,	1,	1,	'0',	480,	2157,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1702,	'PEON-86431',	'Read Department',	'Read Department',	1,	2,	1,	'0',	480,	2158,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1703,	'PEON-32573',	'Update Department',	'Update Department',	1,	3,	1,	'0',	480,	2159,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1704,	'PEON-47591',	'Delete Department',	'Delete Department',	1,	4,	1,	'0',	480,	2160,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1705,	'PEON-61043',	'Create Designation',	'Create Designation',	1,	1,	1,	'0',	481,	2161,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1706,	'PEON-46855',	'Read Designation',	'Read Designation',	1,	2,	1,	'0',	481,	2162,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1707,	'PEON-83722',	'Update Designation',	'Update Designation',	1,	3,	1,	'0',	481,	2163,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1708,	'PEON-64476',	'Delete Designation',	'Delete Designation',	1,	4,	1,	'0',	481,	2164,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1709,	'PEON-88769',	'Create Expense account',	'Create Expense account',	1,	1,	1,	'0',	482,	2165,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1710,	'PEON-79986',	'Read Expense account',	'Read Expense account',	1,	2,	1,	'0',	482,	2166,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1711,	'PEON-40301',	'Update Expense account',	'Update Expense account',	1,	3,	1,	'0',	482,	2167,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1712,	'PEON-2779',	'Delete Expense account',	'Delete Expense account',	1,	4,	1,	'0',	482,	2168,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1713,	'PEON-27257',	'Create Funding status',	'Create Funding status',	1,	1,	1,	'0',	483,	2169,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1714,	'PEON-59493',	'Read Funding status',	'Read Funding status',	1,	2,	1,	'0',	483,	2170,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1715,	'PEON-28354',	'Update Funding status',	'Update Funding status',	1,	3,	1,	'0',	483,	2171,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1716,	'PEON-61067',	'Delete Funding status',	'Delete Funding status',	1,	4,	1,	'0',	483,	2172,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1717,	'PEON-14963',	'Create Project',	'Create Project',	1,	1,	1,	'0',	490,	2173,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1718,	'PEON-42403',	'Read Project',	'Read Project',	1,	2,	1,	'0',	490,	2174,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1719,	'PEON-6458',	'Update Project',	'Update Project',	1,	3,	1,	'0',	490,	2175,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1720,	'PEON-18396',	'Delete Project',	'Delete Project',	1,	4,	1,	'0',	490,	2176,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1721,	'PEON-63636',	'Create Page view',	'Create Page view',	1,	1,	1,	'0',	492,	2177,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1722,	'PEON-15575',	'Read Page view',	'Read Page view',	1,	2,	1,	'0',	492,	2178,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1723,	'PEON-24816',	'Update Page view',	'Update Page view',	1,	3,	1,	'0',	492,	2179,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1724,	'PEON-24713',	'Delete Page view',	'Delete Page view',	1,	4,	1,	'0',	492,	2180,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1725,	'PEON-88637',	'Create Request type',	'Create Request type',	1,	1,	1,	'0',	496,	2181,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1726,	'PEON-32158',	'Read Request type',	'Read Request type',	1,	2,	1,	'0',	496,	2182,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1727,	'PEON-46442',	'Update Request type',	'Update Request type',	1,	3,	1,	'0',	496,	2183,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1728,	'PEON-46407',	'Delete Request type',	'Delete Request type',	1,	4,	1,	'0',	496,	2184,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1729,	'PEON-78690',	'Create Language',	'Create Language',	1,	1,	1,	'0',	497,	2185,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1730,	'PEON-88366',	'Read Language',	'Read Language',	1,	2,	1,	'0',	497,	2186,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1731,	'PEON-20926',	'Update Language',	'Update Language',	1,	3,	1,	'0',	497,	2187,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1732,	'PEON-81656',	'Delete Language',	'Delete Language',	1,	4,	1,	'0',	497,	2188,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1733,	'PEON-31358',	'Create Setting',	'Create Setting',	1,	1,	1,	'0',	498,	2189,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1734,	'PEON-23415',	'Read Setting',	'Read Setting',	1,	2,	1,	'0',	498,	2190,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1735,	'PEON-85237',	'Update Setting',	'Update Setting',	1,	3,	1,	'0',	498,	2191,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1736,	'PEON-79513',	'Delete Setting',	'Delete Setting',	1,	4,	1,	'0',	498,	2192,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1737,	'PEON-88358',	'Create Income account',	'Create Income account',	1,	1,	1,	'0',	500,	2193,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1738,	'PEON-44273',	'Read Income account',	'Read Income account',	1,	2,	1,	'0',	500,	2194,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1739,	'PEON-72338',	'Update Income account',	'Update Income account',	1,	3,	1,	'0',	500,	2195,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:48',	1),
-(1740,	'PEON-76278',	'Delete Income account',	'Delete Income account',	1,	4,	1,	'0',	500,	2196,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1741,	'PEON-22405',	'Create Office',	'Create Office',	1,	1,	1,	'0',	521,	2197,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1742,	'PEON-63108',	'Read Office',	'Read Office',	1,	2,	1,	'0',	521,	2198,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1743,	'PEON-52808',	'Update Office',	'Update Office',	1,	3,	1,	'0',	521,	2199,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1744,	'PEON-71852',	'Delete Office',	'Delete Office',	1,	4,	1,	'0',	521,	2200,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1745,	'PEON-22838',	'Create Office bank',	'Create Office bank',	1,	1,	1,	'0',	522,	2201,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1746,	'PEON-55068',	'Read Office bank',	'Read Office bank',	1,	2,	1,	'0',	522,	2202,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1747,	'PEON-25052',	'Update Office bank',	'Update Office bank',	1,	3,	1,	'0',	522,	2203,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1748,	'PEON-74560',	'Delete Office bank',	'Delete Office bank',	1,	4,	1,	'0',	522,	2204,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1749,	'PEON-47607',	'Create Context definition',	'Create Context definition',	1,	1,	1,	'0',	523,	2205,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1750,	'PEON-18897',	'Read Context definition',	'Read Context definition',	1,	2,	1,	'0',	523,	2206,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1751,	'PEON-61639',	'Update Context definition',	'Update Context definition',	1,	3,	1,	'0',	523,	2207,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1752,	'PEON-72714',	'Delete Context definition',	'Delete Context definition',	1,	4,	1,	'0',	523,	2208,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1757,	'PEON-17544',	'Create Financial report',	'Create Financial report',	1,	1,	1,	'0',	526,	2213,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1758,	'PEON-6529',	'Read Financial report',	'Read Financial report',	1,	2,	1,	'0',	526,	2214,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1759,	'PEON-56069',	'Update Financial report',	'Update Financial report',	1,	3,	1,	'0',	526,	2215,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1760,	'PEON-36232',	'Delete Financial report',	'Delete Financial report',	1,	4,	1,	'0',	526,	2216,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1761,	'PEON-69544',	'Create Voucher type account',	'Create Voucher type account',	1,	1,	1,	'0',	527,	2217,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1762,	'PEON-39737',	'Read Voucher type account',	'Read Voucher type account',	1,	2,	1,	'0',	527,	2218,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1763,	'PEON-62442',	'Update Voucher type account',	'Update Voucher type account',	1,	3,	1,	'0',	527,	2219,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1764,	'PEON-78726',	'Delete Voucher type account',	'Delete Voucher type account',	1,	4,	1,	'0',	527,	2220,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:49',	1),
-(1765,	'PEON-73822',	'Create Voucher type effect',	'Create Voucher type effect',	1,	1,	1,	'0',	528,	2221,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1766,	'PEON-3991',	'Read Voucher type effect',	'Read Voucher type effect',	1,	2,	1,	'0',	528,	2222,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1767,	'PEON-13575',	'Update Voucher type effect',	'Update Voucher type effect',	1,	3,	1,	'0',	528,	2223,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1768,	'PEON-44484',	'Delete Voucher type effect',	'Delete Voucher type effect',	1,	4,	1,	'0',	528,	2224,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1769,	'PEON-9233',	'Create Voucher type',	'Create Voucher type',	1,	1,	1,	'0',	529,	2225,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1770,	'PEON-63139',	'Read Voucher type',	'Read Voucher type',	1,	2,	1,	'0',	529,	2226,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1771,	'PEON-67981',	'Update Voucher type',	'Update Voucher type',	1,	3,	1,	'0',	529,	2227,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1772,	'PEON-42408',	'Delete Voucher type',	'Delete Voucher type',	1,	4,	1,	'0',	529,	2228,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1781,	'PEON-1145',	'Create Month',	'Create Month',	1,	1,	1,	'0',	535,	2237,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1782,	'PEON-82251',	'Read Month',	'Read Month',	1,	2,	1,	'0',	535,	2238,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1783,	'PEON-54161',	'Update Month',	'Update Month',	1,	3,	1,	'0',	535,	2239,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1784,	'PEON-32145',	'Delete Month',	'Delete Month',	1,	4,	1,	'0',	535,	2240,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1785,	'PEON-86023',	'Create Account system',	'Create Account system',	1,	1,	1,	'0',	542,	2241,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1786,	'PEON-51192',	'Read Account system',	'Read Account system',	1,	2,	1,	'0',	542,	2242,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1787,	'PEON-13129',	'Update Account system',	'Update Account system',	1,	3,	1,	'0',	542,	2243,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1788,	'PEON-86582',	'Delete Account system',	'Delete Account system',	1,	4,	1,	'0',	542,	2244,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1789,	'PEON-30779',	'Create Request conversion',	'Create Request conversion',	1,	1,	1,	'0',	545,	2245,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1790,	'PEON-44601',	'Read Request conversion',	'Read Request conversion',	1,	2,	1,	'0',	545,	2246,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1791,	'PEON-27231',	'Update Request conversion',	'Update Request conversion',	1,	3,	1,	'0',	545,	2247,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1792,	'PEON-49889',	'Delete Request conversion',	'Delete Request conversion',	1,	4,	1,	'0',	545,	2248,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1793,	'PEON-62579',	'Create Budget item',	'Create Budget item',	1,	1,	1,	'0',	547,	2249,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1794,	'PEON-74671',	'Read Budget item',	'Read Budget item',	1,	2,	1,	'0',	547,	2250,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1795,	'PEON-83763',	'Update Budget item',	'Update Budget item',	1,	3,	1,	'0',	547,	2251,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1796,	'PEON-58038',	'Delete Budget item',	'Delete Budget item',	1,	4,	1,	'0',	547,	2252,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1797,	'PEON-89441',	'Create Approve item',	'Create Approve item',	1,	1,	1,	'0',	550,	2253,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1798,	'PEON-33054',	'Read Approve item',	'Read Approve item',	1,	2,	1,	'0',	550,	2254,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:50',	1),
-(1799,	'PEON-36206',	'Update Approve item',	'Update Approve item',	1,	3,	1,	'0',	550,	2255,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1800,	'PEON-25930',	'Delete Approve item',	'Delete Approve item',	1,	4,	1,	'0',	550,	2256,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1801,	'PEON-5122',	'Create System opening balance',	'Create System opening balance',	1,	1,	1,	'0',	554,	2257,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1802,	'PEON-15269',	'Read System opening balance',	'Read System opening balance',	1,	2,	1,	'0',	554,	2258,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1803,	'PEON-73704',	'Update System opening balance',	'Update System opening balance',	1,	3,	1,	'0',	554,	2259,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1804,	'PEON-3418',	'Delete System opening balance',	'Delete System opening balance',	1,	4,	1,	'0',	554,	2260,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1809,	'PEON-66966',	'Create History',	'Create History',	1,	1,	1,	'0',	556,	2265,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1810,	'PEON-4691',	'Read History',	'Read History',	1,	2,	1,	'0',	556,	2266,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1811,	'PEON-88962',	'Update History',	'Update History',	1,	3,	1,	'0',	556,	2267,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1812,	'PEON-4298',	'Delete History',	'Delete History',	1,	4,	1,	'0',	556,	2268,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1813,	'PEON-86831',	'Create Language phrase',	'Create Language phrase',	1,	1,	1,	'0',	557,	2269,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1814,	'PEON-28655',	'Read Language phrase',	'Read Language phrase',	1,	2,	1,	'0',	557,	2270,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1815,	'PEON-57574',	'Update Language phrase',	'Update Language phrase',	1,	3,	1,	'0',	557,	2271,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1816,	'PEON-8870',	'Delete Language phrase',	'Delete Language phrase',	1,	4,	1,	'0',	557,	2272,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1817,	'PEON-8058',	'Create Project cost proportion',	'Create Project cost proportion',	1,	1,	1,	'0',	558,	2273,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1818,	'PEON-71409',	'Read Project cost proportion',	'Read Project cost proportion',	1,	2,	1,	'0',	558,	2274,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1819,	'PEON-36623',	'Update Project cost proportion',	'Update Project cost proportion',	1,	3,	1,	'0',	558,	2275,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1820,	'PEON-68236',	'Delete Project cost proportion',	'Delete Project cost proportion',	1,	4,	1,	'0',	558,	2276,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1821,	'PEON-24537',	'Create Status role',	'Create Status role',	1,	1,	1,	'0',	559,	2277,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1822,	'PEON-36921',	'Read Status role',	'Read Status role',	1,	2,	1,	'0',	559,	2278,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1823,	'PEON-71987',	'Update Status role',	'Update Status role',	1,	3,	1,	'0',	559,	2279,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1824,	'PEON-66794',	'Delete Status role',	'Delete Status role',	1,	4,	1,	'0',	559,	2280,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1825,	'PEON-72850',	'Create Transaction effect',	'Create Transaction effect',	1,	1,	1,	'0',	560,	2281,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1826,	'PEON-8865',	'Read Transaction effect',	'Read Transaction effect',	1,	2,	1,	'0',	560,	2282,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1827,	'PEON-6472',	'Update Transaction effect',	'Update Transaction effect',	1,	3,	1,	'0',	560,	2283,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1828,	'PEON-24930',	'Delete Transaction effect',	'Delete Transaction effect',	1,	4,	1,	'0',	560,	2284,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1829,	'PEON-56907',	'Create Translation',	'Create Translation',	1,	1,	1,	'0',	561,	2285,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1830,	'PEON-81207',	'Read Translation',	'Read Translation',	1,	2,	1,	'0',	561,	2286,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1831,	'PEON-44890',	'Update Translation',	'Update Translation',	1,	3,	1,	'0',	561,	2287,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1832,	'PEON-35703',	'Delete Translation',	'Delete Translation',	1,	4,	1,	'0',	561,	2288,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1833,	'PEON-54662',	'Create Variance note',	'Create Variance note',	1,	1,	1,	'0',	562,	2289,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1834,	'PEON-62967',	'Read Variance note',	'Read Variance note',	1,	2,	1,	'0',	562,	2290,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1835,	'PEON-20095',	'Update Variance note',	'Update Variance note',	1,	3,	1,	'0',	562,	2291,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1836,	'PEON-35277',	'Delete Variance note',	'Delete Variance note',	1,	4,	1,	'0',	562,	2292,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1837,	'PEON-72173',	'Create Workflow',	'Create Workflow',	1,	1,	1,	'0',	563,	2293,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1838,	'PEON-21966',	'Read Workflow',	'Read Workflow',	1,	2,	1,	'0',	563,	2294,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1839,	'PEON-65442',	'Update Workflow',	'Update Workflow',	1,	3,	1,	'0',	563,	2295,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1),
-(1840,	'PEON-30496',	'Delete Workflow',	'Delete Workflow',	1,	4,	1,	'0',	563,	2296,	353,	'2020-03-23',	1,	NULL,	'2020-03-23 17:45:51',	1);
 
 DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
@@ -2311,7 +2200,7 @@ CREATE TABLE `project` (
 INSERT INTO `project` (`project_id`, `project_track_number`, `project_name`, `project_code`, `project_description`, `project_start_date`, `project_end_date`, `fk_funder_id`, `project_cost`, `fk_funding_status_id`, `project_created_by`, `project_last_modified_by`, `project_created_date`, `project_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
 (1,	'PRCT-67826',	'WASH Program',	'WASH-001',	'WASH Program',	'2020-01-01',	'2022-12-31',	1,	25000000.00,	1,	1,	1,	'2020-03-23',	'0000-00-00',	2299,	355),
 (2,	'PRCT-11841',	'High Education Girls Scholarship',	'GCE2021',	'High Education Girls Scholarship',	'2020-01-01',	'2022-12-31',	1,	18500000.00,	1,	1,	1,	'2020-03-24',	'0000-00-00',	2346,	355),
-(3,	'PRCT-54665',	'Home Improvement Fund',	'HIF2021',	'Home Improvement Fund',	'2020-02-01',	'2020-12-31',	2,	65700000.00,	1,	1,	1,	'2020-03-24',	'0000-00-00',	2348,	355);
+(3,	'PRCT-54665',	'Home Improvement Fund',	'HIF2021',	'Home Improvement Fund',	'2020-02-01',	'2020-01-31',	2,	65700000.00,	1,	1,	1,	'2020-03-24',	'0000-00-00',	2348,	355);
 
 DROP TABLE IF EXISTS `project_allocation`;
 CREATE TABLE `project_allocation` (
@@ -2345,7 +2234,7 @@ CREATE TABLE `project_allocation` (
 
 INSERT INTO `project_allocation` (`project_allocation_id`, `project_allocation_track_number`, `fk_project_id`, `fk_income_account_id`, `project_allocation_name`, `project_allocation_amount`, `project_allocation_is_active`, `fk_office_id`, `fk_status_id`, `fk_approval_id`, `project_allocation_extended_end_date`, `project_allocation_created_date`, `project_allocation_last_modified_date`, `project_allocation_created_by`, `project_allocation_last_modified_by`) VALUES
 (1,	'PRON-38031',	1,	1,	'St. Andrews WASH 2020',	4500000.00,	1,	29,	356,	2345,	NULL,	'2020-03-24',	NULL,	1,	1),
-(2,	'PRON-60067',	3,	3,	'KE623 - Malindi Home Improvement',	2100000.00,	1,	29,	356,	2349,	NULL,	'2020-03-24',	NULL,	1,	1),
+(2,	'PRON-60067',	3,	3,	'KE623 - Malindi Home Improvement',	2100000.00,	1,	29,	356,	2349,	'2020-06-30',	'2020-03-24',	NULL,	1,	1),
 (3,	'PRON-22303',	2,	2,	'GRC Shingila Girl Child Education Fund',	800000.00,	1,	27,	356,	2357,	NULL,	'2020-03-26',	NULL,	1,	1),
 (4,	'PRON-83970',	3,	1,	'GRC Home Improvement FUnd',	110000.00,	1,	27,	356,	2358,	NULL,	'2020-03-26',	NULL,	1,	1);
 
@@ -2560,11 +2449,6 @@ CREATE TABLE `role_permission` (
   CONSTRAINT `role_permission_ibfk_5` FOREIGN KEY (`fk_permission_id`) REFERENCES `permission` (`permission_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_number`, `role_permission_name`, `role_permission_is_active`, `fk_role_id`, `fk_permission_id`, `fk_approval_id`, `fk_status_id`, `role_permission_created_date`, `role_permission_created_by`, `role_permission_last_modified_date`, `role_permission_last_modified_by`) VALUES
-(1,	'ROON-87799',	'Create Approval permission assigned to System Administratorrole',	1,	1,	1641,	2297,	365,	'2020-03-23',	1,	'2020-03-23 18:18:14',	1),
-(2,	'ROON-45357',	'Update Menu user order permission assigned to Center Accountantrole',	1,	11,	1695,	2384,	365,	'2020-03-30',	1,	'2020-03-30 13:08:09',	1),
-(3,	'ROON-9417',	'Read permission for Dashboard by System Administrator',	1,	1,	1653,	2385,	365,	'2020-04-01',	1,	'2020-04-01 06:29:33',	1),
-(4,	'ROON-21641',	'Read permission for Dashboard by Center Accountant',	1,	11,	1653,	2386,	365,	'2020-04-01',	2,	'2020-04-01 06:31:07',	2);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -2601,14 +2485,12 @@ CREATE TABLE `status` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,
   `status_track_number` varchar(100) NOT NULL,
   `status_name` varchar(50) NOT NULL,
-  `fk_workflow_id` int(11) NOT NULL,
-  `fk_approve_item_id` int(11) NOT NULL,
+  `fk_approval_flow_id` int(100) NOT NULL,
   `status_approval_sequence` int(10) NOT NULL,
   `status_backflow_sequence` int(10) NOT NULL,
   `status_approval_direction` int(5) NOT NULL COMMENT '1-straight jumps, 0 - return jumps, -1 - reverse jump',
   `status_is_requiring_approver_action` int(5) NOT NULL DEFAULT '1',
   `fk_role_id` int(100) NOT NULL,
-  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `status_created_date` date NOT NULL,
   `status_created_by` int(100) NOT NULL,
   `status_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -2616,95 +2498,33 @@ CREATE TABLE `status` (
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`status_id`),
-  KEY `fk_approve_item_id` (`fk_approve_item_id`),
   KEY `fk_role_id` (`fk_role_id`),
-  CONSTRAINT `status_ibfk_2` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
-  CONSTRAINT `status_ibfk_3` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`)
+  KEY `fk_approval_flow_id` (`fk_approval_flow_id`),
+  CONSTRAINT `status_ibfk_3` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`),
+  CONSTRAINT `status_ibfk_4` FOREIGN KEY (`fk_approval_flow_id`) REFERENCES `approval_flow` (`approval_flow_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_workflow_id`, `fk_approve_item_id`, `status_approval_sequence`, `status_backflow_sequence`, `status_approval_direction`, `status_is_requiring_approver_action`, `fk_role_id`, `fk_account_system_id`, `status_created_date`, `status_created_by`, `status_last_modified_date`, `status_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
-(45,	'',	'New',	2,	20,	1,	0,	1,	0,	10,	1,	'2019-11-03',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(67,	'',	'New',	0,	42,	1,	0,	1,	0,	10,	1,	'2019-11-21',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(68,	'',	'New',	0,	43,	1,	0,	1,	0,	10,	1,	'2019-11-21',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(69,	'',	'New',	0,	44,	1,	0,	1,	0,	10,	1,	'2019-11-21',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(76,	'',	'New',	0,	51,	1,	0,	1,	0,	10,	1,	'2019-11-21',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(77,	'',	'New',	0,	52,	1,	0,	1,	0,	10,	1,	'2019-11-22',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(87,	'STUS-43859',	'New',	0,	62,	1,	0,	1,	0,	10,	1,	'2019-11-23',	1,	'2020-03-07 04:24:52',	1,	NULL,	NULL),
-(142,	'',	'New',	0,	54,	1,	0,	1,	0,	10,	1,	'2019-11-22',	1,	'2020-03-20 17:14:15',	1,	NULL,	NULL),
-(172,	'STUS-44462',	'New',	0,	41,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 16:51:58',	1,	NULL,	NULL),
-(173,	'STUS-30204',	'New',	0,	50,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 16:51:59',	1,	NULL,	NULL),
-(174,	'STUS-30117',	'New',	0,	45,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 16:51:59',	1,	NULL,	NULL),
-(175,	'STUS-42342',	'New',	0,	53,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 16:51:59',	1,	NULL,	NULL),
-(177,	'STUS-70610',	'New',	0,	55,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 16:51:59',	1,	NULL,	NULL),
-(313,	'STUS-16597',	'New',	0,	296,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(314,	'STUS-30623',	'New',	0,	297,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(315,	'STUS-54229',	'New',	0,	298,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(316,	'STUS-62210',	'New',	0,	299,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(317,	'STUS-63688',	'New',	0,	300,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(318,	'STUS-14177',	'New',	0,	301,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(319,	'STUS-88392',	'New',	0,	302,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(320,	'STUS-54721',	'New',	0,	303,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(321,	'STUS-52513',	'New',	0,	304,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(322,	'STUS-46011',	'New',	0,	305,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(323,	'STUS-9928',	'New',	0,	306,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(324,	'STUS-11963',	'New',	0,	307,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:17',	1,	NULL,	NULL),
-(325,	'STUS-69975',	'New',	0,	308,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(326,	'STUS-25990',	'New',	0,	309,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(327,	'STUS-2685',	'New',	0,	295,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(328,	'STUS-5862',	'New',	0,	310,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(329,	'STUS-28265',	'New',	0,	311,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(330,	'STUS-82819',	'New',	0,	312,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(331,	'STUS-87899',	'New',	0,	313,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(332,	'STUS-47728',	'New',	0,	314,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(333,	'STUS-61014',	'New',	0,	315,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(334,	'STUS-41156',	'New',	0,	316,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(335,	'STUS-47855',	'New',	0,	317,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(336,	'STUS-15101',	'New',	0,	318,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(337,	'STUS-61418',	'New',	0,	319,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(338,	'STUS-43315',	'New',	0,	320,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:18',	1,	NULL,	NULL),
-(339,	'STUS-26243',	'New',	0,	321,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(340,	'STUS-22033',	'New',	0,	322,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(341,	'STUS-74990',	'New',	0,	323,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(342,	'STUS-81512',	'New',	0,	324,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(343,	'STUS-28015',	'New',	0,	325,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(344,	'STUS-3238',	'New',	0,	326,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(345,	'STUS-26511',	'New',	0,	327,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(346,	'STUS-49773',	'New',	0,	328,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(347,	'STUS-46640',	'New',	0,	329,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(348,	'STUS-78203',	'New',	0,	330,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(349,	'STUS-38370',	'New',	0,	331,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(350,	'STUS-23337',	'New',	0,	332,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:19',	1,	NULL,	NULL),
-(351,	'STUS-35189',	'New',	0,	333,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(352,	'STUS-47066',	'New',	0,	334,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(353,	'STUS-28153',	'New',	0,	99,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(354,	'STUS-49434',	'New',	0,	335,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(355,	'STUS-52645',	'New',	0,	336,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(356,	'STUS-32139',	'New',	0,	337,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(357,	'STUS-89397',	'New',	0,	338,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(358,	'STUS-47277',	'New',	0,	339,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(359,	'STUS-74615',	'New',	0,	340,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(360,	'STUS-26685',	'New',	0,	341,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(361,	'STUS-9744',	'New',	0,	342,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(362,	'STUS-48715',	'New',	0,	343,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:20',	1,	NULL,	NULL),
-(363,	'STUS-13867',	'New',	0,	344,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(364,	'STUS-57117',	'New',	0,	345,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(365,	'STUS-18779',	'New',	0,	346,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(366,	'STUS-46597',	'New',	0,	347,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(367,	'STUS-86687',	'New',	0,	348,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(368,	'STUS-39519',	'New',	0,	349,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(369,	'STUS-84879',	'New',	0,	350,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(370,	'STUS-22430',	'New',	0,	351,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(371,	'STUS-89803',	'New',	0,	352,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(372,	'STUS-7086',	'New',	0,	353,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(373,	'STUS-22328',	'New',	0,	354,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-26 09:38:00',	1,	NULL,	NULL),
-(374,	'STUS-47172',	'New',	0,	355,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:21',	1,	NULL,	NULL),
-(375,	'STUS-4688',	'New',	0,	356,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(376,	'STUS-81247',	'New',	0,	357,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(377,	'STUS-21173',	'New',	0,	358,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(378,	'STUS-39988',	'New',	0,	359,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(379,	'STUS-15704',	'New',	0,	360,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(380,	'STUS-84648',	'New',	0,	361,	1,	0,	1,	0,	1,	0,	'2020-03-23',	1,	'2020-03-23 17:32:22',	1,	NULL,	NULL),
-(381,	'STUS-64403',	'New',	0,	362,	1,	0,	1,	0,	1,	0,	'2020-03-26',	1,	'2020-03-26 08:09:33',	1,	NULL,	NULL);
+INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_approval_flow_id`, `status_approval_sequence`, `status_backflow_sequence`, `status_approval_direction`, `status_is_requiring_approver_action`, `fk_role_id`, `status_created_date`, `status_created_by`, `status_last_modified_date`, `status_last_modified_by`, `fk_approval_id`, `fk_status_id`) VALUES
+(45,	'',	'New',	5,	1,	0,	1,	0,	10,	'2019-11-03',	1,	'2020-04-09 16:01:19',	1,	NULL,	NULL),
+(67,	'',	'New',	6,	1,	0,	1,	0,	10,	'2019-11-21',	1,	'2020-04-09 16:01:58',	1,	NULL,	NULL),
+(68,	'',	'New',	7,	1,	0,	1,	0,	10,	'2019-11-21',	1,	'2020-04-09 16:03:01',	1,	NULL,	NULL),
+(69,	'',	'New',	8,	1,	0,	1,	0,	10,	'2019-11-21',	1,	'2020-04-09 16:04:29',	1,	NULL,	NULL),
+(76,	'',	'New',	9,	1,	0,	1,	0,	10,	'2019-11-21',	1,	'2020-04-09 16:05:12',	1,	NULL,	NULL),
+(87,	'STUS-43859',	'New',	10,	1,	0,	1,	0,	10,	'2019-11-23',	1,	'2020-04-09 16:05:42',	1,	NULL,	NULL),
+(142,	'',	'New',	11,	1,	0,	1,	0,	10,	'2019-11-22',	1,	'2020-04-09 16:05:51',	1,	NULL,	NULL),
+(172,	'STUS-44462',	'New',	12,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:05:51',	1,	NULL,	NULL),
+(174,	'STUS-30117',	'New',	13,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:05:51',	1,	NULL,	NULL),
+(315,	'STUS-54229',	'New',	14,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(318,	'STUS-14177',	'New',	15,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(319,	'STUS-88392',	'New',	16,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(326,	'STUS-25990',	'New',	17,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(328,	'STUS-5862',	'New',	18,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(329,	'STUS-28265',	'New',	19,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(332,	'STUS-34330',	'New',	22,	1,	0,	1,	1,	10,	'2020-04-09',	1,	'2020-04-09 16:23:35',	1,	2456,	0),
+(355,	'STUS-19840',	'New',	23,	1,	0,	1,	1,	10,	'2020-04-09',	1,	'2020-04-09 16:26:23',	1,	2458,	0),
+(356,	'STUS-32139',	'New',	20,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 16:06:11',	1,	NULL,	NULL),
+(373,	'STUS-22328',	'New',	3,	1,	0,	1,	0,	1,	'2020-03-23',	1,	'2020-04-09 07:35:39',	1,	NULL,	NULL),
+(374,	'STUS-54868',	'New',	21,	1,	0,	1,	1,	10,	'2020-04-09',	1,	'2020-04-09 16:13:29',	1,	2454,	0);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -2900,7 +2720,9 @@ INSERT INTO `voucher` (`voucher_id`, `voucher_track_number`, `voucher_name`, `vo
 (8,	'VOER-16879',	'Voucher # VOER-89098',	200306,	29,	'2020-03-01',	8,	0,	NULL,	2369,	373,	0,	0,	'0000-00-00',	'0000-00-00',	'Various',	'Petty Cash Income',	'Petty Cash Income',	0,	1,	'2020-03-26',	'2020-03-26 09:00:22',	1),
 (9,	'VOER-28910',	'Voucher # VOER-43721',	200307,	29,	'2020-03-01',	8,	0,	NULL,	2370,	373,	0,	0,	'0000-00-00',	'0000-00-00',	'Another PC Income',	'Another PC Income',	'Another PC Income',	0,	1,	'2020-03-26',	'2020-03-26 09:14:57',	1),
 (10,	'VOER-10890',	'Voucher # VOER-76047',	200308,	29,	'2020-03-01',	3,	0,	NULL,	2371,	373,	2,	1,	'0000-00-00',	'0000-00-00',	'Schools',	'School fees payment',	'School fees payment',	0,	1,	'2020-03-26',	'2020-03-26 10:42:18',	1),
-(11,	'VOER-33848',	'Voucher # VOER-86652',	200309,	29,	'2020-03-01',	3,	1,	'2020-03-31',	2387,	373,	1,	3,	'0000-00-00',	'0000-00-00',	'Test voucher',	'Test voucher',	'Test voucher',	0,	1,	'2020-04-02',	'2020-04-02 07:54:50',	1);
+(11,	'VOER-33848',	'Voucher # VOER-86652',	200309,	29,	'2020-03-01',	3,	1,	'2020-03-31',	2387,	373,	1,	3,	'0000-00-00',	'0000-00-00',	'Test voucher',	'Test voucher',	'Test voucher',	0,	1,	'2020-04-02',	'2020-04-02 07:54:50',	1),
+(12,	'VOER-62669',	'Voucher # VOER-62669',	NULL,	NULL,	NULL,	NULL,	0,	NULL,	2400,	373,	NULL,	NULL,	'0000-00-00',	'0000-00-00',	NULL,	NULL,	NULL,	0,	1,	'2020-04-05',	'2020-04-05 05:43:21',	1),
+(20,	'VOER-69073',	'Voucher # VOER-12571',	200401,	29,	'2020-04-01',	5,	0,	NULL,	2441,	373,	0,	0,	'0000-00-00',	'0000-00-00',	'HQ Test',	'HQ Test',	'HQ Test',	0,	1,	'2020-04-05',	'2020-04-05 06:03:33',	1);
 
 DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
@@ -2942,7 +2764,8 @@ INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`
 (9,	'VOIL-26527',	'Voucher_detail # VOIL-16137',	9,	'Another PC Income',	1,	8500.00,	8500.00,	0,	3,	0,	0,	0,	374,	0,	0,	NULL,	NULL,	NULL,	NULL),
 (10,	'VOIL-70773',	'Voucher_detail # VOIL-2704',	10,	'School fees payment 1',	1,	15000.00,	15000.00,	6,	0,	0,	0,	0,	374,	0,	0,	NULL,	NULL,	NULL,	NULL),
 (11,	'VOIL-26426',	'Voucher_detail # VOIL-59568',	10,	'School fees payment 2',	2,	8500.00,	17000.00,	1,	0,	0,	0,	0,	374,	0,	0,	NULL,	NULL,	NULL,	NULL),
-(12,	'VOIL-79203',	'Voucher_detail # VOIL-60083',	11,	'Test voucher',	1,	2500.00,	2500.00,	1,	0,	0,	0,	0,	374,	0,	1,	NULL,	NULL,	NULL,	NULL);
+(12,	'VOIL-79203',	'Voucher_detail # VOIL-60083',	11,	'Test voucher',	1,	2500.00,	2500.00,	1,	0,	0,	0,	0,	374,	0,	1,	NULL,	NULL,	NULL,	NULL),
+(14,	'VOIL-4764',	'Voucher_detail # VOIL-16532',	20,	'Support funds test',	1,	234234.00,	234234.00,	0,	1,	0,	0,	0,	374,	0,	0,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
@@ -3016,28 +2839,6 @@ INSERT INTO `voucher_type_effect` (`voucher_type_effect_id`, `voucher_type_effec
 (3,	'VOCT-51241',	'Bank Contra',	'bank_contra',	'2020-01-15',	1,	1,	NULL,	522,	0),
 (4,	'VOCT-12589',	'Cash Contra',	'cash_contra',	'2020-01-16',	1,	1,	NULL,	546,	0);
 
-DROP TABLE IF EXISTS `workflow`;
-CREATE TABLE `workflow` (
-  `workflow_id` int(100) NOT NULL AUTO_INCREMENT,
-  `workflow_name` varchar(100) NOT NULL,
-  `workflow_track_number` varchar(100) NOT NULL,
-  `fk_approve_item_id` int(100) NOT NULL,
-  `fk_context_definition_id` int(100) NOT NULL,
-  `workflow_is_active` int(5) NOT NULL DEFAULT '1',
-  `workflow_created_date` date DEFAULT NULL,
-  `workflow_created_by` int(100) DEFAULT NULL,
-  `workflow_last_modified_by` int(100) DEFAULT NULL,
-  `workflow_last_modified_date` date DEFAULT NULL,
-  `fk_approval_id` int(100) DEFAULT NULL,
-  `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`workflow_id`),
-  KEY `fk_approve_item_id` (`fk_approve_item_id`),
-  KEY `fk_context_definition_id` (`fk_context_definition_id`),
-  CONSTRAINT `workflow_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
-  CONSTRAINT `workflow_ibfk_2` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
   `workplan_id` int(100) NOT NULL,
@@ -3083,4 +2884,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-04-03 19:45:40
+-- 2020-04-09 16:28:40
