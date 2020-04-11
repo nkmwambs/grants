@@ -1091,4 +1091,29 @@ function get_user_full_name($user_id){
   return $user->user_firstname.' '.$user->user_lastname;
 }
 
+function intialize_table(Array $foreign_keys_values = []){
+
+  $context_definitions = $this->config->item('context_definitions');
+  $global_context_key = count($context_definitions);
+  
+  $user_data['user_id'] = 1;
+  $user_data['user_track_number'] = $this->grants_model->generate_item_track_number_and_name('user')['user_track_number'];
+  $user_data['user_name'] = 'system';
+  $user_data['user_firstname'] = 'System User';
+  $user_data['user_lastname'] = 'System User'; 
+  $user_data['user_email'] = $this->db->get_where('setting',array('type'=>'system_email'))->row()->description;
+  $user_data['fk_context_definition_id'] = $global_context_key;
+  $user_data['user_is_context_manager'] = 0;
+  $user_data['user_is_system_admin'] = 1;
+  $user_data['fk_language_id'] = $foreign_keys_values['language_id'];
+  $user_data['user_is_active'] = 1;
+  $user_data['fk_role_id'] = $foreign_keys_values['role_id'];
+  $user_data['user_password'] =  $this->db->get_where('setting',array('type'=>'setup_password'))->row()->description;//md5('#Compassion321');
+      
+  $user_data_to_insert = $this->grants_model->merge_with_history_fields('user',$user_data,false);
+  $this->db->insert('user',$user_data_to_insert);
+
+  return $this->db->insert_id();
+}
+
 }

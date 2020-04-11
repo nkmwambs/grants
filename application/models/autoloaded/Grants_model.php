@@ -86,9 +86,9 @@ function insert_approval_record($approveable_item){
   $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
   $approval['approval_track_number'] = $approval_random;
   $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
-  $approval['approval_created_by'] = $this->session->user_id;
+  $approval['approval_created_by'] = 1;$this->session->user_id?$this->session->user_id:1;
   $approval['approval_created_date'] = date('Y-m-d');
-  $approval['approval_last_modified_by'] = $this->session->user_id;
+  $approval['approval_last_modified_by'] = 1;$this->session->user_id?$this->session->user_id:1;
   $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',
   array('approve_item_name'=>$approveable_item))->row()->approve_item_id;
 
@@ -372,62 +372,130 @@ function generate_item_track_number_and_name($approveable_item){
   }
 
   
-  // function counts_of_lookup($table){
-  //   $table = strtolower($table);
+  function populate_initial_table_data(){
 
-  //   if( is_array($this->grants->lookup_values_where($table)) && 
-  //       count($this->grants->lookup_values_where($table)) > 0)
-  //   {
-  //     $this->create_table_join_statement(strtolower($this->controller),$table);
-  //     $this->db->where($this->grants->lookup_values_where($table));
-  //   }
+    $initialize_tables = $this->config->item('setup_initialized_tables');
 
-  //   $result = $this->db->get($table)->result_array();
+    $foreign_keys_values = [];
 
-  //   $ids_array = array_column($result,$this->grants->primary_key_field($table));
-  //   $value_array = array_column($result,$this->grants->name_field($table));
+    foreach($initialize_tables as $initialize_table){
 
-  //   return ['ids'=>count($ids_array),'vals'=>count($value_array)];
-  // }
-  
+      if(!$this->db->table_exists($initialize_table)) continue;
+
+      $model = $initialize_table.'_model';
+
+      $this->load->model($model);
+      
+      if(method_exists($this->$model,'intialize_table')){
+        $insert_id = $this->$model->intialize_table($foreign_keys_values);
+
+        $foreign_keys_values[$initialize_table.'_id'] = $insert_id;
+      }
+
+    }
+
+  }
 
   function insert_status_for_approveable_item($approve_item_name){
 
-    $approve_item_id = $this->db->get_where('approve_item',
-      array('approve_item_name'=>strtolower($approve_item_name)))->row()->approve_item_id;
+    if($approve_item_name != ""){
+      $this->db->trans_start();
 
-      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-      $status = $this->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
+      $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;
 
-    if($status->num_rows() == 0){
+    // Check if the table is in the approveable items table if not create it
+     $approve_item_id = $this->insert_missing_approveable_item($approve_item_name);
+      
+      $account_systems_obj = $this->db->get('account_system');
 
-      $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
-      $status_data['fk_workflow_id'] = 0;
-      $status_data['status_name'] = get_phrase('new');
-      //$status_data['fk_approve_item_id'] = $approve_item_id;
-      $status_data['status_approval_sequence'] = 1;
-      $status_data['status_approval_direction'] = 1;
-      $status_data['status_is_requiring_approver_action'] = 0;
-      $status_data['fk_account_system_id'] = 0;
+      if($account_systems_obj->num_rows() > 0){
+
+        $account_systems = $account_systems_obj->result_array();
+
+        foreach($account_systems as $account_system){
+
+          $approval_flow_obj = $this->db->get_where('approval_flow',
+            array('fk_approve_item_id'=>$approve_item_id,
+            'fk_account_system_id'=>$account_system['account_system_id']));
+
+          $approval_flow_id = 0;
+
+            if($approval_flow_obj->num_rows() == 0){
+               $approval_flow_id = $this->insert_approval_flow($account_system, $approve_item_id, $approve_item_name, $user_id);
+            }else{
+              $approval_flow_id = $approval_flow_obj->row()->approval_flow_id;
+            }
+
+            // Insert the new status
+           
+            $status = $this->db->get_where('status',array('fk_approval_flow_id'=>$approval_flow_id,'status_approval_sequence'=>1));
+            
+            if($status->num_rows() == 0){
+
+              $this->insert_new_status($approval_flow_id,$user_id);  
+            
+            }
+        }
+        
+      }
       
-      // Get the new_status_role_id if set otherwise use the logged in user role id
-      $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
-      $role_id = $new_status_default_role->num_rows() > 1 ? $new_status_default_role->row()->role_is_new_status_default : $this->session->role_id;
-      
-      $status_data['fk_role_id'] = $role_id;
-      $status_data['status_created_date'] =  date('Y-m-d');
-      $status_data['status_created_by'] = $this->session->user_id;
-      $status_data['status_last_modified_by']  = $this->session->user_id;
-      
-  
-      $this->db->insert('status',$status_data);    
-    
+      $this->db->trans_complete();
+
+      if($this->db->trans_status() == false){
+        $message = "Error occurred when creating missing status";
+        show_error($message,500,'An Error As Encountered');
+        return false;
+      }else{
+        return true;
+      }
+    }else{
+      return false;
     }
+    
   
+  }
+
+  function insert_approval_flow($account_system, $approve_item_id, $approve_item_name, $user_id){
+    $approval_flow_data['approval_flow_track_number'] = $this->generate_item_track_number_and_name('approval_flow')['approval_flow_track_number'];
+    $approval_flow_data['approval_flow_name'] = $account_system['account_system_name'].' '.str_replace("_"," ",$approve_item_name).' workflow';
+    $approval_flow_data['fk_approve_item_id'] = $approve_item_id;
+    $approval_flow_data['fk_account_system_id'] = $account_system['account_system_id'];
+
+    $approval_flow_data['approval_flow_created_by'] = $user_id;
+    $approval_flow_data['approval_flow_created_date'] = date('Y-m-d');
+    $approval_flow_data['approval_flow_last_modified_by'] = $user_id;
+
+    $this->db->insert('approval_flow',$approval_flow_data);
+    
+    return $this->db->insert_id();
+  }
+
+  function insert_new_status($approval_flow_id,$user_id){
+    $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
+    $status_data['fk_approval_flow_id'] = $approval_flow_id;
+    $status_data['status_name'] = get_phrase('new');
+    $status_data['status_approval_sequence'] = 1;
+    $status_data['status_approval_direction'] = 1;
+    $status_data['status_is_requiring_approver_action'] = 0;
+    $status_data['status_backflow_sequence'] = 0;
+              
+    // Get the new_status_role_id if set otherwise use the logged in user role id
+    $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
+    $role_id = $new_status_default_role->num_rows() > 0 ? $new_status_default_role->row()->role_id : 1;
+             
+    $status_data['fk_role_id'] = $role_id;
+    $status_data['status_created_date'] =  date('Y-m-d');
+    $status_data['status_created_by'] = $user_id;
+    $status_data['status_last_modified_by']  = $user_id;
+              
+    $this->db->insert('status',$status_data); 
+    
+    return $this->db->insert_id();
   }
 
   function insert_status_if_missing($approve_item_name){
 
+    
     $this->insert_status_for_approveable_item($approve_item_name);
 
     // Check if has dependant table
@@ -435,7 +503,7 @@ function generate_item_track_number_and_name($approveable_item){
     if($this->grants->has_dependant_table($approve_item_name)){
       $this->mandatory_fields($this->grants->dependant_table($approve_item_name));
       $this->insert_status_for_approveable_item($this->grants->dependant_table($approve_item_name));    
-    } 
+    }
 
 }
 
@@ -452,65 +520,43 @@ function generate_item_track_number_and_name($approveable_item){
  * 
  * @param $table String : The selected table
  * 
- * @return void
+ * @return Bool
  */
 
-function mandatory_fields(String $table): Void{
+function insert_missing_approveable_item($table){
 
-  if($table!=='approval'){
+  $approve_items = $this->db->get_where('approve_item',array('approve_item_name'=>$table));
+
+  $approve_item_id = 0;
+
+  if($approve_items->num_rows() == 0){
+    $data['approve_item_track_number'] = $this->generate_item_track_number_and_name('approve_item')['approve_item_track_number'];
+    $data['approve_item_name'] = $table;
+    $data['approve_item_is_active'] = 0;
+    $data['approve_item_created_date'] = date('Y-m-d');
+    $data['approve_item_created_by'] = 1;//$this->session->user_id;
+    $data['approve_item_last_modified_by'] = 1;//$this->session->user_id;
+
+    //$approve_item_data_to_insert = $this->merge_with_history_fields('approve_item',$data,false);
+    $this->db->insert('approve_item',$data);
+
+    $approve_item_id = $this->db->insert_id();
+
+  }else{
+    $approve_item_id = $approve_items->row()->approve_item_id;
+  }
+
+  return $approve_item_id;
+}
+
+function mandatory_fields(String $table): void{
+
+//  $this->db->trans_start();
+
+  if($table!=='approval' && $table!=='approval_flow'){
       //Mandatory Fields: created_by, created_date,last_modified_by,last_modified_date,fk_approval_id,fk_status_id
       $mandatory_fields = array($table.'_created_date',$table.'_created_by',$table.'_last_modified_by',
       $table.'_last_modified_date','fk_approval_id','fk_status_id');
-
-      // Check if the table is in the approveable items table if not create it
-      $approve_items = $this->db->get_where('approve_item',array('approve_item_name'=>$table));
-
-      $approve_item_id = 0;
-
-      if($approve_items->num_rows() == 0){
-        $data['approve_item_name'] = $table;
-        $data['approve_item_is_active'] = 0;
-        $data['approve_item_created_date'] = date('Y-m-d');
-        $data['approve_item_created_by'] = $this->session->user_id;
-        $data['approve_item_last_modified_by'] = $this->session->user_id;
-
-        //$approve_item_data_to_insert = $this->merge_with_history_fields('approve_item',$data,false);
-        $this->db->insert('approve_item',$data);
-
-        $approve_item_id = $this->db->insert_id();
-
-      }else{
-        $approve_item_id = $approve_items->row()->approve_item_id;
-      }
-
-      // Check is the the table has a status with status_approval_sequence 1 if not create it with status name
-      $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-      $status = $this->db->get_where('status',array('fk_approve_item_id'=>$approve_item_id,'status_approval_sequence'=>1));
-
-      $status_id = 0;
-
-      if($status->num_rows() == 0){
-        $status_data['status_name'] = get_phrase('new');
-        $status_data['status_action_label'] = "";
-        $status_data['fk_approve_item_id'] = $approve_item_id;
-        $status_data['status_approval_sequence'] = 1;
-        $status_data['status_approval_direction'] = 1;
-        $status_data['status_is_requiring_approver_action'] = 0;
-        
-        // Get the new_status_role_id if set otherwise use the logged in user role id
-        $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
-        $role_id = $new_status_default_role->num_rows() > 1 ? $new_status_default_role->row()->role_is_new_status_default : $this->session->role_id;
-        
-        $status_data['fk_role_id'] = $role_id;
-        $status_data['status_created_date'] =  date('Y-m-d');
-        $status_data['status_created_by'] = $this->session->user_id;
-        $status_data['status_last_modified_by']  = $this->session->user_id;
-
-        $this->db->insert('status',$status_data);
-
-        $status_id = $this->db->insert_id();
-
-      }
 
       // Check if the mandatory fields exists in the listed table and if not alter the table by 
       // adding a column with default value as the newly inserted status_id
@@ -541,6 +587,14 @@ function mandatory_fields(String $table): Void{
         $this->dbforge->add_column($table, $fields_to_add);
       }
   }
+
+  // $this->db->trans_complete();
+
+  // if($this->db->trans_start() == false){
+  //   return false;
+  // }else{
+  //   return true;
+  // }
 }
 
 /**
@@ -1224,7 +1278,7 @@ function create_missing_page_access_permission(){
             $permission_data['fk_permission_label_id'] = $permission_label['permission_label_id'];
             $permission_data['permission_type'] = 1; // Page Access
             $permission_data['permission_field'] = 0; // Always 0 for Page Access
-            $permission_data['fk_menu_id'] = str_replace('_',' ',$menu_item['menu_id']);
+            $permission_data['fk_menu_id'] = $menu_item['menu_id'];//str_replace('_',' ',$menu_item['menu_id']);
 
             $permission_data_to_insert = $this->merge_with_history_fields('permission',$permission_data,false);
 
@@ -1241,8 +1295,9 @@ function create_missing_page_access_permission(){
   if($this->db->trans_status() == false){
     $message = "Error occurred when mass creating system page access permissions";
     show_error($message,500,'An Error As Encountered');
+    return false;
   }else{
-    
+    return true;
   }
 
 }
@@ -1264,96 +1319,98 @@ function update_status(){
 /**
  * This method cleans up all the system and make it a new instance
  */
-function reset_system(){
+// function reset_system($allow_merge = false){
 
-  $hard_resetable_tables = [
-    'bank_contra_account',
-    'cash_contra_account',
-    'transaction_effect',
-    'voucher_type',
-    'voucher_type_account',
-    'voucher_type_effect',
-    'expense_account',
-    'income_account',
-    'approve_item',
-    'menu',
-    'context_definition',
-    'approval',
-    'permission_label',
-    'setting',
-  ];
+//   $hard_resetable_tables = [
+//     'contra_account',
+//     'voucher_type',
+//     'voucher_type_account',
+//     'voucher_type_effect',
+//     'menu',
+//     'context_definition',
+//     'approval',
+//     'permission_label',
+//     'approval_flow',
+//     'account_system',
+//     'approve_item',
+//   ];
 
-  $soft_resetable_tables = [
-    'voucher_detail',
-    'voucher',
-    'request_type',
-    'request',
-    'request_detail',
-    'cheque_book',
-    'office_bank',
-    'bank_branch',
-    'bank',
-    'budget_item_detail',
-    'budget_item',
-    'budget',
-    'context_center_user',
-    'context_center',
-    'context_cluster_user',
-    'context_cluster',
-    'context_cohort_user',
-    'context_cohort',
-    'context_country_user',
-    'context_country',
-    'context_region_user',
-    'context_region',
-    'context_global_user',
-    'context_global',
-    'dashboard',
-    'department_user',
-    'department',
-    'designation',
-    'reconciliation',
-    'variance_note',
-    'financial_report',
-    'opening_allocation_balance',
-    'opening_cash_balance',
-    'opening_fund_balance',
-    'opening_outstanding_cheque',
-    'opening_deposit_transit',
-    'system_opening_balance',
-    'project_allocation_detail',
-    'project_allocation',
-    'project',
-    'funder',
-    'funding_status',
-    'journal',
-    'menu_user_order',
-    'message_detail',
-    'message',
-    'month',
-    'page_view_condition',
-    'page_view_role',
-    'page_view',
-    'permission',
-    'role_permission',
-    'workplan_task',
-    'workplan',    
-    'month',
-    'office',
-    'status_role',
-    'role',
-    'status',
-    'workflow',
-    'language',
-    'language_phrase',
-    'menu',
-    'account_system',
-    'user',
-  ];
+//   $soft_resetable_tables = [
+//     'voucher_detail',
+//     'voucher',
+//     'request_type',
+//     'request',
+//     'request_detail',
+//     'cheque_book',
+//     'office_bank',
+//     'bank_branch',
+//     'bank',
+//     'budget_item_detail',
+//     'budget_item',
+//     'budget',
+//     'context_center_user',
+//     'context_center',
+//     'context_cluster_user',
+//     'context_cluster',
+//     'context_cohort_user',
+//     'context_cohort',
+//     'context_country_user',
+//     'context_country',
+//     'context_region_user',
+//     'context_region',
+//     'context_global_user',
+//     'context_global',
+//     'dashboard',
+//     'department_user',
+//     'department',
+//     'designation',
+//     'reconciliation',
+//     'variance_note',
+//     'financial_report',
+//     'opening_allocation_balance',
+//     'opening_cash_balance',
+//     'opening_fund_balance',
+//     'opening_outstanding_cheque',
+//     'opening_deposit_transit',
+//     'system_opening_balance',
+//     'project_allocation_detail',
+//     'project_allocation',
+//     'project',
+//     'funder',
+//     'funding_status',
+//     'journal',
+//     'menu_user_order',
+//     'message_detail',
+//     'message',
+//     'month',
+//     'page_view_condition',
+//     'page_view_role',
+//     'page_view',
+//     'permission',
+//     'role_permission',
+//     'workplan_task',
+//     'workplan',    
+//     'month',
+//     'office',
+//     'status_role',
+//     'status',
+//     'workflow',
+//     'language',
+//     'language_phrase',
+//     'menu',
+//     'expense_account',
+//     'income_account',
+//     'user',
+//     'role',
+//   ];
 
-}
+// if($allow_merge){
+//   return array_merge($soft_resetable_tables,$hard_resetable_tables);
+// } else{
+//   return ['soft_reset'=>$soft_resetable_tables,'hard_reset'=>$hard_resetable_tables];
+// } 
 
-
+//}
 
 function merge_with_history_fields(String $approve_item_name, Array $array_to_merge, bool $add_name_to_array = true){
 
@@ -1362,8 +1419,8 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
   //$this->grants->table_setup($approve_item_name);
 
   $data[$approve_item_name.'_track_number'] = $this->generate_item_track_number_and_name($approve_item_name)[$approve_item_name.'_track_number'];
-  $data[$approve_item_name.'_created_by'] = $this->session->user_id;
-  $data[$approve_item_name.'_last_modified_by'] = $this->session->user_id;
+  $data[$approve_item_name.'_created_by'] = $this->session->user_id?$this->session->user_id:1;
+  $data[$approve_item_name.'_last_modified_by'] = $this->session->user_id?$this->session->user_id:1;
   $data[$approve_item_name.'_created_date'] = date('Y-m-d');
   $data['fk_approval_id'] = $this->insert_approval_record($approve_item_name);
   $data['fk_status_id'] = $this->initial_item_status($approve_item_name);

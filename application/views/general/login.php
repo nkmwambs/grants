@@ -91,12 +91,22 @@ var baseurl = '<?php echo base_url();?>';
 							<i class="entypo-user"></i>
 						</div>
 
-						<input type="text" class="form-control" name="email" id="email" placeholder="Your Work Email" autocomplete="off" data-mask="email" />
+						<?php 
+							$setup_email = "";
+							$disable_password = "";
+							$user_obj = $this->db->get('user');
+							if($user_obj->num_rows() == 1){
+								$setup_email = $this->db->get_where('setting',array('type'=>'system_email'))->row()->description;
+								$disable_password = "hide";
+							}
+						?>
+
+						<input type="text" value="<?=$setup_email;?>" class="form-control" name="email" id="email" placeholder="Your Work Email" autocomplete="off" data-mask="email" />
 					</div>
 
 				</div>
 
-				<div class="form-group">
+				<div class="form-group <?=$disable_password;?>">
 
 					<div class="input-group">
 						<div class="input-group-addon">

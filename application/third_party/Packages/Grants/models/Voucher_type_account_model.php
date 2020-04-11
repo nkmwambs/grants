@@ -35,4 +35,24 @@ class Voucher_type_account_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function intialize_table(Array $foreign_keys_values = []){
+
+        $voucher_type_accounts = ['bank','cash'];
+
+        $insert_ids = [];
+
+        foreach($voucher_type_accounts as $voucher_type_account){
+            $voucher_type_account_data['voucher_type_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('voucher_type_account')['voucher_type_account_track_number'];
+            $voucher_type_account_data['voucher_type_account_name'] = ucfirst($voucher_type_account);
+            $voucher_type_account_data['voucher_type_account_code'] = $voucher_type_account;
+            
+            $voucher_type_account_data_to_insert = $this->grants_model->merge_with_history_fields('voucher_type_account',$voucher_type_account_data,false);
+            $this->db->insert('voucher_type_account',$voucher_type_account_data_to_insert);
+
+            $insert_ids[] = $this->db->insert();
+        }
+
+        return $insert_ids;
+    }
 }

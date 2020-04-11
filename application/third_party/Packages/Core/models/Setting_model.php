@@ -25,4 +25,48 @@ class Setting_model extends MY_Model
 
   }
 
+  function intialize_table(){
+
+    $settings = [
+      [
+        'type'=>'system_name','description'=>'Grants Management System','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'system_title','description'=>'Grants Management System','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'address','description'=>'1945 Nairobi','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'phone','description'=>'+254711808071','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'system_email','description'=>'nkmwambs@gmail.com','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'language','description'=>1,'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'text_align','description'=>'left-to-right','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'skin_colour','description'=>'blue','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'system_setup_completed','description'=>0,'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+      [
+        'type'=>'setup_password','description'=>md5('#Compassion321'),'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
+
+    ];
+
+    $reset_auto_increment = "ALTER TABLE setting AUTO_INCREMENT = 1";
+    $this->db->query($reset_auto_increment);
+
+    $this->db->insert_batch('setting',$settings);
+
+    //return $this->db->insert();
+  }
+
 }

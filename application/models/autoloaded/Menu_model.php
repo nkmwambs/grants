@@ -76,7 +76,7 @@ function upsert_user_menu(){
         $user_menu_data['menu_user_order_priority_item'] = 1;
         if(sizeof($menu_ids)-1 == $order){
           $user_menu_data['menu_user_order_priority_item'] = 0;
-        }elseif($order > $this->config->item('max_priority_menu_items')){
+        }elseif($order > $this->config->item('max_priority_menu_items') - 1){
           $user_menu_data['menu_user_order_priority_item'] = 0;
         }
 

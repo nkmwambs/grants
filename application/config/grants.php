@@ -11,6 +11,25 @@
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = false;
 
+	//Set up configs - Change the sequence of this array if you know what yo are doing
+	$config['table_that_dont_require_history_fields'] = ['approval','status','approve_item','account_system','approval_flow','ci_sessions'];
+	// Order of relationship MUST be maintained
+	$config['setup_initialized_tables'] = [	'account_system',
+											'context_definition',
+											'office',
+											'context_global',
+											'language',
+											'role',
+											'user',
+											'designation',
+											'context_global_user',
+											'voucher_type_account',
+											'voucher_type_effect',
+											'month',
+										];
+	// Can be changed on initialization but must be in the order from the lowest to the highest
+	$config['context_definitions'] = ['center','cluster','cohort','country','region','global'];
+
 	//Voucher configurations
 	//If true cheque numbers can be skipped as long as are in the active cheque book
 	$config['allow_skipping_of_cheque_leaves'] = false; 

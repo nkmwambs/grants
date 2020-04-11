@@ -49,4 +49,33 @@ class Context_definition_model extends MY_Model{
         return array('context_definition_level');
     }
 
+    function intialize_table(Array $foreign_keys_values = []){
+
+        $context_definitions = $this->config->item('context_definitions');
+
+        $insert_ids = [];
+
+        foreach($context_definitions as $context_definition_level => $context_definition){
+
+            $context_definition_level += 1;
+
+            $context_definition_data['context_definition_track_number'] = $this->grants_model->generate_item_track_number_and_name('context_definition')['context_definition_track_number'];
+            $context_definition_data['context_definition_name'] = $context_definition;
+            $context_definition_data['context_definition_level'] = $context_definition_level;
+            $context_definition_data['context_definition_is_implementing'] = 1; // 1 = Can raise a voucher, budget, request and financial report for
+            $context_definition_data['context_definition_is_active'] = 1;
+
+            $context_definition_data['context_definition_created_by'] = 1;
+            $context_definition_data['context_definition_last_modified_by'] = 1;
+            $context_definition_data['context_definition_created_date'] = date('Y-m-d');
+            
+            $context_definition_data_to_insert = $this->grants_model->merge_with_history_fields('context_definition',$context_definition_data,false);
+            $this->db->insert('context_definition',$context_definition_data);
+
+            $insert_ids[$context_definition_level] = $this->db->insert_id();
+        }
+
+        return $insert_ids;
+        
+    }    
 }

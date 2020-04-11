@@ -35,4 +35,15 @@ class Account_system_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function intialize_table(Array $foreign_keys_values = []){
+        $account_system_data['account_system_track_number'] = $this->grants_model->generate_item_track_number_and_name('account_system')['account_system_track_number'];
+        $account_system_data['account_system_name'] = "Global Account System";
+        $account_system_data['account_system_is_allocation_linked_to_account'] = 0;
+        
+        $account_system_data_to_insert = $this->grants_model->merge_with_history_fields('account_system',$account_system_data,false);
+        $this->db->insert('account_system',$account_system_data_to_insert);
+
+        return $this->db->insert();
+    }
 }

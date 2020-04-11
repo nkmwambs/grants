@@ -35,4 +35,24 @@ class Voucher_type_effect_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function intialize_table(Array $foreign_keys_values = []){
+
+        $voucher_type_effects = ['income','expense','bank_contra','cash_contra'];
+
+        $insert_ids = [];
+
+        foreach($voucher_type_effects as $voucher_type_effect){
+            $voucher_type_effect_data['voucher_type_effect_track_number'] = $this->grants_model->generate_item_track_number_and_name('voucher_type_effect')['voucher_type_effect_track_number'];
+            $voucher_type_effect_data['voucher_type_effect_name'] = ucfirst($voucher_type_effect);
+            $voucher_type_effect_data['voucher_type_effect_code'] = $voucher_type_effect;
+            
+            $voucher_type_effect_data_to_insert = $this->grants_model->merge_with_history_fields('voucher_type_effect',$voucher_type_effect_data,false);
+            $this->db->insert('voucher_type_effect',$voucher_type_effect_data_to_insert);
+
+            $insert_ids[] = $this->db->insert();
+        }
+
+        return $insert_ids;
+    }
 }

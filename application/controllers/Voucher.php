@@ -291,17 +291,15 @@ class Voucher extends MY_Controller
     
     }elseif($voucher_type_effect == 'cash_contra'){
 
-      $this->db->select(array('cash_contra_account_id as account_id','cash_contra_account_name as account_name','cash_contra_account_code as account_code'));
-      $this->db->join('contra_account','contra_account.contra_account_id=cash_contra_account.fk_contra_account_id');
-      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=cash_contra_account.fk_voucher_type_account_id');
-      $response['accounts'] = $this->db->get_where('cash_contra_account',array('voucher_type_account_code'=>'cash','fk_account_system_id'=>$office_accounting_system->account_system_id))->result_object();
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
+      $response['accounts'] = $this->db->get_where('contra_account',array('voucher_type_account_code'=>'cash','fk_account_system_id'=>$office_accounting_system->account_system_id))->result_object();
 
     }elseif($voucher_type_effect == 'bank_contra'){
     
-      $this->db->select(array('bank_contra_account_id as account_id','bank_contra_account_name as account_name','bank_contra_account_code as account_code'));
-      $this->db->join('contra_account','contra_account.contra_account_id=bank_contra_account.fk_contra_account_id');
-      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=bank_contra_account.fk_voucher_type_account_id');
-      $response['accounts'] = $this->db->get_where('bank_contra_account',array('voucher_type_account_code'=>'bank','fk_account_system_id'=>$office_accounting_system->account_system_id))->result_object();
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
+      $response['accounts'] = $this->db->get_where('contra_account',array('voucher_type_account_code'=>'bank','fk_account_system_id'=>$office_accounting_system->account_system_id))->result_object();
     
     }
 

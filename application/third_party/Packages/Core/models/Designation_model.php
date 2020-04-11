@@ -48,4 +48,20 @@ class Designation_model extends MY_Model{
         
     //     return $query_condition_array;
     // }
+
+    function intialize_table(Array $foreign_keys_values = []){  
+
+        $context_definitions = $this->config->item('context_definitions');
+        $global_context_key = count($context_definitions);
+
+        $designation_data['designation_track_number'] = $this->grants_model->generate_item_track_number_and_name('designation')['designation_track_number'];
+        $designation_data['designation_name'] = 'Super System Administrator';
+        $designation_data['fk_context_definition_id'] = $global_context_key;
+    
+            
+        $designation_data_to_insert = $this->grants_model->merge_with_history_fields('designation',$designation_data,false);
+        $this->db->insert('designation',$designation_data_to_insert);
+    
+        return $this->db->insert_id();
+    }
 }

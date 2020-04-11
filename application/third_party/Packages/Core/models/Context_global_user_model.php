@@ -33,4 +33,19 @@ class Context_global_user_model extends MY_Model{
     }
 
     public function detail_tables(){}
+
+    function intialize_table(Array $foreign_keys_values = []){
+    
+        $context_global_user_data['context_global_user_track_number'] = $this->grants_model->generate_item_track_number_and_name('context_global_user')['context_global_user_track_number'];
+        $context_global_user_data['context_global_user_name'] = 'System User';
+        $context_global_user_data['fk_user_id'] = $foreign_keys_values['user_id'];
+        $context_global_user_data['fk_context_global_id'] = $foreign_keys_values['context_global_id']; 
+        $context_global_user_data['fk_designation_id'] = $foreign_keys_values['designation_id'];
+        $context_global_user_data['context_global_user_is_active'] = 1;
+            
+        $context_global_user_data_to_insert = $this->grants_model->merge_with_history_fields('context_global_user',$context_global_user_data,false);
+        $this->db->insert('context_global_user',$context_global_user_data_to_insert);
+    
+        return $this->db->insert_id();
+    }
 }

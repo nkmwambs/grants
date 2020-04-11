@@ -49,4 +49,21 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   //   return array('role_name');
   // }
 
+  function intialize_table(Array $foreign_keys_values = []){  
+
+    $role_data['role_track_number'] = $this->grants_model->generate_item_track_number_and_name('role')['role_track_number'];
+    $role_data['role_name'] = 'Super System Administrator';
+    $role_data['role_shortname'] = 'superadmin';
+    $role_data['role_description'] = 'Super System Administrator';
+    $role_data['role_is_active'] = 1;
+    $role_data['role_is_new_status_default'] = 1;
+    $role_data['role_is_department_strict'] = 0;
+
+        
+    $role_data_to_insert = $this->grants_model->merge_with_history_fields('role',$role_data,false);
+    $this->db->insert('role',$role_data_to_insert);
+
+    return $this->db->insert_id();
+}
+
 }

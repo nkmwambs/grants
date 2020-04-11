@@ -25,5 +25,16 @@ class Language_model extends MY_Model
 
   }
 
+  function intialize_table(Array $foreign_keys_values = []){  
+
+    $language_data['language_track_number'] = $this->grants_model->generate_item_track_number_and_name('language')['language_track_number'];
+    $language_data['language_name'] = 'English';
+    $language_data['language_code'] = 'en';
+        
+    $language_data_to_insert = $this->grants_model->merge_with_history_fields('language',$language_data,false);
+    $this->db->insert('language',$language_data_to_insert);
+
+    return $this->db->insert_id();
+}
 
 }

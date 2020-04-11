@@ -188,7 +188,7 @@ class Menu_library {
               // user priority menu
 
               if(
-                  count($user_priority_menu_based_on_permissions) < $this->CI->config->item('max_priority_menu_items') && 
+                  count($user_priority_menu_based_on_permissions) < $this->CI->config->item('max_priority_menu_items') - 1 && 
                   count($user_more_menu_based_on_permissions) > 0  
               ){
 
@@ -196,7 +196,7 @@ class Menu_library {
                   // Take the first max_priority_menu_items elements to $user_priority_menu_based_on_permissions
 
                   $chunked_user_more = array_chunk($user_more_menu_based_on_permissions,
-                  $this->CI->config->item('max_priority_menu_items'),true);
+                  $this->CI->config->item('max_priority_menu_items') - 1,true);
 
                   foreach($chunked_user_more[0] as $menu => $options){
                     $user_priority_menu_based_on_permissions[$menu] = $options;
@@ -205,7 +205,7 @@ class Menu_library {
                   // Remove the first max_priority_menu_items elements from $user_more_menu_based_on_permissions 
                   // and assign the remaning to $user_more_menu_based_on_permissions 
                   $user_more_menu_based_on_permissions = array_slice($user_more_menu_based_on_permissions,
-                  $this->CI->config->item('max_priority_menu_items'));
+                  $this->CI->config->item('max_priority_menu_items') - 1);
                   
                   
               } 

@@ -13,6 +13,7 @@ class Api extends CI_Controller{
     parent::__construct();
 
     $this->load->model('general_model');
+    $this->load->library('language_library');
   }
     
   function index(){
@@ -27,6 +28,15 @@ class Api extends CI_Controller{
     echo $this->general_model->get_status_id($approveable_item,$record_id);
   }
 
+  function intialize_table(){
+    $foreign_keys_values = [];
+    $this->load->model('context_definition_model');
+    echo json_encode($this->context_definition_model->intialize_table($foreign_keys_values));
     
+  }    
+
+  function insert_approval_record($approve_item){
+    echo json_encode($this->grants_model->insert_approval_record($approve_item));
+  }
 
 }
