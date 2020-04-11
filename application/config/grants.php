@@ -12,7 +12,7 @@
 	$config['use_select2_plugin'] = false;
 
 	//Set up configs - Change the sequence of this array if you know what yo are doing
-	$config['table_that_dont_require_history_fields'] = ['approval','status','approve_item','account_system','approval_flow','ci_sessions'];
+	$config['table_that_dont_require_history_fields'] = ['status','approve_item','account_system','approval_flow','ci_sessions'];
 	// Order of relationship MUST be maintained
 	$config['setup_initialized_tables'] = [	'account_system',
 											'context_definition',

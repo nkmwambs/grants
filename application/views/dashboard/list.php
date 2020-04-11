@@ -1,5 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-//echo strtotime(date('Y-m-t',strtotime('2016-06-30')));
+//$approveable_item = "Bank";
+//print_r($this->db->get_where('approve_item',array('approve_item_name'=>strtolower($approveable_item)))->row()->approve_item_id);
 ?>
 
   <div class="row">

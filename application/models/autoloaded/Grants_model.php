@@ -83,18 +83,27 @@ function check_item_requires_approval($approveable_item){
 }
 
 function insert_approval_record($approveable_item){
-  $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
-  $approval['approval_track_number'] = $approval_random;
-  $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
-  $approval['approval_created_by'] = 1;$this->session->user_id?$this->session->user_id:1;
-  $approval['approval_created_date'] = date('Y-m-d');
-  $approval['approval_last_modified_by'] = 1;$this->session->user_id?$this->session->user_id:1;
-  $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',
-  array('approve_item_name'=>$approveable_item))->row()->approve_item_id;
 
-  $this->db->insert('approval',$approval);
+  $is_approveable_item = $this->approveable_item($approveable_item);
+  $insert_id = 0;
 
-  return $this->db->insert_id();
+  if($is_approveable_item){
+    $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
+    $approval['approval_track_number'] = $approval_random;
+    $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
+    $approval['approval_created_by'] = 1;$this->session->user_id?$this->session->user_id:1;
+    $approval['approval_created_date'] = date('Y-m-d');
+    $approval['approval_last_modified_by'] = 1;$this->session->user_id?$this->session->user_id:1;
+    $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',array('approve_item_name'=>strtolower($approveable_item)))->row()->approve_item_id;
+    $approval['fk_status_id'] = $this->initial_item_status($approveable_item);
+
+    $this->db->insert('approval',$approval);
+
+    $insert_id = $this->db->insert_id();
+  }
+
+  return $insert_id;
+  
 }
 
 function generate_item_track_number_and_name($approveable_item){
@@ -129,15 +138,14 @@ function generate_item_track_number_and_name($approveable_item){
 
     // Check if the creation of the of the header and detail records requires an approval ticket
     $header_record_requires_approval = $this->approveable_item($this->controller);
-    $detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
+    //$detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
+    $detail_records_require_approval = $this->approveable_item($this->grants->dependant_table($this->controller));
 
     // Start a transaction
     $this->db->trans_begin();
 
     $approval = array();
     $details = array();
-    // Instatiate the $approval_id to 0
-    $approval_id = 0;
 
     if($this->id){
 
@@ -149,24 +157,7 @@ function generate_item_track_number_and_name($approveable_item){
     }
 
     // Create the approval ticket if required by the header record
-
-    //if($header_record_requires_approval && $approval_id == 0){
-
-      $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
-      $approval['approval_track_number'] = $approval_random;
-      $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
-      $approval['approval_created_by'] = $this->session->user_id;
-      $approval['approval_created_date'] = date('Y-m-d');
-      $approval['approval_last_modified_by'] = $this->session->user_id;
-      $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',
-      array('approve_item_name'=>$this->controller))->row()->approve_item_id;
-
-      $this->db->insert('approval',$approval);
-
-      // Get the approval ticket insert id when created and reassign the initialized $approval_id
-      $approval_id = $this->db->insert_id();
-
-    //}
+    $approval_id  = $this->insert_approval_record($this->controller);
 
     // This array will hold the array with values for header record insert
     $header_columns = array();
@@ -241,16 +232,10 @@ function generate_item_track_number_and_name($approveable_item){
 
 
       // Insert the details using insert batch
-      //$this->db->insert_batch($this->controller.'_detail',$detail_columns);
       $this->db->insert_batch($this->grants->dependant_table($this->controller),$detail_columns);
       
 
     }
-
-    // Insert attachments - Not important since an alternative means has been thought
-
-    //$this->upload_attachment($header_id);
-
 
     // End the transaction and determine if successful
     //$this->db->trans_complete();
@@ -258,7 +243,7 @@ function generate_item_track_number_and_name($approveable_item){
     if ($this->db->trans_status() === FALSE)
     {       
             $this->db->trans_rollback();
-            //return json_encode($header_columns);
+            // return json_encode($header_columns);
             //return "Insert not successful";
             return get_phrase('insert_failed');
     }
@@ -557,7 +542,13 @@ function mandatory_fields(String $table): void{
       //Mandatory Fields: created_by, created_date,last_modified_by,last_modified_date,fk_approval_id,fk_status_id
       $mandatory_fields = array($table.'_created_date',$table.'_created_by',$table.'_last_modified_by',
       $table.'_last_modified_date','fk_approval_id','fk_status_id');
-
+  }elseif($table == 'approval'){
+      $mandatory_fields = array($table.'_created_date',$table.'_created_by',$table.'_last_modified_by',
+      $table.'_last_modified_date','fk_status_id');
+  }elseif($table == 'approval_flow'){
+      $mandatory_fields = array($table.'_created_date',$table.'_created_by',$table.'_last_modified_by',
+      $table.'_last_modified_date');
+  }
       // Check if the mandatory fields exists in the listed table and if not alter the table by 
       // adding a column with default value as the newly inserted status_id
 
@@ -586,7 +577,7 @@ function mandatory_fields(String $table): void{
         $this->load->dbforge();
         $this->dbforge->add_column($table, $fields_to_add);
       }
-  }
+  
 
   // $this->db->trans_complete();
 
@@ -1415,8 +1406,6 @@ function update_status(){
 function merge_with_history_fields(String $approve_item_name, Array $array_to_merge, bool $add_name_to_array = true){
 
   $data = [];
-
-  //$this->grants->table_setup($approve_item_name);
 
   $data[$approve_item_name.'_track_number'] = $this->generate_item_track_number_and_name($approve_item_name)[$approve_item_name.'_track_number'];
   $data[$approve_item_name.'_created_by'] = $this->session->user_id?$this->session->user_id:1;
