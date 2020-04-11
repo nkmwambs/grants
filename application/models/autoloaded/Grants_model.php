@@ -356,6 +356,17 @@ function generate_item_track_number_and_name($approveable_item){
     return array_combine($ids_array,$value_array);
   }
 
+  function initialize_db_schema(){
+    if(file_exists('database/blank_db.sql')){
+      $sql = file_get_contents('database/blank_db.sql');
+      $exploded_sql = explode(';',$sql);
+
+      foreach($exploded_sql as $query){
+        $this->db->query($query);
+      }
+   
+    }
+  }
   
   function populate_initial_table_data(){
 
@@ -377,6 +388,12 @@ function generate_item_track_number_and_name($approveable_item){
         $foreign_keys_values[$initialize_table.'_id'] = $insert_id;
       }
 
+    }
+
+    if(count($foreign_keys_values) > 0){
+      return true;
+    }else{
+      return false;
     }
 
   }

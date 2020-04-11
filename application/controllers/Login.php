@@ -41,24 +41,28 @@ public $controller;
     //Default function, redirects to logged in user area
     public function index() {
 
-        if($this->db->get('setting')->num_rows() == 0){
+        if(!$this->db->table_exists('setting') || $this->db->get('setting')->num_rows() == 0){
             $this->load->model('setting_model');
+
+            // Create all tables in the database
+            $this->grants_model->initialize_db_schema();
+            
+            // Populate setting table
             $this->setting_model->intialize_table();
+
         }
 
-        if($this->db->get('user')->num_rows() == 0){
-            // Check if system set up has been completed before logging in
-            $this->system_setup_check();
-
-            $this->create_mandatory_role_permissions();
-        }
+        // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
+        // populate setup tables, add mandatory fields, create item approval flow and permissions
+        $this->system_setup_check();
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
              if(parse_url(base_url())['host'] == 'localhost'){
                 $this->grants->create_missing_system_files(); 
               }
-            //$this->load->library($this->session->default_launch_page.'_library');
+            
+            $this->create_mandatory_role_permissions();
             
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
@@ -128,7 +132,7 @@ public $controller;
             }
 
           // Insert records for system required tables        
-          $this->grants_model->populate_initial_table_data();
+          $are_tables_populated = $this->grants_model->populate_initial_table_data();
           
           // Set user_id session for super user
           $this->session->set_userdata('user_id',1);
@@ -154,13 +158,12 @@ public $controller;
 
           // Create table permissions
           $this->grants_model->create_missing_page_access_permission();
-      
+
           //Update system_setup_completed setting to true if all tables are set up
-          $this->db->update('setting',array('description'=>true),array('type'=>'system_setup_completed'));
-        }
-        
-        if($this->session->userdata('user_login') != 1){
-            redirect(base_url(), 'refresh');
+          if($are_tables_populated){
+            $this->db->update('setting',array('description'=>true),array('type'=>'system_setup_completed'));
+          }
+          
         }
         
       }
