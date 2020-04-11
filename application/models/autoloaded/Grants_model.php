@@ -419,11 +419,11 @@ function generate_item_track_number_and_name($approveable_item){
 
       if(!$this->db->table_exists('context_'.$context_definition)){
         $fields[$context_definition] = [
-          "context_".$context_definition."_id int(100) NOT NULL",
+          "context_".$context_definition."_id int(100) NOT NULL PRIMARY KEY AUTO_INCREMENT",
           "context_".$context_definition."_track_number VARCHAR(100) NULL",
           "context_".$context_definition."_name VARCHAR(100) NULL",
           "context_".$context_definition."_description VARCHAR(100) NULL",
-          "fk_office_id VARCHAR(100) NULL",
+          "fk_office_id VARCHAR(100) NOT NULL",
           "fk_context_definition_id VARCHAR(100) NULL",
           $context_rel_field." INT(100) NULL",
           "context_".$context_definition."_created_date DATE NULL DEFAULT '0000-00-00'",
@@ -433,12 +433,12 @@ function generate_item_track_number_and_name($approveable_item){
           "fk_approval_id INT(100) NULL",
           "fk_status_id INT(100) NULL"
         ];
-
+        
+        //$this->dbforge->add_key("context_".$context_definition."_id", TRUE);  
         foreach($fields[$context_definition] as $fld_def){
           $this->dbforge->add_field($fld_def);
         }
 
-        $this->dbforge->add_key("context_".$context_definition."_id", TRUE);
         $this->dbforge->create_table('context_'.$context_definition);
       }
 
@@ -446,7 +446,7 @@ function generate_item_track_number_and_name($approveable_item){
       if(!$this->db->table_exists('context_'.$context_definition.'_user')){
 
         $user_fields[$context_definition] = [
-          "context_".$context_definition."_user_id int(100) NOT NULL",
+          "context_".$context_definition."_user_id int(100) NOT NULL PRIMARY KEY AUTO_INCREMENT",
           "context_".$context_definition."_user_track_number VARCHAR(100) NULL",
           "context_".$context_definition."_user_name VARCHAR(100) NULL",
           'fk_context_'.$context_definition.'_id INT(100) NOT NULL',
@@ -465,7 +465,7 @@ function generate_item_track_number_and_name($approveable_item){
           $this->dbforge->add_field($user_fld_def);
         }
 
-        $this->dbforge->add_key("context_".$context_definition."_user_id", TRUE);
+        //$this->dbforge->add_key("context_".$context_definition."_user_id", TRUE);
         $this->dbforge->create_table('context_'.$context_definition.'_user');
       }
 
