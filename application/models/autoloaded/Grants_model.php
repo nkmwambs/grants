@@ -398,6 +398,83 @@ function generate_item_track_number_and_name($approveable_item){
 
   }
 
+  function create_context_tables(){
+
+    $this->load->dbforge();
+
+    $context_definitions = $this->config->item('context_definitions');
+
+    $reversed_array_reverse = array_reverse($context_definitions);
+
+    $count = count($reversed_array_reverse);
+
+    $fields = [];
+    $user_fields = [];
+
+    foreach($reversed_array_reverse as $context_definition){
+
+      // Create a context schema table
+      
+      $context_rel_field = $count == count($reversed_array_reverse)?"fk_context_global_id":"fk_context_".array_shift($reversed_array_reverse)."_id";
+
+      if(!$this->db->table_exists('context_'.$context_definition)){
+        $fields[$context_definition] = [
+          "context_".$context_definition."_id int(100) NOT NULL",
+          "context_".$context_definition."_track_number VARCHAR(100) NULL",
+          "context_".$context_definition."_name VARCHAR(100) NULL",
+          "context_".$context_definition."_description VARCHAR(100) NULL",
+          "fk_office_id VARCHAR(100) NULL",
+          "fk_context_definition_id VARCHAR(100) NULL",
+          $context_rel_field." INT(100) NULL",
+          "context_".$context_definition."_created_date DATE NULL DEFAULT '0000-00-00'",
+          "context_".$context_definition."_created_by INT(100) NULL",
+          "context_".$context_definition."_last_modified_date TIMESTAMP NULL DEFAULT '0000-00-00'",
+          "context_".$context_definition."_last_modified_by INT(100) NULL",
+          "fk_approval_id INT(100) NULL",
+          "fk_status_id INT(100) NULL"
+        ];
+
+        foreach($fields[$context_definition] as $fld_def){
+          $this->dbforge->add_field($fld_def);
+        }
+
+        $this->dbforge->add_key("context_".$context_definition."_id", TRUE);
+        $this->dbforge->create_table('context_'.$context_definition);
+      }
+
+      // Create a context user schema table
+      if(!$this->db->table_exists('context_'.$context_definition.'_user')){
+
+        $user_fields[$context_definition] = [
+          "context_".$context_definition."_user_id int(100) NOT NULL",
+          "context_".$context_definition."_user_track_number VARCHAR(100) NULL",
+          "context_".$context_definition."_user_name VARCHAR(100) NULL",
+          'fk_context_'.$context_definition.'_id INT(100) NOT NULL',
+          'fk_user_id INT(100) NOT NULL',
+          'fk_designation_id INT(100) NOT NULL',
+          'context_region_user_is_active INT(100) NOT NULL',
+          'context_'.$context_definition.'_user_created_by INT(100) NOT NULL',
+          'context_'.$context_definition.'_user_created_date DATE NULL DEFAULT "0000-00-00"',
+          'context_'.$context_definition.'_user_last_modified_date TIMESTAMP NULL DEFAULT "0000-00-00"',
+          'context_'.$context_definition.'_user_last_modified_by INT(100) NOT NULL',
+          'fk_approval_id INT(100) NULL',
+          'fk_status_id INT(100) NULL',
+        ];
+
+        foreach($user_fields[$context_definition] as $user_fld_def){
+          $this->dbforge->add_field($user_fld_def);
+        }
+
+        $this->dbforge->add_key("context_".$context_definition."_user_id", TRUE);
+        $this->dbforge->create_table('context_'.$context_definition.'_user');
+      }
+
+      $count--;
+    }
+
+    return ['context_fields'=>$fields,'user_fields'=>$user_fields];
+  }
+
   function insert_status_for_approveable_item($approve_item_name){
 
     if($approve_item_name != ""){

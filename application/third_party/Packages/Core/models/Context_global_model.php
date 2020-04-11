@@ -38,7 +38,7 @@ class Context_global_model extends MY_Model{
 
     function intialize_table(Array $foreign_keys_values = []){
         $context_definitions = $this->config->item('context_definitions');
-        $global_context_key = count($context_definitions);
+        $global_context_key = count($context_definitions) + 1;
 
         $context_global_data['context_global_track_number'] = $this->grants_model->generate_item_track_number_and_name('context_global')['context_global_track_number'];
         $context_global_data['context_global_name'] = 'Head Office Context';

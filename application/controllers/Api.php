@@ -39,4 +39,8 @@ class Api extends CI_Controller{
     echo json_encode($this->grants_model->insert_approval_record($approve_item));
   }
 
+  function create_context_tables(){
+    echo json_encode($this->grants_model->create_context_tables());
+  }
+
 }

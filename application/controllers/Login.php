@@ -62,6 +62,7 @@ public $controller;
                 $this->grants->create_missing_system_files(); 
               }
             
+            // Create mandatory role_permission for default launch page  
             $this->create_mandatory_role_permissions();
             
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
@@ -107,7 +108,10 @@ public $controller;
         array('type'=>'system_setup_completed'))->row()->description;
       
         if($system_setup_state == false){
-          
+            
+            // Check if context tables exists or create if missing
+            $this->grants_model->create_context_tables();
+
             $db_tables = $this->db->list_tables();
 
             // Empty all tables are reset by using truncate
@@ -126,6 +130,7 @@ public $controller;
                 $this->db->query($reset_auto_increment);
             }
 
+            // Insert approve items
             foreach($db_tables as $db_table){
                 if(!$this->db->table_exists($db_table) && $db_table == 'setting') continue;
                 $this->grants_model->insert_missing_approveable_item($db_table);

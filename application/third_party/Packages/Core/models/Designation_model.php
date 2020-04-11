@@ -52,7 +52,7 @@ class Designation_model extends MY_Model{
     function intialize_table(Array $foreign_keys_values = []){  
 
         $context_definitions = $this->config->item('context_definitions');
-        $global_context_key = count($context_definitions);
+        $global_context_key = count($context_definitions) + 1;
 
         $designation_data['designation_track_number'] = $this->grants_model->generate_item_track_number_and_name('designation')['designation_track_number'];
         $designation_data['designation_name'] = 'Super System Administrator';

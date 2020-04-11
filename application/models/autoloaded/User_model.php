@@ -1094,7 +1094,7 @@ function get_user_full_name($user_id){
 function intialize_table(Array $foreign_keys_values = []){
 
   $context_definitions = $this->config->item('context_definitions');
-  $global_context_key = count($context_definitions);
+  $global_context_key = count($context_definitions) + 1;
   
   $user_data['user_id'] = 1;
   $user_data['user_track_number'] = $this->grants_model->generate_item_track_number_and_name('user')['user_track_number'];

@@ -53,6 +53,8 @@ class Context_definition_model extends MY_Model{
 
         $context_definitions = $this->config->item('context_definitions');
 
+        array_push($context_definitions,'global');
+
         $insert_ids = [];
 
         foreach($context_definitions as $context_definition_level => $context_definition){
