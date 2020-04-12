@@ -2083,6 +2083,25 @@ class MY_Model extends CI_Model
     }
     */
 
+    function lookup_tables(){
+      $table_name = $this->controller;
+      return $this->derived_lookup_tables($table_name);
+    }
+
+    function derived_lookup_tables($table_name){
+      $fields = $this->grants_model->get_all_table_fields($table_name);
+    
+      $foreign_tables_array_padded_with_false = array_map(function($elem){
+        return substr($elem,0,3) =='fk_'?substr($elem,3,-3):false;
+      },$fields);
+
+      $foreign_tables_array = array_filter($foreign_tables_array_padded_with_false,function($elem){
+        return $elem?$elem:false;
+      });
+
+      return $foreign_tables_array;
+    }
+
     // Can be overriden in the specific model or extended
     function table_hidden_columns(){
       $hidden_columns = array($this->table.'_last_modified_date',$this->table.'_created_date',

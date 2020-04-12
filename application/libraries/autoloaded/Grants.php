@@ -269,6 +269,10 @@ function lookup_tables(String $table_name = ""): Array{
     ){
     $lookup_tables = $this->CI->$model->lookup_tables();
   }
+  //else{
+    // Create a lookup tables array using the foreign keys fields
+    
+  //}
 
   return $lookup_tables;
 }
@@ -1517,9 +1521,6 @@ function create_missing_system_files(){
   $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
 
   $specs_array = yaml_parse($raw_specs,0);
-
-  // $core_tables = $specs_array['core'];
-  // $core_tables = $specs_array['grants'];
   
   $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
   $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;

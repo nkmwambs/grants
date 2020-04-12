@@ -29,9 +29,10 @@ class Context_cluster_user_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('user','context_cluster','designation');
+        return array('user','context_cluster');
     }
 
-
     public function detail_tables(){}
+
+    public function detail_multi_form_add_visible_columns(){}
 }

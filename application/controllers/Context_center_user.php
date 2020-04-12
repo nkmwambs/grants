@@ -16,11 +16,11 @@ class Context_center_user extends MY_Controller
 
   function __construct(){
     parent::__construct();
-    $this->load->library('Context_center_user_library');
+    $this->load->library('context_center_user_library');
   }
 
   function index(){}
 
-  // static function get_menu_list(){}
+  static function get_menu_list(){}
 
 }

@@ -29,15 +29,10 @@ class Context_center_user_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('user','context_center','designation');
+        return array();
     }
 
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
-
-    public function detail_list_table_visible_columns(){
-        return ['context_center_track_number','context_center_user_name','user_name','context_center_user_is_active','designation_name','context_center_name',
-        'context_center_user_created_date','context_center_user_last_modified_date'];
-    }
 }

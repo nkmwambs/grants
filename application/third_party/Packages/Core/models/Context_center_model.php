@@ -29,16 +29,10 @@ class Context_center_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_cluster','office','context_definition');
+        return array('context_cluster');
     }
 
-    public function detail_tables(){
-        return ['context_center_user'];
-    }
+    public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
-
-    function show_add_button(){
-        return false;
-    }
 }

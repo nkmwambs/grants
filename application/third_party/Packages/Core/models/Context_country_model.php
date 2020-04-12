@@ -29,10 +29,10 @@ class Context_country_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_region','office','context_definition');
+        return array('group_region','office');
     }
 
-    public function detail_tables(){
-        return array('context_country_user','context_cohort');
-    }
+    public function detail_tables(){}
+
+    public function detail_multi_form_add_visible_columns(){}
 }

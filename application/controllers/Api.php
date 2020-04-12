@@ -51,4 +51,18 @@ class Api extends CI_Controller{
     echo json_encode($specs_array['grants']);
   }
 
+  function get_all_table_fields(){
+    $fields = $this->grants_model->get_all_table_fields('voucher');
+    
+    $foreign_tables_array_padded_with_false = array_map(function($elem){
+      return substr($elem,0,3) =='fk_'?substr($elem,3,-3):false;
+    },$fields);
+
+    $foreign_tables_array = array_filter($foreign_tables_array_padded_with_false,function($elem){
+      return $elem?$elem:false;
+    });
+
+    echo json_encode($foreign_tables_array);
+  }
+
 }

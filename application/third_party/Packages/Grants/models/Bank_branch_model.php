@@ -28,9 +28,9 @@ class Bank_branch_model extends MY_Model implements CrudModelInterface, TableRel
 
   }
 
-  function lookup_tables(){
-    //return ['bank'];
-  }
+  // function lookup_tables(){
+  //   //return ['bank'];
+  // }
 
   function detail_tables(){
     return ['office_bank'];

@@ -29,16 +29,10 @@ class Context_cohort_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_country','office','context_definition');
+        return array('context_country','office');
     }
 
-    public function detail_tables(){
-        return array('context_cohort_user','context_cluster');
-    }
+    public function detail_tables(){}
 
-    function lookup_values_where($table){
-        return [
-            'fk_office_id'=>25
-        ];
-    }
+    public function detail_multi_form_add_visible_columns(){}
 }

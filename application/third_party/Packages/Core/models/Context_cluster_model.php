@@ -29,12 +29,10 @@ class Context_cluster_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_cohort','office','context_definition');
+        return array('context_cohort','office');
     }
 
-    public function detail_tables(){
-        return array('context_cluster_user','context_center');
-    }
+    public function detail_tables(){}
 
-    
+    public function detail_multi_form_add_visible_columns(){}
 }
