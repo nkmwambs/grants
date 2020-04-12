@@ -1,156 +1,145 @@
-tables:
-  context_definition:
+core:
+  tables:
+    context_definition:
 
-  language:
+    language:
 
-  context_global:
-    lookup_tables:
-      - office
+    context_global:
+      lookup_tables:
+        - office
 
-  context_region:
-    lookup_tables:
-      - group_global
-      - office
+    context_region:
+      lookup_tables:
+        - group_global
+        - office
+    context_country:
+      lookup_tables:
+        - group_region
+        - office
 
-  context_country:
-    lookup_tables:
-      - group_region
-      - office
+    context_cohort:
+      lookup_tables:
+        - context_country
+        - office
 
-  context_cohort:
-    lookup_tables:
-      - context_country
-      - office
+    context_cluster:
+      lookup_tables:
+        - context_cohort 
+        - office  
 
-  context_cluster:
-    lookup_tables:
-      - context_cohort 
-      - office  
+    context_cluster_user:
+      lookup_tables:
+        - user
+        - context_cluster
 
-  context_cluster_user:
-    lookup_tables:
+    context_cohort_user:
+      lookup_tables:
+        - user
+        - context_cohort
+
+    context_country_user:
+      lookup_tables:
+        - user
+        - context_country
+
+    context_region_user:
+      lookup_tables:
+        - user
+        - context_region
+
+    context_global_user:
+      lookup_tables:
+        - user
+        - context_global   
+
+    department:
+      lookup_tables:
+        - approval
+        - status
+
+    department_user:
+      lookup_tables:
+        - user
+        - department
+        - approval
+        - status
+    
+    designation:
+      lookup_tables:
+        - context_definition 
+
+    page_view:
+      lookup_tables:
+        - menu
+
+    page_view_condition:
+      lookup_tables:
+        - page_view    
+    
+    page_view_role:
+      lookup_tables:
+        - role
+        - page_view    
+
+    context_center:
+      lookup_tables:
+        - context_cluster
+
+    context_center_user:
       - user
-      - context_cluster
+      - context_center
+      - designation
 
-  context_cohort_user:
-    lookup_tables:
-      - user
-      - context_cohort
+    account_system:  
 
-  context_country_user:
-    lookup_tables:
-      - user
-      - context_country
+    approval_flow:
+      - approve_item 
 
-  context_region_user:
-    lookup_tables:
-      - user
-      - context_region
+grants:
+  
+  tables:
+    
+    request_type:
+    
+    financial_report:
+      lookup_tables:
+        - office   
 
-  context_global_user:
-    lookup_tables:
-      - user
-      - context_global   
+    voucher_type_account:     
 
-  department:
-    lookup_tables:
-      - approval
+    voucher_type_effect:
+
+    opening_cash_balance:
+      - office 
+    
+    request_conversion:
       - status
+      - account_system 
+    
+    project_allocation_detail:
 
-  department_user:
-    lookup_tables:
+    workplan_task:  
+
+    message_detail:
+      - message
       - user
-      - department
-      - approval
-      - status
-  
-  designation:
-    lookup_tables:
-      - context_definition 
 
-  page_view:
-    lookup_tables:
-      - menu
+    system_opening_balance:
+      - office
 
-  page_view_condition:
-    lookup_tables:
-      - page_view    
-  
-  page_view_role:
-    lookup_tables:
-      - role
-      - page_view    
+    opening_fund_balance:
+      - system_opening_balance
+      - income_account
 
-  request_type:
+    opening_allocation_balance:
+      - system_opening_balance
+      - project_allocation
 
-  context_center:
-    lookup_tables:
-      - context_cluster
+    opening_outstanding_cheque: 
+      - system_opening_balance
 
-  context_center_user:
-    - user
-    - context_center
-    - designation
+    opening_deposit_transit:
+      - system_opening_balance
 
-  context:
-    lookup_tables:
-      - context_definition
-  
-  context_user:
-    lookup_tables:
-      - user
-      - context
-
-  financial_report:
-    lookup_tables:
-      - office   
-
-  voucher_type_account:     
-
-  voucher_type_effect:
-
-  # cash_contra_account:
-
-  # bank_contra_account:
-
-  opening_cash_balance:
-    - office 
-
-  account_system:
-  
-  request_conversion:
-    - status
-    - account_system 
-  
-  project_allocation_detail:
-
-  workplan_task:  
-
-  message_detail:
-    - message
-    - user
-
-  system_opening_balance:
-    - office
-
-  opening_fund_balance:
-    - system_opening_balance
-    - income_account
-
-  opening_allocation_balance:
-    - system_opening_balance
-    - project_allocation
-
-  opening_outstanding_cheque: 
-    - system_opening_balance
-
-  opening_deposit_transit:
-    - system_opening_balance
-
-  # workflow:
-  #   - approve_item
-
-  approval_flow:
-    - approve_item 
 
 

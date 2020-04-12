@@ -1517,15 +1517,21 @@ function create_missing_system_files(){
   $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
 
   $specs_array = yaml_parse($raw_specs,0);
+
+  // $core_tables = $specs_array['core'];
+  // $core_tables = $specs_array['grants'];
   
   $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
   $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
 
-  foreach($specs_array['tables'] as $table_name => $setup){
-    if(!file_exists($controllers_path.$table_name.'.php')){
-      $this->create_missing_controller($table_name,$assets_temp_path);
-      $this->create_missing_model($table_name,$assets_temp_path,$setup);
-      $this->create_missing_library($table_name,$assets_temp_path);
+  //foreach($specs_array['tables'] as $table_name => $setup){
+  foreach($specs_array as $app_name => $app_tables){
+    foreach($app_tables['tables'] as $table_name => $setup){
+      if(!file_exists($controllers_path.$table_name.'.php')){
+        $this->create_missing_controller($table_name,$assets_temp_path);
+        $this->create_missing_model($table_name,$assets_temp_path,$setup,$app_name);
+        $this->create_missing_library($table_name,$assets_temp_path,$app_name);
+      }
     }
   }
 
@@ -1542,9 +1548,9 @@ function create_missing_controller($table, $assets_temp_path){
 
 }
 
-function create_missing_library($table, $assets_temp_path){
+function create_missing_library($table, $assets_temp_path,$app_name){
  
-  $libararies_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants'.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR; 
+  $libararies_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.ucfirst($app_name).DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR; 
 
   // Copy contents of assets/temp_library to the created file after the tag above
   $replaceables = array("%library%"=>ucfirst($table).'_library');
@@ -1552,9 +1558,9 @@ function create_missing_library($table, $assets_temp_path){
   $this->write_file_contents($table, $libararies_path ,$assets_temp_path, $replaceables, 'library');
 }
 
-function create_missing_model($table, $assets_temp_path, $table_specs){
+function create_missing_model($table, $assets_temp_path, $table_specs,$app_name){
 
-  $models_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR;
+  $models_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.ucfirst($app_name).DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR;
  
       // Copy contents of assets/temp_model to the created file after the tag above
       $lookup_tables = "";

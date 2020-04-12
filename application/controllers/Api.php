@@ -43,4 +43,12 @@ class Api extends CI_Controller{
     echo json_encode($this->grants_model->create_context_tables());
   }
 
+  function yaml_tables_versions(){
+    $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
+
+    $specs_array = yaml_parse($raw_specs,0);
+
+    echo json_encode($specs_array['grants']);
+  }
+
 }
