@@ -508,55 +508,36 @@ class User_model extends MY_Model
      */
      function _user_hierarchy_offices($user_context, $user_context_id, $looping_context){
        
-
       $user_context_table = 'context_'.$user_context;
       $user_context_level = $this->grants->context_definitions()[$user_context]['context_definition_level'];
 
+      $config_context = $this->user_applicable_contexts($user_context);//array_keys($this->grants->context_definitions());
+
       $this->db->select(array('office_id','office_name'));
 
-      if($looping_context == 'center'){
-
-        //$this->db->select(array('context_center.fk_office_id as office_id'));
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
-        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
-        if($user_context_level > 1) $this->db->join('context_center','context_center.fk_context_cluster_id=context_cluster.context_cluster_id');  
-        
-      }elseif($looping_context == 'cluster'){
-
-        //$this->db->select(array('context_cluster.fk_office_id as office_id'));
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
-        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
-        
-      }elseif($looping_context == 'cohort'){
-        
-        //$this->db->select(array('context_cohort.fk_office_id as office_id'));
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
- 
-      }elseif($looping_context == 'country'){
-        
-        //$this->db->select(array('context_country.fk_office_id as office_id'));
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        
-      }elseif($looping_context == 'region'){
-        
-        //$this->db->select(array('context_region.fk_office_id as office_id'));
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-
-      }
+      $this->grants_model->create_table_join_statement_with_depth($user_context_table,$config_context);
       
       $this->db->join('office','office.office_id=context_'.$looping_context.'.fk_office_id');
       $hierarchy_offices = $this->db->get_where($user_context_table,array($user_context_table.'_id'=>$user_context_id))->result_array();
-      
-      //$hierarchy_offices_ids = array_column($hierarchy_offices,'office_id');
 
       return $hierarchy_offices;
+    }
+
+    function user_applicable_contexts(String $user_context){
+
+      $contexts = array_keys($this->grants->context_definitions());
+    
+      $user_context_id = array_search($user_context,$contexts);
+
+      $id_range = range($user_context_id + 1,count($contexts) - 1);
+
+      foreach($id_range as $context_id){
+        if(isset($contexts[$context_id])){
+          unset($contexts[$context_id]);
+        }
+      }
+
+      return $contexts;
     }
 
     

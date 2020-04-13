@@ -90,4 +90,33 @@ class Api extends CI_Controller{
     echo json_encode($this->directory_iterator());
   }
 
+  function context_definitions(){
+    $def =  $this->grants->context_definitions();
+
+    echo json_encode($def);
+  }
+
+  function user_hierarchy_offices(){
+    //($user_context, $user_context_id, $looping_context)
+      echo json_encode($this->user_model->_user_hierarchy_offices('global',1,'global'));
+  }
+
+  function chunk_contexts(){
+    $user_context = 'country';
+    
+    $contexts = array_keys($this->grants->context_definitions());
+    
+    $user_context_id = array_search($user_context,$contexts);
+
+    $id_range = range($user_context_id + 1,count($contexts) - 1);
+
+    foreach($id_range as $context_id){
+      if(isset($contexts[$context_id])){
+        unset($contexts[$context_id]);
+      }
+    }
+
+    echo json_encode($contexts);
+  }
+
 }
