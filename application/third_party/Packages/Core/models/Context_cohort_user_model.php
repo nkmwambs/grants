@@ -29,7 +29,7 @@ class Context_cohort_user_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('user','context_cohort');
+        return array('context_cohort','user','designation','approval','status');
     }
 
     public function detail_tables(){}

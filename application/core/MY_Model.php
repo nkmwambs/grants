@@ -2095,6 +2095,8 @@ class MY_Model extends CI_Model
         return substr($elem,0,3) =='fk_'?substr($elem,3,-3):false;
       },$fields);
 
+      // Prevent listing false values and status or approval tables for lookup. 
+      // Add status_name and approval_name to the correct visible_columns method in models to see these fields in a page
       $foreign_tables_array = array_filter($foreign_tables_array_padded_with_false,function($elem){
         return $elem?$elem:false;
       });

@@ -29,7 +29,7 @@ class Context_center_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_cluster');
+        return array('office','context_definition','context_cluster','approval','status');
     }
 
     public function detail_tables(){}

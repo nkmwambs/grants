@@ -290,6 +290,26 @@ function generate_item_track_number_and_name($approveable_item){
     return $this->db->table_exists($table)?$this->db->list_fields($table):array();
   }
 
+  function lookup_tables($table_name = ""){
+    //return $this->my_model->lookup_tables();
+
+      if($table_name == '') $table_name = $this->controller;
+  
+      $fields = $this->grants_model->get_all_table_fields($table_name);
+    
+      $foreign_tables_array_padded_with_false = array_map(function($elem){
+        return substr($elem,0,3) =='fk_'?substr($elem,3,-3):false;
+      },$fields);
+
+      // Prevent listing false values and status or approval tables for lookup. 
+      // Add status_name and approval_name to the correct visible_columns method in models to see these fields in a page
+      $foreign_tables_array = array_filter($foreign_tables_array_padded_with_false,function($elem){
+        return $elem?$elem:false;
+      });
+
+      return $foreign_tables_array;
+  }
+
   /**
    * table_fields_metadata
    * 
@@ -398,6 +418,14 @@ function generate_item_track_number_and_name($approveable_item){
 
   }
 
+  /**
+   * create_context_tables
+   * 
+   * This method creates new context tables and files if not exists
+   * 
+   * @return Array
+   */
+
   function create_context_tables(){
 
     $this->load->dbforge();
@@ -410,6 +438,11 @@ function generate_item_track_number_and_name($approveable_item){
 
     $fields = [];
     $user_fields = [];
+
+    $app_name = 'Core';
+    
+    // Unlink old context files - models and libraries
+    $this->unlink_old_context_files($app_name);
 
     foreach($reversed_array_reverse as $context_definition){
 
@@ -440,6 +473,8 @@ function generate_item_track_number_and_name($approveable_item){
         }
 
         $this->dbforge->create_table('context_'.$context_definition);
+
+        
       }
 
       // Create a context user schema table
@@ -469,10 +504,50 @@ function generate_item_track_number_and_name($approveable_item){
         $this->dbforge->create_table('context_'.$context_definition.'_user');
       }
 
+      // Create context models and libraries files
+      $this->create_context_files('context_'.$context_definition,$app_name);
+
+      // Create context models and libraries files
+      $this->create_context_files('context_'.$context_definition.'_user',$app_name);
+      
       $count--;
     }
+    
 
     return ['context_fields'=>$fields,'user_fields'=>$user_fields];
+  }
+  
+  function create_context_files($table_name,$app_name){
+
+    // Create new models and libraries
+    $table_specs['lookup_tables'] = $this->lookup_tables($table_name);
+    $this->grants->create_missing_system_files_methods($table_name,$app_name,$table_specs);
+  }
+
+  function unlink_old_context_files($app_name){
+    $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
+    $models_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.ucfirst($app_name).DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR;
+    $libararies_path = APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.ucfirst($app_name).DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR; 
+    
+    $path_array = [$controllers_path,$models_path,$libararies_path];
+
+    foreach($path_array as $path){
+      $files_array = directory_iterator($path);
+      $context_files = $this->filter_context_files(array_keys($files_array));
+
+      foreach($context_files as $file){
+        unlink($path.DIRECTORY_SEPARATOR.$file);
+      }
+    }
+       
+  }
+
+  function filter_context_files($files){
+    $context_tables = array_filter($files,function($file){
+      return substr($file,0,8) == 'Context_' && !strpos($file,'definition',8) &&  !strpos($file,'global',8) ?$file:false;
+    }); 
+
+    return $context_tables;
   }
 
   function insert_status_for_approveable_item($approve_item_name){
@@ -1400,102 +1475,6 @@ function update_status(){
   $this->db->update('request',$data);
 }
 
-
-/**
- * This method cleans up all the system and make it a new instance
- */
-// function reset_system($allow_merge = false){
-
-//   $hard_resetable_tables = [
-//     'contra_account',
-//     'voucher_type',
-//     'voucher_type_account',
-//     'voucher_type_effect',
-//     'menu',
-//     'context_definition',
-//     'approval',
-//     'permission_label',
-//     'approval_flow',
-//     'account_system',
-//     'approve_item',
-//   ];
-
-//   $soft_resetable_tables = [
-//     'voucher_detail',
-//     'voucher',
-//     'request_type',
-//     'request',
-//     'request_detail',
-//     'cheque_book',
-//     'office_bank',
-//     'bank_branch',
-//     'bank',
-//     'budget_item_detail',
-//     'budget_item',
-//     'budget',
-//     'context_center_user',
-//     'context_center',
-//     'context_cluster_user',
-//     'context_cluster',
-//     'context_cohort_user',
-//     'context_cohort',
-//     'context_country_user',
-//     'context_country',
-//     'context_region_user',
-//     'context_region',
-//     'context_global_user',
-//     'context_global',
-//     'dashboard',
-//     'department_user',
-//     'department',
-//     'designation',
-//     'reconciliation',
-//     'variance_note',
-//     'financial_report',
-//     'opening_allocation_balance',
-//     'opening_cash_balance',
-//     'opening_fund_balance',
-//     'opening_outstanding_cheque',
-//     'opening_deposit_transit',
-//     'system_opening_balance',
-//     'project_allocation_detail',
-//     'project_allocation',
-//     'project',
-//     'funder',
-//     'funding_status',
-//     'journal',
-//     'menu_user_order',
-//     'message_detail',
-//     'message',
-//     'month',
-//     'page_view_condition',
-//     'page_view_role',
-//     'page_view',
-//     'permission',
-//     'role_permission',
-//     'workplan_task',
-//     'workplan',    
-//     'month',
-//     'office',
-//     'status_role',
-//     'status',
-//     'workflow',
-//     'language',
-//     'language_phrase',
-//     'menu',
-//     'expense_account',
-//     'income_account',
-//     'user',
-//     'role',
-//   ];
-
-// if($allow_merge){
-//   return array_merge($soft_resetable_tables,$hard_resetable_tables);
-// } else{
-//   return ['soft_reset'=>$soft_resetable_tables,'hard_reset'=>$hard_resetable_tables];
-// } 
-
-//}
 
 function merge_with_history_fields(String $approve_item_name, Array $array_to_merge, bool $add_name_to_array = true){
 

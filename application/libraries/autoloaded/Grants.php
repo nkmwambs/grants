@@ -225,9 +225,9 @@ function load_detail_model(String $table_name = ""): String{
       $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
      
       if(parse_url(base_url())['host'] == 'localhost'){
-        $this->create_missing_model(ucfirst($table_name),$assets_temp_path,array('status','approval'));
-        $this->create_missing_library(ucfirst($table_name),$assets_temp_path);
-        $this->create_missing_controller(ucfirst($table_name),$assets_temp_path);   
+        // $this->create_missing_model(ucfirst($table_name),$assets_temp_path,array('status','approval'));
+        // $this->create_missing_library(ucfirst($table_name),$assets_temp_path);
+        // $this->create_missing_controller(ucfirst($table_name),$assets_temp_path);   
       }
     }
     
@@ -268,11 +268,11 @@ function lookup_tables(String $table_name = ""): Array{
       is_array($this->CI->$model->lookup_tables())
     ){
     $lookup_tables = $this->CI->$model->lookup_tables();
+  }else{
+    // This part of a code is meant to offer an alternative to lookup_tables 
+    // methods in models that overrided the MY_Model method
+    $lookup_tables = $this->CI->grants_model->lookup_tables();
   }
-  //else{
-    // Create a lookup tables array using the foreign keys fields
-    
-  //}
 
   return $lookup_tables;
 }
@@ -1516,26 +1516,33 @@ function config_list($config_name, $config_file = "config", $config_array_name =
 
 // Auto create Model and Library fields if missing
 
-function create_missing_system_files(){
+function create_missing_system_files_from_yaml_setup(){
   
   $raw_specs = file_get_contents(APPPATH.'version'.DIRECTORY_SEPARATOR.'spec.yaml');
 
   $specs_array = yaml_parse($raw_specs,0);
-  
+
+  $this->create_missing_system_files($specs_array);
+}
+
+function create_missing_system_files($table_array){
+  foreach($specs_array as $app_name => $app_tables){
+    foreach($app_tables['tables'] as $table_name => $setup){
+     $this->create_missing_system_files_methods($table_name,$app_name,$setup);
+    }
+  }
+}
+
+function create_missing_system_files_methods($table_name,$app_name,$table_specs){
+
   $assets_temp_path = FCPATH.'assets'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
   $controllers_path = APPPATH.'controllers'.DIRECTORY_SEPARATOR;
 
-  //foreach($specs_array['tables'] as $table_name => $setup){
-  foreach($specs_array as $app_name => $app_tables){
-    foreach($app_tables['tables'] as $table_name => $setup){
-      if(!file_exists($controllers_path.$table_name.'.php')){
-        $this->create_missing_controller($table_name,$assets_temp_path);
-        $this->create_missing_model($table_name,$assets_temp_path,$setup,$app_name);
-        $this->create_missing_library($table_name,$assets_temp_path,$app_name);
-      }
-    }
+  if(!file_exists($controllers_path.$table_name.'.php')){
+    $this->create_missing_controller($table_name,$assets_temp_path);
+    $this->create_missing_model($table_name,$assets_temp_path,$table_specs,$app_name);
+    $this->create_missing_library($table_name,$assets_temp_path,$app_name);
   }
-
 }
 
 function create_missing_controller($table, $assets_temp_path){
@@ -1997,15 +2004,6 @@ function feature_model_list_table_visible_columns() {
 
     function context_definitions(){
       // List all context foreign keys name and with their tables
-      // return [
-      //   'center'=>['context_table'=>'context_center','context_user_table'=>'context_center_user','fk'=>'fk_context_center_id','context_definition_level'=>1],
-      //   'cluster'=>['context_table'=>'context_cluster','context_user_table'=>'context_cluster_user','fk'=>'fk_context_cluster_id','context_definition_level'=>2],
-      //   'cohort'=>['context_table'=>'context_cohort','context_user_table'=>'context_cohort_user','fk'=>'fk_context_cohort_id','context_definition_level'=>3],
-      //   'country'=>['context_table'=>'context_country','context_user_table'=>'context_country_user','fk'=>'fk_context_country_id','context_definition_level'=>4],
-      //   'region'=>['context_table'=>'context_region','context_user_table'=>'context_region_user','fk'=>'fk_context_region_id','context_definition_level'=>5],
-      //   'global'=>['context_table'=>'context_global','context_user_table'=>'context_global_user','fk'=>'fk_context_global_id','context_definition_level'=>6]
-      
-      // ];
       
       //$this->db->select(array('context_definition_name','context_definition_level','context_definition_is_active'));
       $context_definition = $this->CI->db->order_by('context_definition_level ASC')->get_where('context_definition',

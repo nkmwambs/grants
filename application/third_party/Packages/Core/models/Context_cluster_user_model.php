@@ -29,7 +29,7 @@ class Context_cluster_user_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('user','context_cluster');
+        return array('context_cluster','user','designation','approval','status');
     }
 
     public function detail_tables(){}

@@ -59,10 +59,35 @@ class Api extends CI_Controller{
     },$fields);
 
     $foreign_tables_array = array_filter($foreign_tables_array_padded_with_false,function($elem){
-      return $elem?$elem:false;
+      return $elem && $elem != 'status' && $elem != 'approval'?$elem:false;
     });
 
     echo json_encode($foreign_tables_array);
+  }
+
+  function directory_iterator(){
+    $app_name = 'Core';
+    
+    $files_array = directory_iterator(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.ucfirst($app_name).DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR);
+
+    $files = array_keys($files_array);
+
+    $context_tables = array_filter($files,function($file){
+      return substr($file,0,8) == 'Context_' && !strpos($file,'definition',8) &&  !strpos($file,'global',8) ?$file:false;
+    });
+
+    echo json_encode($context_tables);
+  }
+
+  function create_context_files($table_name = '',$app_name = ''){
+    $contexts = ['level_one','level_two','level_three'];
+    $app_name = 'Core';
+
+    foreach($contexts as $context){
+      $this->grants_model->create_context_files('context_'.$context,$app_name);
+    }
+    
+    echo json_encode($this->directory_iterator());
   }
 
 }

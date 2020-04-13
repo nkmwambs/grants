@@ -29,7 +29,7 @@ class Context_cluster_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_cohort','office');
+        return array('office','context_definition','context_cohort','approval','status');
     }
 
     public function detail_tables(){}

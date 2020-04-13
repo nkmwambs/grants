@@ -158,31 +158,6 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   }
 
-  // function find_offices_reporting_to($senior_office_id){
-  //   $context_definition = [
-  //       'context_center',
-  //       'context_cluster',
-  //       'context_cohort',
-  //       'context_country',
-  //       'context_region',
-  //       'context_global',
-  //       ];
-    
-  //   $this->db->select(array('context_definition_name'));    
-  //   $this->db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');    
-  //   $office_context_definition_name = $this->db->get_where('office',
-  //     array('office'=>$senior_office_id))->row()->context_definition_name; 
-    
-  //   $reporting_office_ids = []; 
-      
-  //   foreach($context_definition as $context){
-  //     if($context == 'context_'.$office_context_definition_name) break;
-
-  //     $this->db->get_where();  
-  //   }  
-      
-  // }
-
 
   function intialize_table(Array $foreign_keys_values = []){
   
