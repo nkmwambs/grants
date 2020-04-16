@@ -507,52 +507,59 @@ class User_model extends MY_Model
      * @todo - Prevent using this method in a loop of context. Consider passing param 1 and 2 and get all office ids
      */
      function _user_hierarchy_offices($user_context, $user_context_id, $looping_context){
-       
+
+
       $user_context_table = 'context_'.$user_context;
       $user_context_level = $this->grants->context_definitions()[$user_context]['context_definition_level'];
+      $contexts = array_keys($this->grants->context_definitions());
 
-      //$config_context = $this->user_applicable_contexts($looping_context);//array_keys($this->grants->context_definitions());
+      $level_one_context_table = isset($contexts[0])?'context_'.$contexts[0]:null; //center
+      $level_two_context_table = isset($contexts[1])?'context_'.$contexts[1]:null; //cluster
+      $level_three_context_table = isset($contexts[2])?'context_'.$contexts[2]:null; //cohort
+      $level_four_context_table  = isset($contexts[3])?'context_'.$contexts[3]:null; // country
+      $level_five_context_table = isset($contexts[4])?'context_'.$contexts[4]:null;//region
+      $level_six_context_table = isset($contexts[5])?'context_'.$contexts[5]:null;//global
 
       $this->db->select(array('office_id','office_name'));
 
-      if($looping_context == 'center'){
 
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
-        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
-        if($user_context_level > 1) $this->db->join('context_center','context_center.fk_context_cluster_id=context_cluster.context_cluster_id');  
+      if($contexts[0] != null && $looping_context == $contexts[0]){ // center
+
+        if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
+        if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
+        if($user_context_level > 3) $this->db->join($level_three_context_table,$level_three_context_table.'.fk_'.$level_four_context_table.'_id='.$level_four_context_table.'.'.$level_four_context_table.'_id');
+        if($user_context_level > 2) $this->db->join($level_two_context_table,$level_two_context_table.'.fk_'.$level_three_context_table.'_id='.$level_three_context_table.'.'.$level_three_context_table.'_id');
+        if($user_context_level > 1) $this->db->join($level_one_context_table,$level_one_context_table.'.fk_'.$level_two_context_table.'_id='.$level_two_context_table.'.'.$level_two_context_table.'_id');  
         
       }
       
-      if($looping_context == 'cluster'){
+      if($contexts[1] != null && $looping_context == $contexts[1]){//cluster
 
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
-        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
+        if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
+        if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
+        if($user_context_level > 3) $this->db->join($level_three_context_table,$level_three_context_table.'.fk_'.$level_four_context_table.'_id='.$level_four_context_table.'.'.$level_four_context_table.'_id');
+        if($user_context_level > 2) $this->db->join($level_two_context_table,$level_two_context_table.'.fk_'.$level_three_context_table.'_id='.$level_three_context_table.'.'.$level_three_context_table.'_id');
         
       }
       
-      if($looping_context == 'cohort'){
-        
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
-        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+      if($contexts[2] != null && $looping_context == $contexts[2]){//cohort
+
+        if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
+        if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
+        if($user_context_level > 3) $this->db->join($level_three_context_table,$level_three_context_table.'.fk_'.$level_four_context_table.'_id='.$level_four_context_table.'.'.$level_four_context_table.'_id');
  
       }
       
-      if($looping_context == 'country'){
+      if($contexts[3] != null && $looping_context == $contexts[3]){//country
         
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
+        if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
         
       }
       
-      if($looping_context == 'region'){
-        
-        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
-        
+      if($contexts[4] != null && $looping_context == $contexts[4]){// region
+
+        if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
       }
 
       $this->db->join('office','office.office_id=context_'.$looping_context.'.fk_office_id');

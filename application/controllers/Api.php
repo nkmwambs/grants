@@ -116,7 +116,7 @@ class Api extends CI_Controller{
       $this->db->select(array('office_id','office_name'));
 
 
-      if($level_one_context_table != null && $looping_context == $level_one_context_table){ // center
+      if($contexts[0] != null && $looping_context == $contexts[0]){ // center
 
         if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
         if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
@@ -126,7 +126,7 @@ class Api extends CI_Controller{
         
       }
       
-      if($level_two_context_table != null && $looping_context == $level_two_context_table){//cluster
+      if($contexts[1] != null && $looping_context == $contexts[1]){//cluster
 
         if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
         if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
@@ -135,7 +135,7 @@ class Api extends CI_Controller{
         
       }
       
-      if($level_three_context_table != null && $looping_context == $level_three_context_table){//cohort
+      if($contexts[2] != null && $looping_context == $contexts[2]){//cohort
 
         if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
         if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
@@ -143,14 +143,14 @@ class Api extends CI_Controller{
  
       }
       
-      if($level_four_context_table != null && $looping_context == $level_four_context_table){//country
+      if($contexts[3] != null && $looping_context == $contexts[3]){//country
         
         if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
         if($user_context_level > 4) $this->db->join($level_four_context_table,$level_four_context_table.'.fk_'.$level_five_context_table.'_id='.$level_five_context_table.'.'.$level_five_context_table.'_id');
         
       }
       
-      if($level_five_context_table != null && $looping_context == $level_five_context_table){// region
+      if($contexts[4] != null && $looping_context == $contexts[4]){// region
 
         if($user_context_level > 5) $this->db->join($level_five_context_table,$level_five_context_table.'.fk_'.$level_six_context_table.'_id='.$level_six_context_table.'.'.$level_six_context_table.'_id');
       }
@@ -159,6 +159,17 @@ class Api extends CI_Controller{
       $hierarchy_offices = $this->db->get_where($user_context_table,array($user_context_table.'_id'=>$user_context_id))->result_array();
 
       echo json_encode($hierarchy_offices);
+  }
+
+  function test_user_hierarchy_offices(){
+
+    $user_context = "global";
+    $user_context_id = 1;
+    $looping_context = "center";
+
+    $result = $this->user_model->_user_hierarchy_offices($user_context, $user_context_id, $looping_context);
+
+    echo json_encode($result);
   }
 
   function user_applicable_contexts(){
