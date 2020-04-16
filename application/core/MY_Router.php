@@ -127,6 +127,8 @@ class MY_Router extends CI_Router {
         $this->directory = str_replace('.', '', $dir).'/';
     }
 
+    
+
 }
 
 /* End of file MY_Router.php */

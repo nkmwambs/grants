@@ -40,6 +40,10 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 ## PHPDOC documentation files
 /docs
 /index.php
-/application/controllers/context_*
-/application/third_party/Packages/Core/models/context_*
-/application/third_party/Packages/Core/libraries/context_*
+/application/controllers/Context_*
+/application/third_party/Packages/Core/models/Context_*
+/application/third_party/Packages/Core/libraries/Context_*
+
+!/application/controllers/Context_definition.php
+!/application/third_party/Packages/Core/models/Context_definition_model
+!/application/third_party/Packages/Core/libraries/Context_definition_library
