@@ -47,3 +47,12 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 !/application/controllers/Context_definition.php
 !/application/third_party/Packages/Core/models/Context_definition_model
 !/application/third_party/Packages/Core/libraries/Context_definition_library
+
+!/application/controllers/Context_global.php
+!/application/controllers/Context_global_user.php
+!/application/third_party/Packages/Core/models/Context_definition_model
+!/application/third_party/Packages/Core/models/Context_global_model
+!/application/third_party/Packages/Core/models/Context_global_user_model
+!/application/third_party/Packages/Core/libraries/Context_definition_library
+!/application/third_party/Packages/Core/libraries/Context_global_library
+!/application/third_party/Packages/Core/libraries/Context_global_user_library
