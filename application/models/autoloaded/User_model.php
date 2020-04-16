@@ -511,12 +511,50 @@ class User_model extends MY_Model
       $user_context_table = 'context_'.$user_context;
       $user_context_level = $this->grants->context_definitions()[$user_context]['context_definition_level'];
 
-      $config_context = $this->user_applicable_contexts($user_context);//array_keys($this->grants->context_definitions());
+      //$config_context = $this->user_applicable_contexts($looping_context);//array_keys($this->grants->context_definitions());
 
       $this->db->select(array('office_id','office_name'));
 
-      $this->grants_model->create_table_join_statement_with_depth($user_context_table,$config_context);
+      if($looping_context == 'center'){
+
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
+        if($user_context_level > 1) $this->db->join('context_center','context_center.fk_context_cluster_id=context_cluster.context_cluster_id');  
+        
+      }
       
+      if($looping_context == 'cluster'){
+
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+        if($user_context_level > 2) $this->db->join('context_cluster','context_cluster.fk_context_cohort_id=context_cohort.context_cohort_id');
+        
+      }
+      
+      if($looping_context == 'cohort'){
+        
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        if($user_context_level > 3) $this->db->join('context_cohort','context_cohort.fk_context_country_id=context_country.context_country_id');
+ 
+      }
+      
+      if($looping_context == 'country'){
+        
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        if($user_context_level > 4) $this->db->join('context_country','context_country.fk_context_region_id=context_region.context_region_id');
+        
+      }
+      
+      if($looping_context == 'region'){
+        
+        if($user_context_level > 5) $this->db->join('context_region','context_region.fk_context_global_id=context_global.context_global_id');
+        
+      }
+
       $this->db->join('office','office.office_id=context_'.$looping_context.'.fk_office_id');
       $hierarchy_offices = $this->db->get_where($user_context_table,array($user_context_table.'_id'=>$user_context_id))->result_array();
 

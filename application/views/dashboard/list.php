@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 //$approveable_item = "Bank";
-//print_r($this->db->get_where('approve_item',array('approve_item_name'=>strtolower($approveable_item)))->row()->approve_item_id);
+print_r($this->session->hierarchy_offices);
 ?>
 
   <div class="row">

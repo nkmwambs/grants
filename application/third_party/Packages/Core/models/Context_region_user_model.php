@@ -29,7 +29,7 @@ class Context_region_user_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('context_region','user','designation','approval','status');
+        return array('user','context_region','designation','approval','status');
     }
 
     public function detail_tables(){}

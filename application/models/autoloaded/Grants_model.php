@@ -807,12 +807,13 @@ function test_create_table_join_statement_with_depth($base_table,$labeled_tables
     foreach($join_array as $join_tables_depth){
       foreach($join_tables_depth as $primary_table => $join_tables){
           foreach($join_tables as $join_table){
-              $this->db->join($join_table,$join_table.'.'.$join_table.'_id='.$primary_table.'.fk_'.$join_table.'_id');
+              //$this->db->join($join_table,$join_table.'.'.$join_table.'_id='.$primary_table.'.fk_'.$join_table.'_id');
+              $str .= $join_table;//.','.$join_table.'.'.$join_table.'_id='.$primary_table.'.fk_'.$join_table.'_id<br/>';
           }
       }   
    }
    
-   //return $str;
+   return $join_array;
   }
 
 
@@ -875,9 +876,6 @@ function _create_table_join_statement_with_depth($base_table,$labeled_tables){
                                 }
                               }
                             }
-
-
-
 
                           }
                         }
