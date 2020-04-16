@@ -540,7 +540,7 @@ function resetVoucher(){
     // Empty the cells
     $(".body-input").val(null);
     $(".number-fields").val(0);
-    $("#bank").val("");
+    // $("#bank").val("");
     $("#bank").html('<option value="">Select a bank</option>');
 
     $("#voucher_vendor").val("");
@@ -827,7 +827,7 @@ function saveVoucher(){
 $(".btn-save").on('click',function(){
     saveVoucher();
     //go_back();
-    location.href = document.referrer 
+    location.href = document.referrer; 
 });
 
 $(".btn-save-new").on('click',function(){
