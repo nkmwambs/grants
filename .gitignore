@@ -40,3 +40,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 ## PHPDOC documentation files
 /docs
 /index.php
+/application/controllers/context_*
+/application/third_party/Packages/Core/models/context_*
+/application/third_party/Packages/Core/libraries/context_*
