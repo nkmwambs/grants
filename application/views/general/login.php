@@ -97,7 +97,7 @@ var baseurl = '<?php echo base_url();?>';
 							$user_obj = $this->db->get('user');
 							if($user_obj->num_rows() == 1){
 								$setup_email = $this->db->get_where('setting',array('type'=>'system_email'))->row()->description;
-								$disable_password = "hide";
+								//$disable_password = "hide";
 							}
 						?>
 

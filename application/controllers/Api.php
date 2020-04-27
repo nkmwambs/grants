@@ -30,10 +30,14 @@ class Api extends CI_Controller{
 
   function intialize_table(){
     $foreign_keys_values = [];
-    $this->load->model('context_definition_model');
-    echo json_encode($this->context_definition_model->intialize_table($foreign_keys_values));
+    $this->load->model('context_global_model');
+    echo json_encode($this->context_global_model->intialize_table($foreign_keys_values));
     
   }    
+
+  function merge_with_history_fields(){
+    echo json_encode($this->grants_model->merge_with_history_fields('context_global',[],false));
+  }
 
   function insert_approval_record($approve_item){
     echo json_encode($this->grants_model->insert_approval_record($approve_item));
@@ -216,4 +220,34 @@ class Api extends CI_Controller{
     echo json_encode($str);
   }
 
+  function initial_item_status(){
+    $result = $this->grants_model->initial_item_status('context_global');
+
+    echo json_encode($result);
+  }
+
+  function get_voucher_type_effect(){
+    $this->load->library('voucher_library');
+    $this->load->model('voucher_model');
+    $voucher_type_id =2;
+    $result = $this->voucher_library->get_voucher_type_effect($voucher_type_id)->voucher_type_effect_code;
+    echo json_encode($result);
+  }
+
+  function repopulate_office_banks(){
+    $this->load->library('voucher_library');
+    $this->load->model('voucher_model');
+    $office_id = 29;
+    echo $this->voucher_library->get_json_populate_office_banks($office_id);
+  }
+
+  function validate_cheque_number(){
+    $this->load->library('voucher_library');
+    $this->load->model('voucher_model');
+
+    $office_bank_id = 1;
+    $cheque_number = 151;
+
+    echo $this->voucher_library->validate_cheque_number($office_bank_id,$cheque_number);
+  }
 }

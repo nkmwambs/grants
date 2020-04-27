@@ -36,12 +36,16 @@ class Voucher_library extends Grants
     return $this->CI->voucher_model->get_voucher_date($office_id);
   }
 
-  function validate_cheque_number($data){
-    return $this->CI->voucher_model->validate_cheque_number($data);
+  function validate_cheque_number($office_bank_id,$cheque_number){
+    return $this->CI->voucher_model->validate_cheque_number($office_bank_id,$cheque_number);
   }
 
   function populate_office_banks($office_id){
     return $this->CI->voucher_model->populate_office_banks($office_id);
+  }
+
+  function get_json_populate_office_banks($office_id){
+    return json_encode($this->CI->voucher_model->populate_office_banks($office_id));
   }
 
   function approved_unvouched_request_details($office_id){

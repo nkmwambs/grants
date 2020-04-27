@@ -267,15 +267,7 @@ CREATE TABLE `context_global` (
   `context_global_last_modified_by` int(100) NOT NULL,
   `fk_approval_id` int(11) NOT NULL,
   `fk_status_id` int(11) NOT NULL,
-  PRIMARY KEY (`context_global_id`),
-  UNIQUE KEY `fk_office_id` (`fk_office_id`),
-  KEY `fk_approval_id` (`fk_approval_id`),
-  KEY `fk_status_id` (`fk_status_id`),
-  KEY `fk_context_definition_id` (`fk_context_definition_id`),
-  CONSTRAINT `context_global_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
-  CONSTRAINT `context_global_ibfk_2` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `context_global_ibfk_3` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
-  CONSTRAINT `context_global_ibfk_4` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`)
+  PRIMARY KEY (`context_global_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -294,17 +286,7 @@ CREATE TABLE `context_global_user` (
   `context_global_user_last_modified_by` int(100) NOT NULL,
   `fk_approval_id` int(11) NOT NULL,
   `fk_status_id` int(11) NOT NULL,
-  PRIMARY KEY (`context_global_user_id`),
-  KEY `fk_user_id` (`fk_user_id`),
-  KEY `fk_group_global_id` (`fk_context_global_id`),
-  KEY `fk_approval_id` (`fk_approval_id`),
-  KEY `fk_status_id` (`fk_status_id`),
-  KEY `fk_designation_id` (`fk_designation_id`),
-  CONSTRAINT `context_global_user_ibfk_1` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `context_global_user_ibfk_2` FOREIGN KEY (`fk_context_global_id`) REFERENCES `context_global` (`context_global_id`),
-  CONSTRAINT `context_global_user_ibfk_3` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
-  CONSTRAINT `context_global_user_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `context_global_user_ibfk_5` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
+  PRIMARY KEY (`context_global_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

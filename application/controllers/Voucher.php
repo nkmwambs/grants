@@ -21,26 +21,80 @@ class Voucher extends MY_Controller
     $this->load->library('voucher_library');
   }
 
-  function get_voucher_type_effect($voucher_type_id){
+  /**
+   * get_voucher_type_effect
+   * 
+   * The method gives the voucher type effsct code for a give voucher type.
+   * Each voucher type has an associated effect and an account. 
+   * 
+   * There are 4 voucher type effects with codes income, expense, bank_contra 
+   * [bank_contra - is for monies taken from bank to petty cash box] and 
+   * cash_contra [is for monies rebanked from petty cash box to bank]
+   * 
+   * There are 2 voucher type accounts with codes names bank [holds bank transactions] and cash [petty cash transactions]
+   * 
+   * A valid combination for a voucher type can therefore be Bank Account with Effect of Expense
+   * 
+   * @param int $voucher_type_id - Is an primary key of a certain voucher type
+   * 
+   * @return String - Voucher Type Effect of a given voucher type id
+   * 
+   */
+  function get_voucher_type_effect(int $voucher_type_id):Void{
     echo $this->voucher_library->get_voucher_type_effect($voucher_type_id)->voucher_type_effect_code;
   }
 
-  function repopulate_office_banks(){
+  /**
+   * repopulate_office_banks
+   * 
+   * Get an json encoded array of list of bank accounts for an office in the format of each record with office_bank_id and office_bank_name
+   * 
+   * There is no direct relationship of a bank record in the bank table with office. 
+   * The relationship between bank and office is met through the office_bank table through the bank_branch
+   * An office can have more than 1 record representing it in the office_bank table and of different bank branches
+   * 
+   * It reads from a post data
+   * 
+   * @return Void - JSON Encoded string of array query result
+   * 
+   */
+  function repopulate_office_banks():void{
     $office_id = $this->input->post('office_id');
 
-    $bank_array = $this->voucher_library->populate_office_banks($office_id);
-
-    echo json_encode($bank_array);
+    echo $this->voucher_library->get_json_populate_office_banks($office_id);
   }
 
-  function validate_cheque_number(){
-    $data = $this->input->post();
+  /**
+   * validate_cheque_number
+   * 
+   * Get to check if the passed voucher cheque number for a given office bank record is a valid one.
+   * 
+   * It depends on the grants config item "allow_skipping_of_cheque_leaves". If set to false, an can only
+   * enter cheque records sequentially without skipping as long as the cheque number is within the range of
+   * the active cheque book leaves. The true allows skipping of cheque leaves with the range of the active cheque 
+   * book leaves
+   * 
+   * @return Void - True [Is a useable/valid cheque number],
+   * False [Invalid cheque number - already used/ or skipped depending of the allow_skipping_of_cheque_leaves config]
+   */
+  function validate_cheque_number():void{
+    $office_bank_id = $this->input->post('office_bank');
+    $cheque_number = $this->input->post('cheque_number');
 
-    echo $this->voucher_library->validate_cheque_number($data);
+    echo $this->voucher_library->validate_cheque_number($office_bank_id,$cheque_number);
 
   }
 
-  function reload_approved_request_details(){
+  /**
+   * reload_approved_request_details
+   * 
+   * This methods gives a view file in string format. The view file is not rendered in a browser.
+   * This view list in a HTML table all request detail records that have attained the status 
+   * with n-1 (highest - 1) status_approval_sequence
+   * 
+   * @return Void - A view page in string format
+   */
+  function reload_approved_request_details():Void{
     echo $this->voucher_library->approved_unvouched_request_details();
   }
 

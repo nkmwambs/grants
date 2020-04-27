@@ -392,13 +392,12 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    * - not have been used, 
    * - Be sequential in order (If the config item allow_skipping_of_cheque_leaves is set to false)
    * - Be a present leaf in the current active cheque book
-   * @param Array $data - Array from the Voucher form via Ajax
+   * @param String $office_bank - Office bank id
+   * @param int $cheque_number - Cheque number
    * @return Bool - True is a valid cheque number else false 
    */
-  function validate_cheque_number(Array $data):Bool{
+  function validate_cheque_number(String $office_bank, int $cheque_number):Bool{
 
-   $office_bank = $data['office_bank'];
-   $cheque_number  = $data['cheque_number'];
    $is_valid_cheque = true;
 
    if(

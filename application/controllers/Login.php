@@ -179,7 +179,8 @@ public $controller;
 
         //Recieving post input of email, password from ajax request
         $email = $_POST["email"];
-        $password = !isset($_POST["password"])?$this->db->get_where('setting',array('type'=>'setup_password'))->description:$_POST["password"];
+        // $password = !isset($_POST["password"])?$this->db->get_where('setting',array('type'=>'setup_password'))->description:$_POST["password"];
+        $password = $_POST["password"];
         $response['submitted_data'] = $_POST;
 
         //Validating login
@@ -263,10 +264,15 @@ public $controller;
         //$this->session->set_userdata('testing',array());
         
 		return 'success';
-	}
+    }
+    
+    function isValidMd5($md5 ='') {
+        return strlen($md5) == 32 && ctype_xdigit($md5);
+      }
+
     //Validating login from ajax request
     function validate_login($email = '', $password = '') {
-        
+
         $credential = array('user_email' => $email,"user_is_active"=>1,"user_password"=>md5($password));
 
         // Checking login credential for admin

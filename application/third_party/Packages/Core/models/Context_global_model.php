@@ -37,18 +37,34 @@ class Context_global_model extends MY_Model{
     }
 
     function intialize_table(Array $foreign_keys_values = []){
+
         $context_definitions = $this->config->item('context_definitions');
         $global_context_key = count($context_definitions) + 1;
 
         $context_global_data['context_global_track_number'] = $this->grants_model->generate_item_track_number_and_name('context_global')['context_global_track_number'];
         $context_global_data['context_global_name'] = 'Head Office Context';
         $context_global_data['context_global_description'] = 'Head Office Context';
-        $context_global_data['fk_office_id'] = 1; 
-        $context_global_data['fk_context_definition_id'] = $global_context_key;
+        $context_global_data['fk_office_id'] = $foreign_keys_values['office_id'];; 
+        $context_global_data['fk_context_definition_id'] = 3;
+        // $context_global_data['context_global_created_by'] = 1;
+        // $context_global_data['context_global_created_date'] = date('Y-m-d');
+        // $context_global_data['context_global_last_modified_by'] = 1;
+        // $context_global_data['fk_approval_id'] = 0;
+        // $context_global_data['fk_status_id'] = 11;
             
-        $context_global_data_to_insert = $this->grants_model->merge_with_history_fields('context_definition',$context_global_data,false);
+        $context_global_data_to_insert = $this->grants_model->merge_with_history_fields('context_global',$context_global_data,false);
+        
+        $this->db->trans_start();
+        
         $this->db->insert('context_global',$context_global_data_to_insert);
 
-        return $this->db->insert_id();
+        $this->db->trans_complete();
+        
+        if($this->db->trans_status() == false){
+            show_error('Error occurred when populating context_global table ...',500,"An Error Occurred");
+        }else{
+            return $this->db->insert_id();
+        }
+        
     } 
 }
