@@ -153,7 +153,7 @@ private function _get_approval_assignments($role_id){
   function create_new_user(){
     $post = $this->input->post()['header'];
     
-    $this->db->trans_start();
+    //$this->db->trans_start();
 
     $user['user_name'] = $post['user_name'];
     $user['user_firstname'] = $post['user_firstname'];
@@ -198,11 +198,11 @@ private function _get_approval_assignments($role_id){
 
     $this->db->trans_complete();
 
-    if($this->db->trans_status() == false){
-      echo "Error occurred";
-    }else{
-      echo "User created successfully";
-    }
+    // if($this->db->trans_status() == false){
+    //   echo "Error occurred";
+    // }else{
+     echo "User created successfully";
+    // }
 
   }
 
