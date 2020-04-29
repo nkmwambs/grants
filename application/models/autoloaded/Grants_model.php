@@ -87,20 +87,20 @@ function insert_approval_record($approveable_item){
   $is_approveable_item = $this->approveable_item($approveable_item);
   $insert_id = 0;
 
-  if($is_approveable_item){
+ // if($is_approveable_item){
     $approval_random = record_prefix('Approval').'-'.rand(1000,90000);
     $approval['approval_track_number'] = $approval_random;
     $approval['approval_name'] = 'Approval Ticket # '.$approval_random;
-    $approval['approval_created_by'] = 1;$this->session->user_id?$this->session->user_id:1;
+    $approval['approval_created_by'] = $this->session->user_id?$this->session->user_id:1;
     $approval['approval_created_date'] = date('Y-m-d');
-    $approval['approval_last_modified_by'] = 1;$this->session->user_id?$this->session->user_id:1;
+    $approval['approval_last_modified_by'] = $this->session->user_id?$this->session->user_id:1;
     $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',array('approve_item_name'=>strtolower($approveable_item)))->row()->approve_item_id;
     $approval['fk_status_id'] = $this->initial_item_status($approveable_item);
 
     $this->db->insert('approval',$approval);
 
     $insert_id = $this->db->insert_id();
-  }
+  //}
 
   return $insert_id;
   
