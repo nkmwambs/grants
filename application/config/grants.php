@@ -9,7 +9,7 @@
 	$config['max_priority_menu_items'] = 8;
 	$config['default_launch_page'] = "Dashboard";
 	$config['use_context_office'] = false;
-	$config['use_select2_plugin'] = TRUE;
+	$config['use_select2_plugin'] = false;
 
 	//Set up configs - Change the sequence of this array if you know what yo are doing
 	$config['table_that_dont_require_history_fields'] = ['status','approve_item','account_system','approval_flow','ci_sessions'];
