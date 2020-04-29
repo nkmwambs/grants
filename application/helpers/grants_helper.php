@@ -1,5 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * This is the main helper file
+ */
+
 require_once(FCPATH.'/vendor/autoload.php');
 
 if ( ! function_exists('fk_to_name_field'))
