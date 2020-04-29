@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
  
-//print_r($result['table_body']);
+//print_r($result);
 
 extract($result);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";
@@ -83,7 +83,7 @@ extract($result);
                               echo '<a href="'.base_url().$this->controller.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            }else{
+                            }elseif($column !='approval_name' && $column!='status_name'){
                               echo ucfirst(str_replace("_"," ",$row[$column]));
                             }
 
