@@ -6,7 +6,7 @@
 	$config['hide_created_by_column'] = true;
 	$config['hide_last_modified_by_column'] = true;
 	$config['hide_deleted_at_column'] = true;
-	$config['max_priority_menu_items'] = 10;
+	$config['max_priority_menu_items'] = 8;
 	$config['default_launch_page'] = "Dashboard";
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = false;
