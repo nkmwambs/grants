@@ -1421,7 +1421,7 @@ function create_missing_page_access_permission(){
   $this->db->trans_start();
   
   // Only create a permission if count of menus are more that the permissions available
-  if(($count_of_page_access_permissions * $count_of_permission_labels) < ($count_of_menus * $count_of_permission_labels) ){
+  //if(($count_of_page_access_permissions * $count_of_permission_labels) < ($count_of_menus * $count_of_permission_labels) ){
     foreach($menus->result_array() as $menu_item){
       
       // Only create a missing permission for a given menu item and permission label
@@ -1431,7 +1431,7 @@ function create_missing_page_access_permission(){
         'permission_type'=>1,'fk_menu_id'=>$menu_item['menu_id']))->num_rows() == 0){
 
             $permission_data['permission_name'] = ucfirst($permission_label['permission_label_name']).' '.str_replace('_',' ',$menu_item['menu_name']);
-            $permission_data['permission_description'] = ucfirst($permission_label['permission_label_name']).' '.str_replace('_',' ',$menu_item['menu_name']);
+            $permission_data['permission_description'] = ucfirst($permission_label['permission_label_name']).' '.str_replace('_',' ',$menu_item['menu_name']).' permission';
             $permission_data['permission_is_active'] = 1;
             $permission_data['fk_permission_label_id'] = $permission_label['permission_label_id'];
             $permission_data['permission_type'] = 1; // Page Access
@@ -1445,7 +1445,7 @@ function create_missing_page_access_permission(){
         
           }
       }
-    }
+    //}
   }
 
   $this->db->trans_complete();

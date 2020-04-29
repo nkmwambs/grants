@@ -55,12 +55,16 @@ public $controller;
         // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
         // populate setup tables, add mandatory fields, create item approval flow and permissions
         $this->system_setup_check();
+        
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
              if(parse_url(base_url())['host'] == 'localhost'){
                 $this->grants->create_missing_system_files_from_yaml_setup(); 
               }
+            
+              // Create table permissions
+             $this->grants_model->create_missing_page_access_permission();
             
             // Create mandatory role_permission for default launch page  
             $this->create_mandatory_role_permissions();
@@ -160,9 +164,6 @@ public $controller;
               }
             
           }
-
-          // Create table permissions
-          $this->grants_model->create_missing_page_access_permission();
 
           //Update system_setup_completed setting to true if all tables are set up
           if($are_tables_populated){

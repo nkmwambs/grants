@@ -19,6 +19,7 @@
 											'office',
 											'context_global',
 											'language',
+											'permission_label',
 											'role',
 											'user',
 											'designation',

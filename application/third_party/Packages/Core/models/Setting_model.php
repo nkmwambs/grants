@@ -56,7 +56,7 @@ class Setting_model extends MY_Model
         'type'=>'system_setup_completed','description'=>0,'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
       ],
       [
-        'type'=>'setup_password','description'=>md5('#Compassion321'),'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+        'type'=>'setup_password','description'=>md5('@Compassion123'),'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
       ],
 
     ];

@@ -920,16 +920,7 @@ CREATE TABLE `permission` (
   `permission_deleted_at` date DEFAULT NULL,
   `permission_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `permission_last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`permission_id`),
-  KEY `fk_menu_id` (`fk_menu_id`),
-  KEY `fk_permission_label_id` (`fk_permission_label_id`),
-  KEY `fk_approval_id` (`fk_approval_id`),
-  KEY `fk_status_id` (`fk_status_id`),
-  CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_ibfk_4` FOREIGN KEY (`fk_menu_id`) REFERENCES `menu` (`menu_id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_ibfk_5` FOREIGN KEY (`fk_permission_label_id`) REFERENCES `permission_label` (`permission_label_id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_ibfk_6` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_ibfk_7` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`) ON DELETE CASCADE
+  PRIMARY KEY (`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

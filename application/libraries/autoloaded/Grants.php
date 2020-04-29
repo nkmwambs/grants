@@ -1526,7 +1526,7 @@ function create_missing_system_files_from_yaml_setup(){
 }
 
 function create_missing_system_files($table_array){
-  foreach($specs_array as $app_name => $app_tables){
+  foreach($table_array as $app_name => $app_tables){
     foreach($app_tables['tables'] as $table_name => $setup){
      $this->create_missing_system_files_methods($table_name,$app_name,$setup);
     }
