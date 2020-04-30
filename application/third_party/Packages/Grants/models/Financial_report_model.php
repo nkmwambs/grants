@@ -44,10 +44,10 @@ class Financial_report_model extends MY_Model{
      * @todo - Find out why this method causes an error $this->user_model->get_lowest_office_context()->context_definition_id;
      */
     function list_table_where(){
-        $lowest_context = 13;// $this->user_model->get_lowest_office_context()->context_definition_id;
-        if($this->config->item('only_combined_center_financial_reports')){
-            $this->db->where(array('office.fk_context_definition_id'=>$lowest_context));
-        }
+        // $lowest_context = 13;// $this->user_model->get_lowest_office_context()->context_definition_id;
+        // if($this->config->item('only_combined_center_financial_reports')){
+        //     $this->db->where(array('office.fk_context_definition_id'=>$lowest_context));
+        // }
         
     }
 
