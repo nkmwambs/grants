@@ -7,10 +7,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <!-- <tr>
                 <td>26%</td>
                 <td>1.3</td>
                 <td>18%</td>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
