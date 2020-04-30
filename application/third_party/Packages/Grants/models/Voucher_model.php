@@ -65,8 +65,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
   public function list_table_visible_columns(){
 
-    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
+    // return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    // 'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
   
   }
 
