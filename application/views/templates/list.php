@@ -18,7 +18,7 @@ extract($result);
   <div class="col-xs-12" style="text-align:center;">
 
     <?php
-    if($show_add_button){
+    if($show_add_button && $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create')){
       echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
     }
     ?>
