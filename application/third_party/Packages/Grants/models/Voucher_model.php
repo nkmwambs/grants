@@ -504,7 +504,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     //$conversion_approval_status = $this->conversion_approval_status($office_id);
 
     //$this->db->where(array('request.fk_status_id'=>$conversion_approval_status,'office.office_id'=>$office_id));
-    $this->db->where(array('office_id'=>$office_id,'request.fk_status_id'=>61,'request_detail.fk_status_id<>'=>63,'office.office_id'=>$office_id));
+    //$this->db->where(array('office_id'=>$office_id,'request.fk_status_id'=>61,'request_detail.fk_status_id<>'=>63,'office.office_id'=>$office_id));
 
     return $this->db->get('request_detail')->result_array();
   }
