@@ -619,7 +619,7 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
 
     var voucher_type_id = $("#voucher_type").val();// Can be expense, income, cash_contra or bank_contra
 
-    var url = "<?=base_url();?>voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
+    var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
     
     $.ajax({
         url:url,
