@@ -451,7 +451,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
     var voucher_type_id = $(voucherTypeSelect).val();// Can be expense, income, cash_contra or bank_contra
 
-    var url = "<?=base_url();?>voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
+    var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
 
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
    
