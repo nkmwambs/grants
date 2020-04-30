@@ -185,7 +185,7 @@ $(document).ready(function(){
 
 function load_approved_requests(){
         var office = $("#office").val();
-        var url = "<?=base_url();?>voucher/get_approve_request_details/" + office;
+        var url = "<?=base_url();?>Voucher/get_approve_request_details/" + office;
 
         $("#request_screen").html("");
 
@@ -226,6 +226,14 @@ $(".btn-retrieve-request").on('click',function(){
     }else{
         $("#request_screen").remove();
         $(".split_screen").removeClass('col-xs-6').addClass('col-xs-12');
+
+        var tbl_body_rows = $("#tbl_voucher_body tbody tr");
+
+        if(tbl_body_rows.length > 0){
+            $('.btn-save').show();
+            $('.btn-save-new').show();
+        }
+        
 
     }
 });
@@ -803,7 +811,7 @@ function requestIdCell(value = 0){
 }
 
 function saveVoucher(){
-    var url = "<?=base_url();?>voucher/insert_new_voucher";
+    var url = "<?=base_url();?>Voucher/insert_new_voucher";
     var data = $("#frm_voucher").serializeArray();
 
     $.ajax({

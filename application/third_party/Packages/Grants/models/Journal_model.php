@@ -62,7 +62,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
     
     if($opening_cash_balance_obj->num_rows()>0){
-       $balances = $opening_cash_balance_obj->row_array(); 
+       $balances = $opening_cash_balance_obj->row(); 
     }
 
     return $balances;

@@ -563,11 +563,11 @@ class Voucher extends MY_Controller
       // // if request_id > 0 give the item the final status
       if($this->input->post('fk_request_detail_id')[$i] > 0){
         
-        $this->update_request_detail_status_on_vouching($this->input->post('fk_request_detail_id')[$i]);
+        $this->update_request_detail_status_on_vouching($this->input->post('fk_request_detail_id')[$i],$header_id);
        
         // Check if all request detail items in the request has the last status and update the request to last status too
         
-        $this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
+        //$this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
        
 
       }
@@ -625,13 +625,17 @@ class Voucher extends MY_Controller
 
   }
 
-  function update_request_detail_status_on_vouching($request_detail_id){
-        $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
+  function update_request_detail_status_on_vouching($request_detail_id,$voucher_id){
+        // $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;
         
-        $item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
+        // $item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
 
+        // $this->db->where(array('request_detail_id'=>$request_detail_id));
+        // $this->db->update('request_detail',array('fk_status_id'=>$item_last_status));
+
+        // Update the request detail record
         $this->db->where(array('request_detail_id'=>$request_detail_id));
-        $this->db->update('request_detail',array('fk_status_id'=>$item_last_status));
+        $this->db->update('request_detail',array('request_detail_voucher_number'=>$voucher_id));
   }
 
   function update_request_on_paying_all_details($request_detail_id){
