@@ -2,6 +2,7 @@
 //$approveable_item = "Bank";
 //print_r($this->session->hierarchy_offices);
 //print_r(count($this->config->item('context_definitions')));
+
 ?>
 
   <div class="row">

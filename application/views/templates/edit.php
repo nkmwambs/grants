@@ -109,7 +109,7 @@ $(".edit, .edit_continue").on('click',function(ev){
 
       //If Edit , use the browser history and go back
       if(elem.hasClass('back')){
-			  window.history.back(1);        
+			  location.href = document.referrer      
       } 
 
     },

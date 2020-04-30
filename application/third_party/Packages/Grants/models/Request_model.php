@@ -24,7 +24,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   function index(){}
 
   public function lookup_tables(){
-    return array('approval','status','department','request_type','office');
+    return array('department','request_type','office');
   }
 
   public function detail_tables(){
@@ -40,9 +40,9 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
   function master_view(){}
 
   function list_table_visible_columns(){
-    return array('request_id','request_track_number','request_name','request_type_name',
-    'request_description','request_date','request_created_date','office_name',
-    'department_name','approval_name','status_name');
+    // return array('request_id','request_track_number','request_name','request_type_name',
+    // 'request_description','request_date','request_created_date','office_name',
+    // 'department_name','approval_name','status_name');
   }
 
 
@@ -64,13 +64,37 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     $lookup_values = [];
 
     if($table == 'office'){
-      $this->db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
-      $lookup_values['office'] = $this->db->get('office')->result_array();  
+
+      if(count($this->session->hierarchy_offices) == 0){
+        $message = "You do not have offices in your hierarchy. 
+        Kindly ask the administrator to add an office or <a href='".$_SERVER['HTTP_REFERER']."'/>go back</a>";         
+        show_error($message,500,'An Error As Encountered'); 
+      }else{
+        $this->db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
+        $office_obj = $this->db->get('office');
+
+        if($office_obj->num_rows() > 0){
+          $lookup_values['office'] = $office_obj->result_array();  
+        }
+      }
+     
     }
 
     if($table = 'project_allocation'){
-      $this->db->where_in('fk_office_id',array_keys($this->session->hierarchy_offices));
-      $lookup_values['project_allocation'] = $this->db->get('project_allocation')->result_array(); 
+
+      if(count($this->session->hierarchy_offices) == 0){
+          $message = "You do not have offices in your hierarchy. 
+          Kindly ask the administrator to add an office or <a href='".$_SERVER['HTTP_REFERER']."'/>go back</a>";         
+          show_error($message,500,'An Error As Encountered'); 
+      }else{
+        $this->db->where_in('fk_office_id',array_keys($this->session->hierarchy_offices));
+        $allocation_obj = $this->db->get('project_allocation');
+
+        if($allocation_obj->num_rows() > 0){
+          $lookup_values['project_allocation'] = $allocation_obj->result_array(); 
+        }
+      }
+      
     }
 
     if($table = 'department'){
@@ -100,7 +124,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     }    
     
     // Only list requests from the users' hierachy offices
-    $this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+    //$this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
   }
 
 

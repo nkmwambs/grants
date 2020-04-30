@@ -1277,11 +1277,11 @@ function single_form_add_output($table_name = ""){
     //$this->CI->grants_model->add($this->CI->input->post());
     $model = $this->current_model;
 
-    // if(method_exists($this->CI->$model,'add')){
-    //   echo $this->CI->$model->add();
-    // }else{
+    if(method_exists($this->CI->$model,'add') && strlen( $this->CI->$model->add())> 0){
+       echo $this->CI->$model->add();
+     }else{
       echo $this->CI->grants_model->add();
-    //}
+    }
   }else{
     // Adds mandatory fields if not present in the current table
     $this->CI->grants_model->mandatory_fields($table);
@@ -1320,7 +1320,7 @@ function multi_form_add_output($table_name = ""){
   if($this->CI->input->post()){
     $model = $this->current_model;
 
-    if(method_exists($this->CI->$model,'add')){
+    if(method_exists($this->CI->$model,'add') && strlen($this->CI->$model->add()) >0 ){
       echo $this->CI->$model->add();
     }else{
       echo $this->CI->grants_model->add();
@@ -1362,7 +1362,7 @@ function edit_output($id = ""){
     
     $model = $this->current_model;
 
-    if(method_exists($this->CI->$model,'edit')){
+    if(method_exists($this->CI->$model,'edit') && strlen($this->CI->$model->edit($id)) > 0){
       echo $this->CI->$model->edit($id);
     }else{
       echo $this->CI->grants_model->edit($id);

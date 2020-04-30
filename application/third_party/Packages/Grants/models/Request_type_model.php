@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Request_type_model extends MY_Model{
 
     public $table = 'request_type'; 
-    public $dependant_table = 'request_detail';
+    public $dependant_table = '';
     public $name_field = 'request_type_name';
     public $create_date_field = "request_type_created_date";
     public $created_by_field = "request_type_created_by";
@@ -29,7 +29,7 @@ class Request_type_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array();
+        return array('account_system');
     }
 
     public function detail_tables(){
@@ -37,4 +37,5 @@ class Request_type_model extends MY_Model{
     }
 
     public function detail_multi_form_add_visible_columns(){}
+
 }
