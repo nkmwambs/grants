@@ -38,7 +38,7 @@ class Funding_status_model extends MY_Model{
         //return ['funding_status_name','funding_status_is_active'];
     }
 
-    function show_add_button(){
-        return false;
-    }
+    // function show_add_button(){
+    //     return false;
+    // }
 }

@@ -316,7 +316,13 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   function list_table_where(){
     
     // Only list requests from the users' hierachy offices
-    $this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+    if(count($this->session->hierarchy_offices) == 0){
+      $message = "You do not have offices in your hierarchy. 
+      Kindly ask the administrator to add an office or <a href='".$_SERVER['HTTP_REFERER']."'/>go back</a>";         
+      show_error($message,500,'An Error As Encountered'); 
+    }else{
+      $this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+    }  
   }
 
 }

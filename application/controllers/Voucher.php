@@ -441,17 +441,17 @@ class Voucher extends MY_Controller
   function create_new_journal($journal_date,$office_id){
     $new_journal = [];
 
-    // $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
-    // $new_journal['journal_name'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_name'];
+    $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
+    $new_journal['journal_name'] =  "Journal for the month of ". $journal_date;
     $new_journal['journal_month'] = $journal_date;
     $new_journal['fk_office_id'] = $office_id;
     $new_journal['journal_created_date'] = date('Y-m-d');
     $new_journal['journal_created_by'] = $this->session->user_id;
     $new_journal['journal_last_modified_by'] = $this->session->user_id;
-    // $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
-    // $new_journal['fk_status_id'] = $detail['fk_status_id'] = $this->grants_model->initial_item_status('journal');
+    $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
+    $new_journal['fk_status_id'] = $this->grants_model->initial_item_status('journal');
 
-    $new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal);
+    //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
 
     $this->db->insert('journal',$new_journal);
 

@@ -79,7 +79,7 @@
                     <div class='form-group'>
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
-                            <div class='btn btn-default btn-insert'><?=get_phrase('insert_voucher_detail_row');?></div>
+                            <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                            
@@ -116,7 +116,7 @@
                     <div class='form-group'>
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
-                            <div class='btn btn-default btn-insert'><?=get_phrase('insert_voucher_detail_row');?></div>
+                            <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                            
@@ -413,7 +413,7 @@ function saveRequest(){
 
 $(".btn-save").on('click',function(){
     saveRequest();
-    go_back();
+    location.href = document.referrer 
 });
 
 $(".btn-save-new").on('click',function(){
