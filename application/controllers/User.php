@@ -153,7 +153,7 @@ private function _get_approval_assignments($role_id){
   function create_new_user(){
     $post = $this->input->post()['header'];
     
-    //$this->db->trans_start();
+    $this->db->trans_start();
 
     $user['user_name'] = $post['user_name'];
     $user['user_firstname'] = $post['user_firstname'];
@@ -167,6 +167,7 @@ private function _get_approval_assignments($role_id){
     $user['fk_role_id'] = $post['fk_role_id'];
     $user['user_password'] = md5($post['user_password']);
 
+
     $user_to_insert = $this->grants_model->merge_with_history_fields($this->controller,$user,false);
 
     $this->db->insert('user',$user_to_insert);
@@ -177,11 +178,19 @@ private function _get_approval_assignments($role_id){
     $context_definition_name = $this->db->get_where('context_definition',array('context_definition_id'=>$post['fk_context_definition_id']))->row()->context_definition_name;
     $context_definition_user_table = 'context_'.$context_definition_name.'_user';
 
-    $context['context_center_user_name'] = "Office context for ".$post['user_firstname']." ".$post['user_lastname'];
+    $context[$context_definition_user_table.'_name'] = "Office context for ".$post['user_firstname']." ".$post['user_lastname'];
     $context['fk_user_id'] = $user_id;
     $context['fk_context_'.$context_definition_name.'_id'] = $post['office_context'];
     $context['fk_designation_id'] = $post['designation'];
-    $context['context_center_user_is_active'] = 1;
+    $context[$context_definition_user_table.'_is_active'] = 1;
+
+    // $context[$context_definition_user_table.'_created_by'] = 1;
+    // $context[$context_definition_user_table.'_last_modified_by'] = 1;
+    // $context[$context_definition_user_table.'_created_date'] = date('Y-m-d');
+    // $context[$context_definition_user_table.'_last_modified_date'] = date('Y-m-d h:i:s');
+    // $context[$context_definition_user_table.'_track_number'] = $this->grants_model->generate_item_track_number_and_name($context_definition_user_table)[$context_definition_user_table.'_track_number'];
+    // $context['fk_approval_id'] = $this->grants_model->insert_approval_record($context_definition_user_table);
+    // $context['fk_status_id'] = $this->grants_model->initial_item_status($context_definition_user_table);
 
     $context_to_insert = $this->grants_model->merge_with_history_fields($context_definition_user_table,$context,false);
 
@@ -198,11 +207,12 @@ private function _get_approval_assignments($role_id){
 
     $this->db->trans_complete();
 
-    // if($this->db->trans_status() == false){
-    //   echo "Error occurred";
-    // }else{
-     echo "User created successfully";
-    // }
+    if($this->db->trans_status() == false){
+      //echo "Error occurred";
+      echo json_encode($context_to_insert);
+    }else{
+      echo "User created successfully";
+    }
 
   }
 

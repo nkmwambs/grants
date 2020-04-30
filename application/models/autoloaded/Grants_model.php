@@ -1482,6 +1482,7 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
   $data[$approve_item_name.'_created_by'] = $this->session->user_id?$this->session->user_id:1;
   $data[$approve_item_name.'_last_modified_by'] = $this->session->user_id?$this->session->user_id:1;
   $data[$approve_item_name.'_created_date'] = date('Y-m-d');
+  //$data[$approve_item_name.'_last_modified_date'] = date('Y-m-d h:i:s');
   $data['fk_approval_id'] = $this->insert_approval_record($approve_item_name);
   $data['fk_status_id'] = $this->initial_item_status($approve_item_name);
 

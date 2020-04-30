@@ -270,9 +270,9 @@ $(".btn-save, .btn-save-new").on('click',function(ev){
             alert(response);
 
             if(btn.hasClass('btn-save')){
-                location.href = document.referrer 
+                //location.href = document.referrer 
             }else{
-                reset_form();
+                //reset_form();
             }
              
         }
