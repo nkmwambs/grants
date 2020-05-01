@@ -775,13 +775,16 @@ class Financial_report extends MY_Controller
     
     $this->db->select(array('project_id','project_name','funder_name','fk_office_id'));
     $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->where(array('project_start_date <='=>$start_date_of_reporting_month,
-    'project_end_date>='=>$end_date_of_reporting_month));
+    // $this->db->where(array('project_start_date <='=>$start_date_of_reporting_month,
+    // 'project_end_date>='=>$end_date_of_reporting_month));
+    $query_condition = "(project_end_date >= '".$start_date_of_reporting_month."' OR  project_allocation_extended_end_date >= '".$start_date_of_reporting_month."')";
+    $this->db->where($query_condition);
 
-    // $this->db->join('project','project.project_id=project_allocation.fk_project_id');
-    // $this->db->join('funder','funder.funder_id=project.fk_funder_id');
+    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+    //$this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+    $this->db->join('funder','funder.funder_id=project.fk_funder_id');
 
-    $this->grants_model->create_table_join_statement_with_depth('project_allocation',['project','funder']);
+    //$this->grants_model->create_table_join_statement_with_depth('project_allocation',['project','funder']);
 
     $projects = $this->db->get('project_allocation')->result_array();
 
