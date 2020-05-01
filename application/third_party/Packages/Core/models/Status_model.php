@@ -12,6 +12,13 @@
 class Status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'status'; // you MUST mention the table name
+  public $dependant_table = 'status_role';
+  public $name_field = 'status_name';
+  public $create_date_field = "status_created_date";
+  public $created_by_field = "status_created_by";
+  public $last_modified_date_field = "status_last_modified_date";
+  public $last_modified_by_field = "status_last_modified_by";
+  public $deleted_at_field = "status_deleted_at";
 
   function __construct(){
     parent::__construct();
@@ -29,7 +36,7 @@ public function lookup_tables(){
 }
 
 public function detail_tables(){
-
+  return ['status_role'];
 }
 
 public function table_visible_columns(){}

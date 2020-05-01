@@ -2,6 +2,7 @@
 
 //$action_labels['show_label_as_button'] = false;//$this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
 //print_r($this->general_model->test());
+//echo hash_id($this->id,'decode');
 
 extract($result['master']);
 
