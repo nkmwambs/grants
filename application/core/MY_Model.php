@@ -107,11 +107,15 @@ class MY_Model extends CI_Model
   
     public function detail_multi_form_add_hidden_columns(){}
 
-    public function add(){}
+    //public function add(){} //Had a problem of creating duplicates with the status_role add form on post
 
     public function edit(){}
 
     public function delete(){}
+
+    public function transaction_validate_duplicates_columns(){
+
+    }
 
     function _derived_lookup_tables($table_name){
       $fields = $this->grants_model->get_all_table_fields($table_name);

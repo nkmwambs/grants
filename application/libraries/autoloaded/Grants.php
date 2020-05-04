@@ -1277,7 +1277,7 @@ function single_form_add_output($table_name = ""){
     //$this->CI->grants_model->add($this->CI->input->post());
     $model = $this->current_model;
 
-    if(method_exists($this->CI->$model,'add') && strlen( $this->CI->$model->add())> 0){
+    if(method_exists($this->CI->$model,'add')){
        echo $this->CI->$model->add();
      }else{
       echo $this->CI->grants_model->add();
@@ -2092,6 +2092,14 @@ function feature_model_list_table_visible_columns() {
         return $_FILES;
       }
     }
+
+    // function transaction_validate_by_computation(String $table_name,Array $insert_array,Array $validation_fields = [],Array $validation_computated_fields_and_value,String $validation_operator){
+    //   return $this->CI->grants_model->transaction_validate_by_computation($table_name,$insert_array,$validation_fields,$validation_computated_fields_and_value,$validation_operator);
+    // }
+
+    // function transaction_validate_duplicates(String $table_name,Array $insert_array,Array $validation_fields = []){
+    //   return $this->CI->grants_model->transaction_validate_duplicates($table_name,$insert_array,$validation_fields);
+    // }
 
     function fy_start_date($reporting_month){
       return '2020-01-01';

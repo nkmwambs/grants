@@ -50,5 +50,16 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+  /**
+   * transaction_validate_duplicates_columns
+   * 
+   * This is an override method. It lists all fields that needs to be checked if duplicate value
+   * is about to be posted in the database.
+   * 
+   * @return Array
+   */
+  function transaction_validate_duplicates_columns(){
+    return ['bank_swift_code'];
+  }
  
 }

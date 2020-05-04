@@ -15,7 +15,7 @@
             </div>
 			         <div class="panel-body">
 
-              <?php echo form_open(base_url().$this->controller.'/add' , array('id'=>'edit_form','class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
+              <?php echo form_open('' , array('id'=>'edit_form','class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 
                   foreach ($fields as $column => $field) {
 
@@ -87,7 +87,7 @@ $(".save, .save_new").on('click',function(ev){
 
       var url = "<?=base_url().$this->capped_controller;?>/<?=$this->action;?>";
 
-      if('<?=$this->uri->segment(3,0);?>' !== 0){
+      if('<?=hash_id($this->uri->segment(3,0),'decode');?>' !== 0){
         url = "<?=base_url().$this->capped_controller;?>/<?=$this->action;?>/<?=$this->uri->segment(3,0);?>";
       }
 

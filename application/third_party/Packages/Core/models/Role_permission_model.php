@@ -61,5 +61,9 @@ class Role_permission_model extends MY_Model implements CrudModelInterface, Tabl
   function view(){
 
   }
+
+  function transaction_validate_duplicates_columns(){
+    return ['fk_role_id','fk_permission_id'];
+  }
   
 }

@@ -240,27 +240,35 @@ function generate_item_track_number_and_name($approveable_item){
     // End the transaction and determine if successful
     //$this->db->trans_complete();
     
-    if ($this->db->trans_status() === FALSE)
-    {       
-            $this->db->trans_rollback();
-            // return json_encode($header_columns);
-            //return "Insert not successful";
-            return get_phrase('insert_failed');
-    }
-    else
-    {
-            $this->db->trans_commit();
+    // if ($this->db->trans_status() === FALSE)
+    // {       
+    //         $this->db->trans_rollback();
+    //         // return json_encode($header_columns);
+    //         //return "Insert not successful";
+    //         return get_phrase('insert_failed');
+    // }
+    // else
+    // {
+    //         $this->db->trans_commit();
 
-            $this->grants->action_after_insert($post_array,$approval_id,$header_id);
+    //         $this->grants->action_after_insert($post_array,$approval_id,$header_id);
 
-            // This runs after post is successful. It is defined in feature model wrapped via grants model
-          //if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
-            return get_phrase('insert_successful');
-          //}else{
-            //return get_phrase('insert_successful_without_post_action');
-          //}
-    }
+    //         // This runs after post is successful. It is defined in feature model wrapped via grants model
+    //       //if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
+    //         return get_phrase('insert_successful');
+    //       //}else{
+    //         //return get_phrase('insert_successful_without_post_action');
+    //       //}
+    // }
 
+   
+    $model = $this->controller.'_model';
+    
+    $transaction_validate_duplicates = $this->transaction_validate_duplicates($this->controller,$header,$this->$model->transaction_validate_duplicates_columns());
+    $transaction_validate_by_computation = $this->transaction_validate_by_computation($this->controller, $header);
+
+    return $this->transaction_validate([$transaction_validate_duplicates,$transaction_validate_by_computation]);
+     
   }
 
   /**
@@ -272,6 +280,83 @@ function generate_item_track_number_and_name($approveable_item){
    */
   function upload_attachment($record_id){
     
+  }
+
+  function transaction_validate($validation_flags_and_failure_messages){
+    $message = '';
+
+    $validation_flags = array_column($validation_flags_and_failure_messages,'flag');
+
+    if($this->db->trans_status() == false){
+
+      $this->db->trans_rollback();
+      return get_phrase('insert_failed');
+    
+    }else{
+        if(in_array(false,$validation_flags)){
+          $this->db->trans_rollback();
+    
+          foreach($validation_flags_and_failure_messages as $validation_check){
+            if(!$validation_check['flag']){
+              $message .= $validation_check['error_message'].'\n';
+            }
+          }
+    
+        }else{
+          $this->db->trans_commit();
+          $message = get_phrase('insert_successful');
+        }
+    }
+
+    return $message;
+
+  }
+
+  // public function transaction_validate_by_computation(){
+  //   return ['flag'=>true,'error_message'=>'Computation failed'];
+  // }
+
+  public function transaction_validate_by_computation(String $table_name, Array $insert_array){
+    
+    $validation_successful = true;
+    $failure_message = get_phrase('validation_failed');
+
+    $model = $table_name."_model";
+     
+    if(method_exists($this->$model,'transaction_validate_by_computation_flag')){
+      if($this->$model->transaction_validate_by_computation_flag($insert_array) == 'VALIDATION_ERROR'){
+        $validation_successful = false;
+      }
+    }
+    
+    return ['flag'=>$validation_successful,'error_message'=>$failure_message];
+  }
+
+  public function transaction_validate_duplicates(String $table_name, Array $insert_array, Array $validation_fields = [],int $allowable_records = 1){
+
+    $validation_successful = true;
+    $failure_message = get_phrase('duplicate_entries_not_allowed');
+
+    $model = $table_name."_model";
+
+    if(method_exists($this->$model,'transaction_validate_duplicates_columns') && count($validation_fields) > 0){
+        foreach($insert_array as $insert_column => $insert_value){
+          if(!in_array($insert_column,$validation_fields)){
+            unset($insert_array[$insert_column]);
+          }
+        }
+
+        $this->db->where($insert_array);
+        $result = $this->db->get($table_name)->num_rows();
+
+        if($result > $allowable_records){
+            $validation_successful = false; // Validation error flag
+        }
+
+    }
+
+    return ['flag'=>$validation_successful,'error_message'=>$failure_message];
+
   }
 
   /**

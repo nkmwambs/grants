@@ -180,7 +180,8 @@
             'csvHtml5',
             'pdfHtml5',
         ],
-        "pagingType": "full_numbers"
+        "pagingType": "full_numbers",
+        'stateSave':true
       });
 
       $('.datatable_details').DataTable({

@@ -134,10 +134,10 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
     <?php
 
     if( isset($result['detail']) && count($result['detail']) > 0){
-
+      //print_r($result['detail']);
       foreach ($result['detail'] as $detail_table_name => $details) {
         extract($details);
-
+        //echo $detail_table_name;
         $primary_key_column = array_shift($keys);
         ?>
 

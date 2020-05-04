@@ -77,5 +77,11 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     // function voucher_project_allocation(){
     //   return $this->db->get('project_allocation')->result_object();
     // }
+    
+    // function transaction_validate_by_computation_columns(){
+    //   return ['fk_project_id','project_allocation_amount'=>function(){
+    //     return false;
+    //   }];
+    // }
 
 }

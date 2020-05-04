@@ -5,6 +5,7 @@
 		}
 	],
 	"settings": {
-		"VSCodeCounter.showInStatusBar": true
+		"VSCodeCounter.showInStatusBar": true,
+		"git.ignoreLimitWarning": true
 	}
 }
