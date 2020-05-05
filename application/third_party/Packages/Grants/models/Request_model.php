@@ -114,18 +114,18 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $lookup_values;
   }
 
-  function list_table_where(){
+  // function list_table_where(){
 
-    //If the request is set to be department strcit, then only list requests from the user departments
-    $is_role_department_strict = $this->session->role_is_department_strict;
+  //   //If the request is set to be department strcit, then only list requests from the user departments
+  //   $is_role_department_strict = $this->session->role_is_department_strict;
     
-    if($is_role_department_strict == 1  && count($this->session->departments) > 0){
-      $this->db->where_in($this->controller.'.fk_department_id', $this->session->departments);
-    }    
+  //   if($is_role_department_strict == 1  && count($this->session->departments) > 0){
+  //     $this->db->where_in($this->controller.'.fk_department_id', $this->session->departments);
+  //   }    
     
-    // Only list requests from the users' hierachy offices
-    //$this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
-  }
+  //   // Only list requests from the users' hierachy offices
+  //   //$this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+  // }
 
 
   function get_request_types($account_system_id){

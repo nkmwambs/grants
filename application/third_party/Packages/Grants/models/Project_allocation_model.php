@@ -78,10 +78,25 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     //   return $this->db->get('project_allocation')->result_object();
     // }
     
-    // function transaction_validate_by_computation_columns(){
-    //   return ['fk_project_id','project_allocation_amount'=>function(){
-    //     return false;
-    //   }];
-    // }
+   public function transaction_validate_by_computation_flag($insert_array){
+      
+      $project_id = $insert_array['fk_project_id'];
+
+      $project_cost = $this->db->select_sum('project_cost')->get_where('project',
+      array('project_id'=>$project_id))->row()->project_cost;
+
+      $sum_allocation = $this->db->select_sum('project_allocation_amount')->get_where('project_allocation',
+      array('fk_project_id'=>$project_id))->row()->project_allocation_amount;
+
+      if($project_cost < $sum_allocation){
+        return VALIDATION_ERROR;
+      }else{
+        return VALIDATION_SUCCESS;
+      }
+   }
+
+   public function transaction_validate_duplicates_columns(){
+     return ['fk_office_id','fk_project_id'];
+   }
 
 }

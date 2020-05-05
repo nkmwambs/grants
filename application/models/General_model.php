@@ -372,7 +372,7 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
     $approval_button_info = [];
 
     $item_status = $this->get_status_id($table,$primary_key);
-
+    //echo $primary_key;
     if($item_status > 0){
 
       $approval_button_info['current_actor_role_id'] = $this->current_approval_actor($item_status);

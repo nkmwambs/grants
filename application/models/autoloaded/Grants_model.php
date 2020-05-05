@@ -1124,7 +1124,7 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
   $model_where_method = "list_table_where", $filter_where_array = array() ): Array {
     
 
-    $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
+    //$this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
 
     if(!$this->db->get($table)){
       $error = $this->db->error();

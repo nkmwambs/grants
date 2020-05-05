@@ -23,7 +23,7 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
   function index(){}
 
   public function lookup_tables(){
-    return array('request','status','expense_account','project_allocation');
+    return array('request','expense_account','project_allocation','status');
   }
 
 
