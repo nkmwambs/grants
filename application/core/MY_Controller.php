@@ -122,7 +122,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    * @return Mixed 
    * @todo {seperate the method that uses ajax to post from result methods}
    */
-
+  
   function result($id = ""){
 
     $action = $this->action.'_output';
@@ -164,7 +164,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }else{
       $this->list_result = $this->$lib->$action();
     }
-
+    //var_dump(debug_backtrace());
+    
     return $this->list_result;
   }
    /**

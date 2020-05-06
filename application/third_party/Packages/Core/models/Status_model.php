@@ -12,7 +12,7 @@
 class Status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
 {
   public $table = 'status'; // you MUST mention the table name
-  public $dependant_table = 'status_role';
+  public $dependant_table = '';
   public $name_field = 'status_name';
   public $create_date_field = "status_created_date";
   public $created_by_field = "status_created_by";
@@ -32,7 +32,7 @@ class Status_model extends MY_Model implements CrudModelInterface, TableRelation
   function index(){}
 
 public function lookup_tables(){
-  return array('role');
+  return array('role','approval_flow');
 }
 
 public function detail_tables(){

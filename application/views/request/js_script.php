@@ -59,4 +59,5 @@ function calcuate_grand_total(){
 function on_row_delete(){
   calcuate_grand_total();
 }
+
 </script>

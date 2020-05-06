@@ -113,7 +113,8 @@ class View_output extends Output_template{
 
         //Remove the primary key field from the master table
         unset($status_column[array_search($this->CI->grants->primary_key_field($this->CI->controller),$status_column)]);
-        
+    
+
         return $this->access->control_column_visibility($this->controller,$status_column,'read');
 
     }
@@ -471,11 +472,22 @@ function detail_list_output(String $table): Array {
     function _output(){
         $table = $this->controller;
     
-        //$this->CI->grants_model->mandatory_fields($table);
+        $model = $table.'_model';
+
+        $master_additional_fields = [];
+
+        if(method_exists($this->CI->$model,'master_table_additional_fields')){
+            $master_additional_fields = $this->CI->$model->master_table_additional_fields(hash_id($this->CI->uri->segment(3,0),'decode'));
+        }
     
         $query_output = $this->toggle_master_view_query_result();
-        
+
         $keys = $this->toggle_master_view_select_columns();
+        
+        if(is_array($master_additional_fields) && count($master_additional_fields) > 0){
+            $query_output = array_merge($query_output,$master_additional_fields);
+            array_push($keys,implode(',',array_keys($master_additional_fields)));
+        }
         
         $has_details = $this->CI->grants->check_if_table_has_detail_table($table);
         $is_approveable_item = $this->CI->grants->approveable_item();
@@ -506,6 +518,8 @@ function detail_list_output(String $table): Array {
     
             $result['detail'] = $detail;
         }
+
+        //$result['master']['master_additional_fields'] = array('total_amount'=>54000);
     
         return $result;
     

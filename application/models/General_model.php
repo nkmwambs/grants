@@ -77,6 +77,19 @@ function get_approve_item_name_by_status($item_status){
   return $result;
 }
 
+function default_role_id(){
+
+  $default_role_id = 0;
+
+  $result_obj = $this->db->get_where('role',array('role_is_new_status_default'=>1));
+
+  if($result_obj->num_rows()>0){
+    $default_role_id = $result_obj->row()->role_id;
+  }
+
+  return $default_role_id;
+}
+
 //Used for label naming e.g. Submit to [next_role_name]
 function next_approval_actor($item_status){
 
@@ -100,12 +113,21 @@ function next_approval_actor($item_status){
   $next_possible_sequence_number = $status_record->status_approval_sequence + 1;
   // Check if this is not the last status
   $next_status_record = array();
-  if($next_possible_sequence_number < $range_of_status_approval_sequence){
 
+  $next_approval_actor_role_ids = [];
+
+  if($next_possible_sequence_number >= $range_of_status_approval_sequence){
+    $this->db->select(array('status_role.fk_role_id as fk_role_id'));
     $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-    $next_status_record = $this->db->get_where('status',
+    $this->db->join('status_role','status_role.status_role_status_id=status.status_id');
+    //$this->db->where_not_in('status_role.fk_role_id',$this->current_approval_actor($item_status));
+    $next_status_record_obj = $this->db->get_where('status',
     array('status_approval_sequence'=>$next_possible_sequence_number,
-    'fk_approve_item_id'=>$approveable_item_id))->row_array();
+    'fk_approve_item_id'=>$approveable_item_id));
+
+    if($next_status_record_obj->num_rows() > 0){
+      $next_approval_actor_role_ids = array_column($next_status_record_obj->result_array(),'fk_role_id');
+    }
   }
 
   // // 4.Check if the approval direction is -1 then return the role id of the status record 
@@ -113,22 +135,23 @@ function next_approval_actor($item_status){
     
     if($status_approval_direction == -1){
 
-    $next_approval_actor_role_id = $status_record->fk_role_id;
+      $next_approval_actor_role_ids = [$this->default_role_id()];
 
-    }elseif(is_array($next_status_record) && count($next_status_record) > 0){
-      
-      $next_approval_actor_role_id = $next_status_record['fk_role_id'];
-    
     }
-
-    return $next_approval_actor_role_id;
+    // elseif(is_array($next_status_record) && count($next_status_record) > 0){
+      
+    //   $next_approval_actor_role_ids = $next_approval_actor_role_ids;//$next_status_record['fk_role_id'];
+    
+    // }
+    //print_r($next_approval_actor_role_ids);
+    return $next_approval_actor_role_ids;
 }
 
 function current_approval_actor($item_status){
 
   //Get approval item name using the status_id
   $approve_item_name = $this->get_approve_item_name_by_status($item_status);
-
+  
   $current_approval_actor_role_id = 0;
 
   $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($approve_item_name);
@@ -136,11 +159,22 @@ function current_approval_actor($item_status){
   $approveable_item_id = $this->get_approveable_item_id_by_status($item_status);
 
   // Get the status record
+  //$this->db->join('status_role','status_role.status_role_status_id=status.status_id');// This has deviated from the normal foreign key namining convention
   $status_record = $this->db->get_where('status',array('status_id'=>$item_status))->row();
 
   // Get the status record role_id of the status record
-  $status_record_role_id = $status_record->fk_role_id;
+  $status_record_role_ids = [$this->default_role_id()];
 
+  $this->db->select(array('status_role.fk_role_id as fk_role_id'));
+  $this->db->join('status_role','status_role.status_role_status_id=status.status_id');// This has deviated from the normal foreign key namining convention
+  $status_record_role_ids_obj = $this->db->get_where('status',array('status_id'=>$item_status));
+
+  if($status_record_role_ids_obj->num_rows() >0){
+    $status_record_role_ids = array_column($status_record_role_ids_obj->result_array(),'fk_role_id');
+  }
+
+  //print_r($status_record_role_ids_obj->result_array());
+  
   // Get the approval direction of the status record
   $status_record_direction = $status_record->status_approval_direction;
 
@@ -149,17 +183,23 @@ function current_approval_actor($item_status){
 
   // Check if backflow is gt 0 and if yes get record role id of its sequence
   if($status_record_backflow > 0){
+    $this->db->select('status_role.fk_role_id as fk_role_id');
     $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-      $status_record_role_id = $this->db->get_where('status',
+    $this->db->join('status_role','status_role.status_role_status_id=status.status_id');
+      $status_record_role_id_obj = $this->db->get_where('status',
       array('status_approval_sequence'=>$status_record_backflow,
-      'fk_approve_item_id'=>$approveable_item_id))->row()->fk_role_id;
+      'fk_approve_item_id'=>$approveable_item_id));
+
+      if($status_record_role_id_obj->num_rows() > 0){
+        $status_record_role_ids = array_column($status_record_role_id_obj->result_array(),'fk_role_id');
+      }
   
     }elseif($range_of_status_approval_sequence == $status_record->status_approval_sequence){
       // No current actor for the last approval sequence
-      $status_record_role_id = 0;
+      $status_record_role_ids = [];
   }
-
-  return $status_record_role_id;
+  //print_r($status_record_role_ids);
+  return $status_record_role_ids;
 
 }
 
@@ -189,7 +229,7 @@ function user_action_label($item_status,$role_id){
   $next_actor = $this->next_approval_actor($item_status);
   $range_of_status_approval_sequence = $this->range_of_status_approval_sequence($approve_item_name);
 
-  $next_actor_role_name = $this->get_role_name($next_actor);
+  //$next_actor_role_name = $this->get_role_name($next_actor);
   
 
   //Check if state has backflow value gt 0
@@ -204,14 +244,14 @@ function user_action_label($item_status,$role_id){
 
   // Check if the role id is the current actor or not and if final status in the sequence and created
   // the appropriate label 
-  if($current_actor == $role_id &&  
+  if(in_array($role_id,$current_actor) &&  
       $backflow_sequence == 0 && 
         $approval_sequence < $range_of_status_approval_sequence && 
-         $next_actor != 0
+         count($next_actor) > 0
     ){
-    $status_label = "Submit to ".$next_actor_role_name;
+    $status_label = "Submit";
   }elseif($backflow_sequence > 0){
-    $status_label = "Reinstate to ".$next_actor_role_name;
+    $status_label = "Reinstate";
   }elseif($next_actor == 0){
     $status_label = 'Completed';
   }
@@ -315,10 +355,11 @@ function decline_status($item_status){
 }
 
 function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
-
+  
   $table = $this->get_approve_item_name_by_status($item_status);
 
-  $current_approval_actor = $this->current_approval_actor($item_status);
+  $current_approval_actors = $this->current_approval_actor($item_status);// This is an array of current status role actors
+  
   $logged_user_centers = array_column($this->session->hierarchy_offices,'office_id');
   $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
@@ -329,7 +370,7 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
 
   $show_label_as_button = false; 
   
-  if( is_array($logged_user_centers) && $logged_role_id == $current_approval_actor && 
+  if( is_array($logged_user_centers) && in_array($logged_role_id,$current_approval_actors) && 
       //in_array($record_center_id,$logged_user_centers) &&
       $is_approveable_item){
     $show_label_as_button = true;

@@ -207,25 +207,25 @@ function generate_item_track_number_and_name($approveable_item){
       // Construct an insert batch array using the detail array
       for($i=0;$i<sizeof($shifted_element);$i++){
         foreach ($detail_array as $column => $values) {
-          if(strpos($column,'_name') == true && $column !== $this->controller.'_detail_name'){
+          if(strpos($column,'_name') == true && $column !== $this->grants->dependant_table($this->controller).'_name'){
               $column = 'fk_'.substr($column,0,-5).'_id';
           }
           $detail_columns[$i][$column] = $values[$i];
 
-          $detail_random = record_prefix($this->controller.'_detail').'-'.rand(1000,90000);
-          $detail_columns[$i][$this->controller.'_detail_track_number'] = $detail_random;
+          $detail_random = record_prefix($this->grants->dependant_table($this->controller)).'-'.rand(1000,90000);
+          $detail_columns[$i][$this->grants->dependant_table($this->controller).'_track_number'] = $detail_random;
           $detail_columns[$i]['fk_'.$this->controller.'_id'] = $header_id;
 
           // Only insert fk_status_if is the detail record requires approval
           //if($detail_records_require_approval){
-              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->controller.'_detail');
+              $detail_columns[$i]['fk_status_id'] = $this->initial_item_status($this->grants->dependant_table($this->controller));
           //}
 
           $detail['fk_approval_id'] = $approval_id;
 
-          $detail_columns[$i][$this->controller.'_detail_created_date'] = date('Y-m-d');
-          $detail_columns[$i][$this->controller.'_detail_created_by'] =  $this->session->user_id;
-          $detail_columns[$i][$this->controller.'_detail_last_modified_by'] =  $this->session->user_id;
+          $detail_columns[$i][$this->grants->dependant_table($this->controller).'_created_date'] = date('Y-m-d');
+          $detail_columns[$i][$this->grants->dependant_table($this->controller).'_created_by'] =  $this->session->user_id;
+          $detail_columns[$i][$this->grants->dependant_table($this->controller).'_modified_by'] =  $this->session->user_id;
         }
       }
       $details = $detail_columns;
@@ -339,7 +339,7 @@ function generate_item_track_number_and_name($approveable_item){
 
     $model = $table_name."_model";
 
-    if(method_exists($this->$model,'transaction_validate_duplicates_columns') && count($validation_fields) > 0){
+    if(method_exists($this->$model,'transaction_validate_duplicates_columns') && is_array($validation_fields) && count($validation_fields) > 0){
         foreach($insert_array as $insert_column => $insert_value){
           if(!in_array($insert_column,$validation_fields)){
             unset($insert_array[$insert_column]);

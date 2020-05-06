@@ -32,9 +32,13 @@ class Request_library extends Grants
     //$widgets['position_1'][] = Widget_base::load('comment');
 
     //$widgets['position_2'][] = Widget_base::load('button',get_phrase('edit'),$this->CI->controller.'/edit/'.$this->CI->id);
-    if($this->CI->user_model->check_role_has_permissions(ucfirst($this->CI->controller),'create')){            
-      $widgets['position_2'][] = Widget_base::load('button',get_phrase('clone'),$this->CI->controller.'/clone/'.$this->CI->id);
-    }
+    // if($this->CI->user_model->check_role_has_permissions(ucfirst($this->CI->controller),'create')){            
+    //   $widgets['position_2'][] = Widget_base::load('button',get_phrase('clone'),$this->CI->controller.'/clone/'.$this->CI->id);
+    // }
+
+    // if($this->CI->user_model->check_role_has_permissions(ucfirst($this->CI->controller),'read')){            
+    //   $widgets['position_2'][] = Widget_base::load('button',get_phrase('print'),$this->CI->controller.'/clone/'.$this->CI->id,'btn_print');
+    // }
     //$widgets['position_2'][] = Widget_base::load('button',get_phrase('delete'),$this->CI->controller.'/delete/'.$this->CI->id);
           
     //$widgets['position_3'][] = "Here is main position two widgets";

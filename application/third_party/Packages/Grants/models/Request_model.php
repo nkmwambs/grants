@@ -164,5 +164,12 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $project_allocation;
   }
 
+  function master_table_additional_fields($record_id){
+    $request_detail_total_cost = $this->db->select_sum('request_detail_total_cost')->get_where('request_detail',
+    array('fk_request_id'=>$record_id))->row()->request_detail_total_cost;
+
+    return ['request_total_cost'=>$request_detail_total_cost];
+  }
+
 
 }

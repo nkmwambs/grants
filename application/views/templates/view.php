@@ -3,6 +3,9 @@
 //$action_labels['show_label_as_button'] = false;//$this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
 //print_r($this->general_model->test());
 //echo hash_id($this->id,'decode');
+// $key = $result['master']['keys'];
+// array_push($key,'total_amount');
+// print_r($key);
 
 extract($result['master']);
 
@@ -27,7 +30,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 </div>
 
 <div class="row">
-  <div class="col-xs-12">
+  <div class="col-xs-12" id='print_pane'>
     <table class="table">
       <thead>
         <tr>
@@ -67,8 +70,10 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                   }
 
                 }
+
+                echo Widget_base::load('button',get_phrase('print'),'#','btn_print','hidden-print');
                ?>     
-                   
+                  
 
               <?=Widget_base::load('position','position_2');?>
           </th>
@@ -164,9 +169,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                 //print_r($row);
                 ?>
                 <tr>
-                  <td>
+                  <td class='hidden-print'>
                       <?php
-                        echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
+                        //echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
                       ?>
                   </td>
                   <?php
@@ -229,3 +234,33 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
   </div>
 </div>
 
+
+<script>
+
+$(document).ready(function(){
+  $('.btn_export, .dataTables_filter,.dataTables_info').addClass('hidden-print');
+});
+
+$('#btn_print').on('click',function(ev){
+
+  PrintElem('#print_pane');
+
+  ev.preventDefault();
+});
+
+function PrintElem(elem)
+    {
+        $(elem).printThis({ 
+		    debug: false,              
+		    importCSS: true,             
+		    importStyle: true,         
+		    printContainer: false,       
+		    loadCSS: "", 
+		    pageTitle: "<?php echo get_phrase('grants_system');?>",             
+		    removeInline: false,        
+		    printDelay: 333,            
+		    header: null,             
+		    formValues: true          
+		});
+    }
+</script>

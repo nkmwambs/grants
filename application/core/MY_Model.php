@@ -113,8 +113,12 @@ class MY_Model extends CI_Model
 
     public function delete(){}
 
-    public function transaction_validate_duplicates_columns(){
+    public function master_table_additional_fields($record_id){
+      return [];
+    }
 
+    public function transaction_validate_duplicates_columns(){
+      return [];// Must pass an empty array to prevent add method failure in grants_model
     }
 
     function _derived_lookup_tables($table_name){

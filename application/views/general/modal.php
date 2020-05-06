@@ -192,14 +192,14 @@
             {
                 extend: 'excelHtml5',
                 text: '<?=get_phrase('export_in_excel');?>',
-                className: 'btn btn-default',
+                className: 'btn btn-default btn_export',
                 exportOptions: {
-                columns: 'th:not(:first-child)'
+                columns: 'th:not(:first-child)',
                 }
             },
             {
                 extend:'pdfHtml5',
-                className: 'btn btn-default',
+                className: 'btn btn-default btn_export',
                 text:'<?=get_phrase('export_in_pdf');?>',
                 orientation: 'landscape',
                 exportOptions:{

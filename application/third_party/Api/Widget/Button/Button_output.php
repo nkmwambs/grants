@@ -11,11 +11,14 @@ class Button_output{
     }
 
     function output(...$args){
-        $label = $args[0];
-        $action = $args[1];
+        $label = $args[0]??get_phrase('default_button');;
+        $action = $args[1]??"";;
+        $widget_id = $args[2]??"";;
+        $additional_class = $args[3]??"";
+        
 
         return '
-            <a href="'.base_url().ucfirst($action).'" class="btn btn-default" id="btn">'
+            <a href="'.base_url().ucfirst($action).'" class="btn btn-default '.$additional_class.'" id="'.$widget_id.'">'
             .ucfirst($label).
             '</a>
         ';

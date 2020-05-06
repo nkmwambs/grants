@@ -48,7 +48,7 @@ class Status_role_model extends MY_Model{
      * @override
      */
     function transaction_validate_duplicates_columns(){
-        return ['fk_status_id','fk_role_id'];
+        return ['status_role_status_id','fk_role_id'];
     }
 
     function transaction_validate_by_computation_flag($status_role_data){
@@ -98,4 +98,9 @@ class Status_role_model extends MY_Model{
 
         return $result;
     }
+
+    function detail_list_table_visible_columns(){
+        return ['status_role_track_number','role_name','status_name'];
+    }
+
 }
