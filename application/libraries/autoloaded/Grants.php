@@ -941,6 +941,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value);
      
       }elseif(strrpos($column,'_is_') == true ){
+        $field_value = $field_value == ""?1:$field_value;
         return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value,$show_only_selected_value);
       }else{
         return $f->$field($field_value);

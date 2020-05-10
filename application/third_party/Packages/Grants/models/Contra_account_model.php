@@ -28,16 +28,16 @@ class Contra_account_model extends MY_Model{
 
     function index(){}
 
-    // public function lookup_tables(){
-    //     return array('account_system','voucher_type_account');
-    // }
+    public function lookup_tables(){
+        return array('account_system','voucher_type_account','office_bank');
+    }
 
     public function detail_tables(){
 
     }
 
     public function single_form_add_visible_columns(){
-        return ['contra_account_name','contra_account_description','account_system_name','voucher_type_account_name'];
+        return ['contra_account_name','contra_account_code','contra_account_description','account_system_name','voucher_type_account_name','office_bank_name'];
     }
 
     public function detail_multi_form_add_visible_columns(){}

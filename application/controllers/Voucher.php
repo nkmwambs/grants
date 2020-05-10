@@ -292,7 +292,22 @@ class Voucher extends MY_Controller
     return $voucher_type_effect_and_code;
   }
 
-  function get_voucher_accounts_and_allocation($office_id, $voucher_type_id,$transaction_date){
+  function office_account_system($office_id){
+   
+    $this->db->join('account_system','account_system.account_system_id=office.fk_account_system_id');
+    $office_accounting_system = $this->db->get_where('office',array('office_id'=>$office_id))->row();
+
+    return $office_accounting_system;
+  }
+
+  function get_active_voucher_types($office_id){
+    $account_system_id = $this->office_account_system($office_id)->account_system_id;
+    $voucher_types = $this->voucher_type_model->get_active_voucher_types($account_system_id);
+
+    echo json_encode($voucher_types);
+  }
+
+  function get_voucher_accounts_and_allocation($office_id, $voucher_type_id,$transaction_date,$office_bank_id = 0){
 
     $response = [];
     $response['is_bank_payment'] = false;
@@ -300,12 +315,10 @@ class Voucher extends MY_Controller
     $response['approved_requests'] = 0;
     $response['project_allocation'] = [];
 
-    $this->db->join('account_system','account_system.account_system_id=office.fk_account_system_id');
-    $office_accounting_system = $this->db->get_where('office',array('office_id'=>$office_id))->row();
+    $office_accounting_system = $this->office_account_system($office_id);
 
     $project_allocation = [];
     
-
     if(!$office_accounting_system->account_system_is_allocation_linked_to_account){
 
         $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
@@ -321,7 +334,7 @@ class Voucher extends MY_Controller
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
     // Check if the voucher type is a bank payment
-    if(($voucher_type_account == 'bank' && $voucher_type_effect == 'expense') || $voucher_type_effect == 'bank_contra'){
+    if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra')){
       $response['is_bank_payment'] = true;
     }
 
@@ -343,17 +356,26 @@ class Voucher extends MY_Controller
       $response['accounts'] = $this->db->get_where('expense_account',
       array('expense_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system->fk_account_system_id))->result_object();
     
-    }elseif($voucher_type_effect == 'cash_contra'){
+    }elseif($voucher_type_account == 'cash' && $voucher_type_effect == 'contra'){
 
       $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
       $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
-      $response['accounts'] = $this->db->get_where('contra_account',array('voucher_type_account_code'=>'cash','fk_account_system_id'=>$office_accounting_system->account_system_id))->result_object();
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $response['accounts'] = $this->db->get_where('contra_account',
+      array('voucher_type_account_code'=>'cash',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1))->result_object();
 
-    }elseif($voucher_type_effect == 'bank_contra'){
+    }elseif($voucher_type_account == 'bank' && $voucher_type_effect == 'contra'){
     
       $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
       $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
-      $response['accounts'] = $this->db->get_where('contra_account',array('voucher_type_account_code'=>'bank','fk_account_system_id'=>$office_accounting_system->account_system_id))->result_object();
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $response['accounts'] = $this->db->get_where('contra_account',
+      array('voucher_type_account_code'=>'bank',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1,
+      'office_bank_id'=>$office_bank_id))->result_object();
     
     }
 
