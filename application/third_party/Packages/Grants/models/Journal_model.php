@@ -198,7 +198,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
     $this->db->select(array('voucher_type_account_code'));
     $this->db->select(array('voucher_type_effect_code'));
-    $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_bank_contra_account_id','fk_cash_contra_account_id'));
+    $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id'));
     
     //$this->db->select_sum('voucher_detail_total_cost');
     
@@ -246,6 +246,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
           'cleared'=>$this->check_if_voucher_is_cleared_in_month($voucher_cleared,$voucher_cleared_month,$transacting_month,$voucher_type_account_code,$voucher_type_effect_code),
           'cleared_month'=>$voucher_cleared_month,
           'cheque_number'=>$voucher_cheque_number,
+          'office_bank_id'=>$fk_office_bank_id,
           'spread'=>$this->get_voucher_spread($raw_array_of_vouchers,$voucher_id)
 
         ];

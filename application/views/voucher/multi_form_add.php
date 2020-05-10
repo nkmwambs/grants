@@ -287,9 +287,10 @@ function showHiddenButtons(response_is_expense, response_is_bank_payment, show_i
 }
 
 $("#bank").on("change",function(){
-    $("#cheque_number").removeAttr('disabled');
+    //$("#cheque_number").removeAttr('disabled');
     
-    updateAccountAndAllocationField();
+    //updateAccountAndAllocationField();
+    getAccountsByVoucherType($('#voucher_type'));
 
     if($("#cheque_number").val() != ""){
         $("#cheque_number").val("");
@@ -523,6 +524,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_allocation = response_objects['project_allocation'];
             var response_is_bank_payment = response_objects['is_bank_payment'];
             var response_is_expense = response_objects['is_expense'];
+            var response_is_transaction_affecting_bank = response_objects['is_transaction_affecting_bank'];
             var response_approved_requests = response_objects['approved_requests'];
             //var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
 
@@ -534,14 +536,22 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 $(el).html(response_approved_requests);
             });
 
-            if(response_is_bank_payment){
+            if(response_is_bank_payment || response_is_transaction_affecting_bank){
                 $("#bank").removeAttr('disabled');
+                
+                if(response_is_bank_payment && response_is_transaction_affecting_bank && $("#bank").val() !=""){
+                    $("#cheque_number").removeAttr('disabled');
+                }else{
+                    !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
+                }
+            
             }else{
                 $("#cheque_number, #bank").val("");
-                $("#cheque_number").prop('disabled','disabled');
-                $("#bank").prop('disabled','disabled');
-                //alert('Am here!');
+                !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
+                !$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
             }
+
+            //alert(response_is_transaction_affecting_bank + ' - ' + response_is_bank_payment);
         },
         error:function(xhr){
             alert('Error occurred!');

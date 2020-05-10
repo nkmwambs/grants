@@ -1,5 +1,5 @@
 <?php
-//print_r($result);
+print_r($result);
 
 extract($result);
 
@@ -135,10 +135,10 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                         
                         <?php 
                             $voucher_amount = array_sum(array_column($spread,'transacted_amount'));
-                            $bank_income = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
-                            $bank_expense = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'bank_contra'))?$voucher_amount:0;
-                            $petty_cash_income = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'bank_contra'))?$voucher_amount:0;
-                            $petty_cash_expense = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
+                            $bank_income = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                            $bank_expense = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                            $petty_cash_income = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                            $petty_cash_expense = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
 
                             $sum_bank_income += $bank_income;
                             $sum_bank_expense += $bank_expense;
