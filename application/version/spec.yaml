@@ -100,6 +100,11 @@ core:
 grants:
   
   tables:
+
+    opening_bank_balance:
+      lookup_tables:
+        - system_opening_balance
+        - office_bank
     
     request_type:
     
