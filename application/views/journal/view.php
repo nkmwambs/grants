@@ -1,5 +1,5 @@
 <?php
-print_r($result);
+//print_r($result['vouchers']);
 
 extract($result);
 
@@ -40,7 +40,7 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                             <a class='pull-left' href="<?=base_url();?>Journal/view/<?=hash_id($navigation['previous']);?>" title='Previous Month'><i class='fa fa-minus-circle' style='font-size:20pt;'></i></a>
                         <?php }?>    
                     </th>
-                    <th colspan="<?=$sum_of_accounts + 11;?>" style='text-align:center;'>
+                    <th colspan="<?=$sum_of_accounts + 8 + (count($month_opening_balance['bank_balance']) * 3);?>" style='text-align:center;'>
                         <?=$office_name;?></br>
                         Cash Journal <br>
                         <?=date('F Y',strtotime($transacting_month));?>    
@@ -54,14 +54,22 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                 </tr>
                 <tr>
                     <th colspan='7'></th>
-                    <th colspan='3' style='text-align:center;'>Bank</th>
+                    
+                    <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
+                        <th colspan='3' style='text-align:center;'>Bank (<?=$bank_account['account_name']?>)</th>
+                    <?php }?>
+                    
                     <th colspan='3' style='text-align:center;'>Cash</th>
                     <th colspan='<?=$sum_of_accounts;?>'></th>
                 </tr>
                 <tr>
                     <th colspan='7'>Balance b/f</th>
-                    <th colspan='3'><?=number_format($month_opening_balance['bank'],2);?></th>
-                    <th colspan='3'><?=number_format($month_opening_balance['cash'],2);?></th>
+                    
+                    <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
+                        <th colspan='3'><?=number_format($bank_account['amount'],2);?></th>
+                    <?php }?>
+                    
+                    <th colspan='3'><?=number_format($month_opening_balance['cash_balance'],2);?></th>
                     <th colspan='<?=count($accounts['income']);?>'><?=get_phrase('income');?></th>
                     <th colspan='<?=count($accounts['expense']);?>'><?=get_phrase('expense');?></th>
                 </tr>
@@ -73,9 +81,11 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                     <th><?=get_phrase('payee');?></th>
                     <th><?=get_phrase('description');?></th>
                     <th><?=get_phrase('cheque_number');?></th>
-                    <th><?=get_phrase('bank_income');?></th>
-                    <th><?=get_phrase('bank_expense');?></th>
-                    <th><?=get_phrase('bank_balance');?></th>
+                    <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
+                        <th><?=get_phrase('bank_income');?></th>
+                        <th><?=get_phrase('bank_expense');?></th>
+                        <th><?=get_phrase('bank_balance');?></th>
+                    <?php }?>
                     <th><?=get_phrase('cash_income');?></th>
                     <th><?=get_phrase('cash_expense');?></th>
                     <th><?=get_phrase('cash_balance');?></th>
@@ -93,9 +103,12 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
             <tbody>
                 <?php 
-                $running_bank_balance = 0;
-                $sum_bank_income = 0;
-                $sum_bank_expense = 0;
+                
+                $bank_accounts = array_flip(array_keys($month_opening_balance['bank_balance']));
+                
+                $running_bank_balance = $bank_accounts;
+                $sum_bank_income = $bank_accounts;
+                $sum_bank_expense = $bank_accounts;
 
                 $running_petty_cash_balance = 0;
                 $sum_petty_cash_income = 0;
@@ -135,23 +148,30 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
                         
                         <?php 
                             $voucher_amount = array_sum(array_column($spread,'transacted_amount'));
-                            $bank_income = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
-                            $bank_expense = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+
+                            if($office_bank_id){
+                                $bank_income[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                                $bank_expense[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                                
+                                $sum_bank_income[$office_bank_id] = $sum_bank_income[$office_bank_id] + $bank_income[$office_bank_id];
+                                $sum_bank_expense[$office_bank_id] = $sum_bank_expense[$office_bank_id] + $bank_expense[$office_bank_id];
+                            
+                                $running_bank_balance[$office_bank_id] = $month_opening_balance['bank_balance'][$office_bank_id]['amount'] + ($sum_bank_income[$office_bank_id] - $sum_bank_expense[$office_bank_id]);
+                            }
+
                             $petty_cash_income = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
                             $petty_cash_expense = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
 
-                            $sum_bank_income += $bank_income;
-                            $sum_bank_expense += $bank_expense;
-                            $running_bank_balance = $month_opening_balance['bank'] + ($sum_bank_income - $sum_bank_expense);
-                            
                             $sum_petty_cash_income += $petty_cash_income;
                             $sum_petty_cash_expense += $petty_cash_expense;
-                            $running_petty_cash_balance = $month_opening_balance['cash'] + ($sum_petty_cash_income - $sum_petty_cash_expense);
+                            $running_petty_cash_balance = 0;//$month_opening_balance['cash'] + ($sum_petty_cash_income - $sum_petty_cash_expense);
                        ?>
                         
-                        <td class='align-right'><?=number_format($bank_income,2);?></td>
-                        <td class='align-right'><?=number_format($bank_expense,2);?></td>
-                        <td class='align-right'><?=number_format($running_bank_balance,2);?></td>
+                        <?php foreach($month_opening_balance['bank_balance'] as $bank_id => $bank_account){?>
+                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$bank_income[$bank_id]:0,2);?></td>
+                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$bank_expense[$bank_id]:0,2);?></td>
+                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$running_bank_balance[$bank_id]:0,2);?></td>
+                        <?php }?>
 
                         <td class='align-right'><?=number_format($petty_cash_income,2);?></td>
                         <td class='align-right'><?=number_format($petty_cash_expense,2);?></td>
@@ -168,10 +188,11 @@ $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
             <tfoot>
                   <tr>
                     <td colspan='7'><?=get_phrase('total_and_balance_b/d');?></td>
-
-                    <td class='align-right'><?=number_format($sum_bank_income,2);?></td>
-                    <td class='align-right'><?=number_format($sum_bank_expense,2);?></td>
-                    <td class='align-right'><?=number_format($running_bank_balance,2);?></td>
+                    <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
+                        <td class='align-right'><?=number_format($sum_bank_income[$office_bank_id],2);?></td>
+                        <td class='align-right'><?=number_format($sum_bank_expense[$office_bank_id],2);?></td>
+                        <td class='align-right'><?=number_format($running_bank_balance[$office_bank_id],2);?></td>
+                    <?php }?>
 
                     <td class='align-right'><?=number_format($sum_petty_cash_income,2);?></td>
                     <td class='align-right'><?=number_format($sum_petty_cash_expense,2);?></td>
