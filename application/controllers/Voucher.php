@@ -39,6 +39,8 @@ class Voucher extends MY_Controller
    * 
    * @return String - Voucher Type Effect of a given voucher type id
    * 
+   * @author Nicodemus Karisa Mwambire
+   * 
    */
   function get_voucher_type_effect(int $voucher_type_id):Void{
     echo $this->voucher_library->get_voucher_type_effect($voucher_type_id)->voucher_type_effect_code;
