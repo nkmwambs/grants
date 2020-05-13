@@ -374,7 +374,7 @@ function getOfficeBanks(office_id){
 
             if(response_obj.length > 0){
                 $.each(response_obj,function(i,el){
-                    select_option += "<option value='" + response_obj[i].office_bank_id + "'>" + response_obj[i].bank_name + " ("+ response_obj[i].office_bank_account_number +")" + "</option>";
+                    select_option += "<option value='" + response_obj[i].office_bank_id + "'>" + response_obj[i].bank_name + " ("+ response_obj[i].office_bank_name +")" + "</option>";
                 });
             }
 
