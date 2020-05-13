@@ -250,5 +250,13 @@ class Api extends CI_Controller{
 
     echo $this->voucher_library->validate_cheque_number($office_bank_id,$cheque_number);
   }
+
+  function create_resource_upload_directory_structure(){
+    $this->grants->create_resource_upload_directory_structure();
+  }
+
+  function move_temp_files_to_attachments(){
+    echo $this->grants->move_temp_files_to_attachments();
+  }
   
 }

@@ -169,6 +169,9 @@ public $controller;
           if($are_tables_populated){
             $this->db->update('setting',array('description'=>true),array('type'=>'system_setup_completed'));
           }
+
+          // Create upload folders
+          $this->grants->create_resource_upload_directory_structure();
           
         }
         

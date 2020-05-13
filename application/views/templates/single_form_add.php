@@ -7,13 +7,14 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="panel panel-default" data-collapsed="0">
-        	<div class="panel-heading">
-            	<div class="panel-title" >
-            		<i class="entypo-plus-circled"></i>
-					<?php echo get_phrase('add_'.$this->controller);?>
-            	</div>
-            </div>
-			         <div class="panel-body">
+      <div class="panel-heading">
+      	<div class="panel-title" >
+          <i class="entypo-plus-circled"></i>
+				    <?php echo get_phrase('add_'.$this->controller);?>
+        </div>
+      </div>
+			      
+      <div class="panel-body">
 
               <?php echo form_open('' , array('id'=>'edit_form','class' => 'form-horizontal form-groups-bordered', 'enctype' => 'multipart/form-data'));
 

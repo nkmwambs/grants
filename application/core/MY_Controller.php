@@ -470,6 +470,31 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     echo json_encode($returned_response);
     //echo $post['item_id'];
   }
+
+  function create_uploads_temp(){
+
+    $string = $this->session->user_id.$this->controller.date('Y-m-d');
+  
+    $hash = md5($string);
+  
+    $storeFolder = "uploads/temps/".$this->controller."/".$hash;
+  
+    if(is_array($this->grants->upload_files($storeFolder)) && 
+      count($this->grants->upload_files($storeFolder))>0){
+        $info = ['temp_id'=>$hash];
+    
+        $files_array = array_merge($this->grants->upload_files($storeFolder),$info);
+        
+        if(!$this->session->has_userdata('upload_session')){
+          $this->session->set_userdata('upload_session',$hash);
+        }
+        echo json_encode($files_array);
+    
+      }else{
+      echo 0;
+    }
+  
+  }
   
 
 }

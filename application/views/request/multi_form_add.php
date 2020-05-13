@@ -111,7 +111,7 @@
                                 </tfoot>      
                             </table>        
                         </div>
-                    </div>
+                    </div>  
 
                     <div class='form-group'>
                         <div class='col-xs-12 center'>
@@ -124,10 +124,19 @@
                     </div>
 
                 </form>
+
             </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                 <?=Widget_base::load('upload');?>
+                </div>
+            </div>
+
         </div>    
     </div>
-</div>
+
+    
 
 <script>
 

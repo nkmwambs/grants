@@ -2095,6 +2095,26 @@ function feature_model_list_table_visible_columns() {
       }
     }
 
+    function move_temp_files_to_attachments($table,$temp_dir_name,$primary_key){
+
+      $this->CI->session->unset_userdata('upload_session');
+
+      return rename("uploads".DS."temps".DS.$table.DS.$temp_dir_name,
+      "uploads".DS."attachments".DS.$table.DS.$primary_key);
+    }
+
+    function create_resource_upload_directory_structure(){
+      $this->CI->db->select(array('approve_item_name'));
+      $approveable_items = $this->CI->db->get_where('approve_item')->result_array();
+
+      foreach($approveable_items as $approveable_item){
+        if(!file_exists('uploads/attachments/'.$approveable_item['approve_item_name'])){
+          mkdir('uploads/attachments/'.$approveable_item['approve_item_name']);
+        }
+      }
+
+    }
+
     // function transaction_validate_by_computation(String $table_name,Array $insert_array,Array $validation_fields = [],Array $validation_computated_fields_and_value,String $validation_operator){
     //   return $this->CI->grants_model->transaction_validate_by_computation($table_name,$insert_array,$validation_fields,$validation_computated_fields_and_value,$validation_operator);
     // }

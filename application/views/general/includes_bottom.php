@@ -48,7 +48,8 @@
 <!--Dropzone-->
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script> -->
-	
+<!-- <script src="<?php echo base_url();?>assets/js/dropzone/dist/dropzone.js"></script>
+<link rel="stylesheet" href="<?php echo base_url();?>assets/js/dropzone/dist/dropzone.css"> -->
 
 
 <!-- Include Date Range Picker -->

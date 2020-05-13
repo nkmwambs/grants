@@ -159,7 +159,15 @@
 
                 </form>
             </div>
-        </div>    
+        </div>  
+        
+        <div class="row">
+            <div class="col-xs-12">
+               <?=Widget_base::load('upload');?>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
