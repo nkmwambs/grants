@@ -339,6 +339,10 @@ class Voucher extends MY_Controller
     // Check if the voucher type is a bank payment
     if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra')){
       $response['is_bank_payment'] = true;
+      
+    }
+
+    if($voucher_type_account == 'bank'){
       $response['is_transaction_affecting_bank'] = true;
     }
 

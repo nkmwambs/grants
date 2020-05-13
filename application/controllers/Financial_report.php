@@ -69,60 +69,26 @@ class Financial_report extends MY_Controller
   }
 
   function _compute_cash_at_bank($office_ids,$reporting_month){
-    $opening_bank_balance = $this->_opening_cash_balance($office_ids);
-    $bank_income_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month,'income','cash_contra','bank');//$this->_cash_income_to_date($office_ids,$reporting_month);
-    $bank_expenses_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month,'expense','bank_contra','bank');//$this->_cash_expense_to_date($office_ids,$reporting_month);
+    $opening_bank_balance = $this->_opening_cash_balance($office_ids,$reporting_month)['bank'];
+    $bank_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'income','bank');//$this->_cash_income_to_date($office_ids,$reporting_month);
+    $bank_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','bank');//$this->_cash_expense_to_date($office_ids,$reporting_month);
     
-    return $opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
+    return $bank_income_to_date;//$opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
   }
 
-  function _cash_transactions_to_date($office_ids,$reporting_month, $transaction_type,$contra_type, $voucher_type_account){
-    // bank_income = voucher of voucher_type_effect_code == income or cash_contra and voucher_type_account_code == bank 
-    // bank_expense = voucher of voucher_type_effect_code == expense or bank_contra and voucher_type_account_code == bank 
-    // cash_income = voucher of voucher_type_effect_code == income or bank_contra and voucher_type_account_code == cash 
-    // cash_expense = voucher of voucher_type_effect_code == expense or cash_contra and voucher_type_account_code == cash 
 
-    $voucher_detail_total_cost = 0;
-    $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
-
-    $this->db->select_sum('voucher_detail_total_cost');
-    $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
-    $this->db->where(array('voucher_type_account_code'=>$voucher_type_account,'voucher_date<='=>$end_of_reporting_month));
-    $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
-    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-    $voucher_detail_total_cost_obj = $this->db->get('voucher_detail');
-
-    if($voucher_detail_total_cost_obj->num_rows() > 0){
-      $voucher_detail_total_cost = $voucher_detail_total_cost_obj->row()->voucher_detail_total_cost;
-    }
-  
-    return $voucher_detail_total_cost;
-  }
-
-  function _opening_cash_balance($office_ids,$balance_type = "opening_cash_balance_bank"){
-    $this->db->select_sum($balance_type);
-    $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
-    //$this->db->group_by('fk_office_id');
-    $opening_balance = $this->db->get('opening_cash_balance');
-
-    $balance = 0;
-
-    if($opening_balance->num_rows() > 0){
-      $balance = $opening_balance->row()->$balance_type;
-    }
-
-    return $balance;
+  function _opening_cash_balance($office_ids,$reporting_month){
+    return [
+      'bank'=>$this->financial_report_model->system_opening_bank_balance($office_ids,$reporting_month),
+      'cash'=>$this->financial_report_model->system_opening_cash_balance($office_ids,$reporting_month)
+    ];
   }
 
   function _compute_cash_at_hand($office_ids,$reporting_month){
     //return 15000;
-    $opening_cash_balance = $this->_opening_cash_balance($office_ids,'opening_cash_balance_cash');
-    $cash_income_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month, 'income','bank_contra','cash');//$this->_cash_income_to_date($office_ids,$reporting_month,'bank_contra','cash');
-    $cash_expenses_to_date = $this->_cash_transactions_to_date($office_ids,$reporting_month, 'expense','cash_contra','cash');//$this->_cash_expense_to_date($office_ids,$reporting_month,'cash_contra','cash');
+    $opening_cash_balance = $this->_opening_cash_balance($office_ids,$reporting_month)['cash'];
+    $cash_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month, 'income','cash');//$this->_cash_income_to_date($office_ids,$reporting_month,'bank_contra','cash');
+    $cash_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month, 'expense','cash');//$this->_cash_expense_to_date($office_ids,$reporting_month,'cash_contra','cash');
     
     return $opening_cash_balance + $cash_income_to_date - $cash_expenses_to_date;
   }
@@ -134,7 +100,7 @@ class Financial_report extends MY_Controller
   private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report){
     $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report);
     $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month);
-    $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month);//$this->_book_closing_balance($office_ids,$reporting_month);
+    $book_closing_balance = 0;//$this->_compute_cash_at_bank($office_ids,$reporting_month);//$this->_book_closing_balance($office_ids,$reporting_month);
     $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','bank_contra','bank');
     $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','cash_contra','bank');//$this->_deposit_in_transit($office_ids,$reporting_month);
     $bank_reconciled_balance = $bank_statement_balance - $month_outstanding_cheques + $month_transit_deposit;

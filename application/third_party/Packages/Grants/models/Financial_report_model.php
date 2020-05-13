@@ -293,4 +293,62 @@ class Financial_report_model extends MY_Model{
         return $this->db->select(array('income_account_id','income_account_name'))->get('income_account')->result_array();
     }
 
+
+    function system_opening_bank_balance($office_ids){
+
+        $this->db->select_sum('opening_bank_balance_amount');
+        $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_bank_balance.fk_system_opening_balance_id');
+        $this->db->join('office_bank','office_bank.office_bank_id=opening_bank_balance.fk_office_bank_id');
+        $this->db->where_in('office_bank.fk_office_id',$office_ids);
+        $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
+        $opening_bank_balance_obj = $this->db->get('opening_bank_balance');
+        
+        return $opening_bank_balance_obj->num_rows()>0?$opening_bank_balance_obj->row()->opening_bank_balance_amount:0;
+    }
+
+    function system_opening_cash_balance($office_ids){
+        $balance = 0;
+    
+        $this->db->select(array('opening_cash_balance_amount'));
+        $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
+        $this->db->where_in('fk_office_id',$office_ids);
+        $opening_cash_balance_obj = $this->db->get('opening_cash_balance');
+        
+        if($opening_cash_balance_obj->num_rows()>0){
+           $balance = $opening_cash_balance_obj->row()->opening_cash_balance_amount; 
+        }
+    
+        return $balance;
+      }
+
+
+    function cash_transactions_to_date($office_ids,$reporting_month, $transaction_type, $voucher_type_account){
+        // bank_income = voucher of voucher_type_effect_code == income or cash_contra and voucher_type_account_code == bank 
+        // bank_expense = voucher of voucher_type_effect_code == expense or bank_contra and voucher_type_account_code == bank 
+        // cash_income = voucher of voucher_type_effect_code == income or bank_contra and voucher_type_account_code == cash 
+        // cash_expense = voucher of voucher_type_effect_code == expense or cash_contra and voucher_type_account_code == cash 
+    
+        $voucher_detail_total_cost = 0;
+        $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+        
+        $alternate_voucher_type_account_code = $voucher_type_account == 'bank'?"bank":"cash";
+
+        //$cond_string = "voucher_date<= '".$end_of_reporting_month."'  AND (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$alternate_voucher_type_account_code."' AND voucher_type_effect_code = 'contra')";
+        $cond_string = "(voucher_type_account_code = 'bank' AND voucher_type_effect_code = 'income')";
+
+        $this->db->select_sum('voucher_detail_total_cost');
+        $this->db->where($cond_string);
+        $this->db->where_in('fk_office_id',$office_ids);
+        $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+        $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+        $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+        $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+        $voucher_detail_total_cost_obj = $this->db->get('voucher_detail');
+    
+        if($voucher_detail_total_cost_obj->num_rows() > 0){
+          $voucher_detail_total_cost = $voucher_detail_total_cost_obj->row()->voucher_detail_total_cost;
+        }
+      
+        return $voucher_detail_total_cost;
+      }
 }

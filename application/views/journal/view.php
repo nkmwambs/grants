@@ -246,6 +246,7 @@ $(document).ready(function(){
 $('.table').DataTable({
         dom: 'Bfrtip',
         //fixedHeader: true,
+        "paging":   false,
         stateSave: true,
         bSort:false,
         buttons: [
