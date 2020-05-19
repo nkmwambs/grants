@@ -101,6 +101,15 @@ grants:
   
   tables:
 
+    country_currency:
+
+    currency_conversion:
+
+    currency_conversion_detail:
+      lookup_tables:
+        - currency_conversion
+        - country_currency
+        
     opening_bank_balance:
       lookup_tables:
         - system_opening_balance

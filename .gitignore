@@ -37,6 +37,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /application/config/config.php
 /application/language/*
 /uploads/attachments/*
+/uploads/temps/*
 ## PHPDOC documentation files
 /docs
 /index.php

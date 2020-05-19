@@ -1,7 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-//$approveable_item = "Bank";
-//print_r($this->session->hierarchy_offices);
-//print_r(count($this->config->item('context_definitions')));
+
+//echo Widget_base::load('comment');
 
 ?>
 
