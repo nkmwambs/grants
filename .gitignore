@@ -59,3 +59,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 !/application/third_party/Packages/Core/libraries/Context_global_user_library
 
 .VSCodeCounter
+.vscode
