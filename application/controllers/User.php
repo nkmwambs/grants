@@ -165,6 +165,7 @@ private function _get_approval_assignments($role_id){
     $user['fk_language_id'] = $post['fk_language_id'];
     $user['user_is_active'] = $post['user_is_active'];
     $user['fk_role_id'] = $post['fk_role_id'];
+    $user['fk_country_currency_id'] = $post['fk_country_currency_id'];
     $user['user_password'] = md5($post['user_password']);
 
 

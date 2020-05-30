@@ -80,4 +80,8 @@ class Request_detail_model extends MY_Model implements CrudModelInterface, Table
         return false;
     }
 
+    function currency_fields(){
+      return ['request_detail_unit_cost','request_detail_total_cost'];
+    }
+
 }

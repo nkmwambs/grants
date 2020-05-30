@@ -209,9 +209,16 @@ public $controller;
             $this->user_model->get_user_permissions($row->fk_role_id));
         $this->session->set_userdata('system_admin',$row->user_is_system_admin); 
         $this->session->set_userdata('user_locale',$this->db->get_where('language',
-            array('language_id'=>$row->fk_language_id))->row()->language_code);   
+            array('language_id'=>$row->fk_language_id))->row()->language_code); 
+        $this->session->set_userdata('user_currency_id',$this->db->get_where('country_currency',
+            array('country_currency_id'=>$row->fk_country_currency_id))->row()->country_currency_id);           
         
-
+        $this->session->set_userdata('user_currency_code',$this->db->get_where('country_currency',
+            array('country_currency_id'=>$row->fk_country_currency_id))->row()->country_currency_code);           
+            
+        $this->session->set_userdata('base_currency_id',
+            $this->db->get_where('setting',array('type'=>'base_currency_code'))->row()->description);
+            
         /**
          * These are Center Group Hierarchy related sessions
          */

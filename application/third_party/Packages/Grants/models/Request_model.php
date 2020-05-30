@@ -171,5 +171,8 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
     return ['request_total_cost'=>$request_detail_total_cost];
   }
 
+  function currency_fields(){
+    return ['request_total_cost'];
+  }
 
 }

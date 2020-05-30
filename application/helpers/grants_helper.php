@@ -319,3 +319,54 @@ if(!function_exists('upload_url')){
 		return "uploads".DS."attachments".DS.$controller.DS.$record_id;
 	  }
 }
+
+if(!function_exists('currency_conversion')){
+	function currency_conversion($office_id) {
+		
+		$CI =& get_instance();
+		
+		$office_currency_id = $CI->db->get_where('office',
+			array('office_id'=>$office_id))->row()->fk_country_currency_id;
+
+		$user_currency_id = $CI->session->user_currency_id;
+
+		$base_currency_id = $CI->session->base_currency_id;
+
+		$conversion_month = "2020-05-01";// To be computed
+		
+		$CI->db->join('currency_conversion','currency_conversion.currency_conversion_id=currency_conversion_detail.fk_currency_conversion_id');
+		$office_rate_obj = $CI->db->get_where('currency_conversion_detail',
+		array('fk_country_currency_id'=>$office_currency_id));
+		
+		$office_rate = 1;
+		
+		if($office_rate_obj->num_rows() > 0){
+			$office_rate = $office_rate_obj->row()->currency_conversion_detail_rate;
+		}
+
+
+		$CI->db->join('currency_conversion','currency_conversion.currency_conversion_id=currency_conversion_detail.fk_currency_conversion_id');
+		$user_rate_obj = $CI->db->get_where('currency_conversion_detail',
+		array('fk_country_currency_id'=>$user_currency_id));
+
+		$user_rate = 1;
+
+		if($user_rate_obj->num_rows() > 0){
+			$user_rate = $user_rate_obj->row()->currency_conversion_detail_rate;
+		}
+
+		$computed_rate = 1;
+
+		if($user_currency_id !== $base_currency_id){
+			//if($user_rate > $office_rate){
+				$computed_rate = $user_rate/$office_rate;				
+			//}else{
+			//	$computed_rate = $office_rate/$user_rate;
+			//}
+		}else{
+			$computed_rate = 1/$office_rate;
+		}
+		
+		return $computed_rate;// .' - '. $user_rate . ' - '.$office_rate;
+	}
+}

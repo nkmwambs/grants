@@ -34,7 +34,7 @@
 
 </div>
 
-<div class='row'>
+<!-- <div class='row'>
     <div class='col-xs-12'>
         <div class='form-group'>
             
@@ -46,7 +46,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <?php foreach($budget_schedule as $income_group){?>
 <div class='row'>

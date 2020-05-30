@@ -76,6 +76,13 @@
                         </div>
                     </div>
 
+                    <!-- <div class='form-group'>
+                        <label class='col-xs-2 control-label'>Country Currency</label>
+                        <div class='col-xs-4'>
+                            <?=$this->grants->header_row_field('country_currency_name');?>
+                        </div>
+                    </div> -->
+
                     <div class='form-group'>
                         <div class='col-xs-12'  style='text-align:center;'>
                             <button id='' class='btn btn-default btn-reset'>Reset</button>

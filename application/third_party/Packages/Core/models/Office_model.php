@@ -26,7 +26,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   }
 
   public function lookup_tables(){
-    return array('approval','status','context_definition','account_system');
+    return array('approval','status','context_definition','account_system','country_currency');
   }
 
   private function context_definition_name_by_office_id($office_id){

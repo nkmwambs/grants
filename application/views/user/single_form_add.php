@@ -117,6 +117,12 @@
                         <div class='col-xs-4' id='div_user_designation'>
                             <select class='form-control' disabled='disabled'></select>
                         </div>
+
+                        <label class='col-xs-2 control-label'>Currency</label>
+                        <div class='col-xs-4' id='fk_country_currency_id'>
+                            <?=$this->grants->header_row_field('country_currency_name');?>
+                        </div>
+
                     </div>    
 
                     <div class='form-group'>

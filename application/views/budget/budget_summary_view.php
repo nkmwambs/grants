@@ -32,7 +32,7 @@
 
 </div>
 
-<div class='row'>
+<!-- <div class='row'>
     <div class='col-xs-12'>
         <div class='form-group'>
             <div class='col-xs-offset-4 col-xs-4'>
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div class='row'>
     <div class='col-xs-12'>

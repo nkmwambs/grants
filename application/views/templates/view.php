@@ -1,11 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//$action_labels['show_label_as_button'] = false;//$this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
-//print_r($this->general_model->test());
-//echo hash_id($this->id,'decode');
-// $key = $result['master']['keys'];
-// array_push($key,'total_amount');
-// print_r($key);
+//print_r($result);
 
 extract($result['master']);
 
@@ -107,7 +102,14 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
 
           ?>
                 <td>
-                  <span style="font-weight:bold;"><?=get_phrase($column);?>:</span> &nbsp;
+                  <span style="font-weight:bold;">
+                    <?php 
+                      if(in_array($column,$this->{$this->controller.'_model'}->currency_fields())){
+                        echo get_phrase($column).' ('.$this->session->user_currency_code.')';
+                      }else{
+                        echo get_phrase($column);
+                      }
+                    ?>:</span> &nbsp;
                   <?php
                     if(strpos($column,'is_')){
                       echo $column_value == 1?get_phrase('yes'):get_phrase('no');
@@ -116,6 +118,9 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                         $primary_table_name = substr($column,0,-5);
                         $lookup_table_id = $table_body[strtolower($primary_table_name).'_id'];
                         echo '<a href="'.base_url().$primary_table_name.'/view/'.hash_id($lookup_table_id).'">'.ucwords(str_replace('_',' ',$column_value)).'</a>';
+                    }elseif(in_array($column,$this->{$this->controller.'_model'}->currency_fields())){
+                        echo number_format($column_value,2);
+                        //echo $column_value;
                     }else{
                         echo ucwords(str_replace('_',' ',$column_value));
                     }

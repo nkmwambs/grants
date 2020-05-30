@@ -153,10 +153,11 @@ class User_model extends MY_Model
    */
 
   function check_role_department_strictness($role_id){
-    $role_is_department_strict = $this->db->get_where('role',
-    array('role_id'=>$role_id))->row()->role_is_department_strict;
+    // $role_is_department_strict = $this->db->get_where('role',
+    // array('role_id'=>$role_id))->row()->role_is_department_strict;
 
-    return $role_is_department_strict;
+    // return $role_is_department_strict;
+    return Extension_base::load('access','check_role_department_strictness',$role_id);
   } 
 
   /**
@@ -171,17 +172,18 @@ class User_model extends MY_Model
 
    function user_department(int $user_id):Array{
 
-      $this->db->select(array('fk_department_id'));
-      $user_department = $this->db->get_where('department_user',
-      array('fk_user_id'=>$user_id));
+      // $this->db->select(array('fk_department_id'));
+      // $user_department = $this->db->get_where('department_user',
+      // array('fk_user_id'=>$user_id));
 
-      $department_ids = array();
+      // $department_ids = array();
 
-      if($user_department->num_rows()>0){
-        $department_ids = array_column($user_department->result_array(),'fk_department_id');
-      }
+      // if($user_department->num_rows()>0){
+      //   $department_ids = array_column($user_department->result_array(),'fk_department_id');
+      // }
 
-      return $department_ids;
+      // return $department_ids;
+      return Extension_base::load('access','user_department',$user_id);
    }
 
    /**
@@ -197,20 +199,21 @@ class User_model extends MY_Model
     */
    function get_user_context_definition(int $user_id):Array{
 
-    $user_context_definition = "";
+    // $user_context_definition = "";
 
-    $this->db->select(array('context_definition_id','context_definition_name',
-    'context_definition_level','context_definition_is_active'));
+    // $this->db->select(array('context_definition_id','context_definition_name',
+    // 'context_definition_level','context_definition_is_active'));
     
-    $this->db->join('user','user.fk_context_definition_id=context_definition.context_definition_id');
-    $user_context_definition_obj = $this->db->get_where('context_definition',
-    array('user_id'=>$user_id));
+    // $this->db->join('user','user.fk_context_definition_id=context_definition.context_definition_id');
+    // $user_context_definition_obj = $this->db->get_where('context_definition',
+    // array('user_id'=>$user_id));
 
-    if($user_context_definition_obj->num_rows() > 0){
-      $user_context_definition =  $user_context_definition_obj->row_array();
-    }
+    // if($user_context_definition_obj->num_rows() > 0){
+    //   $user_context_definition =  $user_context_definition_obj->row_array();
+    // }
     
-    return $user_context_definition;
+    // return $user_context_definition;
+    return Extension_base::load('access','get_user_context_definition',$user_id);
   }
 
 

@@ -246,7 +246,6 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     //echo json_encode($this->result());
   }
 
-
 /**
    * view() 
    * This method is an entry method for view action page. It loads user permission of the view page and assigns $has_permission

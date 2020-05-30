@@ -941,7 +941,8 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value);
      
       }elseif(strrpos($column,'_is_') == true ){
-        $field_value = $field_value == ""?1:$field_value;
+        
+        $field_value =  $f->set_default_field_value() !== null ?$f->set_default_field_value():1;
         return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value,$show_only_selected_value);
       }else{
         return $f->$field($field_value);
@@ -1270,12 +1271,14 @@ function center_start_date(int $center_id): String {
  */
 
 function single_form_add_output($table_name = ""){
+  //Find out why the argument $table_name carries a value of 0 from MY_Controller result method
+  $table = ($table_name == "" || $table_name == 0) ? $this->controller : $table_name;
 
-  $table = $table_name == ""?$this->controller:$table_name;
-
+  // Insert appove item, approval  flow and status record if either in not existing
+  $this->table_setup(strtolower($table));
 
   if($this->CI->input->post()){
-    //$this->CI->grants_model->add($this->CI->input->post());
+
     $model = $this->current_model;
 
     if(method_exists($this->CI->$model,'add')){
@@ -1283,6 +1286,7 @@ function single_form_add_output($table_name = ""){
      }else{
       echo $this->CI->grants_model->add();
     }
+
   }else{
     // Adds mandatory fields if not present in the current table
     $this->CI->grants_model->mandatory_fields($table);
@@ -1296,6 +1300,8 @@ function single_form_add_output($table_name = ""){
   }
 
 }
+
+
 
 function table_setup($table){
   $this->CI->grants_model->mandatory_fields($table);
@@ -2115,12 +2121,8 @@ function feature_model_list_table_visible_columns() {
 
     }
 
-    // function transaction_validate_by_computation(String $table_name,Array $insert_array,Array $validation_fields = [],Array $validation_computated_fields_and_value,String $validation_operator){
-    //   return $this->CI->grants_model->transaction_validate_by_computation($table_name,$insert_array,$validation_fields,$validation_computated_fields_and_value,$validation_operator);
-    // }
-
-    // function transaction_validate_duplicates(String $table_name,Array $insert_array,Array $validation_fields = []){
-    //   return $this->CI->grants_model->transaction_validate_duplicates($table_name,$insert_array,$validation_fields);
+    // function computed_currency_conversion_rate($base_curreny_id = "",$office_currency_id = "",$user_currency_id = ""){
+    //    return 1;
     // }
 
     function fy_start_date($reporting_month){

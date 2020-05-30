@@ -47,6 +47,7 @@ class Office extends MY_Controller
     $office['office_end_date'] = '0000-00-00';
     $office['office_is_active'] = $post['office_is_active'];
     $office['fk_account_system_id'] = $post['fk_account_system_id'];
+    //$office['fk_country_currency_id'] = $post['fk_country_currency_id'];
 
     $office_to_insert = $this->grants_model->merge_with_history_fields($this->controller,$office,false);
     

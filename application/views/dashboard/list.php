@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//echo Widget_base::load('comment');
+//print_r(Extension_base::load('access','get_user_context_definition',1));
 
 ?>
 

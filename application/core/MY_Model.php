@@ -121,6 +121,14 @@ class MY_Model extends CI_Model
       return [];// Must pass an empty array to prevent add method failure in grants_model
     }
 
+    public function transaction_validate_by_computation_flag(){
+      return VALIDATION_SUCCESS;
+    }
+
+    public function currency_fields(){
+      return [];
+    }
+
     function _derived_lookup_tables($table_name){
       $fields = $this->grants_model->get_all_table_fields($table_name);
     

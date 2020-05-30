@@ -157,7 +157,7 @@ function generate_item_track_number_and_name($approveable_item){
     }
 
     // Create the approval ticket if required by the header record
-    $approval_id  = $this->insert_approval_record($this->controller);
+    $approval_id  = $this->insert_approval_record(strtolower($this->controller));
 
     // This array will hold the array with values for header record insert
     $header_columns = array();
@@ -636,15 +636,15 @@ function generate_item_track_number_and_name($approveable_item){
   }
 
   function insert_status_for_approveable_item($approve_item_name){
-
-    if($approve_item_name != ""){
+    //$approve_item_name = "country_currency";
+    if(strlen($approve_item_name) > 5){
       $this->db->trans_start();
-
+      
       $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;
 
     // Check if the table is in the approveable items table if not create it
      $approve_item_id = $this->insert_missing_approveable_item($approve_item_name);
-      
+    
       $account_systems_obj = $this->db->get('account_system');
 
       if($account_systems_obj->num_rows() > 0){
@@ -710,6 +710,7 @@ function generate_item_track_number_and_name($approveable_item){
   }
 
   function insert_new_status($approval_flow_id,$user_id){
+    
     $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
     $status_data['fk_approval_flow_id'] = $approval_flow_id;
     $status_data['status_name'] = get_phrase('new');
@@ -722,19 +723,33 @@ function generate_item_track_number_and_name($approveable_item){
     $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
     $role_id = $new_status_default_role->num_rows() > 0 ? $new_status_default_role->row()->role_id : 1;
              
-    $status_data['fk_role_id'] = $role_id;
+    //$status_data['fk_role_id'] = $role_id;
     $status_data['status_created_date'] =  date('Y-m-d');
     $status_data['status_created_by'] = $user_id;
     $status_data['status_last_modified_by']  = $user_id;
               
     $this->db->insert('status',$status_data); 
     
-    return $this->db->insert_id();
+    $status_id = $this->db->insert_id();
+
+    // $status_role_data['status_role_track_number'] =  $this->generate_item_track_number_and_name('status_role')['status_role_number'];
+    // $status_role_data['status_role_name']  =  $this->generate_item_track_number_and_name('status_role')['status_role_name'];
+    // $status_role_data['fk_role_id'] = $role_id;
+    // $status_role_data['fk_status_id'] = 0;
+    // $status_role_data['status_role_status_id'] = $status_id;
+    // $status_role_data['status_role_created_by'] = $user_id;
+    // $status_role_data['status_role_created_date'] = date('Y-m-d');
+    // $status_role_data['status_role_last_modified_by'] = $user_id;
+    // $status_role_data['status_role_last_modified_date'] = date('Y-m-d h:i:s');
+    // $status_role_data['fk_approval_id'] = 0;
+
+    // $this->db->insert('status_role',$status_role_data);
+
+    return $status_id;
   }
 
   function insert_status_if_missing($approve_item_name){
 
-    
     $this->insert_status_for_approveable_item($approve_item_name);
 
     // Check if has dependant table
@@ -1577,6 +1592,18 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
 
   return array_merge($array_to_merge,$data);
 }
+
+// function is_table_related_to_office($table_name){
+//     $is_table_related_to_office = false;
+  
+//     $table_fields = $this->get_all_table_fields($table_name);
+
+//     if(in_array('fk_office_id',$table_fields)){
+//       $is_table_related_to_office = true;
+//     }
+
+//     return $is_table_related_to_office;
+// }
 
 
 }

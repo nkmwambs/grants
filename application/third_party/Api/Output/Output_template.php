@@ -29,6 +29,7 @@ class Output_template{
         $this->access = new Access_base();
         $this->controller = $this->CI->controller;
         $this->current_model = $this->CI->current_model;
+        
     }
 
     /**

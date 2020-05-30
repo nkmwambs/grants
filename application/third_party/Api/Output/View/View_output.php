@@ -446,10 +446,16 @@ function detail_list_output(String $table): Array {
   
     // Checks if the detail table has a detail table to it
     $has_details_listing = $this->CI->grants->check_if_table_has_detail_listing($table);
-  
+    
+    $converted_result = [];
+
+    foreach($result as $row){
+        $converted_result[] = $this->currency_conversion($row,$table);
+    }
+
     return array(
       'keys'=> $keys,
-      'table_body'=>$result,
+      'table_body'=>$converted_result,
       'table_name'=> $table,
       'has_details_table' => $has_details,
       'has_details_listing' => $has_details_listing,
@@ -458,7 +464,32 @@ function detail_list_output(String $table): Array {
     );
   }
   
+  function currency_conversion(&$query_output,$table_name = ""){
+    
+    $table_name = $table_name == ""?$this->controller:$table_name;
 
+    if(method_exists($this->CI->{$table_name.'_model'},'currency_fields') && 
+        is_array($this->CI->{$table_name.'_model'}->currency_fields()) && 
+            count($this->CI->{$table_name.'_model'}->currency_fields()) > 0){
+            
+                $currency_fields = $this->CI->{$table_name.'_model'}->currency_fields();
+
+                foreach($currency_fields as $currency_field){
+                    if(isset($query_output[$currency_field])){
+                        
+                        $id = hash_id($this->CI->id,'decode');
+                        
+                        $rate = currency_conversion($this->CI->grants_model->get_record_office_id($this->CI->controller,$id));
+
+                        //$query_output[$currency_field] = $query_output[$currency_field] * $rate;
+                        $query_output[$currency_field] = $query_output[$currency_field] * $rate;
+                    }
+                    
+                }
+    }
+
+    return $query_output;
+}
 
     /**
      * view_output
@@ -484,11 +515,16 @@ function detail_list_output(String $table): Array {
 
         $keys = $this->toggle_master_view_select_columns();
         
+        // Add additional fields
         if(is_array($master_additional_fields) && count($master_additional_fields) > 0){
             $query_output = array_merge($query_output,$master_additional_fields);
             array_push($keys,implode(',',array_keys($master_additional_fields)));
         }
-        
+
+        // Apply currency conversion
+       $this->currency_conversion($query_output);
+
+
         $has_details = $this->CI->grants->check_if_table_has_detail_table($table);
         $is_approveable_item = $this->CI->grants->approveable_item();
 
@@ -524,6 +560,7 @@ function detail_list_output(String $table): Array {
         return $result;
     
     }
+
 
 }
 
