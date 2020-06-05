@@ -121,7 +121,7 @@ class MY_Model extends CI_Model
       return [];// Must pass an empty array to prevent add method failure in grants_model
     }
 
-    public function transaction_validate_by_computation_flag(){
+    public function transaction_validate_by_computation_flag($array_to_check){
       return VALIDATION_SUCCESS;
     }
 

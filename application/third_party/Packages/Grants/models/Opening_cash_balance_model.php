@@ -32,7 +32,9 @@ class Opening_cash_balance_model extends MY_Model{
         return array('system_opening_balance');
     }
 
-    public function detail_tables(){}
+    public function detail_tables(){
+        return ['project_allocation_opening_cash_balance'];
+    }
 
     public function detail_multi_form_add_visible_columns(){}
 }

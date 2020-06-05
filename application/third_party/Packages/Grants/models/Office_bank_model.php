@@ -35,7 +35,7 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
   }
 
   public function detail_tables(){
-    return ['cheque_book'];
+    return ['cheque_book','office_bank_project_allocation'];
   }
 
     public function master_table_visible_columns(){}

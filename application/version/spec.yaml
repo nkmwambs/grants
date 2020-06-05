@@ -101,6 +101,15 @@ grants:
   
   tables:
 
+    office_bank_project_allocation:
+      lookup_tables:
+        - office_bank
+        - project_allocation
+    
+    project_allocation_opening_cash_balance:
+        - project_allocation
+        - opening_cash_balance
+
     country_currency:
 
     currency_conversion:

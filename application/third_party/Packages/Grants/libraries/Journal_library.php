@@ -22,20 +22,20 @@ class Journal_library extends Grants
 
   }
 
-  function journal_records($office_id,$transacting_month){
-    return $this->CI->journal_model->journal_records($office_id,$transacting_month);
+  function journal_records($office_id,$transacting_month,$project_allocation_ids = []){
+    return $this->CI->journal_model->journal_records($office_id,$transacting_month, $project_allocation_ids);
   }
 
-  function month_opening_bank_cash_balance($office_id,$transacting_month){
-    return $this->CI->journal_model->month_opening_bank_cash_balance($office_id,$transacting_month);
+  function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
+    return $this->CI->journal_model->month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id);
   }
 
   // function month_opening_cash_balance($office_id){
   //   return $this->CI->journal_model->month_opening_cash_balance($office_id);
   // }
 
-  function get_office_data_from_journal(){
-    return $this->CI->journal_model->get_office_data_from_journal();
+  function get_office_data_from_journal($journal_id){
+    return $this->CI->journal_model->get_office_data_from_journal($journal_id);
   }  
 
   function journal_navigation($office_id, $transacting_month){

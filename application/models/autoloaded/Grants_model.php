@@ -1606,4 +1606,114 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
 // }
 
 
+/**
+ * Placed here since it has a global use - To be put in API later
+ */
+
+ function office_has_active_month_projects($office_id,$reporting_month){
+
+  $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
+  $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+  $query_condition = "(project_end_date >= '".$start_date_of_reporting_month."' OR  project_allocation_extended_end_date >= '".$start_date_of_reporting_month."')";
+  
+  $this->db->where($query_condition);
+  $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+  
+  $result = $this->db->select('project_allocation_id')->get_where('project_allocation',
+    array('fk_office_id'=>$office_id))->num_rows();
+  
+  $office_has_active_month_projects = $result > 0 ? true : false;
+  
+  return $office_has_active_month_projects;
+ }
+
+ function office_has_multiple_projects($office_id){
+
+  $result = $this->db->select('project_allocation_id')->get_where('project_allocation',
+    array('fk_office_id'=>$office_id))->num_rows();
+  
+  $office_has_projects = $result > 1 ? true : false;
+  
+  return $office_has_projects;
+ }
+
+ function office_funders($office_id){
+    
+  $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+  $this->db->join('funder','funder.funder_id=project.fk_funder_id');
+
+  $this->db->select(array('DISTINCT(funder_id)'));
+  $this->db->select(array('funder_name'));
+  $result = $this->db->get_where('project_allocation',
+    array('fk_office_id'=>$office_id))->result_array();
+  
+  
+  return $result;
+ }
+
+ function office_has_multiple_bank_accounts($office_id){
+   $result = $this->db->get_where('office_bank',array('fk_office_id'=>$office_id))->num_rows();
+  
+   $office_has_multiple_bank_accounts = $result > 1 ? true : false;
+   
+   return $office_has_multiple_bank_accounts;
+ }
+
+ function office_bank_accounts($office_id){
+
+  $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
+  $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
+
+  $result = $this->db->select(array('office_bank_id','office_bank_account_number','bank_name','office_bank_name'))->get_where('office_bank',
+  array('fk_office_id'=>$office_id))->result_array();
+  
+  return $result;
+}
+
+function get_type_name_by_id($type, $type_id = '', $field = '') 
+{
+  $field = $field == '' ? $type.'_name' : $field;
+
+  if($this->db->get_where($type, array($type . '_id' => $type_id))->num_rows() > 0){
+    return $this->db->get_where($type, array($type . '_id' => $type_id))->row()->$field;
+  }else{
+    return "";
+  }
+
+}
+
+function get_type_record_by_id($type, $type_id) 
+{
+  
+  if($this->db->get_where($type, array($type . '_id' => $type_id))->num_rows() > 0){
+    return $this->db->get_where($type, array($type . '_id' => $type_id))->row_array();
+  }else{
+    return array();
+  }
+
+}
+
+function get_type_records_by_foreign_key_id($type, $foreign_type, $foreign_key_id) 
+{
+  
+  if($this->db->get_where($type, array('fk_' .$foreign_type . '_id' => $foreign_key_id))->num_rows() > 0){
+    return $this->db->get_where($type, array('fk_' .$foreign_type . '_id' => $foreign_key_id))->result_array();
+  }else{
+    return array();
+  }
+
+}
+
+function get_type_record_by_foreign_key_id($type, $foreign_type, $foreign_key_id) 
+{
+  
+  if($this->db->get_where($type, array('fk_' .$foreign_type . '_id' => $foreign_key_id))->num_rows() > 0){
+    return $this->db->get_where($type, array('fk_' .$foreign_type . '_id' => $foreign_key_id))->row_array();
+  }else{
+    return array();
+  }
+
+}
+
 }
