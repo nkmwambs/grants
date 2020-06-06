@@ -238,7 +238,7 @@ function load_detail_model(String $table_name = ""): String{
     }catch(Exception $e){
       $message = "Unabled to load the specified model ".$model." in Grants Library as indicated in the detail_tables function of the ".$this->controller."_model </br>";
       $message .= "Verify if the table ".$table_name." exists and if the file ".$model." is present in the third_party Packages Core or Grants models";
-      show_error($message,500,'An Error Was Encountered');
+      show_error($message.' '.debug_backtrace(),500,'An Error Was Encountered');
     }
     
     
