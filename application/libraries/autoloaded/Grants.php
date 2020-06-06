@@ -1273,7 +1273,7 @@ function center_start_date(int $center_id): String {
 function single_form_add_output($table_name = ""){
   //Find out why the argument $table_name carries a value of 0 from MY_Controller result method
   $table = ($table_name == "" || $table_name == 0) ? $this->controller : $table_name;
-
+  print_r($table_name);exit;
   // Insert appove item, approval  flow and status record if either in not existing
   $this->table_setup(strtolower($table));
 
@@ -1305,7 +1305,6 @@ function single_form_add_output($table_name = ""){
 
 function table_setup($table){
   $this->CI->grants_model->mandatory_fields($table);
-  print_r($table);exit;
   $this->CI->grants_model->insert_status_if_missing($table);
 }
 
