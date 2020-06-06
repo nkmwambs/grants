@@ -308,7 +308,7 @@ public function dependant_table($table_name = ""){
 }
 
 public function has_dependant_table($table_name = ""){
-  
+
   $model = $this->load_detail_model($table_name);
 
   $has_dependant_table = false;
@@ -1305,6 +1305,7 @@ function single_form_add_output($table_name = ""){
 
 function table_setup($table){
   $this->CI->grants_model->mandatory_fields($table);
+  print_r($table);exit;
   $this->CI->grants_model->insert_status_if_missing($table);
 }
 
