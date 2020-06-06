@@ -308,7 +308,8 @@ public function dependant_table($table_name = ""){
 }
 
 public function has_dependant_table($table_name = ""){
-
+  print_r($table_name);
+  exit;
   $model = $this->load_detail_model($table_name);
 
   $has_dependant_table = false;
