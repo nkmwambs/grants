@@ -751,7 +751,8 @@ function generate_item_track_number_and_name($approveable_item){
   function insert_status_if_missing($approve_item_name){
 
     $this->insert_status_for_approveable_item($approve_item_name);
-
+    print_r($approve_item_name);
+    exit;
     // Check if has dependant table
 
     if($this->grants->has_dependant_table($approve_item_name)){
