@@ -314,7 +314,7 @@ public function has_dependant_table($table_name = ""){
   $has_dependant_table = false;
 
   if(
-      property_exists($this->CI->$model,'dependant_table') || 
+      (property_exists($this->CI->$model,'dependant_table') && $this->CI->$model->dependant_table !== '') || 
       $this->CI->grants_model->table_exists($table_name."_detail"))
     {
 

@@ -754,10 +754,10 @@ function generate_item_track_number_and_name($approveable_item){
 
     // Check if has dependant table
 
-    // if($this->grants->has_dependant_table($approve_item_name)){
-    //   $this->mandatory_fields($this->grants->dependant_table($approve_item_name));
-    //   $this->insert_status_for_approveable_item($this->grants->dependant_table($approve_item_name));    
-    // }
+    if($this->grants->has_dependant_table($approve_item_name)){
+      $this->mandatory_fields($this->grants->dependant_table($approve_item_name));
+      $this->insert_status_for_approveable_item($this->grants->dependant_table($approve_item_name));    
+    }
 
 }
 
