@@ -1271,9 +1271,9 @@ function center_start_date(int $center_id): String {
  */
 
 function single_form_add_output($table_name = ""){
-  //Find out why the argument $table_name carries a value of 0 from MY_Controller result method
+  //Find out why the argument $table_name carries a value of 0 from MY_Controller result method: Answer is on line 145 in MY_Controller [ $this->$lib->$action($this->id);]
   $table = ($table_name == "" || $table_name == 0) ? $this->controller : $table_name;
-  print_r($table_name);exit;
+  echo hash_id($table_name,'decode');exit;
   // Insert appove item, approval  flow and status record if either in not existing
   $this->table_setup(strtolower($table));
 
