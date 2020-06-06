@@ -62,21 +62,27 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $office_banks;
   }
 
-  private function system_opening_cash_balance($office_id,$project_allocation_ids = []){
-
-    $project_allocation_ids = [1];
+  private function system_opening_cash_balance($office_id,$office_bank_id = 0, $project_allocation_ids = []){
 
     $balance = 0;
 
-    $this->db->select_sum('project_allocation_opening_cash_balance_amount');
-    $this->db->join('project_allocation_opening_cash_balance','project_allocation_opening_cash_balance.fk_opening_cash_balance_id=opening_cash_balance.opening_cash_balance_id');
-    $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
-    $this->db->where('fk_project_allocation_id',$project_allocation_ids);
-    $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
-    
-    if($opening_cash_balance_obj->num_rows()>0){
-       $balance = $opening_cash_balance_obj->row()->project_allocation_opening_cash_balance_amount; 
+    //Only get balance if args project_allocation_ids and office_bank_id as supplied or none of them
+    if((count($project_allocation_ids) > 0 && $office_bank_id >0) || (count($project_allocation_ids) == 0 && $office_bank_id == 0)){
+      $this->db->select_sum('project_allocation_opening_cash_balance_amount');
+      $this->db->join('project_allocation_opening_cash_balance','project_allocation_opening_cash_balance.fk_opening_cash_balance_id=opening_cash_balance.opening_cash_balance_id');
+      $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
+      
+      if(count($project_allocation_ids) > 0 ){
+        $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+      }
+  
+      $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
+      
+      if($opening_cash_balance_obj->num_rows()>0){
+         $balance = $opening_cash_balance_obj->row()->project_allocation_opening_cash_balance_amount; 
+      }
     }
+   
 
     return $balance;
   }
@@ -112,8 +118,20 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
+
+    $project_allocation_ids = [];
+
+    if($office_bank_id > 0){
+      $office_bank_project_allocation = $this->db->get_where('office_bank_project_allocation',
+      array('fk_office_bank_id'=>$office_bank_id));
+      
+      if($office_bank_project_allocation->num_rows() > 0){
+        $project_allocation_ids = array_column($office_bank_project_allocation->result_array(),'fk_project_allocation_id');
+      }
+    }
+
     $system_opening_bank = $this->system_opening_bank_balance($office_id, $office_bank_id); 
-    $system_opening_cash = $this->system_opening_cash_balance($office_id); 
+    $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id,$project_allocation_ids); 
 
     $bank_to_date_income = [];
     $bank_to_date_expense = [];
@@ -231,55 +249,55 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     ];
   }
   
-  function get_all_office_month_vouchers($office_id,$transacting_month,$project_allocation_ids = []){
-
-    //$project_allocation_ids = [1];
-
-    $month_start_date = date('Y-m-01',strtotime($transacting_month));
-    $month_end_date = date('Y-m-t',strtotime($transacting_month));
-
-    //$this->_voucher_max_status_id_where($month_start_date);
-
-    //$max_status_id = $this->general_model->get_item_max_status_by_created_date('voucher',$month_start_date);
-
-    //$this->db->where(array('voucher.fk_status_id'=>$max_status_id));
+  function get_all_office_month_vouchers($office_id,$transacting_month,$project_allocation_ids = [], $office_bank_id = 0){
     
-    $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
-    $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
-    'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
-    'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date'));
-    $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
-    $this->db->select(array('voucher_type_account_code'));
-    $this->db->select(array('voucher_type_effect_code'));
-    $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id'));
-    
-    //$this->db->select_sum('voucher_detail_total_cost');
-    
-    $this->db->where('voucher_date >=', $month_start_date);
-    $this->db->where('voucher_date <=', $month_end_date);
-    $this->db->where('fk_office_id',$office_id);
-    //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
-    
-    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
-    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');  
-    $this->db->join('voucher_detail','voucher_detail.fk_voucher_id=voucher.voucher_id');
-    
-    if(count($project_allocation_ids)>0){
-      $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+    $result = [];
+
+    if((count($project_allocation_ids) > 0 && $office_bank_id > 0) || (count($project_allocation_ids) == 0 && $office_bank_id == 0)){
+
+      $month_start_date = date('Y-m-01',strtotime($transacting_month));
+      $month_end_date = date('Y-m-t',strtotime($transacting_month));
+      
+      $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
+      $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
+      'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
+      'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date'));
+      $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
+      $this->db->select(array('voucher_type_account_code'));
+      $this->db->select(array('voucher_type_effect_code'));
+      $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id'));
+      
+      //$this->db->select_sum('voucher_detail_total_cost');
+      
+      $this->db->where('voucher_date >=', $month_start_date);
+      $this->db->where('voucher_date <=', $month_end_date);
+      $this->db->where('fk_office_id',$office_id);
+      //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
+      
+      $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+      $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');  
+      $this->db->join('voucher_detail','voucher_detail.fk_voucher_id=voucher.voucher_id');
+      
+      if(count($project_allocation_ids)>0){
+        $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+      }
+  
+      //$this->db->group_by('voucher_id');
+  
+      $result = $this->db->order_by('voucher_id','ASC')->get('voucher')->result_array();
     }
 
-    //$this->db->group_by('voucher_id');
+    return $result;
 
-    return $this->db->order_by('voucher_id','ASC')->get('voucher')->result_array();
   }
 
-  function reorder_office_month_vouchers($office_id,$transacting_month,$project_allocation_ids = []){
+  function reorder_office_month_vouchers($office_id,$transacting_month,$project_allocation_ids = [], $office_bank_id = 0){
 
     $approveable_item = $this->db->get_where('approve_item',
     array('approve_item_name'=>'voucher'))->row();
     
-    $raw_array_of_vouchers = $this->get_all_office_month_vouchers($office_id,$transacting_month,$project_allocation_ids);
+    $raw_array_of_vouchers = $this->get_all_office_month_vouchers($office_id,$transacting_month,$project_allocation_ids, $office_bank_id);
 
     $voucher_record = [];
 
@@ -365,8 +383,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $spread;
   }
 
-  function journal_records($office_id,$transacting_month,$project_allocation_ids = []){
-    return $this->reorder_office_month_vouchers($office_id,$transacting_month, $project_allocation_ids);
+  function journal_records($office_id,$transacting_month,$project_allocation_ids = [], $office_bank_id = 0){
+    return $this->reorder_office_month_vouchers($office_id,$transacting_month, $project_allocation_ids, $office_bank_id);
   }
 
   function list_table_where(){

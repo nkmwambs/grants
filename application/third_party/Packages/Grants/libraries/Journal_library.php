@@ -22,8 +22,8 @@ class Journal_library extends Grants
 
   }
 
-  function journal_records($office_id,$transacting_month,$project_allocation_ids = []){
-    return $this->CI->journal_model->journal_records($office_id,$transacting_month, $project_allocation_ids);
+  function journal_records($office_id,$transacting_month,$project_allocation_ids = [], $office_bank_id = 0){
+    return $this->CI->journal_model->journal_records($office_id,$transacting_month, $project_allocation_ids, $office_bank_id);
   }
 
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
