@@ -24,7 +24,7 @@
                             <a class='pull-left' href="<?=base_url();?>Journal/view/<?=hash_id($navigation['previous']);?>" title='Previous Month'><i class='fa fa-minus-circle' style='font-size:20pt;'></i></a>
                         <?php }?>    
                     </th>
-                    <th colspan="<?=$sum_of_accounts + 8 + (count($month_opening_balance['bank_balance']) * 3) + (count($month_opening_balance['cash_balance']) * 3);?>" style='text-align:center;'>
+                    <th colspan="<?=$sum_of_accounts + 5 + (count($month_opening_balance['bank_balance']) * 3) + (count($month_opening_balance['cash_balance']) * 3);?>" style='text-align:center;'>
                         <?=$office_name;?></br>
                         Cash Journal <br>
                         <?=date('F Y',strtotime($transacting_month));?>    
