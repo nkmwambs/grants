@@ -569,7 +569,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
                     !$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
                 }
                 
-            }else if(response_is_cash_contra){
+            }else if(response_is_contra){
 
                 $("#cash_account").removeAttr('disabled');
                 create_office_cash_dropdown(response_office_cash);

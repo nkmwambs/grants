@@ -179,10 +179,7 @@
                         <?php }?>
 
                         <?php foreach($month_opening_balance['cash_balance'] as $cash_id => $cash_account){?>
-                            <td class='align-right'>
-                                <?
-                                    echo number_format($cash_id == $office_cash_id?$cash_income[$cash_id]:0,2);
-                                ?></td>
+                            <td class='align-right'><?=number_format($cash_id == $office_cash_id?$cash_income[$cash_id]:0,2);?></td>
                             <td class='align-right'><?=number_format($cash_id == $office_cash_id?$cash_expense[$cash_id]:0,2);?></td>
                             <td class='align-right'><?=number_format($cash_id == $office_cash_id?$running_petty_cash_balance[$cash_id]:0,2);?></td>
                         <?php }?>
@@ -201,18 +198,13 @@
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
                         <td class='align-right'><?=number_format($sum_bank_income[$office_bank_id],2);?></td>
                         <td class='align-right'><?=number_format($sum_bank_expense[$office_bank_id],2);?></td>
-                        <td class='align-right'><?=number_format($running_bank_balance[$office_bank_id],2);?></td>
+                        <td class='align-right'><?=number_format($running_bank_balance[$office_bank_id] == 0 ? $month_opening_balance['bank_balance'][$office_bank_id]['amount']:$running_bank_balance[$office_bank_id],2);?></td>
                     <?php }?>
                     
                     <?php foreach($month_opening_balance['cash_balance'] as $office_cash_id => $cash_account){?>
-                        <td class='align-right'>
-                            <?php 
-                                
-                                echo number_format($sum_petty_cash_income[$office_cash_id],2);
-                            ?>
-                        </td>
+                        <td class='align-right'><?=number_format($sum_petty_cash_income[$office_cash_id],2);?></td>
                         <td class='align-right'><?=number_format($sum_petty_cash_expense[$office_cash_id],2);?></td>
-                        <td class='align-right'><?=number_format($running_petty_cash_balance[$office_cash_id],2);?></td>
+                        <td class='align-right'><?=number_format($running_petty_cash_balance[$office_cash_id] == 0?  $month_opening_balance['cash_balance'][$office_cash_id]['amount'] :$running_petty_cash_balance[$office_cash_id],2);?></td>
                     <?php }?>
 
                     <!-- Spread totals -->
