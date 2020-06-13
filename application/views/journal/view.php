@@ -28,7 +28,7 @@
                 </label>
                 <div class='col-xs-10'>
                     <select class='form-control' id='select_office_bank'>
-                        <option value=''><?=get_phrase('select_bank_account');?></option>
+                        <option value='0'><?=get_phrase('all_bank_accounts');?></option>
                         <?php foreach($office_bank_accounts as $office_bank_account){?>
                             <option value='<?=$office_bank_account['office_bank_id'];?>'><?=$office_bank_account['bank_name'].' - '.$office_bank_account['office_bank_name'].' - '.$office_bank_account['office_bank_account_number'];?></option>
                         <?php }?>
