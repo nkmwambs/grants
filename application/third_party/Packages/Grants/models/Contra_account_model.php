@@ -29,7 +29,7 @@ class Contra_account_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('account_system','voucher_type_account','office_bank');
+        return array('account_system','voucher_type_account','office_bank','office_cash');
     }
 
     public function detail_tables(){

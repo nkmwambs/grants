@@ -29,7 +29,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   function index(){}
 
   public function lookup_tables(){
-    return array('voucher_type','office','approval','status');
+    return array('voucher_type','office','office_bank','office_cash','approval','status');
   }
 
   public function detail_tables(){

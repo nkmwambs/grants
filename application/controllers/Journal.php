@@ -72,6 +72,8 @@ class Journal extends MY_Controller
       'month_opening_balance'=>$this->month_opening_bank_cash_balance($office_id,$transacting_month, $office_bank_id),
       'vouchers'=>$this->journal_records($office_id,$transacting_month,$project_allocation_ids, $office_bank_id)
      ];
+     
+     //print_r($result['month_opening_balance']);exit;
 
      return $result;
   }
