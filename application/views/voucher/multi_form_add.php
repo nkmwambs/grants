@@ -36,7 +36,7 @@
 
                     <div class='form-group'>
                         <label class='control-label col-xs-1'><?=get_phrase('office');?></label>
-                        <div class='col-xs-3'>
+                        <div class='col-xs-2'>
                             <select class='form-control' id='office' name='fk_office_id'>
                                 <option value=""><?=get_phrase('select_office');?></option>
                                 <?php foreach($this->session->hierarchy_offices as $office){?>
@@ -46,26 +46,33 @@
                         </div>
 
                         <label class='control-label col-xs-1 date-field'><?=get_phrase('date');?></label>
-                        <div class='col-xs-3 date-field'>
+                        <div class='col-xs-2 date-field'>
                             <input id="transaction_date" type='text' name='voucher_date' readonly class='form-control' />
                         </div>
 
                         <label class='control-label col-xs-1'><?=get_phrase('voucher_number');?></label>
-                        <div class='col-xs-3'>
+                        <div class='col-xs-2'>
                             <input type='text' readonly class='form-control' name='voucher_number' id="voucher_number" />
                         </div>
 
-                    </div>
-
-                    <div class='form-group'>
                         <label class='control-label col-xs-1'><?=get_phrase('voucher_type');?></label>
-                        <div class='col-xs-3'>
+                        <div class='col-xs-2'>
                             <select class='form-control'  disabled="disabled" name='fk_voucher_type_id' id='voucher_type' onchange="getAccountsByVoucherType(this);">
                                 <option value=""><?=get_phrase('select_voucher_type');?></option>
                                 
                             </select>
                         </div>
 
+                    </div>
+
+                    <div class='form-group'>
+
+                        <label class='control-label col-xs-1'><?=get_phrase('cash_account');?></label>
+                        <div class='col-xs-2'>
+                            <select class="form-control" name='fk_office_cash_id' id='cash_account' disabled='disabled'>
+                                    <option value=""><?=get_phrase('select_cash_account');?></option>
+                            </select>
+                        </div>
 
                         <label class='control-label col-xs-1'><?=get_phrase('bank_account');?></label>
                         <div class='col-xs-2'>
@@ -80,12 +87,12 @@
                             <input type='text' name='voucher_cheque_number' id='cheque_number' disabled='disabled' class='form-control' />
                         </div>
 
-                        <label class='control-label col-xs-1'><?=get_phrase('cheque_reversal');?></label>
+                        <!-- <label class='control-label col-xs-1'><?=get_phrase('cheque_reversal');?></label>
                         <div class='col-xs-1'>
                             <div class="make-switch switch-small" data-on-label="Yes" data-off-label="No">
 								<input type="checkbox" id="reversal" name="reversal"/>
 							</div>
-                        </div>
+                        </div> -->
 
                     </div>
 
@@ -530,12 +537,14 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
             var response_accounts = response_objects['accounts'];
             var response_allocation = response_objects['project_allocation'];
+            var response_office_cash = response_objects['office_cash'];
             var response_is_bank_payment = response_objects['is_bank_payment'];
+            var response_is_cash_payment = response_objects['is_cash_payment'];
             var response_is_expense = response_objects['is_expense'];
             var response_is_transaction_affecting_bank = response_objects['is_transaction_affecting_bank'];
             var response_approved_requests = response_objects['approved_requests'];
             //var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
-
+            //alert(response_is_cash_payment);
             create_accounts_and_allocation_select_options(response_accounts,response_allocation);
 
             showHiddenButtons(response_is_expense,response_is_bank_payment,false);
@@ -549,23 +558,40 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 
                 if(response_is_bank_payment && response_is_transaction_affecting_bank && $("#bank").val() !=""){
                     $("#cheque_number").removeAttr('disabled');
+                
                 }else{
                     !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
                 }
+                
+            }else if(response_is_cash_payment){
+
+                $("#cash_account").removeAttr('disabled');
+                create_office_cash_dropdown(response_office_cash);
             
             }else{
                 $("#cheque_number, #bank").val("");
                 !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
                 !$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
+                !$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
             }
-
-            //alert(response_is_transaction_affecting_bank + ' - ' + response_is_bank_payment);
         },
         error:function(xhr){
             alert('Error occurred!');
         }
     }):alert('Choose a valid date');
     
+}
+
+function create_office_cash_dropdown(response_office_cash){
+    var account_select_option = "<option value=''>Select Cash Account</option>";
+
+    if(response_office_cash.length > 0){
+        $.each(response_office_cash,function(i,el){
+            account_select_option += "<option value='" + response_office_cash[i].office_cash_id + "'>" + response_office_cash[i].office_cash_name + "</option>";
+        });
+    }
+
+    $("#cash_account").html(account_select_option);
 }
 
 function create_accounts_and_allocation_select_options(response_accounts,response_allocation){

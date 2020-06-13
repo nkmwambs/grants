@@ -313,10 +313,12 @@ class Voucher extends MY_Controller
 
     $response = [];
     $response['is_bank_payment'] = false;
+    $response['is_cash_payment'] = false;
     $response['is_expense'] = false;
     $response['is_transaction_affecting_bank'] = false;
     $response['approved_requests'] = 0;
     $response['project_allocation'] = [];
+    $response['office_cash'] = [];
 
     $office_accounting_system = $this->office_account_system($office_id);
 
@@ -340,6 +342,10 @@ class Voucher extends MY_Controller
     if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra')){
       $response['is_bank_payment'] = true;
       
+    }elseif($voucher_type_account == 'cash' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra')){
+      $response['is_cash_payment'] = true;
+      $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
+      array('fk_account_system_id'=>$office_accounting_system->account_system_id))->result_array();
     }
 
     if($voucher_type_account == 'bank'){
@@ -539,6 +545,7 @@ class Voucher extends MY_Controller
     $header['voucher_number'] = $this->input->post('voucher_number');
     $header['fk_voucher_type_id'] = $this->input->post('fk_voucher_type_id');
     $header['fk_office_bank_id'] = $this->input->post('fk_office_bank_id') == null?0:$this->input->post('fk_office_bank_id');
+    $header['fk_office_cash_id'] = $this->input->post('fk_office_cash_id') == null?0:$this->input->post('fk_office_cash_id');
     $header['voucher_cheque_number'] = $this->input->post('voucher_cheque_number') == null?0:$this->input->post('voucher_cheque_number');
     $header['voucher_vendor'] = $this->input->post('voucher_vendor');
     $header['voucher_vendor_address'] = $this->input->post('voucher_vendor_address');
