@@ -104,9 +104,9 @@
             <tbody>
                 <?php 
                 
-                $bank_accounts = array_flip(array_keys($month_opening_balance['bank_balance']));
-                $cash_accounts = array_flip(array_keys($month_opening_balance['cash_balance']));
-                
+                $bank_accounts = array_map(function($elem){return 0;},array_flip(array_keys($month_opening_balance['bank_balance'])));
+                $cash_accounts = array_map(function($elem){return 0;},array_flip(array_keys($month_opening_balance['cash_balance'])));
+
                 $running_bank_balance = $bank_accounts;
                 $sum_bank_income = $bank_accounts;
                 $sum_bank_expense = $bank_accounts;
@@ -202,7 +202,12 @@
                     <?php }?>
                     
                     <?php foreach($month_opening_balance['cash_balance'] as $office_cash_id => $cash_account){?>
-                        <td class='align-right'><?=number_format($sum_petty_cash_income[$office_cash_id],2);?></td>
+                        <td class='align-right'>
+                            <?php 
+                                
+                                echo number_format($sum_petty_cash_income[$office_cash_id],2);
+                            ?>
+                        </td>
                         <td class='align-right'><?=number_format($sum_petty_cash_expense[$office_cash_id],2);?></td>
                         <td class='align-right'><?=number_format($running_petty_cash_balance[$office_cash_id],2);?></td>
                     <?php }?>
