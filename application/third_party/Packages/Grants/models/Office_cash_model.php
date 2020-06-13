@@ -29,7 +29,7 @@ class Office_cash_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('office');
+        return array('account_system');
     }
 
     public function detail_tables(){}

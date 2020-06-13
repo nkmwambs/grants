@@ -112,15 +112,19 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   private function system_opening_cash_balance($office_id,$office_bank_id = 0){
 
+    $account_system_id = $this->grants_model->get_type_name_by_id('office',$office_id,'fk_account_system_id');
+    
     if($office_bank_id > 0){
-      $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
+      $this->db->where(array('opening_cash_balance.fk_office_bank_id'=>$office_bank_id));
     }
-
+    
     $this->db->select_sum('opening_cash_balance_amount');
     $this->db->group_by('office_cash_id');
     $this->db->select(array('office_cash_name','fk_office_cash_id'));
     $this->db->join('office_cash','office_cash.office_cash_id=opening_cash_balance.fk_office_cash_id');
-    $petty_cash_accounts = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id))->result_array();
+    $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
+    $petty_cash_accounts = $this->db->get_where('opening_cash_balance',
+    array('system_opening_balance.fk_office_id'=>$office_id,'office_cash.fk_account_system_id'=>$account_system_id))->result_array();
 
     $result = [];
 
