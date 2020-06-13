@@ -37,7 +37,7 @@ class Contra_account_model extends MY_Model{
     }
 
     public function single_form_add_visible_columns(){
-        return ['contra_account_name','contra_account_code','contra_account_description','account_system_name','voucher_type_account_name','office_bank_name'];
+        //return ['contra_account_name','contra_account_code','contra_account_description','account_system_name','voucher_type_account_name','office_bank_name'];
     }
 
     public function detail_multi_form_add_visible_columns(){}
