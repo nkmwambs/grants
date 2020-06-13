@@ -319,6 +319,7 @@ class Voucher extends MY_Controller
     $response['approved_requests'] = 0;
     $response['project_allocation'] = [];
     $response['office_cash'] = [];
+    $response['is_cash_payment'] = false;
 
     $office_accounting_system = $this->office_account_system($office_id);
 
@@ -344,6 +345,10 @@ class Voucher extends MY_Controller
       
     }elseif($voucher_type_effect == 'contra'){
       $response['is_contra'] = true;
+      $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
+      array('fk_account_system_id'=>$office_accounting_system->account_system_id))->result_array();
+    }elseif($voucher_type_account == 'cash'){
+      $response['is_cash_payment'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
       array('fk_account_system_id'=>$office_accounting_system->account_system_id))->result_array();
     }

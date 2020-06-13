@@ -542,6 +542,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_office_cash = response_objects['office_cash'];
             var response_is_bank_payment = response_objects['is_bank_payment'];
             var response_is_contra = response_objects['is_contra'];
+            var response_is_cash_payment = response_objects['is_cash_payment'];
             var response_is_expense = response_objects['is_expense'];
             var response_is_transaction_affecting_bank = response_objects['is_transaction_affecting_bank'];
             var response_approved_requests = response_objects['approved_requests'];
@@ -569,7 +570,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
                     !$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
                 }
                 
-            }else if(response_is_contra){
+            }else if(response_is_contra || response_is_cash_payment){
 
                 $("#cash_account").removeAttr('disabled');
                 create_office_cash_dropdown(response_office_cash);
