@@ -62,25 +62,23 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $office_banks;
   }
 
-  private function system_opening_cash_balance($office_id,$office_bank_id = 0, $project_allocation_ids = []){
+  private function system_opening_cash_balance($office_id,$office_bank_id = 0){
 
     $balance = 0;
 
     //Only get balance if args project_allocation_ids and office_bank_id as supplied or none of them
-    if((count($project_allocation_ids) > 0 && $office_bank_id >0) || (count($project_allocation_ids) == 0 && $office_bank_id == 0)){
-      $this->db->select_sum('project_allocation_opening_cash_balance_amount');
-      $this->db->join('project_allocation_opening_cash_balance','project_allocation_opening_cash_balance.fk_opening_cash_balance_id=opening_cash_balance.opening_cash_balance_id');
-      $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
-      
-      if(count($project_allocation_ids) > 0 ){
-        $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
-      }
-  
-      $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
-      
-      if($opening_cash_balance_obj->num_rows()>0){
-         $balance = $opening_cash_balance_obj->row()->project_allocation_opening_cash_balance_amount; 
-      }
+
+    if($office_bank_id > 0 ){
+        $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
+    }
+
+    $this->db->select_sum('opening_cash_balance_amount');
+    $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
+
+    $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
+    
+    if($opening_cash_balance_obj->num_rows()>0){
+       $balance = $opening_cash_balance_obj->row()->opening_cash_balance_amount; 
     }
    
 
@@ -119,19 +117,20 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
 
-    $project_allocation_ids = [];
+    // $project_allocation_ids = [];
 
-    if($office_bank_id > 0){
-      $office_bank_project_allocation = $this->db->get_where('office_bank_project_allocation',
-      array('fk_office_bank_id'=>$office_bank_id));
+    // if($office_bank_id > 0){
+    //   $office_bank_project_allocation = $this->db->get_where('office_bank_project_allocation',
+    //   array('fk_office_bank_id'=>$office_bank_id));
       
-      if($office_bank_project_allocation->num_rows() > 0){
-        $project_allocation_ids = array_column($office_bank_project_allocation->result_array(),'fk_project_allocation_id');
-      }
-    }
+    //   if($office_bank_project_allocation->num_rows() > 0){
+    //     $project_allocation_ids = array_column($office_bank_project_allocation->result_array(),'fk_project_allocation_id');
+    //   }
+    // }
 
     $system_opening_bank = $this->system_opening_bank_balance($office_id, $office_bank_id); 
-    $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id,$project_allocation_ids); 
+    // $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id,$project_allocation_ids); 
+    $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id); 
 
     $bank_to_date_income = [];
     $bank_to_date_expense = [];

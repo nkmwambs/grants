@@ -101,14 +101,24 @@ grants:
   
   tables:
 
+    office_cash:
+      lookup_tables:
+        - office
+
+    # office_bank_opening_cash_balance:
+    #   lookup_tables:
+    #     - office_bank
+    #     - office_cash
+    #     - opening_cash_balance
+        
     office_bank_project_allocation:
       lookup_tables:
         - office_bank
         - project_allocation
     
-    project_allocation_opening_cash_balance:
-        - project_allocation
-        - opening_cash_balance
+    # project_allocation_opening_cash_balance:
+    #     - project_allocation
+    #     - opening_cash_balance
 
     country_currency:
 
@@ -123,6 +133,12 @@ grants:
       lookup_tables:
         - system_opening_balance
         - office_bank
+
+    opening_cash_balance:
+      lookup_tables:
+        - system_opening_balance
+        - office_bank
+        - office_cash    
     
     request_type:
     

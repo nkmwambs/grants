@@ -29,11 +29,11 @@ class Opening_cash_balance_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('system_opening_balance');
+        return array('system_opening_balance','office_bank','office_cash');
     }
 
     public function detail_tables(){
-        return ['project_allocation_opening_cash_balance'];
+    
     }
 
     public function detail_multi_form_add_visible_columns(){}
