@@ -524,6 +524,8 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
     var voucher_type_id = $(voucherTypeSelect).val();// Can be expense, income, cash_contra or bank_contra
 
+    //var office_cash_id = $("#cash_account").val();
+
     var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
 
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
@@ -539,7 +541,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_allocation = response_objects['project_allocation'];
             var response_office_cash = response_objects['office_cash'];
             var response_is_bank_payment = response_objects['is_bank_payment'];
-            var response_is_cash_payment = response_objects['is_cash_payment'];
+            var response_is_contra = response_objects['is_contra'];
             var response_is_expense = response_objects['is_expense'];
             var response_is_transaction_affecting_bank = response_objects['is_transaction_affecting_bank'];
             var response_approved_requests = response_objects['approved_requests'];
@@ -553,17 +555,21 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 $(el).html(response_approved_requests);
             });
 
-            if(response_is_bank_payment || response_is_transaction_affecting_bank){
+            if(response_is_bank_payment || response_is_contra || response_is_transaction_affecting_bank){
                 $("#bank").removeAttr('disabled');
                 
                 if(response_is_bank_payment && response_is_transaction_affecting_bank && $("#bank").val() !=""){
                     $("#cheque_number").removeAttr('disabled');
-                
+                }else if(response_is_contra){
+                    $("#cash_account").removeAttr('disabled');
+                    create_office_cash_dropdown(response_office_cash);
                 }else{
+                    //!$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
                     !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
+                    !$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
                 }
                 
-            }else if(response_is_cash_payment){
+            }else if(response_is_cash_contra){
 
                 $("#cash_account").removeAttr('disabled');
                 create_office_cash_dropdown(response_office_cash);

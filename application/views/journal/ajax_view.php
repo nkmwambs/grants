@@ -114,7 +114,7 @@
                 $running_petty_cash_balance = $cash_accounts;
                 $sum_petty_cash_income = $cash_accounts;
                 $sum_petty_cash_expense = $cash_accounts;
-                //print_r($vouchers);
+                //print_r($sum_petty_cash_income);
                 foreach($vouchers as $voucher_id => $voucher){
                  extract($voucher);
                 ?>
@@ -159,7 +159,7 @@
                             
                                 $running_bank_balance[$office_bank_id] = $month_opening_balance['bank_balance'][$office_bank_id]['amount'] + ($sum_bank_income[$office_bank_id] - $sum_bank_expense[$office_bank_id]);
                             }
-
+                            
                             if($office_cash_id && isset($sum_petty_cash_income[$office_cash_id])){
                                 $cash_income[$office_cash_id] = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
                                 $cash_expense[$office_cash_id] = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
@@ -179,7 +179,10 @@
                         <?php }?>
 
                         <?php foreach($month_opening_balance['cash_balance'] as $cash_id => $cash_account){?>
-                            <td class='align-right'><?=number_format($cash_id == $office_cash_id?$cash_income[$cash_id]:0,2);?></td>
+                            <td class='align-right'>
+                                <?
+                                    echo number_format($cash_id == $office_cash_id?$cash_income[$cash_id]:0,2);
+                                ?></td>
                             <td class='align-right'><?=number_format($cash_id == $office_cash_id?$cash_expense[$cash_id]:0,2);?></td>
                             <td class='align-right'><?=number_format($cash_id == $office_cash_id?$running_petty_cash_balance[$cash_id]:0,2);?></td>
                         <?php }?>

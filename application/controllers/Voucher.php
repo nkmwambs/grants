@@ -313,7 +313,7 @@ class Voucher extends MY_Controller
 
     $response = [];
     $response['is_bank_payment'] = false;
-    $response['is_cash_payment'] = false;
+    $response['is_contra'] = false;
     $response['is_expense'] = false;
     $response['is_transaction_affecting_bank'] = false;
     $response['approved_requests'] = 0;
@@ -339,11 +339,11 @@ class Voucher extends MY_Controller
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
     // Check if the voucher type is a bank payment
-    if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra')){
+    if($voucher_type_account == 'bank' && $voucher_type_effect == 'expense'){
       $response['is_bank_payment'] = true;
       
-    }elseif($voucher_type_account == 'cash' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra')){
-      $response['is_cash_payment'] = true;
+    }elseif($voucher_type_effect == 'contra'){
+      $response['is_contra'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
       array('fk_account_system_id'=>$office_accounting_system->account_system_id))->result_array();
     }
