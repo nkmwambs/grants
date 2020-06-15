@@ -32,7 +32,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
   }
 
   public function detail_tables(){
-    return ['project_allocation_detail'];
+    return ['project_allocation_detail','office_bank_project_allocation'];
   }
     public function master_table_visible_columns(){}
 

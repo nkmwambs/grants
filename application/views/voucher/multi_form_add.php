@@ -528,11 +528,15 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
     var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
 
+    var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
+    var extra_data = {'office_bank_id':office_bank_id};
+
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
    
     checkIfDateIsSelected()?$.ajax({
         url:url,
         type:"POST",
+        data:extra_data,
         success:function(response){
 
             var response_objects = JSON.parse(response);
@@ -548,7 +552,8 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_approved_requests = response_objects['approved_requests'];
             //var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
             //alert(response_is_cash_payment);
-            create_accounts_and_allocation_select_options(response_accounts,response_allocation);
+            create_accounts_select_options(response_accounts);
+            //create_allocation_select_options(response_allocation);
 
             showHiddenButtons(response_is_expense,response_is_bank_payment,false);
 
@@ -601,16 +606,21 @@ function create_office_cash_dropdown(response_office_cash){
     $("#cash_account").html(account_select_option);
 }
 
-function create_accounts_and_allocation_select_options(response_accounts,response_allocation){
+function create_accounts_select_options(response_accounts){
     var account_select_option = "<option value=''>Select an account</option>";
-
-    var allocation_select_option = "<option value=''>Select an allocation code</option>";
 
     if(response_accounts.length > 0){
         $.each(response_accounts,function(i,el){
             account_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
         });
     }
+
+    $(".account").html(account_select_option);
+
+}
+
+function create_allocation_select_options(response_allocation){
+    var allocation_select_option = "<option value=''>Select an allocation code</option>";
 
     if(response_allocation.length > 0){
 
@@ -623,9 +633,11 @@ function create_accounts_and_allocation_select_options(response_accounts,respons
 
     $(".allocation").html(allocation_select_option);
 
-    $(".account").html(account_select_option);
-
 }
+
+// $(document).on('change','.allocation',function(){
+//     alert('Hello');
+// });
 
 function resetVoucher(){
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
@@ -727,6 +739,9 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
 
     var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
     
+    var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
+    var extra_data = {'office_bank_id':office_bank_id};
+
     if(!$("#bank").attr('disabled') && $("#bank").val() == ""){
         alert('Bank details and cheque number is required');
         return false;
@@ -738,6 +753,7 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
     $.ajax({
         url:url,
         type:"POST",
+        data:extra_data,
         beforeSend:function(){
 
         },
@@ -752,7 +768,8 @@ function updateAccountAndAllocationField(expense_account_id = "", project_alloca
             
             var response_allocation = response_objects['project_allocation'];
 
-            create_accounts_and_allocation_select_options(response_accounts,response_allocation);
+            //create_allocation_select_options(response_allocation);
+            create_accounts_select_options(response_accounts);
             
         },
         error:function(){
@@ -844,9 +861,11 @@ $(document).on('change','.account',function(){
     
     var url = "<?=base_url();?>voucher/get_project_details_account/";
 
+    var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
+
     $.ajax({
         url:url,
-        data:{'office_id':office_id,'account_id':account_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date},
+        data:{'office_id':office_id,'account_id':account_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id},
         type:"POST",
         success:function(response){
 

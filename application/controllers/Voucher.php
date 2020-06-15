@@ -330,6 +330,12 @@ class Voucher extends MY_Controller
         $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
         $this->db->select(array('project_allocation_id','project_allocation_name'));
         $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+
+        if($this->input->post('office_bank_id')){
+          $this->db->where(array('fk_office_bank_id'=>$this->input->post('office_bank_id')));
+          $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+        }
+
         $this->db->where($query_condition);
         $project_allocation = $this->db->get('project_allocation')->result_object();
     }
@@ -648,6 +654,8 @@ class Voucher extends MY_Controller
 
     $income_account_id = $post['account_id'];
 
+    $office_accounting_system = $this->office_account_system($this->input->post('office_id'));
+
     if($voucher_type_effect == 'expense'){
       
       $this->db->select('income_account_id');
@@ -660,7 +668,16 @@ class Voucher extends MY_Controller
       $query_condition = "fk_office_id = ".$post['office_id']." AND (project_end_date >= '".$post['transaction_date']."' OR  project_allocation_extended_end_date >= '".$post['transaction_date']."')";
       $this->db->select(array('project_allocation_id','project_allocation_name'));
       $this->db->join('project','project.project_id=project_allocation.fk_project_id');
-      $this->db->where(array('fk_income_account_id'=>$income_account_id));
+      
+      if($this->input->post('office_bank_id')){
+        $this->db->where(array('fk_office_bank_id'=>$this->input->post('office_bank_id')));
+        $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+      }
+
+      if($office_accounting_system->account_system_is_allocation_linked_to_account){
+        $this->db->where(array('fk_income_account_id'=>$income_account_id));
+      }
+      
       $this->db->where($query_condition);
       $project_allocation = $this->db->get('project_allocation')->result_object();
     }
