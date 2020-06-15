@@ -114,6 +114,11 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     // Table set up. Add missing mandatory fields and status
     //$this->grants->table_setup($this->controller);
 
+    // Logout if the user session expire
+    if(!$this->session->user_id){
+      redirect(base_url().'login','refresh');
+    }
+
   }
   /**
    * result() 
