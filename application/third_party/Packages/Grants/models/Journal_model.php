@@ -278,7 +278,11 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     
     $result = [];
 
-    if((count($project_allocation_ids) > 0 && $office_bank_id > 0) || (count($project_allocation_ids) == 0 && $office_bank_id == 0) ){
+    if(
+        (count($project_allocation_ids) > 0 && $office_bank_id > 0) || 
+        (count($project_allocation_ids) == 0 && $office_bank_id == 0) || 
+        (count($project_allocation_ids) == 0 && $office_bank_id > 0)
+      ){
 
       $month_start_date = date('Y-m-01',strtotime($transacting_month));
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
@@ -306,6 +310,10 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       
       if(count($project_allocation_ids)>0){
         $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+      }
+
+      if($office_bank_id > 0){
+        $this->db->or_where('fk_office_bank_id',$office_bank_id);
       }
   
       //$this->db->group_by('voucher_id');

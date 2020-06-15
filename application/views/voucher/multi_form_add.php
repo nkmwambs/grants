@@ -554,7 +554,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
             //alert(response_is_cash_payment);
             create_accounts_select_options(response_accounts);
             //create_allocation_select_options(response_allocation);
-
+            
             showHiddenButtons(response_is_expense,response_is_bank_payment,false);
 
             $.each($(".requests_badge"),function(i,el){
@@ -568,7 +568,9 @@ function getAccountsByVoucherType(voucherTypeSelect){
                     $("#cheque_number").removeAttr('disabled');
                 }else if(response_is_contra){
                     $("#cash_account").removeAttr('disabled');
-                    create_office_cash_dropdown(response_office_cash);
+                    if($("#cash_account").val() == '') create_office_cash_dropdown(response_office_cash);
+                    //alert(response_accounts.length);
+                    //create_accounts_select_options(response_accounts);
                 }else{
                     //!$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
                     !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
@@ -584,7 +586,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 $("#cheque_number, #bank").val("");
                 !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
                 !$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
-                !$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
+                //!$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
             }
         },
         error:function(xhr){
@@ -730,7 +732,8 @@ $(".btn-insert").on('click',function(){
     showHiddenButtons(false,false,true);
 });
 
-function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
+//function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
+function updateAccountAndAllocationField(){
     var office_id = $("#office").val();
 
     var transaction_date = $("#transaction_date").val();

@@ -408,6 +408,7 @@ class Voucher extends MY_Controller
       'office_bank_id'=>$office_bank_id))->result_object();
     
     }
+    
 
     echo json_encode($response);
 
