@@ -314,7 +314,11 @@ $("#bank").on("change",function(){
     if($(this).val() && $("#cheque_number").val() != ""){
         showHiddenButtons(true,true,false);
     }else{
-        hide_buttons();
+        //hide_buttons();
+        $('.btn-insert').hide();
+        //$('.btn-save').hide();
+        //$('.btn-save-new').hide();
+        $('.btn-retrieve-request').hide();
     }
 });
 
