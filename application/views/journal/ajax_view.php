@@ -103,10 +103,11 @@
 
             <tbody>
                 <?php 
-                
+                // Create array of office_cash and office_bank ids keys with zero values
                 $bank_accounts = array_map(function($elem){return 0;},array_flip(array_keys($month_opening_balance['bank_balance'])));
                 $cash_accounts = array_map(function($elem){return 0;},array_flip(array_keys($month_opening_balance['cash_balance'])));
-
+                
+                // Imstantiate empty cash and bank balances
                 $running_bank_balance = $bank_accounts;
                 $sum_bank_income = $bank_accounts;
                 $sum_bank_expense = $bank_accounts;
@@ -114,7 +115,7 @@
                 $running_petty_cash_balance = $cash_accounts;
                 $sum_petty_cash_income = $cash_accounts;
                 $sum_petty_cash_expense = $cash_accounts;
-                //print_r($sum_petty_cash_income);
+                
                 foreach($vouchers as $voucher_id => $voucher){
                  extract($voucher);
                 ?>
@@ -123,7 +124,7 @@
                             <!-- <a href="#" class="action" title="Approve"><i class='fa fa-check'></i></a> 
                             <a href="#" class="action" title="Decline"><i class='fa fa-times'></i></a>
                             <a href="#" class="action" title="Clear"><i class='fa fa-eraser'></i></a> -->
-                            <div class="btn btn-danger"><?=get_phrase('clear');?></div>
+                            <div class="btn <?=!$cleared?'btn-danger':'btn-success';?> btn_action" ><?=get_phrase(!$cleared?'clear':'cleared');?></div>
                         </td>
                         <td><?=date('jS M Y',strtotime($date));?></td>
                         <td><span title="<?=$voucher_type_name;?>" class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>
@@ -148,6 +149,8 @@
                         <td class='align-right'><?=$cheque_number != 0?$cheque_number:'';?></td>
                         
                         <?php 
+
+                            // Compute bank and cash running balances
                             $voucher_amount = array_sum(array_column($spread,'transacted_amount'));
 
                             if($office_bank_id && isset($sum_bank_income[$office_bank_id])){
@@ -223,6 +226,20 @@
 </div>
 
 <script>
+
+$('.btn_action').on('click',function(){
+    
+    var has_btn_danger = $(this).hasClass('btn-danger')?true:false;
+
+    if(has_btn_danger){
+        $(this).toggleClass('btn-success');
+        alert('Cleared completed');
+    }else{
+        alert('Transaction cannot be uncleared. Use the financial report');
+    }
+    
+});
+
 $('.table').DataTable({
         dom: 'Bfrtip',
         //fixedHeader: true,
