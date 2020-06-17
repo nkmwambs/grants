@@ -160,12 +160,15 @@ if( ! function_exists('create_breadcrumb') ){
 
 		$breadcrumb_list = $CI->session->breadcrumb_list;
 
-		$string = '<b>'.get_phrase('you_are_here').":</b> ";
+		$string = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
 
 		foreach ($breadcrumb_list as $menuItem) {
-			$string .= '<a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a> <i style="font-size:15pt;font-weight:bolder;" class="fa fa-angle-right"></i> ';
+		
+			$string .= '<li class="breadcrumb-item"><a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a></li>';
 		}
 
+		$string .= '</ol></nav>';
+		
 		return $string;
 	}
 }

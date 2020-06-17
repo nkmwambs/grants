@@ -1,20 +1,13 @@
-<!-- <div class="row">
-	<div class="col-md-12 col-sm-12 clearfix" style="text-align:center;">
-		<h2 style="font-weight:200; margin:0px;"><?php echo $system_name;?></h2>
-    </div>
-</div>
-
-<hr /> -->
-
-<div class="rows">
+<div class="row">
 	<!-- Raw Links -->
 	<div class="col-md-12 col-sm-12 clearfix ">
 
         <ul class="list-inline links-list pull-left">
         <!-- Language Selector -->
            <li class="dropdown language-selector">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-close-others="true">
-                        	<i class="entypo-user"></i> <?php echo ucfirst($this->session->name);?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-close-others="true" style='text-decoration:none;'>
+                        <img src='<?=base_url();?>uploads/user_icons/2.png' class='img-circle' style='border:2px gray solid;' width='40px'/> 
+							<div class='label label-primary'><?php echo ucfirst($this->session->name);?></div>
                     </a>
 
 
