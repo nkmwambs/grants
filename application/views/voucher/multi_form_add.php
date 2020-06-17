@@ -652,9 +652,6 @@ function create_allocation_select_options(response_allocation){
 
 }
 
-// $(document).on('change','.allocation',function(){
-//     alert('Hello');
-// });
 
 function resetVoucher(){
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
@@ -747,13 +744,17 @@ $(".btn-insert").on('click',function(){
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
 
     if(tbl_body_rows.length == 0){
-        insertRow();
-        updateAccountAndAllocationField();
+        if((!$("#bank").attr('disabled') && $("#bank").val() > 0) || $("#bank").attr('disabled')){
+            insertRow();
+            updateAccountAndAllocationField();
+            showHiddenButtons(false,false,true);
+        }else{
+            alert('Choose a bank account');
+        }
+        
     }else{
         copyRow();   
     }  
-
-    showHiddenButtons(false,false,true);
 });
 
 //function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
@@ -764,18 +765,18 @@ function updateAccountAndAllocationField(){
 
     var voucher_type_id = $("#voucher_type").val();// Can be expense, income, cash_contra or bank_contra
 
-    var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
+    //var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
     
     var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
     var extra_data = {'office_bank_id':office_bank_id};
 
-    if(!$("#bank").attr('disabled') && $("#bank").val() == ""){
-        alert('Bank details and cheque number is required');
-        return false;
-    }else if(!$("#bank").attr('disabled')){
-        var office_bank_id = $("#bank").val();
+    //if(!$("#bank").attr('disabled') && $("#bank").val() == ""){
+     //   alert('Bank details and cheque number is required');
+     //   return false;
+   // }else if(!$("#bank").attr('disabled')){
+       // var office_bank_id = $("#bank").val();
         url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date + "/" + office_bank_id;
-    }
+   // }
     
     $.ajax({
         url:url,
@@ -896,28 +897,33 @@ $(document).on('change','.account',function(){
 
     var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
 
-    $.ajax({
-        url:url,
-        data:{'office_id':office_id,'account_id':account_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id},
-        type:"POST",
-        success:function(response){
+    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
-            var response_allocation = JSON.parse(response);
+    if(!toggle_accounts_by_allocation){
 
-            var allocation_select_option = "<option value=''>Select an allocation code</option>";
+        $.ajax({
+            url:url,
+            data:{'office_id':office_id,'account_id':account_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id},
+            type:"POST",
+            success:function(response){
 
-            if(response_allocation.length > 0){
-                $(".allocation").removeAttr('disabled');
-                $.each(response_allocation,function(i,el){
-                    allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
-                });
-            }else{
-                $(".allocation").prop('disabled','disabled');
+                var response_allocation = JSON.parse(response);
+
+                var allocation_select_option = "<option value=''>Select an allocation code</option>";
+
+                if(response_allocation.length > 0){
+                    $(".allocation").removeAttr('disabled');
+                    $.each(response_allocation,function(i,el){
+                        allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
+                    });
+                }else{
+                    $(".allocation").prop('disabled','disabled');
+                }
+
+                $(".allocation").html(allocation_select_option);
             }
-
-            $(".allocation").html(allocation_select_option);
-        }
-    });
+        });
+    }
 });
 
 $(document).on('change','.allocation',function(){
@@ -931,24 +937,28 @@ $(document).on('change','.allocation',function(){
     var url = "<?=base_url();?>voucher/get_accounts_for_project_allocation/";
     var data = {'office_id':office_id,'allocation_id':allocation_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id};
     
-    $.post(url,data,function(response){
-            //alert(response);
-            var response_accounts = JSON.parse(response);
+    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
-            var accounts_select_option = "<option value=''>Select account</option>";
+    if(toggle_accounts_by_allocation){
 
-            if(response_accounts.length > 0){
-                $(".account").removeAttr('disabled');
-                $.each(response_accounts,function(i,el){
-                    accounts_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
-                });
-            }else{
-                $(".account").prop('disabled','disabled');
-            }
+        $.post(url,data,function(response){
+                //alert(response);
+                var response_accounts = JSON.parse(response);
 
-            $(".account").html(accounts_select_option);
-    });
+                var accounts_select_option = "<option value=''>Select account</option>";
 
+                if(response_accounts.length > 0){
+                    $(".account").removeAttr('disabled');
+                    $.each(response_accounts,function(i,el){
+                        accounts_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
+                    });
+                }else{
+                    $(".account").prop('disabled','disabled');
+                }
+
+                $(".account").html(accounts_select_option);
+        });
+    }
 
 });
 
