@@ -6,6 +6,10 @@
 .center{
     text-align:center;
 }
+/* .validate_error{
+    border : 1px red solid;
+} */
+
 </style>
 
 <?php 
@@ -37,7 +41,7 @@
                     <div class='form-group'>
                         <label class='control-label col-xs-1'><?=get_phrase('office');?></label>
                         <div class='col-xs-2'>
-                            <select class='form-control' id='office' name='fk_office_id'>
+                            <select class='form-control required' id='office' name='fk_office_id'>
                                 <option value=""><?=get_phrase('select_office');?></option>
                                 <?php foreach($this->session->hierarchy_offices as $office){?>
                                         <option value="<?=$office['office_id'];?>"><?=$office['office_name'];?></option>
@@ -47,17 +51,17 @@
 
                         <label class='control-label col-xs-1 date-field'><?=get_phrase('date');?></label>
                         <div class='col-xs-2 date-field'>
-                            <input id="transaction_date" type='text' name='voucher_date' readonly class='form-control' />
+                            <input id="transaction_date" type='text' name='voucher_date' readonly class='form-control required' />
                         </div>
 
                         <label class='control-label col-xs-1'><?=get_phrase('voucher_number');?></label>
                         <div class='col-xs-2'>
-                            <input type='text' readonly class='form-control' name='voucher_number' id="voucher_number" />
+                            <input type='text' readonly class='form-control required' name='voucher_number' id="voucher_number" />
                         </div>
 
                         <label class='control-label col-xs-1'><?=get_phrase('voucher_type');?></label>
                         <div class='col-xs-2'>
-                            <select class='form-control'  disabled="disabled" name='fk_voucher_type_id' id='voucher_type' onchange="getAccountsByVoucherType(this);">
+                            <select class='form-control required'  disabled="disabled" name='fk_voucher_type_id' id='voucher_type' onchange="getAccountsByVoucherType(this);">
                                 <option value=""><?=get_phrase('select_voucher_type');?></option>
                                 
                             </select>
@@ -69,14 +73,14 @@
 
                         <label class='control-label col-xs-1'><?=get_phrase('cash_account');?></label>
                         <div class='col-xs-2'>
-                            <select class="form-control" name='fk_office_cash_id' id='cash_account' disabled='disabled'>
+                            <select class="form-control required" name='fk_office_cash_id' id='cash_account' disabled='disabled'>
                                     <option value=""><?=get_phrase('select_cash_account');?></option>
                             </select>
                         </div>
 
                         <label class='control-label col-xs-1'><?=get_phrase('bank_account');?></label>
                         <div class='col-xs-2'>
-                            <select class="form-control" name='fk_office_bank_id' id='bank' disabled='disabled'>
+                            <select class="form-control required" name='fk_office_bank_id' id='bank' disabled='disabled'>
                                     <option value=""><?=get_phrase('select_bank_account');?></option>
                             </select>
                         </div>
@@ -84,7 +88,7 @@
 
                         <label class='control-label col-xs-1'><?=get_phrase('cheque_number');?></label>
                         <div class='col-xs-2'>
-                            <input type='text' name='voucher_cheque_number' id='cheque_number' disabled='disabled' class='form-control' />
+                            <input type='text' name='voucher_cheque_number' id='cheque_number' disabled='disabled' class='form-control required' />
                         </div>
 
                         <!-- <label class='control-label col-xs-1'><?=get_phrase('cheque_reversal');?></label>
@@ -99,21 +103,21 @@
                     <div class='form-group'>
                         <label class='col-xs-1'><?=get_phrase('payee/_vendor');?></label>
                         <div class='col-xs-11'>
-                            <input type='text' name='voucher_vendor' class='form-control' />
+                            <input type='text' name='voucher_vendor' class='form-control required' />
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <label class='col-xs-1'><?=get_phrase('address');?></label>
                         <div class='col-xs-11'>
-                            <input type='text' name='voucher_vendor_address' class='form-control' />
+                            <input type='text' name='voucher_vendor_address' class='form-control required' />
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <label class='col-xs-1'><?=get_phrase('description');?></label>
                         <div class='col-xs-11'>
-                            <input type='text' name='voucher_description' class='form-control' />
+                            <input type='text' name='voucher_description' class='form-control required' />
                         </div>
                     </div>
 
@@ -967,28 +971,28 @@ function actionCell(){
 }
 
 function quantityCell(value = 0){
-    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' name='' id=''/></td>";
+    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' name='' id=''/></td>";
 }
 
 function descriptionCell(value = ''){
-    return "<td><input  name='voucher_detail_description[]' type='text' class='form-control body-input description' value='" + value + "' name='' id=''/></td>"; 
+    return "<td><input  name='voucher_detail_description[]' type='text' class='form-control required body-input description' value='" + value + "' name='' id=''/></td>"; 
 }
 
 function unitCostCell(value = 0){
-    return "<td><input  name='voucher_detail_unit_cost[]' type='number' class='form-control body-input number-fields unitcost' onclick='replaceValue(this);' onchange='computeTotalCost(this);'  value='" + value + "' name='' id=''/></td>";
+    return "<td><input  name='voucher_detail_unit_cost[]' type='number' class='form-control required body-input number-fields unitcost' onclick='replaceValue(this);' onchange='computeTotalCost(this);'  value='" + value + "' name='' id=''/></td>";
 }
 
 function totalCostCell(value = 0){
-    return "<td><input name='voucher_detail_total_cost[]' type='number' class='form-control body-input number-fields totalcost' value='" + value + "' name='' id='' readonly='readonly'/></td>";
+    return "<td><input name='voucher_detail_total_cost[]' type='number' class='form-control required body-input number-fields totalcost' value='" + value + "' name='' id='' readonly='readonly'/></td>";
 }
 
 function accountCell(value = 0){
     var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
     
     if(toggle_accounts_by_allocation){
-        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control body-input account' name='' id=''></select></td>";
+        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
     }else{
-        return "<td><select name='voucher_detail_account[]' class='form-control body-input account' name='' id=''></select></td>";
+        return "<td><select name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
     }
     
 }
@@ -997,9 +1001,9 @@ function allocationCodeCell(value = 0){
     var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
     if(toggle_accounts_by_allocation){
-        return "<td><select name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
+        return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
     }else{
-        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
+        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
     }
     
 }
@@ -1008,36 +1012,61 @@ function requestIdCell(value = 0){
     return "<td><input name='fk_request_detail_id[]' type='number' class='form-control body-input number-fields request_number' value='" + value + "' name='' id='' readonly='readonly'/></td>";
 }
 
-function saveVoucher(){
+function saveVoucher(clicked_btn){
     var url = "<?=base_url();?>Voucher/insert_new_voucher";
     var data = $("#frm_voucher").serializeArray();
 
-    $.ajax({
-        url:url,
-        type:"POST",
-        data:data,
-        beforeSend:function(){
+    if(!check_required_fields()){
+        alert('Empty required fields exists');
+    }else{
+        $.ajax({
+            url:url,
+            type:"POST",
+            data:data,
+            success:function(response){
+                alert(response);
+                if(clicked_btn.hasClass('btn-save')){
+                    location.href = document.referrer 
+                }else{
+                    resetVoucher();
+                }
+            }
 
-        },
-        success:function(response){
-            alert(response);
-            //location.href = document.referrer 
-        },
-        error:function(){
-            alert('Error occurred');
-        }
-
-    });
+        });
+    }
 }
 
 $(".btn-save").on('click',function(){
-    saveVoucher();
-    //go_back();
-    location.href = document.referrer; 
+    saveVoucher($(this));
 });
 
 $(".btn-save-new").on('click',function(){
-    saveVoucher();
-    resetVoucher();
+    saveVoucher($(this));
+});
+
+function check_required_fields(){
+    return_flag = true;
+
+    $(".required").each(function(i,el){
+        if(
+            $(el).val() == "" && 
+            !$(el).attr('disabled') && 
+            !$(el).attr('readonly') && 
+            $(el).hasClass('required') 
+        ){
+            //$(el).addClass('validate_error');
+            return_flag = false;
+            $(el).css('border','1px red solid');
+        }
+    });
+
+    return return_flag;
+}
+
+
+$(document).on('change','.required',function(){
+    if($(this).attr('style')){
+        $(this).removeAttr('style');
+    }
 });
 </script>
