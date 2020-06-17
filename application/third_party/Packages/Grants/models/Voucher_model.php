@@ -568,6 +568,19 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     }
   }
 
+  function get_office_cash($account_system_id){
+
+    // $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
+    // $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
+    $result = $this->db->get_where('office_cash',array('fk_account_system_id'=>$account_system_id));
+
+    if($result->num_rows()>0){
+      return $result->row();
+    }else{
+      return [];
+    }
+  }
+
   function get_project_allocation($allocation_id){
     $this->db->join('project','project.project_id=project_allocation.fk_project_id');
     $result = $this->db->get_where('project_allocation',array('project_allocation_id'=>$allocation_id));

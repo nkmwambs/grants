@@ -74,9 +74,11 @@
                         
                 <div class="row form_rows">
 
-                    <div class="col-xs-4"><span class='span_label'><?=get_phrase('voucher_type');?>:</span> <?=$header['voucher_type_name']?></div>
+                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('voucher_type');?>:</span> <?=$header['voucher_type_name']?></div>
+                    
+                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_cash']?></div>
 
-                    <div class="col-xs-4"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_bank']?></div>
+                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_bank']?></div>
 
                     <div class="col-xs-3"><span class='span_label'><?=get_phrase('cheque_number');?>:</span> <?=$header['voucher_cheque_number']?></div>
 

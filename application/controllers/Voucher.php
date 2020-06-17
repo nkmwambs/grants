@@ -161,6 +161,8 @@ class Voucher extends MY_Controller
     $raw_result = $this->voucher_model->get_transaction_voucher(hash_id($id,'decode'));
 
     $office_bank = $this->voucher_model->get_office_bank($raw_result[0]['fk_office_bank_id']);
+
+    $office_cash = $this->voucher_model->get_office_cash($this->office_account_system($raw_result[0]['fk_office_id'])->account_system_id);
     
     $voucher_type = $this->voucher_model->get_voucher_type($raw_result[0]['fk_voucher_type_id']);
   
@@ -176,6 +178,7 @@ class Voucher extends MY_Controller
     $header['voucher_number'] = $raw_result[0]['voucher_number'];
     $header['voucher_type_name'] = $voucher_type->voucher_type_name;
     $header['office_bank'] = sizeof((array)$office_bank)>0?$office_bank->bank_name .'('.$office_bank->office_bank_account_number.')':"";
+    $header['office_cash'] = sizeof((array)$office_cash)>0?$office_cash->office_cash_name:"";
     $header['voucher_cheque_number'] = $raw_result[0]['voucher_cheque_number'];
     $header['voucher_vendor'] = $raw_result[0]['voucher_vendor'];
     $header['voucher_vendor_address'] = $raw_result[0]['voucher_vendor_address'];
@@ -195,16 +198,12 @@ class Voucher extends MY_Controller
       }elseif ($row['fk_income_account_id'] > 0) {
         $body[$count]['account_code'] = $this->db->get_where('income_account',
         array('income_account_id'=>$row['fk_income_account_id']))->row()->income_account_code;
-      }elseif ($row['fk_bank_contra_account_id'] > 0) {
-        $body[$count]['account_code'] = $this->db->get_where('bank_contra_account',
-        array('bank_contra_account_id'=>$row['fk_bank_contra_account_id']))->row()->bank_contra_account_code;
-      }elseif ($row['fk_cash_contra_account_id'] > 0) {
-        $body[$count]['account_code'] = $this->db->get_where('cash_contra_account',
-        array('cash_contra_account_id'=>$row['fk_cash_contra_account_id']))->row()->cash_contra_account_code;
+      }elseif($row['fk_contra_account_id'] > 0){
+          $body[$count]['account_code'] = $this->db->get_where('contra_account',
+          array('contra_account_id'=>$row['fk_contra_account_id']))->row()->contra_account_code;
       }
 
       $allocation = $this->voucher_model->get_project_allocation($row['fk_project_allocation_id']);
-     
 
       $body[$count]['project_allocation_code'] = !empty($allocation)?$allocation->project_allocation_name.' ('.$allocation->project_name.') ':"";
 
