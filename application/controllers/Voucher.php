@@ -325,7 +325,9 @@ class Voucher extends MY_Controller
 
     $project_allocation = [];
     
-    if(!$office_accounting_system->account_system_is_allocation_linked_to_account){
+    if( 
+        !$office_accounting_system->account_system_is_allocation_linked_to_account || 
+        $this->config->item("toggle_accounts_by_allocation")){
 
         $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
         $this->db->select(array('project_allocation_id','project_allocation_name'));
@@ -352,11 +354,11 @@ class Voucher extends MY_Controller
     }elseif($voucher_type_effect == 'contra'){
       $response['is_contra'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
-      array('fk_account_system_id'=>$office_accounting_system->account_system_id))->result_array();
+      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
     }elseif($voucher_type_account == 'cash'){
       $response['is_cash_payment'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
-      array('fk_account_system_id'=>$office_accounting_system->account_system_id))->result_array();
+      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
     }
 
     if($voucher_type_account == 'bank'){
@@ -686,6 +688,39 @@ class Voucher extends MY_Controller
 
     echo json_encode($project_allocation);
 
+  }
+
+  function get_accounts_for_project_allocation(){
+
+    $post = $this->input->post();
+
+    $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($post['voucher_type_id']);
+
+    $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
+    $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
+    
+    $accounts = [];
+
+    $project_allocation_id = $post['allocation_id'];
+
+    $office_accounting_system = $this->office_account_system($this->input->post('office_id'));
+    
+    $this->db->where(array('fk_account_system_id'=>$office_accounting_system->account_system_id));
+
+    if($voucher_type_effect == 'expense'){
+      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
+      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+      $this->db->join('project_allocation','project_allocation.fk_income_account_id=income_account.income_account_id');
+      $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
+      $accounts = $this->db->get('expense_account')->result_array();
+    }else{
+      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
+      $this->db->join('project_allocation','project_allocation.fk_income_account_id=income_account.income_account_id');
+      $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
+      $accounts = $this->db->get('income_account')->result_array();
+    }  
+    
+    echo json_encode($accounts);
   }
 
   function update_request_detail_status_on_vouching($request_detail_id,$voucher_id){

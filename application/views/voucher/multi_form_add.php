@@ -137,8 +137,19 @@
                                         <th><?=get_phrase('description');?></th>
                                         <th><?=get_phrase('unit_cost');?></th>
                                         <th><?=get_phrase('total_cost');?></th>
-                                        <th><?=get_phrase('account');?></th>
-                                        <th><?=get_phrase('allocation_code');?></th>
+
+                                        <?php 
+                                            $toggle_accounts_by_allocation = $this->config->item("toggle_accounts_by_allocation");
+
+                                            if($toggle_accounts_by_allocation){
+                                        ?>
+                                                <th><?=get_phrase('allocation_code');?></th>
+                                                <th><?=get_phrase('account');?></th>
+                                        <?php }else{?>
+                                                <th><?=get_phrase('account');?></th>
+                                                <th><?=get_phrase('allocation_code');?></th>
+                                        <?php }?> 
+                                        
                                         <th><?=get_phrase('request_number');?></th>
                                     </tr>
                                 </thead>
@@ -170,7 +181,7 @@
         
         <div class="row">
             <div class="col-xs-12">
-               <?=Widget_base::load('upload');?>
+               <?php //echo Widget_base::load('upload');?>
             </div>
         </div>
 
@@ -715,8 +726,17 @@ function insertRow(){
     cell += descriptionCell();
     cell += unitCostCell(); 
     cell += totalCostCell(); 
-    cell += accountCell(); 
-    cell += allocatioCodeCell(); 
+
+    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+
+    if(toggle_accounts_by_allocation){
+        cell += allocationCodeCell(); 
+        cell += accountCell(); 
+    }else{
+        cell += accountCell(); 
+        cell += allocationCodeCell(); 
+    }
+
     cell += requestIdCell(); 
 
     tbl_body.append("<tr>"+cell+"</tr>");
@@ -775,8 +795,14 @@ function updateAccountAndAllocationField(){
             
             var response_allocation = response_objects['project_allocation'];
 
-            //create_allocation_select_options(response_allocation);
-            create_accounts_select_options(response_accounts);
+            var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+
+            if(toggle_accounts_by_allocation){
+                create_allocation_select_options(response_allocation);
+            } else {
+                create_accounts_select_options(response_accounts);
+            }  
+            
             
         },
         error:function(){
@@ -894,6 +920,38 @@ $(document).on('change','.account',function(){
     });
 });
 
+$(document).on('change','.allocation',function(){
+    
+    var office_id = $("#office").val();
+    var allocation_id = $(this).val();
+    var voucher_type_id = $("#voucher_type").val();
+    var transaction_date = $("#transaction_date").val();
+    var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
+
+    var url = "<?=base_url();?>voucher/get_accounts_for_project_allocation/";
+    var data = {'office_id':office_id,'allocation_id':allocation_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id};
+    
+    $.post(url,data,function(response){
+            //alert(response);
+            var response_accounts = JSON.parse(response);
+
+            var accounts_select_option = "<option value=''>Select account</option>";
+
+            if(response_accounts.length > 0){
+                $(".account").removeAttr('disabled');
+                $.each(response_accounts,function(i,el){
+                    accounts_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
+                });
+            }else{
+                $(".account").prop('disabled','disabled');
+            }
+
+            $(".account").html(accounts_select_option);
+    });
+
+
+});
+
 function actionCell(){
     return "<td><div class='btn btn-danger action' onclick='removeRow(this);'>Remove Row</div> &nbsp; <span onclick='clearRow(this);' class='fa fa-trash'></span> </td>";
 }
@@ -915,11 +973,25 @@ function totalCostCell(value = 0){
 }
 
 function accountCell(value = 0){
-    return "<td><select name='voucher_detail_account[]' class='form-control body-input account' name='' id=''></select></td>";
+    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+    
+    if(toggle_accounts_by_allocation){
+        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control body-input account' name='' id=''></select></td>";
+    }else{
+        return "<td><select name='voucher_detail_account[]' class='form-control body-input account' name='' id=''></select></td>";
+    }
+    
 }
 
-function allocatioCodeCell(value = 0){
-    return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
+function allocationCodeCell(value = 0){
+    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+
+    if(toggle_accounts_by_allocation){
+        return "<td><select name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
+    }else{
+        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control body-input allocation' name='' id=''></select></td>";
+    }
+    
 }
 
 function requestIdCell(value = 0){
