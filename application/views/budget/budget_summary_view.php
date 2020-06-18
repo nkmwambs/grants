@@ -63,7 +63,7 @@
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
-                       <?=get_phrase('year');?> <?=$current_year;?> <?=$budget_tag;?> : <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> <?=get_phrase('budget_summary');?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/'>Show budget schedule</a>)
+                       <?=get_phrase('year');?> <?=$current_year;?> <?=$budget_tag;?> : <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> <?=get_phrase('budget_summary');?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/'><?=get_phrase('show_budget_schedule');?></a>) &nbsp; <div class='btn btn-success'><?=get_phrase('submit_budget');?></div>
                     </th>
                 </tr>
                 <tr>

@@ -114,7 +114,7 @@
                         </td>
                         <td><?=$loop_expense_items['description']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
-                        <td><?=$loop_expense_items['status']['status_name'];?></td>
+                        <td><div class='btn btn-success'><?=$loop_expense_items['status']['status_name'];?></div></td>
                         <?php foreach($month_names_with_number_keys as $month_number=>$month_name){?>
                             <th><?=$loop_expense_items['month_spread'][$month_number]['amount'];?></th>
                         <?php }?>
