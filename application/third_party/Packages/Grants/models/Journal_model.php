@@ -308,15 +308,12 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');  
       $this->db->join('voucher_detail','voucher_detail.fk_voucher_id=voucher.voucher_id');
       
-      if(count($project_allocation_ids)>0){
+      if(count($project_allocation_ids)>0 && $office_bank_id > 0){
         $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
-      }
-
-      if($office_bank_id > 0){
         $this->db->or_where('fk_office_bank_id',$office_bank_id);
+      }elseif(count($project_allocation_ids) == 0 && $office_bank_id > 0){
+        $this->db->where('fk_office_bank_id',$office_bank_id);
       }
-  
-      //$this->db->group_by('voucher_id');
   
       $result = $this->db->order_by('voucher_id','ASC')->get('voucher')->result_array();
     }
