@@ -439,18 +439,21 @@ function generate_item_track_number_and_name($approveable_item){
    * @todo - there is an error here when you specify the return type the insert row event in the 
    * multi_form_add action views does not work
    * 
-   * @param String $table - Selected table
+   * @param String $table - Selected Lookup table
    * @return Array - Lookup options array
    */
   function lookup_values(String $table) {
 
     $table = strtolower($table);
 
-    if( is_array($this->grants->lookup_values_where($table)) && 
-        count($this->grants->lookup_values_where($table)) > 0)
+    if( 
+        isset($this->grants->lookup_values_where()[$table]) &&
+        is_array($this->grants->lookup_values_where()[$table]) && 
+        count($this->grants->lookup_values_where()[$table]) > 0 
+        )
     {
       //$this->create_table_join_statement(strtolower($this->controller),$this->grants->lookup_tables($this->controller));
-      //$this->db->where($this->grants->lookup_values_where($table));
+      $this->db->where($this->grants->lookup_values_where()[$table]);
     }
 
     $result = $this->db->get($table)->result_array();

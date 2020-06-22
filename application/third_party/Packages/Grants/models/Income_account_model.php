@@ -44,5 +44,8 @@ class Income_account_model extends MY_Model implements CrudModelInterface, Table
 
   }
 
- 
+  // function lookup_values_where($table = ''){
+  //   return array('income_account_is_donor_funded'=>1);
+  // }
+
 }

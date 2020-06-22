@@ -41,7 +41,7 @@
 	$config['toggle_accounts_by_allocation'] = true; // When true, the voucher allocation codes will be used to filter accounts
 
 	//Financial Report Configs
-	$config['only_combined_center_financial_reports'] = true;
+	$config['only_combined_center_financial_reports'] = false; // If true only drop lowest context office report in the MFR office filter
 	$config['funding_balance_report_aggregate_method'] = "receipt"; // receipt or allocation
 
 

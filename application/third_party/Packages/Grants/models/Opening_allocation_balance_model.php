@@ -32,7 +32,6 @@ class Opening_allocation_balance_model extends MY_Model{
         return array(
             'project_allocation',
             'system_opening_balance',
-            'status'
         );
     }
 
@@ -41,6 +40,6 @@ class Opening_allocation_balance_model extends MY_Model{
     public function detail_multi_form_add_visible_columns(){}
 
     function detail_list_table_visible_columns(){
-        return ['opening_allocation_balance_track_number','opening_allocation_balance_name','project_allocation_name','opening_allocation_balance_amount','status_name'];
+        return ['opening_allocation_balance_track_number','opening_allocation_balance_name','project_allocation_name','opening_allocation_balance_amount'];
     }
 }

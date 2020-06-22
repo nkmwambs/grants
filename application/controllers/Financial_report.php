@@ -22,10 +22,10 @@ class Financial_report extends MY_Controller
 
   function index(){}
 
-  private function _income_accounts($office_ids){
+  private function _income_accounts($office_ids, $project_ids = []){
 
     // Should be moved to Income accounts library
-    return $this->financial_report_library->income_accounts($office_ids);
+    return $this->financial_report_library->income_accounts($office_ids, $project_ids);
   }
 
   private function month_income_account_receipts($office_ids,$start_date_of_month){
@@ -36,25 +36,38 @@ class Financial_report extends MY_Controller
     return $this->financial_report_library->month_income_account_expenses($office_ids, $start_date_of_month);
   }
 
-  private function month_income_opening_balance($office_ids, $start_date_of_month){
-    return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month);
+  private function month_income_opening_balance($office_ids, $start_date_of_month,$project_ids = []){
+    return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
   }
 
-  private function _fund_balance_report($office_ids, $start_date_of_month){
+  private function test_month_income_opening_balance($office_ids, $start_date_of_month,$project_ids = []){
+    //return $this->financial_report_model->test_month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
+    return $this->_income_accounts($office_ids,$project_ids);
+  }
 
-    $income_accounts =  $this->_income_accounts($office_ids);
-    $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month);
+  private function _fund_balance_report($office_ids, $start_date_of_month, $project_ids = []){
+
+    $income_accounts =  $this->_income_accounts($office_ids,$project_ids);
+    $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
     $month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month);
     $month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month);
     
     $report = array();
 
     foreach($income_accounts as $account){
+      
+      $month_opening_balance = isset($month_opening_balance[$account['income_account_id']])?$month_opening_balance[$account['income_account_id']]:0;
+      $month_income = isset($month_income[$account['income_account_id']])?$month_income[$account['income_account_id']]:0;
+      $month_expense = isset($month_expense[$account['income_account_id']])?$month_expense[$account['income_account_id']]:0;
+
+      if($month_opening_balance == 0 && $month_income == 0 && $month_expense == 0){
+        continue;
+      }
        $report[] = [
         'account_name'=>$account['income_account_name'],
-        'month_opening_balance'=>isset($month_opening_balance[$account['income_account_id']])?$month_opening_balance[$account['income_account_id']]:0,
-        'month_income'=>isset($month_income[$account['income_account_id']])?$month_income[$account['income_account_id']]:0,
-        'month_expense'=>isset($month_expense[$account['income_account_id']])?$month_expense[$account['income_account_id']]:0,
+        'month_opening_balance'=>$month_opening_balance,
+        'month_income'=>$month_income,
+        'month_expense'=>$month_expense,
        ]; 
     }  
     
@@ -404,11 +417,11 @@ class Financial_report extends MY_Controller
 
   function financial_report_office_hierarchy($reporting_month){
     $user_office_hierarchy = $this->user_model->user_hierarchy_offices($this->session->user_id,true);
-
+    
     // Remove offices with a financial reporting in the selected reporting month
 
     $user_hierarchy_offices_with_report = $this->_user_hierarchy_offices_with_financial_report_for_selected_month($reporting_month);
-
+    //print_r($user_hierarchy_offices_with_report);exit;
     foreach($user_office_hierarchy as $office_context => $offices){
       foreach($offices as $key => $office){
         if(!in_array($office['office_id'],$user_hierarchy_offices_with_report)){
@@ -439,12 +452,12 @@ class Financial_report extends MY_Controller
     return array_column($office_ids_with_report,'fk_office_id');
   }
   
-  private function financial_report_information(){
+  private function financial_report_information($report_id){
 
-    $additional_information = $this->financial_report_library->financial_report_information($this->id);
+    $additional_information = $this->financial_report_library->financial_report_information($report_id);
 
     if(isset($_POST['office_ids']) && count($_POST) > 0){
-      $additional_information = $this->financial_report_library->financial_report_information($this->id, $_POST['office_ids']);
+      $additional_information = $this->financial_report_library->financial_report_information($report_id, $_POST['office_ids']);
     }
 
     $offices_ids = array_column($additional_information,'office_id');
@@ -477,14 +490,20 @@ class Financial_report extends MY_Controller
           ];
   }
 
+  function get_month_active_projects($office_ids,$reporting_month){
+ 
+    return $this->financial_report_library->get_month_active_projects($office_ids,$reporting_month);
+  }
+
   function result($id = ''){
 
     if($this->action == 'view'){
       
-     extract($this->financial_report_information());
-
+     extract($this->financial_report_information($this->id));
+      
       return [
-        //'test'=>$test,
+        'test'=>[],
+        'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
         'multiple_offices_report'=>$multiple_offices_report,
         'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
         'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
@@ -508,12 +527,50 @@ class Financial_report extends MY_Controller
     }
   }
 
-  function view(){
-    parent::view();
+  function result_array($report_id,$office_ids,$reporting_month,$project_ids = []){
+    extract($this->financial_report_information($report_id));
+
+    return [
+      'test'=>$this->test_month_income_opening_balance($office_ids,$reporting_month,$project_ids),
+      'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
+      'multiple_offices_report'=>$multiple_offices_report,
+      'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
+      'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
+      'office_names'=>$office_names,
+      'office_ids'=>$office_ids,
+      'reporting_month'=>$reporting_month,
+      'fund_balance_report'=>$this->_fund_balance_report($office_ids,$reporting_month,$project_ids),
+      'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
+      'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month),
+      'financial_ratios'=>$this->financial_ratios(),
+      'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
+      'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
+      'outstanding_cheques'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
+      'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
+      'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
+      'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
+      'expense_report'=>$this->_expense_report($office_ids,$reporting_month)
+    ];
+ 
   }
 
-  function merge_financial_report(){
-    echo json_encode($this->input->post());
+  function filter_financial_report(){
+
+    $project_ids = $this->input->post('project_ids');
+    $office_ids = $this->input->post('office_ids');
+    $report_id = $this->input->post('report_id');
+    $reporting_month = $this->input->post('reporting_month');
+
+    $result = $this->result_array($report_id, $office_ids,$reporting_month,$project_ids);
+    $result['result'] = $result;
+    
+    $view_page =  $this->load->view('financial_report/ajax_view',$result,true);
+
+    echo $view_page;
+  }
+
+  function view(){
+    parent::view();
   }
 
   function _check_if_financial_report_is_submitted($office_ids,$reporting_month){

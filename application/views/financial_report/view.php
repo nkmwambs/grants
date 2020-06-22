@@ -13,6 +13,10 @@
 }
 </style>
 
+<?php 
+//print_r($result['month_active_projects']);
+?>
+
 <div class="row">
   <div class="col-xs-12">
       <?=Widget_base::load('comment');?>
@@ -28,11 +32,15 @@
 
 <div class='row'>
     <div class='col-xs-12'>
-        <form id='frm_selected_offices' action='<?=base_url().ltrim($_SERVER['REQUEST_URI'],'/grants');?>' method='POST'>
+        <form id='frm_selected_offices' action='<?=base_url();?>financial_report/filter_financial_report' method='POST'>
             <div class='form-group'>
-                <label class='col-xs-2 control-label'><?=get_phrase('choose_offices');?></label>
+                <label class='col-xs-2 control-label'><?=get_phrase('choose_offices_and_projects');?></label>
                 
-                <div class='col-xs-8'>
+                <div class='col-xs-4'>
+                    <!--Implement appending to searializeArray later to avoid hidden fields -->
+                    <input type='hidden' value='<?=$this->id?>' name='report_id' />
+                    <input type='hidden' value='<?=$reporting_month;?>' name='reporting_month' />
+
                     <select name='office_ids[]' id='office_ids' class='form-control select2' multiple>
                         <?php foreach($user_office_hierarchy as $context => $offices){?>
                             <optgroup label='<?=ucfirst($context);?>'>
@@ -54,8 +62,16 @@
                     </select>
                 </div>
 
+                <div class='col-xs-4'>
+                    <select name='project_ids[]' class='form-control select2' multiple ><?=get_phrase('select_projects');?>
+                        <?php foreach($month_active_projects as $month_active_project){?>
+                            <option value='<?=$month_active_project['project_id'];?>'><?=$month_active_project['project_name'];?></option>
+                        <?php }?>
+                    </select>
+                </div>
+
                 <div class='col-xs-2'>
-                     <i class='badge badge-info'><?=count($offices);?></i>               
+                     <i class='badge badge-info'></i>               
                     <button type='submit' id='merge_reports' class='btn btn-default'><?=get_phrase('run');?></button>
                 </div>
             </div>
@@ -63,87 +79,14 @@
     </div>
 </div>
 
-<div class="row">
-    <div class='col-xs-12 header'><?=get_phrase('fund_balance_report');?></div>
-    <div class="col-xs-12">
-        <?php include "includes/include_fund_balance_report.php";?>
-    </div>
-</div>
-
-<div class='row'>
-    <div class='col-xs-12 header'><?=get_phrase('projects_balance_report');?></div>
-    <div class='col-xs-12'>
-        <?php include "includes/include_project_balance_report.php";?>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('proof_of_cash');?></div>
-        <?php include "includes/include_proof_of_cash.php";?>
-    </div>
-
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('financial_ratios');?></div>
-        <?php include "includes/include_financial_ratios.php";?>
-    </div>
-
-</div>
-
-<div class="row">
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('bank_reconciliation');?></div>
-        <?php include "includes/include_bank_reconciliation.php";?>    
-    </div>
-
-    <div class="col-xs-6">
-        <div class="col-xs-12 header"><?=get_phrase('bank_statements');?></div>
-        <?php include "includes/include_bank_statements.php";?>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('outstanding_cheques');?></div>
-        <?php include "includes/include_outstanding_cheques.php";?>
-    </div>
-
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('outstanding_cheques_cleared_effects');?></div>
-        <?php include "includes/include_cleared_outstanding_cheques.php";?>
-    </div>
-
-</div>
-
-
-<div class="row">
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('deposit_in_transit');?></div>
-        <?php include "includes/include_deposit_in_transit.php";?>
-    </div>
-
-    <div class="col-xs-6">
-    <div class="col-xs-12 header"><?=get_phrase('deposit_in_transit_cleared_effects');?></div>
-        <?php include "includes/include_cleared_deposit_in_transit.php";?>
-    </div>
-
-</div>
-
-<div class="row">
-    <div class="col-xs-12">
-    <div class="col-xs-12 header"><?=get_phrase('expense_report');?></div>
-        <?php include "includes/include_expense_report.php";?>
-    </div>
-</div>
 
 <hr/>
-<?php if(!$multiple_offices_report && !$financial_report_submitted){?>
-    <div class="row">
-        <div class="col-xs-12" style="text-align:center;">
-            <div class='btn btn-default' id="submit_report"><?=get_phrase('submit');?></div>
-        </div>
-    </div>    
-<?php }?>
+
+<div class='row'>
+    <div class='col-xs-12' style='overflow-x: auto' id='financial_report_row'>
+        <?php include 'ajax_view.php';?>
+    </div>
+</div>
 
 <script>
 
@@ -188,23 +131,18 @@ $(document).ready(function(){
 
 });
 
-// $("#merge_reports").on('click',function(){
-//     //alert('Hello');
-//     var selected_offices = $("#selected_offices").text();
+$("#frm_selected_offices").on('submit',function(ev){
+    var url = $(this).attr('action');
     
+    var data = $(this).serializeArray(); //{'project_ids':[1,2],'office_ids':[1,2],'transacting_month':'2020-04-01','report_id':'<?=$this->id;?>'};//
 
-//     var url = "<?=base_url();?>financial_report/merge_financial_report";
+    $.post(url,data,function(response){
+        //alert(response);
+        $('#financial_report_row').html(response);
+    });
 
-//     $.ajax({
-//         url:url,
-//         data:$("#frm_selected_offices").serializeArray(),
-//         type:"POST",
-//         success:function(response){
-//             alert(response);
-//             $("#office_names").html('A combined report of:<br/> ' + selected_offices);
-//         }
-//     });
-// });
+    ev.preventDefault();
+});
 
 $("#bank_statement_balance").on('click',function(){
     //$(this).val(null);

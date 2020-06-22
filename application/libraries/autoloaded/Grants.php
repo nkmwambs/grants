@@ -1925,11 +1925,15 @@ function feature_model_list_table_visible_columns() {
      * **************************************************************************************************
      */
 
-     function lookup_values_where($table){
+     function lookup_values_where($table = ''){
       
-      $model = $table.'_model';
-      $this->CI->load->model($model);
+      $model = $this->current_model;
 
+      if($table !== ""){
+        $model = $table.'_model';
+      }
+      
+      $this->CI->load->model($model);
       
       if(  
             method_exists($this->CI->$model,'lookup_values_where') 
