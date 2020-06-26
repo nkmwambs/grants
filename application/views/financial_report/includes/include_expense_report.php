@@ -26,8 +26,12 @@
                 <td><?=number_format($expense_account['month_expense'],2);?></td>
                 <td><?=number_format($expense_account['month_expense_to_date'],2);?></td>
                 <td><?=number_format($expense_account['budget_to_date'],2);?></td>
-                <td><?=number_format($expense_account['budget_variance'],2);?></td>
-                <td><?=round($expense_account['budget_variance_percent'],2) * 100;?></td>
+                <?php 
+                    $budget_variance = $expense_account['budget_to_date'] - $expense_account['month_expense_to_date'];
+                    $percent_budget_variance = $expense_account['budget_to_date'] > 0 ? ($budget_variance/$expense_account['budget_to_date']) : -1;
+                ?>
+                <td><?=number_format($budget_variance ,2);?></td>
+                <td><?=round($percent_budget_variance,2) * 100;?></td>
             </tr>
         <?php 
                 $month_expense += $expense_account['month_expense'];
@@ -48,7 +52,7 @@
                     $budget_variance_percent = $budget_to_date != 0?round($budget_variance / $budget_to_date,2) * 100:0;
                 ?>
                 <td><?=number_format($budget_variance,2);?></td>
-                <td><?=$budget_variance_percent;?></td>
+                <td><?php //echo $budget_variance_percent;?></td>
                 <td>&nbsp;</td>
             </tr>
         </tfoot>
