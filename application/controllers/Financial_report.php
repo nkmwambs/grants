@@ -241,14 +241,15 @@ class Financial_report extends MY_Controller
 
   }
 
-  private function _expense_report($office_ids,$reporting_month){
+  private function _expense_report($office_ids,$reporting_month,$project_ids = []){
     
     $expense_account_grid = [];
 
     $income_grouped_expense_accounts = $this->_income_grouped_expense_accounts($office_ids);
-    $month_expense = $this->_month_expense_by_expense_account($office_ids,$reporting_month);
-    $month_expense_to_date = $this->_expense_to_date_by_expense_account($office_ids,$reporting_month);
-    $budget_to_date = $this->_bugdet_to_date_by_expense_account($office_ids,$reporting_month);
+    $month_expense = $this->financial_report_model->month_expense_by_expense_account($office_ids,$reporting_month,$project_ids);
+    $month_expense_to_date = $this->financial_report_model->expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids);
+    $budget_to_date = $this->financial_report_model->bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids);
+    
     $budget_variance = $this->_budget_variance_by_expense_account($office_ids,$reporting_month);
     $budget_variance_percent = $this->_budget_variance_percent_by_expense_account($office_ids,$reporting_month);
     $expense_account_comment = $this->_expense_account_comment($office_ids,$reporting_month);
@@ -290,113 +291,7 @@ class Financial_report extends MY_Controller
     return $expense_accounts;
   }
 
-  function _month_expense_by_expense_account($office_ids,$reporting_month){
-    
-    $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
-    $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
-
-    $this->db->select_sum('voucher_detail_total_cost');
-    $this->db->select(array('income_account_id','expense_account_id'));
-    $this->db->group_by('expense_account_id');
-    $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$start_date_of_reporting_month,
-    'voucher_date<='=>$end_date_of_reporting_month));
-    
-    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
-    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-    $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
-    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-    
-    //$this->grants_model->create_table_join_statement_with_depth('voucher_detail',['voucher','voucher_type','voucher_type_effect','expense_account','income_account']);
-
-    $result = $this->db->get('voucher_detail');
-
-    $order_array = [];
-
-    if($result->num_rows() > 0){
-      $rows = $result->result_array();
-
-      foreach($rows as $record){
-        $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['voucher_detail_total_cost'];
-      }
-    }
-
-    return $order_array;
-  }
-
-  function _expense_to_date_by_expense_account($office_ids,$reporting_month){
-    
-    $fy_start_date = $this->grants->fy_start_date($reporting_month);
-    $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
-
-    $this->db->select_sum('voucher_detail_total_cost');
-    $this->db->select(array('income_account_id','expense_account_id'));
-    $this->db->group_by('expense_account_id');
-    $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$fy_start_date,
-    'voucher_date<='=>$end_date_of_reporting_month));
-    
-    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
-    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-    $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
-    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-    
-    //$this->grants_model->create_table_join_statement_with_depth('voucher_detail',['voucher','voucher_type','voucher_type_effect','expense_account','income_account']);
-    
-    $result = $this->db->get('voucher_detail');
-
-    $order_array = [];
-
-    if($result->num_rows() > 0){
-      $rows = $result->result_array();
-
-      foreach($rows as $record){
-        $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['voucher_detail_total_cost'];
-      }
-    }
-
-    return $order_array;
-  }
-
-  function _bugdet_to_date_by_expense_account($office_ids,$reporting_month){
-    //return 400;
-
-    $financial_year = $this->grants->get_fy($reporting_month);
-    $month_number = date('m',strtotime($reporting_month));
-    $month_order = $this->db->get_where('month',array('month_number'=>$month_number))->row()->month_order;
-
-    $this->db->select_sum('budget_item_detail_amount');
-    $this->db->select(array('income_account_id','expense_account_id'));
-    $this->db->group_by('expense_account_id');
-    $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->where(array('month_order<='=>$month_order));
-    $this->db->where(array('budget_year'=>$financial_year));
-
-    $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
-    $this->db->join('budget','budget.budget_id=budget_item.fk_budget_id');
-    $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
-    $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
-    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-
-    // $this->grants_model->create_table_join_statement_with_depth('budget_item_detail',
-    // ['budget_item','budget','month','expense_account','income_account']);
-
-    $result = $this->db->get('budget_item_detail');
-
-    $order_array = [];
-
-    if($result->num_rows() > 0){
-      $rows = $result->result_array();
-
-      foreach($rows as $record){
-        $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['budget_item_detail_amount'];
-      }
-    }
-
-    return $order_array;
-  }
+  
 
   function _budget_variance_by_expense_account($office_ids,$reporting_month){
     return 150;
@@ -486,7 +381,7 @@ class Financial_report extends MY_Controller
           ];
   }
 
-  function get_month_active_projects($office_ids,$reporting_month){
+  function get_month_active_projects($office_ids,$reporting_month,$show_active_only = false){
  
     return $this->financial_report_library->get_month_active_projects($office_ids,$reporting_month);
   }
@@ -545,7 +440,7 @@ class Financial_report extends MY_Controller
       'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
       'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
       'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
-      'expense_report'=>$this->_expense_report($office_ids,$reporting_month)
+      'expense_report'=>$this->_expense_report($office_ids,$reporting_month,$project_ids)
     ];
  
   }

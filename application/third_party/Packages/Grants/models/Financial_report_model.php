@@ -416,16 +416,137 @@ class Financial_report_model extends MY_Model{
         return $voucher_detail_total_cost;
       }
 
-      function get_month_active_projects($office_ids,$reporting_month){
+      function get_month_active_projects($office_ids,$reporting_month,$show_active_only = false){
         
         $date_condition_string = "(project_end_date >= '".$reporting_month."' OR  project_allocation_extended_end_date >= '".$reporting_month."')";
         
         $this->db->select(array('project_id','project_name'));
-        $this->db->where($date_condition_string);
+
+        if($show_active_only){
+            $this->db->where($date_condition_string);
+        }
+        
         $this->db->where_in('fk_office_id',$office_ids);
         $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
         $projects = $this->db->get('project')->result_array();
 
         return $projects;
       }
+
+
+      function month_expense_by_expense_account($office_ids,$reporting_month,$project_ids = []){
+    
+        $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
+        $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+    
+        $this->db->select_sum('voucher_detail_total_cost');
+        $this->db->select(array('income_account_id','expense_account_id'));
+        $this->db->group_by('expense_account_id');
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+        $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$start_date_of_reporting_month,
+        'voucher_date<='=>$end_date_of_reporting_month));
+        
+        $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+        $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+        $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+        $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
+        $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+        
+        if(count($project_ids) > 0){
+          $this->db->where_in('fk_project_id',$project_ids);
+          $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        }
+    
+        $result = $this->db->get('voucher_detail');
+    
+        $order_array = [];
+    
+        if($result->num_rows() > 0){
+          $rows = $result->result_array();
+    
+          foreach($rows as $record){
+            $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['voucher_detail_total_cost'];
+          }
+        }
+    
+        return $order_array;
+      }
+
+      function expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = []){
+    
+        $fy_start_date = $this->grants->fy_start_date($reporting_month);
+        $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+    
+        $this->db->select_sum('voucher_detail_total_cost');
+        $this->db->select(array('income_account_id','expense_account_id'));
+        $this->db->group_by('expense_account_id');
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+        $this->db->where(array('voucher_type_effect_code'=>'expense','voucher_date>='=>$fy_start_date,
+        'voucher_date<='=>$end_date_of_reporting_month));
+        
+        $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+        $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+        $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+        $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
+        $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+        
+        if(count($project_ids) > 0){
+          $this->db->where_in('fk_project_id',$project_ids);
+          $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        }
+    
+        $result = $this->db->get('voucher_detail');
+    
+        $order_array = [];
+    
+        if($result->num_rows() > 0){
+          $rows = $result->result_array();
+    
+          foreach($rows as $record){
+            $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['voucher_detail_total_cost'];
+          }
+        }
+    
+        return $order_array;
+      }
+
+      function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = []){
+
+        $financial_year = $this->grants->get_fy($reporting_month);
+        $month_number = date('m',strtotime($reporting_month));
+        $month_order = $this->db->get_where('month',array('month_number'=>$month_number))->row()->month_order;
+    
+        $this->db->select_sum('budget_item_detail_amount');
+        $this->db->select(array('income_account.income_account_id as income_account_id','expense_account.expense_account_id as expense_account_id'));
+        $this->db->group_by('expense_account.expense_account_id');
+        $this->db->where_in('budget.fk_office_id',$office_ids);
+        $this->db->where(array('month_order<='=>$month_order));
+        $this->db->where(array('budget_year'=>$financial_year));
+    
+        $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
+        $this->db->join('budget','budget.budget_id=budget_item.fk_budget_id');
+        $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
+        $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+        $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    
+        if(count($project_ids) > 0){
+            $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=budget_item.fk_project_allocation_id');
+        }
+    
+        $result = $this->db->get('budget_item_detail');
+    
+        $order_array = [];
+    
+        if($result->num_rows() > 0){
+          $rows = $result->result_array();
+    
+          foreach($rows as $record){
+            $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['budget_item_detail_amount'];
+          }
+        }
+    
+        return $order_array;
+      }
+
 }

@@ -44,7 +44,7 @@ class Financial_report_library extends Grants
     return $this->CI->financial_report_model->income_accounts($office_ids, $project_ids);
   }
 
-  function get_month_active_projects($office_ids,$reporting_month){
+  function get_month_active_projects($office_ids,$reporting_month,$show_active_only = false){
     return $this->CI->financial_report_model->get_month_active_projects($office_ids,$reporting_month);
   }
 

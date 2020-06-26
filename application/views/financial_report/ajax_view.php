@@ -3,6 +3,7 @@
 //print_r($this->financial_report_model->_initial_opening_account_balance([1],3,[]));
 //print_r($this->financial_report_model->income_accounts([1],[]));
 //print_r($fund_balance_report);
+//print_r($expense_report);
 ?>
 <div class="row">
     <div class='col-xs-12 header'><?=get_phrase('fund_balance_report');?></div>
@@ -11,12 +12,12 @@
     </div>
 </div>
 
-<div class='row'>
+<!-- <div class='row'>
     <div class='col-xs-12 header'><?=get_phrase('projects_balance_report');?></div>
     <div class='col-xs-12'>
         <?php //include "includes/include_project_balance_report.php";?>
     </div>
-</div>
+</div> -->
 
 <div class="row">
     <div class="col-xs-6">
@@ -73,7 +74,7 @@
 <div class="row">
     <div class="col-xs-12">
     <div class="col-xs-12 header"><?=get_phrase('expense_report');?></div>
-        <?php //include "includes/include_expense_report.php";?>
+        <?php include "includes/include_expense_report.php";?>
     </div>
 </div>
 

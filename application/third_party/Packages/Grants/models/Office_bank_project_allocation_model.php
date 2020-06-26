@@ -35,4 +35,17 @@ class Office_bank_project_allocation_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function office_bank_project_allocation_office_id(){
+        $result = $this->db->get_where('office_bank',
+        array('office_bank_id'=>hash_id($this->id,'decode')))->row()->fk_office_id;
+
+        return $result;
+    }
+
+    public function lookup_values_where(){
+        return [
+            'project_allocation'=>['fk_office_id'=>$this->office_bank_project_allocation_office_id()]
+        ];
+    }
 }

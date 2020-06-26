@@ -45,8 +45,8 @@ class Opening_allocation_balance_model extends MY_Model{
 
     function opening_allocation_balance_office_id(){
         $this->db->select(array('fk_office_id'));
-        $this->db->join('project_allocation','project_allocation.project_allocation_id=opening_allocation_balance.fk_project_allocation_id');
-        $result = $this->db->get_where('opening_allocation_balance')->row()->fk_office_id;
+        $result = $this->db->get_where('system_opening_balance',
+        array('system_opening_balance_id'=>hash_id($this->id,'decode')))->row()->fk_office_id;
 
         return $result;
     }

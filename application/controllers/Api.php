@@ -319,5 +319,18 @@ class Api extends CI_Controller{
 
     echo json_encode($result);
   }
+
+  function bugdet_to_date_by_expense_account(){
+
+    $this->load->model('financial_report_model');
+
+    $office_ids = [1];
+    $reporting_month = '2020-04-01';
+    $project_ids = [2,4];
+
+    $result = $this->financial_report_model->bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids);
+    
+    echo json_encode($result);
+  }
   
 }
