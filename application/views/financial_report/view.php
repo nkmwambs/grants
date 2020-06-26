@@ -63,7 +63,7 @@
                 </div>
 
                 <div class='col-xs-4'>
-                    <select name='project_ids[]' class='form-control select2' multiple ><?=get_phrase('select_projects');?>
+                    <select name='project_ids[]' id='project_ids' class='form-control select2' multiple ><?=get_phrase('select_projects');?>
                         <?php foreach($month_active_projects as $month_active_project){?>
                             <option value='<?=$month_active_project['project_id'];?>'><?=$month_active_project['project_name'];?></option>
                         <?php }?>
@@ -112,36 +112,25 @@ $("#submit_report").on('click',function(){
     });
 });
 
-$(document).ready(function(){
 
-    if('<?=$financial_report_submitted?>' == 1){
-        $("#bank_statement_balance").prop('disabled','disabled');
-        $(".clear_btn").addClass('disabled');
-        $(".delete_statement").removeClass('delete_statement');
-    }
-
-    $('#fund_balance_table tbody tr').each(function(i,el){
-        let opening_balance = parseFloat($(el).find('.fund_month_opening_balance').html().split(',').join(""));
-        let month_income = parseFloat($(el).find('.fund_month_income').html().split(',').join(""));
-        let month_expense = parseFloat($(el).find('.fund_month_expense').html().split(',').join(""));
-        let closing_opening_balance = (opening_balance + month_income) - month_expense; 
-        
-        $(this).find('.fund_month_closing_balance').html(accounting.formatNumber(closing_opening_balance,2));
-    });
-
-});
 
 $("#frm_selected_offices").on('submit',function(ev){
     var url = $(this).attr('action');
-    
-    var data = $(this).serializeArray(); //{'project_ids':[1,2],'office_ids':[1,2],'transacting_month':'2020-04-01','report_id':'<?=$this->id;?>'};//
+    var office_ids = $("#office_ids").val();
+    var project_ids = $("#project_ids").val();
+    var data = $(this).serializeArray();
 
-    $.post(url,data,function(response){
-        //alert(response);
-        $('#financial_report_row').html(response);
-    });
+    if(office_ids == null){
+        alert('Please select atleast 1 office to proceed');
+        $("#office_ids").css('border','1px red solid');
+    }else{ 
+        $.post(url,data,function(response){
+            
+            $('#financial_report_row').html(response);
+        });
+    }  
 
-    ev.preventDefault();
+     ev.preventDefault();
 });
 
 $("#bank_statement_balance").on('click',function(){

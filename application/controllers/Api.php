@@ -258,5 +258,66 @@ class Api extends CI_Controller{
   function move_temp_files_to_attachments(){
     echo $this->grants->move_temp_files_to_attachments();
   }
+
+
+  function fund_balance_report(){
+    $this->load->model('financial_report_model');
+    $office_ids = [1];
+    $start_date_of_month = '2020-04-01';
+    $project_ids = [2,4];
+    
+    $income_accounts =  $this->financial_report_model->income_accounts($office_ids,$project_ids);
+    
+    $all_accounts_month_opening_balance = $this->financial_report_model->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
+    $all_accounts_month_income = $this->financial_report_model->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids);
+    $all_accounts_month_expense = $this->financial_report_model->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids);
+
+    $report = array();
+
+    foreach($income_accounts as $account){
+      
+      $month_opening_balance = isset($all_accounts_month_opening_balance[$account['income_account_id']])?$all_accounts_month_opening_balance[$account['income_account_id']]:0;
+      $month_income = isset($all_accounts_month_income[$account['income_account_id']])?$all_accounts_month_income[$account['income_account_id']]:0;
+      $month_expense = isset($all_accounts_month_expense[$account['income_account_id']])?$all_accounts_month_expense[$account['income_account_id']]:0;
+
+      if($month_opening_balance == 0 && $month_income == 0 && $month_expense == 0){
+        continue;
+      }
+       $report[] = [
+        'account_name'=>$account['income_account_name'],
+        'month_opening_balance'=>$month_opening_balance,
+        'month_income'=>$month_income,
+        'month_expense'=>$month_expense,
+       ]; 
+    }  
+    
+    echo json_encode($report);
+  }
+
+  function get_account_last_month_income_to_date(){
+    $this->load->model('financial_report_model');
+
+    $income_account_id = 1;
+    $office_ids = [1];
+    $start_date_of_month = '2020-04-01';
+    $project_ids = [2,4];
+
+    $result = $this->financial_report_model->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
+
+    echo json_encode($result);
+  }
+
+  function get_account_last_month_expense_to_date(){
+    $this->load->model('financial_report_model');
+
+    $income_account_id = 1;
+    $office_ids = [1];
+    $start_date_of_month = '2020-04-01';
+    $project_ids = [2,4];
+
+    $result = $this->financial_report_model->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
+
+    echo json_encode($result);
+  }
   
 }

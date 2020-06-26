@@ -129,6 +129,14 @@ class MY_Model extends CI_Model
       return [];
     }
 
+    /**
+     * Use is a master table to filter the values of the lookup columns
+     * Lookup tables are keys of the condition arrays
+     */
+    function lookup_values_where(){
+
+    }
+
     function _derived_lookup_tables($table_name){
       $fields = $this->grants_model->get_all_table_fields($table_name);
     

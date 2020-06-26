@@ -37,8 +37,7 @@ class System_opening_balance_model extends MY_Model{
     }
 
     public function detail_tables(){
-        //'opening_fund_balance', - Do away with 'opening_fund_balance' since it can be summed from opening_allocation_balance
-        return ['opening_cash_balance','opening_bank_balance','opening_allocation_balance','opening_outstanding_cheque','opening_deposit_transit'];
+        return ['opening_fund_balance','opening_cash_balance','opening_bank_balance','opening_allocation_balance','opening_outstanding_cheque','opening_deposit_transit'];
     }
 
     public function detail_multi_form_add_visible_columns(){}

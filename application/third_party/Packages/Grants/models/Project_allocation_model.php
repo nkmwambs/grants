@@ -96,7 +96,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
    }
 
    public function transaction_validate_duplicates_columns(){
-     return ['fk_office_id','fk_project_id'];
+     //return ['fk_office_id','fk_project_id'];
    }
 
    function lookup_values_where($table = ''){

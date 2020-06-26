@@ -39,4 +39,14 @@ class Opening_fund_balance_model extends MY_Model{
     function detail_list_table_visible_columns(){
         return ['opening_fund_balance_track_number','opening_fund_balance_name','income_account_name','opening_fund_balance_amount','status_name'];
     }
+
+    function lookup_values_where(){
+        return [
+            'income_account'=>['income_account_is_donor_funded'=>0,'income_account_is_active'=>1]
+        ];
+    }
+
+    function transaction_validate_duplicates_columns(){
+        //return ['system_opening_balance','income_account'];
+    }
 }

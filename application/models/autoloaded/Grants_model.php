@@ -446,6 +446,23 @@ function generate_item_track_number_and_name($approveable_item){
 
     $table = strtolower($table);
 
+    // $model = $this->controller.'_model';
+    
+    // if(
+    //   is_array($this->$model->transaction_validate_duplicates_columns()) &&
+    //   count($this->$model->transaction_validate_duplicates_columns()) > 0
+    // ){
+    //   $validation_array = $this->$model->transaction_validate_duplicates_columns();
+
+    //   foreach($validation_array as $validation_column){
+    //     if($validation_column === 'fk_office_id' && $table == 'office'){
+       
+    //       $this->db->where_not_in($validation_column,[1]);
+    //     }
+        
+    //   }
+    // }
+
     if( 
         isset($this->grants->lookup_values_where()[$table]) &&
         is_array($this->grants->lookup_values_where()[$table]) && 

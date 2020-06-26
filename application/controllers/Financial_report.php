@@ -40,25 +40,21 @@ class Financial_report extends MY_Controller
     return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
   }
 
-  private function test_month_income_opening_balance($office_ids, $start_date_of_month,$project_ids = []){
-    //return $this->financial_report_model->test_month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
-    return $this->_income_accounts($office_ids,$project_ids);
-  }
-
   private function _fund_balance_report($office_ids, $start_date_of_month, $project_ids = []){
-
-    $income_accounts =  $this->_income_accounts($office_ids,$project_ids);
-    $month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
-    $month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month);
-    $month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month);
     
+    $income_accounts =  $this->financial_report_model->income_accounts($office_ids,$project_ids);
+    
+    $all_accounts_month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
+    $all_accounts_month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids);
+    $all_accounts_month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids);
+
     $report = array();
 
     foreach($income_accounts as $account){
       
-      $month_opening_balance = isset($month_opening_balance[$account['income_account_id']])?$month_opening_balance[$account['income_account_id']]:0;
-      $month_income = isset($month_income[$account['income_account_id']])?$month_income[$account['income_account_id']]:0;
-      $month_expense = isset($month_expense[$account['income_account_id']])?$month_expense[$account['income_account_id']]:0;
+      $month_opening_balance = isset($all_accounts_month_opening_balance[$account['income_account_id']])?$all_accounts_month_opening_balance[$account['income_account_id']]:0;
+      $month_income = isset($all_accounts_month_income[$account['income_account_id']])?$all_accounts_month_income[$account['income_account_id']]:0;
+      $month_expense = isset($all_accounts_month_expense[$account['income_account_id']])?$all_accounts_month_expense[$account['income_account_id']]:0;
 
       if($month_opening_balance == 0 && $month_income == 0 && $month_expense == 0){
         continue;
@@ -531,7 +527,7 @@ class Financial_report extends MY_Controller
     extract($this->financial_report_information($report_id));
 
     return [
-      'test'=>$this->test_month_income_opening_balance($office_ids,$reporting_month,$project_ids),
+      'test'=>[],//$this->test_month_income_opening_balance($office_ids,$reporting_month,$project_ids),
       'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
       'multiple_offices_report'=>$multiple_offices_report,
       'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
@@ -556,13 +552,15 @@ class Financial_report extends MY_Controller
 
   function filter_financial_report(){
 
-    $project_ids = $this->input->post('project_ids');
+    $project_ids = $this->input->post('project_ids') == null ? [] : $this->input->post('project_ids');
     $office_ids = $this->input->post('office_ids');
     $report_id = $this->input->post('report_id');
     $reporting_month = $this->input->post('reporting_month');
 
     $result = $this->result_array($report_id, $office_ids,$reporting_month,$project_ids);
     $result['result'] = $result;
+    
+    //echo json_encode($result);
     
     $view_page =  $this->load->view('financial_report/ajax_view',$result,true);
 

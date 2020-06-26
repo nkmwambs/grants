@@ -923,7 +923,7 @@ class User_model extends MY_Model
   }
 
 //To be implemented in the primary table model rather than in the secondary table model
-  function lookup_values_where($table){
+  function lookup_values_where(){
         
     // $query_condition_array = array();
 
