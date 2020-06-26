@@ -332,5 +332,21 @@ class Api extends CI_Controller{
     
     echo json_encode($result);
   }
+
+
+  function opening_cash_balance(){
+
+    $this->load->model('financial_report_model');
+
+    $office_ids = [1];
+    $project_ids = [2,4];
+
+    $result = [
+      'bank'=>$this->financial_report_model->system_opening_bank_balance($office_ids,$project_ids),
+      'cash'=>$this->financial_report_model->system_opening_cash_balance($office_ids,$project_ids)
+    ];
+
+    echo json_encode($result);
+  }
   
 }

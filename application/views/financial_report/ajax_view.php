@@ -22,7 +22,7 @@
 <div class="row">
     <div class="col-xs-6">
     <div class="col-xs-12 header"><?=get_phrase('proof_of_cash');?></div>
-        <?php //include "includes/include_proof_of_cash.php";?>
+        <?php include "includes/include_proof_of_cash.php";?>
     </div>
 
     <div class="col-xs-6">
