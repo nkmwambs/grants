@@ -234,7 +234,10 @@ class Financial_report extends MY_Controller
     $budget_variance_percent = $this->_budget_variance_percent_by_expense_account($office_ids,$reporting_month);
     $expense_account_comment = $this->_expense_account_comment($office_ids,$reporting_month);
     
+    
+
     foreach($income_grouped_expense_accounts as $income_account_id => $income_account){
+      $check_sum = 0;
       foreach($income_account['expense_accounts'] as $expense_account){
         $income_account_id =  $income_account['income_account']['income_account_id'];
         $expense_account_id = $expense_account['expense_account_id'];
@@ -247,7 +250,11 @@ class Financial_report extends MY_Controller
         $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance'] = $budget_variance;
         $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance_percent'] = $budget_variance_percent;
         $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['expense_account_comment'] = $expense_account_comment;
+        
+        $check_sum += $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['month_expense_to_date'] +  $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_to_date'];
+        
       }
+      $expense_account_grid[$income_account_id]['check_sum'] = $check_sum;
     }
     
     return $expense_account_grid;

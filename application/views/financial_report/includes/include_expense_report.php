@@ -1,4 +1,13 @@
-<?php foreach($expense_report as $income_record){?>
+<?php 
+$check_sum = array_column($expense_report,'check_sum');
+
+$cnt = 0;
+foreach($expense_report as $income_record){
+    $cnt++;
+    if($check_sum[$cnt - 1] == 0) continue;  // Skips expense tables that lack records
+
+?>
+
 <table class="table table-striped">
         <thead>
             <tr>
