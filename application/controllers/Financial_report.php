@@ -137,13 +137,14 @@ class Financial_report extends MY_Controller
     $reconciliation_reporting_month = date('Y-m-t',strtotime($reporting_month));
     
     if(!$multiple_offices_report){
-      $this->db->select(array('reconciliation_reporting_month'));
+      $this->db->select(array('financial_report_month'));
       $this->db->where(array('fk_office_id'=>$office_ids[0],
-      'reconciliation_reporting_month'=>date('Y-m-t',strtotime($reporting_month))));
+      'financial_report_month'=>date('Y-m-t',strtotime($reporting_month))));
+      $this->db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
       $reconciliation_reporting_month_obj = $this->db->get('reconciliation');
 
       if($reconciliation_reporting_month_obj->num_rows() > 0){
-        $reconciliation_reporting_month = $reconciliation_reporting_month_obj->row()->reconciliation_reporting_month;
+        $reconciliation_reporting_month = $reconciliation_reporting_month_obj->row()->financial_report_month;
       }
 
     }else{
@@ -157,13 +158,14 @@ class Financial_report extends MY_Controller
 
     $financial_report_statement_amount = 0;
 
-    $this->db->select_sum('financial_report_statement_balance');
+    $this->db->select_sum('reconciliation_statement_balance');
     $this->db->where_in('fk_office_id',$office_ids);
     $this->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
+    $this->db->join('reconciliation','reconciliation.fk_financial_report_id=financial_report.financial_report_id');
     $financial_report_statement_amount_obj = $this->db->get('financial_report');
 
-    if($financial_report_statement_amount_obj->row()->financial_report_statement_balance != null){
-      $financial_report_statement_amount = $financial_report_statement_amount_obj->row()->financial_report_statement_balance;
+    if($financial_report_statement_amount_obj->row()->reconciliation_statement_balance != null){
+      $financial_report_statement_amount = $financial_report_statement_amount_obj->row()->reconciliation_statement_balance;
     }
 
     return $financial_report_statement_amount;
