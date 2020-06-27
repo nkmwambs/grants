@@ -348,5 +348,17 @@ class Api extends CI_Controller{
 
     echo json_encode($result);
   }
+
+  function list_oustanding_cheques_and_deposits(){
+    $this->load->model('financial_report_model');
+
+    $office_ids = [1];
+    $reporting_month = '2020-04-01';
+    $project_ids = [2];
+    
+    $result = $this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank',$project_ids);
+  
+    echo json_encode($result);
+  }
   
 }

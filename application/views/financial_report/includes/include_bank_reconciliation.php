@@ -1,6 +1,3 @@
-<?php 
-//print_r($bank_reconciliation);
-?>
 <table class="table table-striped">
             <thead>
             </thead>

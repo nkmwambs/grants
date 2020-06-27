@@ -106,12 +106,13 @@ class Financial_report extends MY_Controller
 
   }
 
-  private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report){
+  private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids = []){
     $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report);
     $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month);
-    $book_closing_balance = 0;//$this->_compute_cash_at_bank($office_ids,$reporting_month);//$this->_book_closing_balance($office_ids,$reporting_month);
-    $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','bank_contra','bank');
-    $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','cash_contra','bank');//$this->_deposit_in_transit($office_ids,$reporting_month);
+    
+    $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids);//$this->_book_closing_balance($office_ids,$reporting_month);
+    $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','bank_contra','bank',$project_ids);
+    $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','cash_contra','bank',$project_ids);//$this->_deposit_in_transit($office_ids,$reporting_month);
     $bank_reconciled_balance = $bank_statement_balance - $month_outstanding_cheques + $month_transit_deposit;
 
     $is_book_reconciled = false;
@@ -178,33 +179,12 @@ class Financial_report extends MY_Controller
 
   }
 
-  function _sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,$transaction_type,$contra_type,$voucher_type_account_code){
-    return array_sum(array_column($this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,$transaction_type,$contra_type,$voucher_type_account_code),'voucher_detail_total_cost'));
+  function _sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,$transaction_type,$contra_type,$voucher_type_account_code,$project_ids = []){
+    return array_sum(array_column($this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,$transaction_type,$contra_type,$voucher_type_account_code,$project_ids),'voucher_detail_total_cost'));
   }
   
 
-  private function _list_oustanding_cheques_and_deposits($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code){
-
-    $list_oustanding_cheques_and_deposit = [];
-    
-    //return 145890.00;
-    $cleared_condition = " `voucher_cleared` = 0 OR (`voucher_cleared` = 1  AND `voucher_cleared_month` > '".date('Y-m-t',strtotime($reporting_month))."' )";
-    $this->db->select_sum('voucher_detail_total_cost');
-    $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number','voucher_description','voucher_cleared','office_code','office_name','voucher_date','voucher_cleared'));
-    $this->db->group_by('voucher_id');
-    $this->db->where_in('fk_office_id',$office_ids);
-    $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
-    $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
-    $this->db->where($cleared_condition);
-    $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
-    $this->db->join('office','office.office_id=voucher.fk_office_id');
-    $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-    $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
-
-    return $list_oustanding_cheques_and_deposit;
-  }
+ 
 
   private function _list_cleared_effects($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code){
 
@@ -407,9 +387,9 @@ class Financial_report extends MY_Controller
         'financial_ratios'=>$this->financial_ratios(),
         'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
         'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
-        'outstanding_cheques'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
+        'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
         'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
-        'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
+        'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
         'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
         'expense_report'=>$this->_expense_report($office_ids,$reporting_month)
       ];
@@ -435,10 +415,10 @@ class Financial_report extends MY_Controller
       'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month,$project_ids),
       'financial_ratios'=>$this->financial_ratios(),
       'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
-      'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
-      'outstanding_cheques'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
+      'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids),
+      'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank',$project_ids),
       'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
-      'deposit_in_transit'=>$this->_list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
+      'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','contra','bank',$project_ids),//$this->_deposit_in_transit($office_ids,$reporting_month),
       'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
       'expense_report'=>$this->_expense_report($office_ids,$reporting_month,$project_ids)
     ];

@@ -569,4 +569,32 @@ class Financial_report_model extends MY_Model{
         return $order_array;
       }
 
+      function list_oustanding_cheques_and_deposits($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids = []){
+
+        $list_oustanding_cheques_and_deposit = [];
+        
+        $cleared_condition = " `voucher_cleared` = 0 OR (`voucher_cleared` = 1  AND `voucher_cleared_month` > '".date('Y-m-t',strtotime($reporting_month))."' )";
+        $this->db->select_sum('voucher_detail_total_cost');
+        $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number','voucher_description','voucher_cleared','office_code','office_name','voucher_date','voucher_cleared'));
+        $this->db->group_by('voucher_id');
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+        $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+        $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
+        $this->db->where($cleared_condition);
+        $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+        $this->db->join('office','office.office_id=voucher.fk_office_id');
+        $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+        $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+        $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+        
+        if(count($project_ids) > 0){
+            $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        }
+        
+        $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
+    
+        return $list_oustanding_cheques_and_deposit;
+      }
+
 }
