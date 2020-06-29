@@ -361,4 +361,36 @@ class Api extends CI_Controller{
     echo json_encode($result);
   }
   
+
+  function bank_statement_balance(){
+
+    $office_ids = [1];
+    $reporting_month = '2020-04-01';
+    $project_ids = [2];
+
+    $financial_report_statement_amount = 0;
+
+    $this->db->select_sum('reconciliation_statement_balance');
+    $this->db->where_in('financial_report.fk_office_id',$office_ids);
+    $this->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
+    $this->db->join('reconciliation','reconciliation.fk_financial_report_id=financial_report.financial_report_id');
+
+    $this->db->group_by(array('financial_report_month'));
+
+    if(count($project_ids) > 0){
+      $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+      $this->db->join('office_bank','office_bank.office_bank_id=reconciliation.fk_office_bank_id');
+      $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+      $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+    }
+
+    $financial_report_statement_amount_obj = $this->db->get('financial_report');
+
+    if($financial_report_statement_amount_obj->row()->reconciliation_statement_balance != null){
+      $financial_report_statement_amount = $financial_report_statement_amount_obj->row()->reconciliation_statement_balance;
+    }
+
+    echo json_encode($financial_report_statement_amount);
+    
+  }
 }

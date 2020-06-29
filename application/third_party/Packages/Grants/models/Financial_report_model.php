@@ -56,24 +56,32 @@ class Financial_report_model extends MY_Model{
     public function detail_multi_form_add_visible_columns(){}
 
     function financial_report_information(String $id, Array $offices_ids = []){
+
         $report_id = hash_id($id,'decode');
 
         $offices_information = [];
 
-        if(count($offices_ids) == 0){
-                $this->db->join('office','office.office_id=financial_report.fk_office_id');
-                $offices_information =  $this->db->select(array('financial_report_month',
-                'fk_office_id as office_id','office_name'))->get_where('financial_report',
-                array('financial_report_id'=>$report_id))->result_array();
-        }else{
-            $financial_report_month =  $this->db->select(array('financial_report_month'))->get_where('financial_report',
-            array('financial_report_id'=>$report_id))->row()->financial_report_month;
-
-            $this->db->join('office','office.office_id=financial_report.fk_office_id');
-            $offices_information = $this->db->select(array('financial_report_month','fk_office_id as office_id','office_name'))->get_where('financial_report',
-                array('financial_report_month'=>$financial_report_month))->result_array();    
-        }
+        $financial_report_month = "";
         
+        $reporting_month = $this->db->get_where('financial_report',
+        array('financial_report_id'=>$report_id))->row()->financial_report_month;
+
+        $this->db->join('office','office.office_id=financial_report.fk_office_id');
+        $financial_report =  $this->db->select(array('financial_report_month',
+        'fk_office_id as office_id','office_name'))->get_where('financial_report',
+        array('financial_report_month'=>$reporting_month));
+
+        //if(count($offices_ids) > 0){
+            $offices_information =  $financial_report->result_array();
+            
+        //}
+        // else{  
+        //     $financial_report_month =  $financial_report->row()->financial_report_month; 
+        // }
+        
+        // $offices_information =  $financial_report->result_array();
+
+        // echo  json_encode($financial_report->result_array());exit;
 
         return $offices_information;
     }

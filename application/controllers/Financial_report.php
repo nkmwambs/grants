@@ -108,7 +108,7 @@ class Financial_report extends MY_Controller
 
   private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids = []){
     $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report);
-    $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month);
+    $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month, $project_ids);
     
     $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids);//$this->_book_closing_balance($office_ids,$reporting_month);
     $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','bank_contra','bank',$project_ids);
@@ -148,20 +148,30 @@ class Financial_report extends MY_Controller
       }
 
     }else{
-      $reconciliation_reporting_month = "This field cannot be populated for multiple offices report";
+      $reconciliation_reporting_month = "This field cannot be populated for multiple offices or bank accounts report";
     }
 
     return $reconciliation_reporting_month;
   }
 
-  function _bank_statement_balance($office_ids,$reporting_month){
+  function _bank_statement_balance($office_ids,$reporting_month, $project_ids = []){
 
     $financial_report_statement_amount = 0;
 
     $this->db->select_sum('reconciliation_statement_balance');
-    $this->db->where_in('fk_office_id',$office_ids);
+    $this->db->where_in('financial_report.fk_office_id',$office_ids);
     $this->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
     $this->db->join('reconciliation','reconciliation.fk_financial_report_id=financial_report.financial_report_id');
+
+    $this->db->group_by(array('financial_report_month'));
+
+    if(count($project_ids) > 0){
+      $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+      $this->db->join('office_bank','office_bank.office_bank_id=reconciliation.fk_office_bank_id');
+      $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+      $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+    }
+
     $financial_report_statement_amount_obj = $this->db->get('financial_report');
 
     if($financial_report_statement_amount_obj->row()->reconciliation_statement_balance != null){
@@ -332,11 +342,11 @@ class Financial_report extends MY_Controller
     return array_column($office_ids_with_report,'fk_office_id');
   }
   
-  private function financial_report_information($report_id){
+  function financial_report_information($report_id){
 
     $additional_information = $this->financial_report_library->financial_report_information($report_id);
 
-    if(isset($_POST['office_ids']) && count($_POST) > 0){
+    if((isset($_POST['office_ids']) && count($_POST['office_ids']) > 0)){
       $additional_information = $this->financial_report_library->financial_report_information($report_id, $_POST['office_ids']);
     }
 
@@ -348,11 +358,13 @@ class Financial_report extends MY_Controller
 
     $multiple_offices_report = false;
 
-    // if(array_keys($additional_information) !== range(0, count($additional_information) - 1)) {
-    //     // One Office
-    //     $office_names = $additional_information[0]['office_name'];
-        
-    // }
+    if(count($office_ids) == 1){
+      $count_of_office_banks = $this->db->get_where('office_bank',array('fk_office_id',$office_ids[0]))->num_rows();
+
+      if((isset($_POST['project_ids']) && count($_POST['project_ids']) > 1 ) || ($count_of_office_banks > 1 && !isset($_POST['project_ids']) ) ){
+        $multiple_offices_report = true;
+      }
+    }
 
     $office_names = implode(', ',array_column($additional_information,'office_name'));
 
