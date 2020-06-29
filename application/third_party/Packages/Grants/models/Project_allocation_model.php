@@ -24,7 +24,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
   function index(){}
 
   public function lookup_tables(){
-    return array('office','project','income_account');
+    return array('office','project');
   }
 
   public function detach_detail_table(){
@@ -99,10 +99,10 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
      //return ['fk_office_id','fk_project_id'];
    }
 
-   function lookup_values_where($table = ''){
-     return [
-              'income_account'=>['income_account_is_donor_funded'=>1,'income_account_is_active'=>1]
-            ];
-   }
+  //  function lookup_values_where($table = ''){
+  //    return [
+  //             'income_account'=>['income_account_is_donor_funded'=>1,'income_account_is_active'=>1]
+  //           ];
+  //  }
 
 }
