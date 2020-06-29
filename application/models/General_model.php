@@ -244,17 +244,21 @@ function user_action_label($item_status,$role_id){
 
   // Check if the role id is the current actor or not and if final status in the sequence and created
   // the appropriate label 
-  if(in_array($role_id,$current_actor) &&  
+  if( (in_array($role_id,$current_actor) || $this->session->system_admin) &&  
       $backflow_sequence == 0 && 
         $approval_sequence < $range_of_status_approval_sequence && 
          count($next_actor) > 0
     ){
-    $status_label = "Submit";
+    $status_label = "Submit New Item";
   }elseif($backflow_sequence > 0){
     $status_label = "Reinstate";
   }elseif($next_actor == 0){
     $status_label = 'Completed';
   }
+  
+  // else{
+  //   $status_label = "Submit New Item";
+  // }
 
   return $status_label;
 }
@@ -363,15 +367,13 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
   $logged_user_centers = array_column($this->session->hierarchy_offices,'office_id');
   $record_center_id = $this->grants->get_record_office_id($table,$primary_key);
   $is_approveable_item = $this->grants->approveable_item($table);
-
-  // if($record_center_id == 0){
-
-  // }
+  
+  //echo $record_center_id;exit;
 
   $show_label_as_button = false; 
   
-  if( is_array($logged_user_centers) && in_array($logged_role_id,$current_approval_actors) && 
-      //in_array($record_center_id,$logged_user_centers) &&
+  if( is_array($logged_user_centers) && 
+      (in_array($logged_role_id,$current_approval_actors) || $this->session->system_admin) && 
       $is_approveable_item){
     $show_label_as_button = true;
   }

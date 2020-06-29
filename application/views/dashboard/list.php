@@ -1,7 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-//print_r(Extension_base::load('access','get_user_context_definition',1));
-
+//print_r($this->general_model->current_approval_actor(41));
+//print_r($this->grants_model->approveable_item('office_bank'));
 ?>
 
   <div class="row">

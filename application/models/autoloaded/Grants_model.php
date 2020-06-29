@@ -733,7 +733,7 @@ function generate_item_track_number_and_name($approveable_item){
     
     $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
     $status_data['fk_approval_flow_id'] = $approval_flow_id;
-    $status_data['status_name'] = get_phrase('new');
+    $status_data['status_name'] = get_phrase('ready_to_submit');
     $status_data['status_approval_sequence'] = 1;
     $status_data['status_approval_direction'] = 1;
     $status_data['status_is_requiring_approver_action'] = 0;

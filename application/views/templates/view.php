@@ -176,7 +176,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                 <tr>
                   <td class='hidden-print'>
                       <?php
-                        //echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
+                        echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
                       ?>
                   </td>
                   <?php
@@ -208,7 +208,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                           if(isset($row[$column]) && array_key_exists($column,$row) ){
                             if(strpos($column,'track_number') == true && $has_details_table == 1 ){
                               echo '<a href="'.base_url().$detail_table_name.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
-                            }elseif(strpos($column,'_is_active') == true){
+                            }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif(is_integer($row[$column]) || is_float($row[$column]) || is_numeric($row[$column])){
                                   echo number_format($row[$column],2);

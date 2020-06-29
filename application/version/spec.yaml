@@ -13,46 +13,6 @@ core:
       lookup_tables:
         - user
         - context_global      
-    
-        # context_region:
-    #   lookup_tables:
-    #     - group_global
-    #     - office
-
-    # context_country:
-    #   lookup_tables:
-    #     - group_region
-    #     - office
-
-    # context_cohort:
-    #   lookup_tables:
-    #     - context_country
-    #     - office
-
-    # context_cluster:
-    #   lookup_tables:
-    #     - context_cohort 
-    #     - office  
-
-    # context_cluster_user:
-    #   lookup_tables:
-    #     - user
-    #     - context_cluster
-
-    # context_cohort_user:
-    #   lookup_tables:
-    #     - user
-    #     - context_cohort
-
-    # context_country_user:
-    #   lookup_tables:
-    #     - user
-    #     - context_country
-
-    # context_region_user:
-    #   lookup_tables:
-    #     - user
-    #     - context_region 
 
     department:
       lookup_tables:
@@ -82,15 +42,6 @@ core:
       lookup_tables:
         - role
         - page_view    
-
-    # context_center:
-    #   lookup_tables:
-    #     - context_cluster
-
-    # context_center_user:
-    #   - user
-    #   - context_center
-    #   - designation
 
     account_system:  
 

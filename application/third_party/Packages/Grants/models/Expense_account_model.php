@@ -29,7 +29,7 @@ class Expense_account_model extends MY_Model implements CrudModelInterface, Tabl
   }
 
   function lookup_tables(){
-    return ['income_account','status','approval'];
+    return ['income_account'];
   }
 
   function detail_tables(){
