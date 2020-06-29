@@ -90,7 +90,7 @@
 
 <script>
 
-$("#submit_report").on('click',function(){
+$("#submit_report").on('click',function(ev){
     var url = "<?=base_url();?>financial_report/submit_financial_report";
     var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
 
@@ -99,7 +99,7 @@ $("#submit_report").on('click',function(){
         data:data,
         type:"POST",
         success:function(response){
-
+            //alert(response);
             if(response){
                 alert('Report submitted successfully');
                 location.href = document.referrer;
@@ -110,6 +110,8 @@ $("#submit_report").on('click',function(){
             
         }
     });
+
+    ev.preventDefault();
 });
 
 

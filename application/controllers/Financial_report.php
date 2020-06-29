@@ -106,8 +106,8 @@ class Financial_report extends MY_Controller
 
   }
 
-  private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids = []){
-    $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report);
+  private function _bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report,$project_ids = []){
+    $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report);
     $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month, $project_ids);
     
     $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids);//$this->_book_closing_balance($office_ids,$reporting_month);
@@ -132,11 +132,11 @@ class Financial_report extends MY_Controller
           ];
   }
 
-  function _bank_statement_date($office_ids,$reporting_month,$multiple_offices_report){
+  function _bank_statement_date($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report){
     
     $reconciliation_reporting_month = date('Y-m-t',strtotime($reporting_month));
     
-    if(!$multiple_offices_report){
+    if(!$multiple_offices_report || !$multiple_projects_report){
       $this->db->select(array('financial_report_month'));
       $this->db->where(array('fk_office_id'=>$office_ids[0],
       'financial_report_month'=>date('Y-m-t',strtotime($reporting_month))));
@@ -335,12 +335,13 @@ class Financial_report extends MY_Controller
     $office_ids = array_column($additional_information,'office_id');
 
     $multiple_offices_report = false;
+    $multiple_projects_report = false;
 
     if(count($office_ids) == 1){
       $count_of_office_banks = $this->db->get_where('office_bank',array('fk_office_id',$office_ids[0]))->num_rows();
 
-      if((isset($_POST['project_ids']) && count($_POST['project_ids']) > 1 ) || ($count_of_office_banks > 1 && !isset($_POST['project_ids']) ) ){
-        $multiple_offices_report = true;
+      if((isset($_POST['project_ids']) && count($_POST['project_ids']) == $count_of_office_banks ) || ($count_of_office_banks > 1 && !isset($_POST['project_ids']) ) ){
+        $multiple_projects_report = true;
       }
     }
 
@@ -356,6 +357,7 @@ class Financial_report extends MY_Controller
             'reporting_month'=>$reporting_month,
             'office_ids'=>$office_ids,
             'multiple_offices_report'=>$multiple_offices_report,
+            'multiple_projects_report' => $multiple_projects_report,
             //'test'=>$additional_information,
           ];
   }
@@ -375,6 +377,7 @@ class Financial_report extends MY_Controller
         'test'=>[],
         'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
         'multiple_offices_report'=>$multiple_offices_report,
+        'multiple_projects_report'=>$multiple_projects_report,
         'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
         'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
         'office_names'=>$office_names,
@@ -385,7 +388,7 @@ class Financial_report extends MY_Controller
         'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month),
         'financial_ratios'=>$this->financial_ratios(),
         'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
-        'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
+        'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report),
         'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank'),
         'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','contra','bank'),
         'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
@@ -404,6 +407,7 @@ class Financial_report extends MY_Controller
       'test'=>[],//$this->test_month_income_opening_balance($office_ids,$reporting_month,$project_ids),
       'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
       'multiple_offices_report'=>$multiple_offices_report,
+      'multiple_projects_report'=>$multiple_projects_report,
       'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
       'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
       'office_names'=>$office_names,
@@ -414,7 +418,7 @@ class Financial_report extends MY_Controller
       'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month,$project_ids),
       'financial_ratios'=>$this->financial_ratios(),
       'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month,$project_ids),
-      'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids),
+      'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report,$project_ids),
       'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank',$project_ids),
       'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','contra','bank',$project_ids),
       'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','contra','bank',$project_ids),//$this->_deposit_in_transit($office_ids,$reporting_month),
@@ -779,15 +783,16 @@ function delete_statement(){
 
 function submit_financial_report(){
   $post = $this->input->post();
+  
   $message = true;
 
   // Check if the report has reconciled
   $report_reconciled = $this->_check_if_report_has_reconciled($post['office_id'],$post['reporting_month']);
-
+  
   // Check if the all vouchers have been approved
   $vouchers_approved = $this->_check_if_month_vouchers_are_approved($post['office_id'],$post['reporting_month']);
 
-  // Check if their is a bank statement
+  // // Check if their is a bank statement
   $bank_statements_uploaded = $this->_check_if_bank_statements_are_uploaded($post['office_id'],$post['reporting_month']);
 
   if(!$report_reconciled || !$vouchers_approved || !$bank_statements_uploaded){
@@ -813,11 +818,12 @@ function submit_financial_report(){
 
 function _check_if_report_has_reconciled($office_id,$reporting_month){
   //return false;
-  $bank_reconciliation_statement = $this->_bank_reconciliation([$office_id],$reporting_month,false);
+  $bank_reconciliation_statement = $this->_bank_reconciliation([$office_id],$reporting_month,false,true);
 
   $is_book_reconciled = $bank_reconciliation_statement['is_book_reconciled'];
   
   return $is_book_reconciled;
+  //echo json_encode($bank_reconciliation_statement);
 }
 
 function _check_if_month_vouchers_are_approved($office_id,$reporting_month){
@@ -831,6 +837,8 @@ function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
   $statements_uploaded = $this->grants->retrieve_file_uploads_info('financial_report',[$office_id],$reporting_month);
 
   return count($statements_uploaded) > 0? true : false;
+
+  //echo count($statements_uploaded) > 0? true : false;
 }
 
 function update_bank_reconciliation_balance(){

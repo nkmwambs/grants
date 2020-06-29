@@ -394,5 +394,42 @@ class Api extends CI_Controller{
     
   }
 
+  function bank_reconciliation(){
+
+    //$office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report,$project_ids = []
+
+    $office_ids = [1];
+    $reporting_month = '2020-04-01';
+    $project_ids = [1,2];
+    $multiple_offices_report = false;
+    $multiple_projects_report = true;
+
+    $bank_statement_date = $this->_bank_statement_date($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report);
+    $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month, $project_ids);
+    
+    $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids);//$this->_book_closing_balance($office_ids,$reporting_month);
+    $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','contra','bank',$project_ids);
+    $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','contra','bank',$project_ids);//$this->_deposit_in_transit($office_ids,$reporting_month);
+    $bank_reconciled_balance = $bank_statement_balance - $month_outstanding_cheques + $month_transit_deposit;
+
+    $is_book_reconciled = false;
+
+    if(round($bank_reconciled_balance,2) == round($book_closing_balance,2)){
+      $is_book_reconciled = true;
+    }
+
+    $result =  [
+            'bank_statement_date'=>$bank_statement_date,
+            'bank_statement_balance'=>$bank_statement_balance,
+            'book_closing_balance'=>$book_closing_balance,
+            'month_outstanding_cheques'=>$month_outstanding_cheques,
+            'month_transit_deposit'=>$month_transit_deposit,
+            'bank_reconciled_balance'=>$bank_reconciled_balance,
+            'is_book_reconciled'=>$is_book_reconciled
+          ];
+
+     echo json_encode($result);     
+  }
+
   
 }
