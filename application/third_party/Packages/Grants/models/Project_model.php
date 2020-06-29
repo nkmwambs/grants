@@ -68,4 +68,10 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
 
     public function view(){}
 
+    function lookup_values_where($table = ''){
+     return [
+              'income_account'=>['income_account_is_donor_funded'=>1,'income_account_is_active'=>1]
+            ];
+   }
+
 }

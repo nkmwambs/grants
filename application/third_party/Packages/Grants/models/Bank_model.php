@@ -35,7 +35,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function detail_tables(){
-    return ['bank_branch'];
+    return ['office_bank'];
   }
 
   function list(){
@@ -43,7 +43,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
     // $this->db->select($table_columns);
     // $this->db->join('approval_status','approval_status.approval_status_id=approval.fk_approval_status_id');
     // $this->db->join('approveable_item','approveable_item.approveable_item_id=approval.fk_approveable_item_id');
-    return $this->db->get('bank')->result_array();
+    //return $this->db->get('bank')->result_array();
   }
 
   function view(){

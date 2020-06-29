@@ -1682,8 +1682,8 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
 
  function office_bank_accounts($office_id){
 
-  $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
-  $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
+  //$this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
+  $this->db->join('bank','bank.bank_id=office_bank.fk_bank_id');
 
   $result = $this->db->select(array('office_bank_id','office_bank_account_number','bank_name','office_bank_name'))->get_where('office_bank',
   array('fk_office_id'=>$office_id))->result_array();

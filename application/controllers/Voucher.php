@@ -422,8 +422,8 @@ class Voucher extends MY_Controller
     //echo $office_id;
     $this->db->select(array('office_bank_id','bank_name','office_bank_name','office_bank_account_number '));
   
-    $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
-    $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
+    //$this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
+    $this->db->join('bank','bank.bank_id=office_bank.fk_bank_id');
     
     //$this->grants_model->create_table_join_statement_with_depth('office_bank',['bank_branch','bank']);
 
