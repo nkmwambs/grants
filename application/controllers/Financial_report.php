@@ -413,7 +413,7 @@ class Financial_report extends MY_Controller
       'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month),
       'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month,$project_ids),
       'financial_ratios'=>$this->financial_ratios(),
-      'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
+      'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month,$project_ids),
       'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids),
       'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank',$project_ids),
       'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','contra','bank',$project_ids),
@@ -464,8 +464,8 @@ class Financial_report extends MY_Controller
     
   }
 
-  function _bank_statements_uploads($office_ids,$reporting_month){
-    return $this->grants->retrieve_file_uploads_info('financial_report',$office_ids,$reporting_month);
+  function _bank_statements_uploads($office_ids,$reporting_month,$project_ids = []){
+    return $this->grants->retrieve_file_uploads_info('financial_report',$office_ids,$reporting_month, $project_ids);
   }
 
   function _projects_balance_report($office_ids,$reporting_month){
@@ -753,7 +753,7 @@ class Financial_report extends MY_Controller
     array('fk_office_id'=>$post['office_id'],
     'financial_report_month'=>$post['reporting_month']))->row()->financial_report_id;
 
-    $storeFolder = upload_url('financial_report',$financial_report_id); 
+    $storeFolder = upload_url('financial_report',$financial_report_id,[$post['project_id']['project_ids'][0]]); 
     
     if(is_array($this->grants->upload_files($storeFolder)) && 
         count($this->grants->upload_files($storeFolder))>0){

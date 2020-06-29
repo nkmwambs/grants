@@ -318,8 +318,8 @@ if(!function_exists('human_filesize')){
 
 
 if(!function_exists('upload_url')){
-	function upload_url($controller,$record_id) {
-		return "uploads".DS."attachments".DS.$controller.DS.$record_id;
+	function upload_url($controller,$record_id,$extra_keys = []) {
+		return "uploads".DS."attachments".DS.$controller.DS.$record_id.DS.implode(DS,$extra_keys);
 	  }
 }
 

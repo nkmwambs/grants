@@ -2047,11 +2047,11 @@ function feature_model_list_table_visible_columns() {
     //   return (object)['office_id'=>9,'office_name'=>'GRC Shingila'];
     // }
 
-    function retrieve_file_uploads_info($item,$office_ids = array(),$month = ""){
+    function retrieve_file_uploads_info($item,$office_ids = array(),$month = "", $project_ids = []){
 
       $files_array = [];
   
-      $this->CI->db->select(array($item.'_id'));
+      $this->CI->db->select(array($item.'_id','fk_office_bank_id'));
       
       if(count($office_ids) > 0){
         $this->CI->db->where_in('fk_office_id',$office_ids);
@@ -2060,15 +2060,32 @@ function feature_model_list_table_visible_columns() {
       if($month != ""){
         $this->CI->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($month))));
       }
-      
-      $records = $this->CI->db->get($item)->result_array();
-  
+
+     
+    $this->CI->db->join('reconciliation','reconciliation.fk_financial_report_id=financial_report.financial_report_id'); 
+    $records = $this->CI->db->get($item)->result_array();
+
       foreach($records as $record){
-        $record_uploads = directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id']);
+
+        if(count($project_ids) == 0 ){
+          if(file_exists('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id'])){
+            $record_uploads = directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id']);
+            
+            $files_array = array_merge($files_array,$record_uploads);
+          }
+        }elseif(in_array($record['fk_office_bank_id'],$project_ids)){
+          // Throws an error if more than 1 project is selected from the report
+          if(file_exists('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id'])){
+            $record_uploads = directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id']);
+            
+            $files_array = array_merge($files_array,$record_uploads);
+          }
+
+        }
         
-        $files_array = array_merge($files_array,$record_uploads);
+        
       }
-  
+      //echo json_encode($project_ids);exit;
       return $files_array;
     }
 
