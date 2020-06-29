@@ -710,11 +710,13 @@ class Voucher extends MY_Controller
       $this->db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
       $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
       $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
+      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
       $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
       $accounts = $this->db->get('expense_account')->result_array();
     }else{
       $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
-      $this->db->join('project_allocation','project_allocation.fk_income_account_id=income_account.income_account_id');
+      $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
+      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
       $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
       $accounts = $this->db->get('income_account')->result_array();
     }  
