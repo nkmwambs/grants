@@ -18,7 +18,7 @@
                     <td><?=get_phrase('bank_statement_closing_balance');?></td>
                     <td>
                         <?php if($multiple_offices_report){?>
-                            <?=$bank_reconciliation['bank_statement_balance'];?>
+                            <?=number_format($bank_reconciliation['bank_statement_balance'],2);?>
                         <?php }else{?>
                             <input type="text" class="form-control" id="bank_statement_balance" data-format='yyyy-mm-dd' value="<?=$bank_reconciliation['bank_statement_balance'];?>"/>
                         <?php }?>
@@ -46,3 +46,15 @@
             </tbody>
         </table>
       
+      <script>
+      $("#bank_statement_balance").on('change',function(){
+        var url = "<?=base_url();?>financial_report/update_bank_reconciliation_balance";
+
+        var data = {'reporting_month':'<?=$reporting_month;?>','office_ids':$('#office_ids').val(),'project_ids':$('#project_ids').val(),'balance':$(this).val()};
+
+        $.post(url,data,function(response){
+            alert(response);
+        });
+
+      });
+      </script>

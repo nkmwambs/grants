@@ -111,8 +111,8 @@ class Financial_report extends MY_Controller
     $bank_statement_balance = $this->_bank_statement_balance($office_ids,$reporting_month, $project_ids);
     
     $book_closing_balance = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids);//$this->_book_closing_balance($office_ids,$reporting_month);
-    $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','bank_contra','bank',$project_ids);
-    $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','cash_contra','bank',$project_ids);//$this->_deposit_in_transit($office_ids,$reporting_month);
+    $month_outstanding_cheques = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'expense','contra','bank',$project_ids);
+    $month_transit_deposit = $this->_sum_of_outstanding_cheques_and_transits($office_ids,$reporting_month,'income','contra','bank',$project_ids);//$this->_deposit_in_transit($office_ids,$reporting_month);
     $bank_reconciled_balance = $bank_statement_balance - $month_outstanding_cheques + $month_transit_deposit;
 
     $is_book_reconciled = false;
@@ -174,7 +174,7 @@ class Financial_report extends MY_Controller
 
     $financial_report_statement_amount_obj = $this->db->get('financial_report');
 
-    if($financial_report_statement_amount_obj->row()->reconciliation_statement_balance != null){
+    if($financial_report_statement_amount_obj->num_rows() > 0){
       $financial_report_statement_amount = $financial_report_statement_amount_obj->row()->reconciliation_statement_balance;
     }
 
@@ -408,10 +408,10 @@ class Financial_report extends MY_Controller
         'financial_ratios'=>$this->financial_ratios(),
         'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
         'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report),
-        'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','bank_contra','bank'),
-        'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
-        'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
-        'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
+        'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank'),
+        'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','contra','bank'),
+        'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','contra','bank'),//$this->_deposit_in_transit($office_ids,$reporting_month),
+        'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','contra','bank'),
         'expense_report'=>$this->_expense_report($office_ids,$reporting_month)
       ];
     }else{
@@ -438,9 +438,9 @@ class Financial_report extends MY_Controller
       'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month),
       'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$project_ids),
       'outstanding_cheques'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'expense','contra','bank',$project_ids),
-      'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank'),
+      'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','contra','bank'),
       'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','contra','bank',$project_ids),//$this->_deposit_in_transit($office_ids,$reporting_month),
-      'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank'),
+      'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','contra','bank'),
       'expense_report'=>$this->_expense_report($office_ids,$reporting_month,$project_ids)
     ];
  
@@ -853,6 +853,69 @@ function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
   $statements_uploaded = $this->grants->retrieve_file_uploads_info('financial_report',[$office_id],$reporting_month);
 
   return count($statements_uploaded) > 0? true : false;
+}
+
+function update_bank_reconciliation_balance(){
+  $post = $_POST;
+
+  if(count($post['office_ids']) > 1 || count($post['project_ids']) > 1){
+    echo "Cannot update balances when multiple offices or banks are selected";
+  }else{
+
+    $this->db->trans_start();
+    $financial_report_id = $this->db->get_where('financial_report',
+    array('financial_report_month'=>$post['reporting_month'],'fk_office_id'=>$post['office_ids'][0]))->row()->financial_report_id;
+
+    $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+    $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+    
+    $office_bank_id = $this->db->get_where('office_bank',
+    array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
+
+    $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
+
+    // Check if reconciliation record exists and update else create
+
+    $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
+
+    if($reconciliation_record == 0){
+
+      $data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
+      $data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
+     
+      $data['fk_financial_report_id'] = $financial_report_id;
+      $data['fk_office_bank_id'] = $office_bank_id;
+      $data['reconciliation_statement_balance'] = $post['balance'];
+      $data['reconciliation_suspense_amount'] = 0;
+
+      $data['reconciliation_created_by'] = $this->session->user_id;
+      $data['reconciliation_created_date'] = date('Y-m-d');
+      $data['reconciliation_last_modified_by'] = $this->session->user_id;
+      
+      $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
+      $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
+
+      $this->db->insert('reconciliation',$data);
+
+    }else{
+      $this->db->where($condition_array);
+
+      $data['reconciliation_statement_balance'] = $post['balance'];
+      $this->db->update('reconciliation',$data);
+    }
+
+    
+
+    $this->db->trans_complete();
+
+    if($this->db->trans_status() == false){
+      echo "Error in updating bank reconciliation balance";
+    }else{
+      echo "Update completed";
+    }
+
+
+  }
 }
 
 static function get_menu_list(){}
