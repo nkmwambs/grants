@@ -594,7 +594,7 @@ class Financial_report_model extends MY_Model{
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number',
         'voucher_description','voucher_cleared','office_code','office_name','voucher_date',
-        'voucher_cleared','fk_office_bank_id'));
+        'voucher_cleared','fk_office_bank_id','office_bank_name'));
         
         $this->db->group_by(array('voucher_id'));
         
@@ -605,7 +605,9 @@ class Financial_report_model extends MY_Model{
         
         $this->db->group_start();
             $this->db->where(array('voucher_cleared'=>0));
-            $this->db->or_where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
+            $this->db->or_group_start();
+                $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
+            $this->db->group_end();
         $this->db->group_end();
         
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
@@ -622,6 +624,54 @@ class Financial_report_model extends MY_Model{
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
         //echo json_encode($list_oustanding_cheques_and_deposit);exit;
         return $list_oustanding_cheques_and_deposit;
+      }
+
+      /**
+       * list_cleared_effects + list_oustanding_cheques_and_deposits can be normalized
+       */
+
+      function list_cleared_effects($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids = []){
+
+        if(count($project_ids) > 0){
+            $this->db->select(array('office_bank_id'));
+            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+            $this->db->where_in('fk_project_id',$project_ids);
+            $office_bank_ids = array_column($this->db->get('office_bank')->result_array(),'office_bank_id');
+        }
+        
+
+        $list_cleared_effects = [];
+        
+        //return 145890.00;
+        //$cleared_condition = " `voucher_cleared` = 1 AND `voucher_cleared_month` = '".date('Y-m-t',strtotime($reporting_month))."' ";
+        $this->db->select_sum('voucher_detail_total_cost');
+        $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number','voucher_description',
+        'voucher_cleared','office_code','office_name','voucher_date','voucher_cleared','office_bank_id','office_bank_name'));
+        $this->db->group_by('voucher_id');
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+        $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+        $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
+
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+        $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+        $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
+        $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month'=>date('Y-m-t',strtotime($reporting_month))));
+
+        $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+        $this->db->join('office','office.office_id=voucher.fk_office_id');
+        $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+        $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+        $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+        $this->db->join('office_bank','office_bank.office_bank_id=voucher.fk_office_bank_id');
+
+        if(count($project_ids) > 0){
+            $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+        }
+
+        $list_cleared_effects = $this->db->get('voucher_detail')->result_array();
+        //echo json_encode($project_ids);exit;
+        return $list_cleared_effects;
       }
 
 }
