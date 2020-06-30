@@ -29,14 +29,18 @@
                         </td>
                         <td><?=$deposit_in_transit_row['voucher_date'];?></td>
                         <td><?=$deposit_in_transit_row['voucher_description'];?></td>
-                        <td><?=number_format($deposit_in_transit_row['voucher_detail_total_cost'],2);?></td>
+                        <td class='td_row_amount'><?=number_format($deposit_in_transit_row['voucher_detail_total_cost'],2);?></td>
                     </tr>
                <?php }?>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan='3'><?=get_phrase('total');?></td>
-                    <td><?=number_format(array_sum(array_column($deposit_in_transit,'voucher_detail_total_cost')),2);?></td>
+                    <td class='td_effects_total'><?=number_format(array_sum(array_column($deposit_in_transit,'voucher_detail_total_cost')),2);?></td>
                 </tr>
             </tfoot>
     </table>
+
+    <script>
+ 
+    </script>
