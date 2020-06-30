@@ -580,19 +580,23 @@ class Financial_report_model extends MY_Model{
       }
 
       function list_oustanding_cheques_and_deposits($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids = []){
-        
+        //$office_bank_ids = [];
         if(count($project_ids) > 0){
-            $this->db->select(array('office_bank_id'));
+            $this->db->select(array('office_bank.office_bank_id'));
             $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
             $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
             $this->db->where_in('fk_project_id',$project_ids);
             $office_bank_ids = array_column($this->db->get('office_bank')->result_array(),'office_bank_id');
+
+            if(!empty($office_bank_ids)){
+                $this->db->where_in('office_bank.office_bank_id',$office_bank_ids);
+            }
+            
         }
         
 
         $list_oustanding_cheques_and_deposit = [];
         
-        //$cleared_condition = " `voucher_cleared` = 0 OR (`voucher_cleared` = 1  AND `voucher_cleared_month` > '".date('Y-m-t',strtotime($reporting_month))."' )";
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number',
         'voucher_description','voucher_cleared','office_code','office_name','voucher_date',
@@ -602,8 +606,15 @@ class Financial_report_model extends MY_Model{
         
         
         $this->db->where_in('voucher.fk_office_id',$office_ids);
-        $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
-        $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
+        
+        if($transaction_type == 'expense'){
+            $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);// contra, expense , income
+            $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));// bank, cash
+        }else{
+            $this->db->where_in('voucher_type_effect_code',[$transaction_type]);// contra, expense , income
+            $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));// bank, cash
+        }
+       
         
         $this->db->group_start();
             $this->db->where(array('voucher_cleared'=>0));
@@ -619,9 +630,6 @@ class Financial_report_model extends MY_Model{
         $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
         $this->db->join('office_bank','office_bank.office_bank_id=voucher.fk_office_bank_id');
         
-        if(count($project_ids) > 0){
-            $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
-        }
         
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
         //echo json_encode($list_oustanding_cheques_and_deposit);exit;
@@ -635,11 +643,15 @@ class Financial_report_model extends MY_Model{
       function list_cleared_effects($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids = []){
 
         if(count($project_ids) > 0){
-            $this->db->select(array('office_bank_id'));
+            $this->db->select(array('office_bank.office_bank_id'));
             $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
             $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
             $this->db->where_in('fk_project_id',$project_ids);
             $office_bank_ids = array_column($this->db->get('office_bank')->result_array(),'office_bank_id');
+
+            if(!empty($office_bank_ids)){
+                //$this->db->where_in('office_bank_id',$office_bank_ids);
+            }
         }
         
 
