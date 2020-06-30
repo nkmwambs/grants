@@ -16,7 +16,7 @@
                 </tr>
                 <tr>
                     <td><?=get_phrase('bank_statement_closing_balance');?></td>
-                    <td>
+                    <td id='td_bank_reconciliation_balance'>
                         <?php if($multiple_offices_report || $multiple_projects_report){?>
                             <?=number_format($bank_reconciliation['bank_statement_balance'],2);?>
                         <?php }else{?>

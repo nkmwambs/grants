@@ -163,9 +163,7 @@ $(document).on('click','.clear_btn',function(){
 
     var td_deposit_in_transit = $("#td_deposit_in_transit");
     var td_oustanding_cheques = $("#td_oustanding_cheques");
-
-    // var deposit_in_transit = $("#td_deposit_in_transit").html().split(',').join("");
-    // var oustanding_cheques = $("#td_oustanding_cheques").html().split(',').join("");
+    var reconciled_bank_balance = $("#reconciled_bank_balance");
 
     if(table_id == 'tbl_transit_deposit'){
         td_deposit_in_transit.html(accounting.formatNumber(origin_table_balance,2));
@@ -177,8 +175,36 @@ $(document).on('click','.clear_btn',function(){
         td_oustanding_cheques.html(accounting.formatNumber(drop_table_balance,2));
     }
 
+    var td_bank_reconciliation_balance = $("#td_bank_reconciliation_balance"); 
+    var bank_reconciliation_balance = 0;
+
+    if(td_bank_reconciliation_balance.find('input').length > 0){
+        bank_reconciliation_balance = td_bank_reconciliation_balance.find('input').val().split(',').join("");
+    }else{
+        bank_reconciliation_balance = td_bank_reconciliation_balance.html().split(',').join("");
+    }
     
-    //$("#reconciled_bank_balance").html();
+    var reconciled_bank_balance = parseFloat(bank_reconciliation_balance) + parseFloat(td_deposit_in_transit.html().split(',').join("")) - parseFloat(td_oustanding_cheques.html().split(',').join(""));
+
+    $("#reconciled_bank_balance").html(accounting.formatNumber(reconciled_bank_balance,2));
+
+    var td_book_closing_balance = $("#td_book_closing_balance");
+
+    var book_closing_balance = td_book_closing_balance.html().split(',').join("");
+
+    if(parseFloat(book_closing_balance) === parseFloat(reconciled_bank_balance)){
+        if($("#reconciliation_flag").hasClass('label-danger')){
+            $("#reconciliation_flag").removeClass('label-danger');
+            $("#reconciliation_flag").addClass('label-success');
+            $("#reconciliation_flag").html('<?=get_phrase('balanced');?>');
+        }
+    }else{
+        if($("#reconciliation_flag").hasClass('label-success')){
+            $("#reconciliation_flag").removeClass('label-success');
+            $("#reconciliation_flag").addClass('label-danger');
+            $("#reconciliation_flag").html('<?=get_phrase('not_balanced');?>');
+        }
+    }
 
 });
 
