@@ -33,7 +33,7 @@ class System_opening_balance_model extends MY_Model{
     }
 
     function show_add_button(){
-        return false;
+        //return false;
     }
 
     public function detail_tables(){
