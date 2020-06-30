@@ -167,4 +167,8 @@ class MY_Model extends CI_Model
 
       return $hidden_columns;
     }
+
+    function show_add_button(){
+      return true;
+    }
 }

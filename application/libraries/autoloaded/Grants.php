@@ -1206,12 +1206,13 @@ function show_add_button(String $table = ""): Bool {
     $model = $this->load_detail_model($table);
   }
   
-  $show_add_button = true;
+  $show_add_button = false;
 
   $library = $this->controller.'_library';
 
-  if(method_exists($this->CI->$model,'show_add_button') && 
-    is_bool($this->CI->$model->show_add_button()) ){
+  if(method_exists($this->CI->$model,'show_add_button') 
+      && $this->CI->$model->show_add_button() != null 
+    ){
       $show_add_button = $this->CI->$model->show_add_button();
   }
 

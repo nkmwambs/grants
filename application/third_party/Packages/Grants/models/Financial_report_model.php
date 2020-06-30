@@ -157,7 +157,7 @@ class Financial_report_model extends MY_Model{
 
             $this->db->select(array('opening_fund_balance_amount'));
             $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
-            $this->db->where_in('fk_office_id',$office_ids);
+            $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
             $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
                 array('fk_income_account_id'=>$income_account_id));
 
@@ -169,7 +169,8 @@ class Financial_report_model extends MY_Model{
             $this->db->group_by('fk_income_account_id');
             $this->db->join('opening_allocation_balance','opening_allocation_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
             $this->db->join('project_allocation','project_allocation.project_allocation_id=opening_allocation_balance.fk_project_allocation_id');
-            
+            $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+
             if(count($project_ids) > 0){
                 $this->db->where_in('fk_project_id',$project_ids);
             }   
@@ -354,8 +355,9 @@ class Financial_report_model extends MY_Model{
         $office_account_system_ids = $this->db->get('office')->result_array();
        
         if(count($project_ids) > 0){
-            $this->db->where_in('fk_project_id',$project_ids);
-            $this->db->join('project_allocation','project_allocation.fk_income_account_id=income_account.income_account_id');
+            $this->db->where_in('project_id',$project_ids);
+            $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
+            //$this->db->join('project_allocation','project_allocation.fk_income_account_id=income_account.income_account_id');
         }
         
         $this->db->where_in('fk_account_system_id',array_column($office_account_system_ids,'fk_account_system_id'));

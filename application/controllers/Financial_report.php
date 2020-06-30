@@ -428,6 +428,19 @@ class Financial_report extends MY_Controller
  
   }
 
+  // function ajax_test(){
+
+  //   $report_id = '8zoLYo3YXb';
+  //   $office_ids = [1];
+  //   $reporting_month = '2020-04-01';
+  //   $project_ids = [1];
+
+  //   $result = $this->result_array($report_id,$office_ids,$reporting_month,$project_ids);
+  //   //$result = $this->_fund_balance_report($office_ids,$reporting_month,$project_ids);
+
+  //   echo json_encode($result);
+  // }
+
   function filter_financial_report(){
 
     $project_ids = $this->input->post('project_ids') == null ? [] : $this->input->post('project_ids');
