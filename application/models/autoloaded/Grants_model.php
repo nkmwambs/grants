@@ -264,7 +264,9 @@ function generate_item_track_number_and_name($approveable_item){
    
     $model = $this->controller.'_model';
     
-    $transaction_validate_duplicates = $this->transaction_validate_duplicates($this->controller,$header,$this->$model->transaction_validate_duplicates_columns());
+    $transaction_validate_duplicates_columns = is_array($this->$model->transaction_validate_duplicates_columns())?$this->$model->transaction_validate_duplicates_columns():[];
+
+    $transaction_validate_duplicates = $this->transaction_validate_duplicates($this->controller,$header,$transaction_validate_duplicates_columns);
     $transaction_validate_by_computation = $this->transaction_validate_by_computation($this->controller, $header);
 
     return $this->transaction_validate([$transaction_validate_duplicates,$transaction_validate_by_computation]);

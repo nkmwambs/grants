@@ -32,7 +32,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
   }
 
   public function detail_tables(){
-    return ['project_allocation_detail','office_bank_project_allocation'];
+    return ['office_bank_project_allocation'];
   }
     public function master_table_visible_columns(){}
 
@@ -47,11 +47,11 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     public function detail_list_table_hidden_columns(){}
 
     public function single_form_add_visible_columns(){
-      return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','office_name','project_name','income_account_name');
+      return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','office_name','project_name');
     }
 
     public function edit_visible_columns(){
-     // return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','project_allocation_extended_end_date','office_name','project_name');
+     return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','project_allocation_extended_end_date');
     }
 
     public function single_form_add_hidden_columns(){}
@@ -96,13 +96,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
    }
 
    public function transaction_validate_duplicates_columns(){
-     //return ['fk_office_id','fk_project_id'];
+     return ['fk_office_id','fk_project_id'];
    }
-
-  //  function lookup_values_where($table = ''){
-  //    return [
-  //             'income_account'=>['income_account_is_donor_funded'=>1,'income_account_is_active'=>1]
-  //           ];
-  //  }
 
 }
