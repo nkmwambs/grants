@@ -29,7 +29,7 @@ class Opening_outstanding_cheque_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('system_opening_balance');
+        return array('system_opening_balance','office_bank');
     }
 
     public function detail_tables(){}
