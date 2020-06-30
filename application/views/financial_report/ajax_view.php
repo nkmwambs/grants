@@ -124,32 +124,62 @@ $(document).on('click','.clear_btn',function(){
     var table_id = $(this).closest('table').attr('id');
 
     var drop_table_id = '';
+    var effect_to_balance = 'negative';
 
     if(table_id == 'tbl_transit_deposit'){
+
         drop_table_id = 'tbl_cleared_transit_deposit';
+
     }else if(table_id == 'tbl_cleared_transit_deposit'){
+
         drop_table_id = 'tbl_transit_deposit';
+        effect_to_balance = 'positive';
+
     }else if(table_id == 'tbl_outstanding_cheque'){
+
         drop_table_id = 'tbl_cleared_outstanding_cheque';
+
     }else if(table_id == 'tbl_cleared_outstanding_cheque'){
+
         drop_table_id = 'tbl_outstanding_cheque';
+        effect_to_balance = 'positive';
+
     }
+
 
     var effects_total = td_effects_total.html().split(',').join("");
     var row_amount = td_row_amount.html().split(',').join("");
 
-    
     var td_drop_table_total = $("#"+drop_table_id).find('td.td_effects_total');
     var drop_table_total = td_drop_table_total.html().split(',').join("");
 
-
-
     var origin_table_balance = parseFloat(effects_total) - parseFloat(row_amount);
-
     var drop_table_balance = parseFloat(drop_table_total) + parseFloat(row_amount);
 
     td_effects_total.html(accounting.formatNumber(origin_table_balance,2));
     td_drop_table_total.html(accounting.formatNumber(drop_table_balance,2));
+
+    //alert(drop_table_balance);
+
+    var td_deposit_in_transit = $("#td_deposit_in_transit");
+    var td_oustanding_cheques = $("#td_oustanding_cheques");
+
+    // var deposit_in_transit = $("#td_deposit_in_transit").html().split(',').join("");
+    // var oustanding_cheques = $("#td_oustanding_cheques").html().split(',').join("");
+
+    if(table_id == 'tbl_transit_deposit'){
+        td_deposit_in_transit.html(accounting.formatNumber(origin_table_balance,2));
+    }else if(table_id == 'tbl_cleared_transit_deposit' ){
+        td_deposit_in_transit.html(accounting.formatNumber(drop_table_balance,2));
+    }else if(table_id == 'tbl_outstanding_cheque'){
+        td_oustanding_cheques.html(accounting.formatNumber(origin_table_balance,2));
+    }else if(table_id == 'tbl_cleared_outstanding_cheque' ){
+        td_oustanding_cheques.html(accounting.formatNumber(drop_table_balance,2));
+    }
+
+    
+    //$("#reconciled_bank_balance").html();
+
 });
 
 </script>

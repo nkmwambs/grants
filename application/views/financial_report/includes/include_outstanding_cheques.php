@@ -32,14 +32,14 @@
                         <td><?=$outstanding_cheque['voucher_date'];?></td>
                         <td><?=$outstanding_cheque['voucher_description'];?></td>
                         <td><?=$outstanding_cheque['voucher_cheque_number'];?></td>
-                        <td><?=number_format($outstanding_cheque['voucher_detail_total_cost'],2);?></td>
+                        <td class='td_row_amount'><?=number_format($outstanding_cheque['voucher_detail_total_cost'],2);?></td>
                     </tr>
                <?php }?>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan='4'><?=get_phrase('total');?></td>
-                    <td><?=number_format(array_sum(array_column($outstanding_cheques,'voucher_detail_total_cost')),2);?></td>
+                    <td class='td_effects_total'><?=number_format(array_sum(array_column($outstanding_cheques,'voucher_detail_total_cost')),2);?></td>
                 </tr>
             </tfoot>
     </table>
