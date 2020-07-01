@@ -43,7 +43,10 @@
                         <div class='col-xs-2'>
                             <select class='form-control required' id='office' name='fk_office_id'>
                                 <option value=""><?=get_phrase('select_office');?></option>
-                                <?php foreach($this->session->hierarchy_offices as $office){?>
+                                <?php 
+                                    foreach($this->session->hierarchy_offices as $office){
+                                        if(!$office['office_is_active']) continue;
+                                ?>
                                         <option value="<?=$office['office_id'];?>"><?=$office['office_name'];?></option>
                                 <?php }?>
                             </select>

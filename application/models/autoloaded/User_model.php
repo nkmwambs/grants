@@ -523,7 +523,7 @@ class User_model extends MY_Model
       $level_five_context_table = isset($contexts[4])?'context_'.$contexts[4]:null;//region
       $level_six_context_table = isset($contexts[5])?'context_'.$contexts[5]:null;//global
 
-      $this->db->select(array('office_id','office_name'));
+      $this->db->select(array('office_id','office_name','office_is_active'));
 
 
       if($contexts[0] != null && $looping_context == $contexts[0]){ // center
