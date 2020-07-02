@@ -17,6 +17,7 @@ class Journal extends MY_Controller
 
     $this->load->model('finance_model');
     $this->load->model('voucher_model');
+    $this->load->model('financial_report_model');
 
   }
 

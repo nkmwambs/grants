@@ -26,7 +26,8 @@
 
     $role_has_journal_update_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
     //$role_has_voucher_create_permission = $this->user_model->check_role_has_permissions(ucfirst('voucher'),'create');
-    
+    $check_if_financial_report_is_submitted = $this->financial_report_model->check_if_financial_report_is_submitted([$office_id],$transacting_month);
+    //echo $check_if_financial_report_is_submitted;
 ?>
 
 <?php if(isset($office_bank_name)){?>
@@ -165,14 +166,14 @@
                         <td 
                             title='<?php if(strlen($payee)>50) echo $description;?>'
                         >
-                            <i data-voucher_id ='<?=$voucher_id;?>' data-reference_column = 'voucher_vendor' class='fa fa-pencil edit_journal  <?=(!$role_has_journal_update_permission || $voucher_is_reversed) ? 'hidden' : ''; ?> '></i> 
+                            <i data-voucher_id ='<?=$voucher_id;?>' data-reference_column = 'voucher_vendor' class='fa fa-pencil edit_journal  <?=(!$role_has_journal_update_permission || $voucher_is_reversed || $check_if_financial_report_is_submitted) ? 'hidden' : ''; ?> '></i> 
                                 <span class='cell_content'><?=strlen($payee)>50?substr($payee,0,50).'...':$payee;?></span>
                         </td>
                         
                         <td 
                             title='<?php if(strlen($description)>50) echo $description;?>'
                         >
-                            <i data-voucher_id ='<?=$voucher_id;?>' data-reference_column = 'voucher_description' class='fa fa-pencil edit_journal  <?=(!$role_has_journal_update_permission || $voucher_is_reversed) ? 'hidden' : ''; ?> '></i> 
+                            <i data-voucher_id ='<?=$voucher_id;?>' data-reference_column = 'voucher_description' class='fa fa-pencil edit_journal  <?=(!$role_has_journal_update_permission || $voucher_is_reversed || $check_if_financial_report_is_submitted ) ? 'hidden' : ''; ?> '></i> 
                             <span class='cell_content'><?=strlen($description)>50?substr($description,0,50).'...':$description;?></span>
                         </td>
 

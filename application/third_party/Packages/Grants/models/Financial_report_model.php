@@ -700,4 +700,23 @@ class Financial_report_model extends MY_Model{
         return $list_cleared_effects;
       }
 
+      function check_if_financial_report_is_submitted($office_ids,$reporting_month){
+    
+        $report_is_submitted = false;
+    
+        if(count($office_ids) == 1 ){
+    
+          $financial_report_is_submitted = $this->db->get_where('financial_report',
+          array('fk_office_id'=>$office_ids[0],
+          'financial_report_month'=>date('Y-m-01',strtotime($reporting_month))))->row()->financial_report_is_submitted;
+          
+          if($financial_report_is_submitted){
+            $report_is_submitted = true;
+          }
+        }
+    
+        return $report_is_submitted;
+        
+      }
+
 }
