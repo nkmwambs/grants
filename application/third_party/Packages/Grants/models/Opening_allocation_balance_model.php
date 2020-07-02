@@ -54,7 +54,7 @@ class Opening_allocation_balance_model extends MY_Model{
 
     function lookup_values_where($table = ''){
         return [
-                 'project_allocation'=>['fk_office_id'=>$this->opening_allocation_balance_office_id()]
+                 'project_allocation'=>['project_allocation_id'=>$this->opening_allocation_balance_office_id()]
                ];
       }
 }
