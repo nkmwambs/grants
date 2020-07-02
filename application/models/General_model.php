@@ -425,7 +425,7 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
       $approval_button_info['show_decline_button'] = $this->show_decline_button($item_status);
       $approval_button_info['next_approval_status'] = $this->next_status($item_status);
       $approval_button_info['next_decline_status'] = $this->decline_status($item_status);
-      $approval_button_info['show_label_as_button'] = $this->show_label_as_button($item_status,$logged_role_id,$table,$primary_key);
+      $approval_button_info['show_label_as_button'] = true;//$this->show_label_as_button($item_status,$logged_role_id,$table,$primary_key);
   
     }
 
