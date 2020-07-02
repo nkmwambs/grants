@@ -28,12 +28,12 @@ class Financial_report extends MY_Controller
     return $this->financial_report_library->income_accounts($office_ids, $project_ids);
   }
 
-  private function month_income_account_receipts($office_ids,$start_date_of_month){
-    return $this->financial_report_library->month_income_account_receipts($office_ids, $start_date_of_month);
+  private function month_income_account_receipts($office_ids,$start_date_of_month,$project_ids = []){
+    return $this->financial_report_library->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids);
   }
 
-  private function month_income_account_expenses($office_ids, $start_date_of_month){
-    return $this->financial_report_library->month_income_account_expenses($office_ids, $start_date_of_month);
+  private function month_income_account_expenses($office_ids, $start_date_of_month,$project_ids=[]){
+    return $this->financial_report_library->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids);
   }
 
   private function month_income_opening_balance($office_ids, $start_date_of_month,$project_ids = []){

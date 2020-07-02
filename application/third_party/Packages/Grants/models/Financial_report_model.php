@@ -273,20 +273,20 @@ class Financial_report_model extends MY_Model{
         return $previous_months_expense_to_date;
     }
 
-    function month_income_account_receipts($office_ids, $start_date_of_month){
+    function month_income_account_receipts($office_ids, $start_date_of_month,$project_ids = []){
 
-        $income_accounts = $this->income_accounts($office_ids);
+        $income_accounts = $this->income_accounts($office_ids,$project_ids);
 
         $month_income = [];
 
         foreach($income_accounts as $income_account){
-            $month_income[$income_account['income_account_id']] = $this->_get_account_month_income($office_ids,$income_account['income_account_id'],$start_date_of_month);
+            $month_income[$income_account['income_account_id']] = $this->_get_account_month_income($office_ids,$income_account['income_account_id'],$start_date_of_month,$project_ids);
         }
 
         return $month_income;
     }
 
-    function _get_account_month_income($office_ids,$income_account_id,$start_date_of_month){
+    function _get_account_month_income($office_ids,$income_account_id,$start_date_of_month,$project_ids = []){
         
         $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
 
@@ -297,7 +297,13 @@ class Financial_report_model extends MY_Model{
         $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
         $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
         $this->db->group_by('fk_income_account_id');
-        $this->db->where_in('fk_office_id',$office_ids);
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+
+        if(count($project_ids) > 0){
+            $this->db->where_in('fk_project_id',$project_ids);
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        }
+
         $month_income_obj = $this->db->get_where('voucher_detail',
             array('voucher_type_effect_code'=>'income',
             'fk_income_account_id'=>$income_account_id,'voucher_date>='=>$start_date_of_month,
@@ -311,20 +317,20 @@ class Financial_report_model extends MY_Model{
 
     }
     
-    function month_income_account_expenses($office_ids, $start_date_of_month){
+    function month_income_account_expenses($office_ids, $start_date_of_month,$project_ids = []){
 
-        $income_accounts = $this->income_accounts($office_ids);
+        $income_accounts = $this->income_accounts($office_ids,$project_ids);
 
         $expense_income = [];
 
         foreach($income_accounts as $income_account){
-            $expense_income[$income_account['income_account_id']] = $this->_get_income_account_month_expense($office_ids,$income_account['income_account_id'],$start_date_of_month);
+            $expense_income[$income_account['income_account_id']] = $this->_get_income_account_month_expense($office_ids,$income_account['income_account_id'],$start_date_of_month,$project_ids);
         }
 
         return $expense_income;
     }
 
-    function _get_income_account_month_expense($office_ids,$income_account_id,$start_date_of_month){
+    function _get_income_account_month_expense($office_ids,$income_account_id,$start_date_of_month,$project_ids = []){
         $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
 
         $expense_income = 0;
@@ -336,7 +342,13 @@ class Financial_report_model extends MY_Model{
         $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
         $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
         $this->db->group_by('voucher_type_effect_code');
-        $this->db->where_in('fk_office_id',$office_ids);
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+
+        if(count($project_ids) > 0){
+            $this->db->where_in('fk_project_id',$project_ids);
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        }
+
         $expense_income_obj = $this->db->get_where('voucher_detail',
         array('voucher_date>='=>$start_date_of_month,'voucher_date<='=>$last_date_of_month,
         'income_account_id'=>$income_account_id,'voucher_type_effect_code'=>'expense'));

@@ -546,8 +546,6 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
     var voucher_type_id = $(voucherTypeSelect).val();// Can be expense, income, cash_contra or bank_contra
 
-    //var office_cash_id = $("#cash_account").val();
-
     var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
 
     var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
@@ -1045,6 +1043,8 @@ $(".btn-save").on('click',function(){
 
 $(".btn-save-new").on('click',function(){
     saveVoucher($(this));
+
+    window.location.reload();
 });
 
 function check_required_fields(){

@@ -347,15 +347,17 @@ class Voucher extends MY_Controller
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
     // Check if the voucher type is a bank payment
-    if($voucher_type_account == 'bank' && $voucher_type_effect == 'expense'){
+    if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra') ){
       $response['is_bank_payment'] = true;
       
-    }elseif($voucher_type_effect == 'contra'){
-      $response['is_contra'] = true;
-      $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
-      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
     }elseif($voucher_type_account == 'cash'){
       $response['is_cash_payment'] = true;
+      $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
+      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
+    }
+
+    if($voucher_type_effect == 'contra'){
+      $response['is_contra'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
       array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
     }
