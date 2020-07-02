@@ -13,6 +13,10 @@
 .btn_reverse:hover {
   background-color: RoyalBlue;
 }
+
+.edit_journal{
+    cursor:pointer;
+}
 </style>
 
 <?php
@@ -157,17 +161,19 @@
                                 <div class='btn btn-default'><?=$voucher_number;?></div>
                             </a>    
                         </td>
-
+                        
                         <td 
                             title='<?php if(strlen($payee)>50) echo $description;?>'
                         >
-                            <?=strlen($payee)>50?substr($payee,0,50).'...':$payee;?>
+                            <i data-voucher_id ='<?=$voucher_id;?>' data-reference_column = 'voucher_vendor' class='fa fa-pencil edit_journal  <?=(!$role_has_journal_update_permission || $voucher_is_reversed) ? 'hidden' : ''; ?> '></i> 
+                                <span class='cell_content'><?=strlen($payee)>50?substr($payee,0,50).'...':$payee;?></span>
                         </td>
                         
                         <td 
                             title='<?php if(strlen($description)>50) echo $description;?>'
                         >
-                            <?=strlen($description)>50?substr($description,0,50).'...':$description;?>
+                            <i data-voucher_id ='<?=$voucher_id;?>' data-reference_column = 'voucher_description' class='fa fa-pencil edit_journal  <?=(!$role_has_journal_update_permission || $voucher_is_reversed) ? 'hidden' : ''; ?> '></i> 
+                            <span class='cell_content'><?=strlen($description)>50?substr($description,0,50).'...':$description;?></span>
                         </td>
 
                         <td class='align-right'><?=$cheque_number != 0?$cheque_number:'';?></td>
@@ -310,5 +316,29 @@ $('.table').DataTable({
             alert('Reversal process aborted');
         }
 
+      });
+
+      $('.edit_journal').on('dblclick',function(){
+        var parent_td = $(this).closest('td');
+        var parent_td_content = parent_td.find('span.cell_content').html();
+        var voucher_id = $(this).data('voucher_id');
+        var reference_column = $(this).data('reference_column');
+        
+        
+        parent_td.html("<input type='text' data-voucher_id = '"+voucher_id+"' data-reference_column = '"+reference_column+"' class='form-control input_content' value='"+parent_td_content+"' />");
+
+      });
+
+      $(document).on('change','.input_content',function(){
+        var voucher_id = $(this).data('voucher_id');
+        var content = $(this).val();
+        var reference_column = $(this).data('reference_column');
+        var data = {'voucher_id':voucher_id,'column':reference_column,'content':content};    
+        var url = "<?=base_url();?>Journal/edit_journal_description";
+
+        $.post(url,data,function(response){
+            alert(response);
+        });
+      
       });
 </script>

@@ -130,7 +130,7 @@ class Journal extends MY_Controller
 
     // Replace the voucher number in selected voucher with the next voucher number
     $voucher_description = '<strike>'.$voucher['voucher_description'].'</strike> [Reversal of voucher number '.$voucher['voucher_number'].']';
-    $voucher = array_replace($voucher,['voucher_is_reversed'=>1,'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
+    $voucher = array_replace($voucher,['voucher_vendor'=>'<strike>'.$voucher['voucher_vendor'].'<strike>','voucher_is_reversed'=>1,'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
 
     $this->db->trans_start();
     //Insert the next voucher record and get the insert id
@@ -159,6 +159,28 @@ class Journal extends MY_Controller
 
     if($this->db->trans_status() == false){
       $message = "Reversal failed";
+    }
+
+    echo $message;
+  }
+
+  function edit_journal_description(){
+
+    $message = "Update Successful";
+
+    $this->db->trans_start();
+
+    $post = $this->input->post();
+
+    $update_data[$post['column']] = $post['content'];
+    $this->db->where(array('voucher_id'=>$post['voucher_id']));
+
+    $this->db->update('voucher',$update_data);
+
+    $this->db->trans_complete();
+
+    if($this->db->trans_status() == false){
+      $message = "Update failed";
     }
 
     echo $message;
