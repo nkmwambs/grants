@@ -1,7 +1,28 @@
+<style>
+/* Style buttons */
+.btn_reverse {
+  background-color: DodgerBlue; /* Blue background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 16px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+/* Darker background on mouse-over */
+.btn_reverse:hover {
+  background-color: RoyalBlue;
+}
+</style>
+
 <?php
     //print_r($month_opening_balance['bank_balance']);
     extract($result);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
+
+    $role_has_journal_update_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
+    //$role_has_voucher_create_permission = $this->user_model->check_role_has_permissions(ucfirst('voucher'),'create');
+    
 ?>
 
 <?php if(isset($office_bank_name)){?>
@@ -121,10 +142,13 @@
                 ?>
                      <tr>
                         <td>
-                            <!-- <a href="#" class="action" title="Approve"><i class='fa fa-check'></i></a> 
-                            <a href="#" class="action" title="Decline"><i class='fa fa-times'></i></a>
-                            <a href="#" class="action" title="Clear"><i class='fa fa-eraser'></i></a> -->
-                            <div class="btn <?=!$cleared?'btn-danger':'btn-success';?> btn_action" ><?=get_phrase(!$cleared?'clear':'cleared');?></div>
+                            
+                            <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?>' >
+                                <i class='fa fa-undo' style='cursor:pointer;'></i>
+                                <?=get_phrase('reverse');?>
+                            </div>
+                           
+                            <!-- <div class="btn <?=!$cleared?'btn-danger':'btn-success';?> btn_action" ><?=get_phrase(!$cleared?'clear':'cleared');?></div> -->
                         </td>
                         <td><?=date('jS M Y',strtotime($date));?></td>
                         <td><span title="<?=$voucher_type_name;?>" class="label <?=$cleared?'btn-success':'btn-warning';?>"><?=$this->config->item('use_voucher_type_abbreviation')?$voucher_type_abbrev:$voucher_type_name;?><span></td>
@@ -266,5 +290,25 @@ $('.table').DataTable({
             }
         ],
         "pagingType": "full_numbers"
+      });
+
+      $(".btn_reverse").on('click',function(){
+        var btn = $(this);
+        var voucher_id = btn.data('voucher_id');
+        var cnfrm = confirm('Are you sure you want to reverse this voucher?');
+
+        if(cnfrm){
+            var url = "<?=base_url();?>Journal/reverse_voucher/"+voucher_id;
+
+            $.get(url,function(response){
+                alert(response);
+                btn.remove();
+                window.location.reload();
+            });
+
+        }else{
+            alert('Reversal process aborted');
+        }
+
       });
 </script>

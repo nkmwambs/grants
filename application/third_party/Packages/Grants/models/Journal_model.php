@@ -290,7 +290,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
       'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
-      'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date'));
+      'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date','voucher_is_reversed'));
       $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
       $this->db->select(array('voucher_type_account_code'));
       $this->db->select(array('voucher_type_effect_code'));
@@ -351,6 +351,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
           'cheque_number'=>$voucher_cheque_number,
           'office_bank_id'=>$fk_office_bank_id,
           'office_cash_id'=>$fk_office_cash_id,
+          'voucher_is_reversed'=>$voucher_is_reversed,
           'spread'=>$this->get_voucher_spread($raw_array_of_vouchers,$voucher_id)
 
         ];

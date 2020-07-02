@@ -1,6 +1,10 @@
 <?php
     extract($result);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
+
+    //$role_has_journal_update_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
+    $role_has_voucher_create_permission = $this->user_model->check_role_has_permissions(ucfirst('voucher'),'create');
+
 ?>
 
 <style>
@@ -17,7 +21,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-3">
+  <div class="col-xs-3 <?=!$role_has_voucher_create_permission? 'hidden' :'';?>">
       <a href='<?=base_url();?>voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
   </div>
     <?php if($office_has_multiple_bank_accounts){?>

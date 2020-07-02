@@ -111,6 +111,56 @@ class Journal extends MY_Controller
     parent::view();
   }
 
+  function reverse_voucher($voucher_id){
+     
+    $message = "Reversal Completed";
+
+    // Get the voucher and voucher details
+    $voucher = $this->db->get_where('voucher',
+    array('voucher_id'=>$voucher_id))->row_array();
+
+    //Unset the primary key field
+    unset($voucher['voucher_id']);
+
+    $voucher_details = $this->db->get_where('voucher_detail',
+    array('fk_voucher_id'=>$voucher_id))->result_array();
+
+    // Get next voucher number
+    $next_voucher_number = $this->voucher_model->get_voucher_number($voucher['fk_office_id']);
+
+    // Replace the voucher number in selected voucher with the next voucher number
+    $voucher_description = '<strike>'.$voucher['voucher_description'].'</strike> [Reversal of voucher number '.$voucher['voucher_number'].']';
+    $voucher = array_replace($voucher,['voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description]);
+
+    $this->db->trans_start();
+    //Insert the next voucher record and get the insert id
+    $this->db->insert('voucher',$voucher);
+
+    $new_voucher_id = $this->db->insert_id();
+
+    // Update details array and insert 
+    
+    $updated_voucher_details = [];
+
+    foreach($voucher_details as $voucher_detail){
+      unset($voucher_detail['voucher_detail_id']);
+      $updated_voucher_details[] = array_replace($voucher_detail,['fk_voucher_id'=>$new_voucher_id,'voucher_detail_unit_cost'=>-$voucher_detail['voucher_detail_unit_cost'],'voucher_detail_total_cost'=>-$voucher_detail['voucher_detail_total_cost']]);
+    }
+
+    $this->db->insert_batch('voucher_detail',$updated_voucher_details);
+
+    // Update the original voucher record by flagging it reversed
+    $this->db->where(array('voucher_id'=>$voucher_id));
+    $this->db->update('voucher',array('voucher_is_reversed'=>1));
+
+    $this->db->trans_complete();
+
+    if($this->db->trans_status() == false){
+      $message = "Reversal failed";
+    }
+
+    echo $message;
+  }
 
   static function get_menu_list(){
 
