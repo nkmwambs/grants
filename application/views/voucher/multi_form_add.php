@@ -476,13 +476,9 @@ $('#transaction_date').on('click',function(){
 
 
 $("#office").on('change',function(){
-    
-    //var rows = $("#tbl_voucher_body tbody tr");
-
     resetVoucher();
 
     if($(this).val() == "") {
-        //resetVoucher();
         return false;
     }
     
@@ -546,6 +542,10 @@ function getAccountsByVoucherType(voucherTypeSelect){
 
     var voucher_type_id = $(voucherTypeSelect).val();// Can be expense, income, cash_contra or bank_contra
 
+    if(voucher_type_id == "" || voucher_type_id == 0){
+        window.location.reload();
+    }
+
     var url = "<?=base_url();?>Voucher/get_voucher_accounts_and_allocation/" + office_id + "/" + voucher_type_id + "/" + transaction_date;
 
     var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
@@ -570,8 +570,11 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_is_expense = response_objects['is_expense'];
             var response_is_transaction_affecting_bank = response_objects['is_transaction_affecting_bank'];
             var response_approved_requests = response_objects['approved_requests'];
-            //var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
-            //alert(response_is_cash_payment);
+            var response_voucher_type_requires_cheque_referencing = response_objects['voucher_type_requires_cheque_referencing'];
+            var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
+            
+            //alert(response_voucher_type_requires_cheque_referencing);
+            
             create_accounts_select_options(response_accounts);
             //create_allocation_select_options(response_allocation);
             
@@ -584,22 +587,32 @@ function getAccountsByVoucherType(voucherTypeSelect){
             if(response_is_bank_payment || response_is_contra || response_is_transaction_affecting_bank){
                 $("#bank").removeAttr('disabled');
                 
-                if(response_is_bank_payment && response_is_transaction_affecting_bank && $("#bank").val() !=""){
+                if(response_is_bank_payment 
+                    && response_is_transaction_affecting_bank 
+                        && $("#bank").val() !=""
+                         && response_voucher_type_requires_cheque_referencing == 1
+                ){
+                    // alert(response_voucher_type_requires_cheque_referencing + '----');
                     $("#cheque_number").removeAttr('disabled');
                 }else if(response_is_contra){
                     $("#cash_account").removeAttr('disabled');
                     if($("#cash_account").val() == '') create_office_cash_dropdown(response_office_cash);
-                    //alert(response_accounts.length);
-                    //create_accounts_select_options(response_accounts);
+
                 }else{
-                    //!$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
+
                     !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
                     !$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
+                    
                 }
                 
             }else if(response_is_contra || response_is_cash_payment){
 
                 $("#cash_account").removeAttr('disabled');
+                
+                $("#cheque_number, #bank").val("");
+                !$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
+                !$("#cheque_number").attr('disabled')?$("#cheque_number").prop('disabled','disabled'):null;
+                
                 create_office_cash_dropdown(response_office_cash);
             
             }else{
@@ -608,6 +621,11 @@ function getAccountsByVoucherType(voucherTypeSelect){
                 !$("#bank").attr('disabled')?$("#bank").prop('disabled','disabled'):null;
                 //!$("#cash_account").attr('disabled')?$("#cash_account").prop('disabled','disabled'):null;
             }
+
+            // if(!response_voucher_type_requires_cheque_referencing){
+            //     $("#cheque_number").val("");
+            //     $("#cheque_number").prop('disabled','disabled');
+            // }
         },
         error:function(xhr){
             alert('Error occurred!');

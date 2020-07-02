@@ -320,6 +320,9 @@ class Voucher extends MY_Controller
     $response['office_cash'] = [];
     $response['is_cash_payment'] = false;
 
+    //Check if voucher type requires cheque referencing
+    $response['voucher_type_requires_cheque_referencing'] = $this->voucher_type_model->voucher_type_requires_cheque_referencing($voucher_type_id);
+
     $office_accounting_system = $this->office_account_system($office_id);
 
     $project_allocation = [];

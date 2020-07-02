@@ -43,5 +43,14 @@ class Voucher_type_model extends MY_Model implements CrudModelInterface, TableRe
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
     return $this->db->get_where('voucher_type',array('voucher_type_is_active'=>1,'fk_account_system_id'=>$account_system_id))->result_object();
   }
+
+  function voucher_type_requires_cheque_referencing($voucher_type_id){
+    $this->db->select(array('voucher_type_is_cheque_referenced'));
+    
+    $voucher_type_is_cheque_referenced =  $this->db->get_where('voucher_type',
+    array('voucher_type_id'=>$voucher_type_id))->row()->voucher_type_is_cheque_referenced;
+
+    return $voucher_type_is_cheque_referenced;
+  }
   
 }
