@@ -130,7 +130,7 @@ class Journal extends MY_Controller
 
     // Replace the voucher number in selected voucher with the next voucher number
     $voucher_description = '<strike>'.$voucher['voucher_description'].'</strike> [Reversal of voucher number '.$voucher['voucher_number'].']';
-    $voucher = array_replace($voucher,['voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description]);
+    $voucher = array_replace($voucher,['voucher_is_reversed'=>1,'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
 
     $this->db->trans_start();
     //Insert the next voucher record and get the insert id
@@ -151,7 +151,9 @@ class Journal extends MY_Controller
 
     // Update the original voucher record by flagging it reversed
     $this->db->where(array('voucher_id'=>$voucher_id));
-    $this->db->update('voucher',array('voucher_is_reversed'=>1));
+    $update_data['voucher_is_reversed'] = 1;
+    $update_data['voucher_cheque_number'] = $voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number'];
+    $this->db->update('voucher',$update_data);
 
     $this->db->trans_complete();
 

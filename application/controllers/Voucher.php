@@ -451,7 +451,7 @@ class Voucher extends MY_Controller
     // Validity based on vouched cheques
     $used_cheque_in_vouchers = $this->db->get_where('voucher',
     array('fk_office_id'=>$office_id,
-    'fk_office_bank_id'=>$bank_id,'voucher_cheque_number'=>$cheque_number))->num_rows();
+    'fk_office_bank_id'=>$bank_id,'voucher_cheque_number'=>$cheque_number,'voucher_is_reversed'=>0))->num_rows();
 
     // Validity based on cheque book serial numbers
     $active_cheque_book = $this->db->get_where("cheque_book",

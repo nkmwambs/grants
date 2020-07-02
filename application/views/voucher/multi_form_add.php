@@ -340,11 +340,11 @@ $("#bank").on("change",function(){
     }
 });
 
-$("#cheque_number").on('change',function(){
-    if($(this).val() && $("#bank").val() != ""){
-        showHiddenButtons(true,true,false);
-    }
-});
+// $("#cheque_number").on('change',function(){
+//     if($(this).val() && $("#bank").val() != ""){
+//         showHiddenButtons(true,true,false);
+//     }
+// });
 
 function checkIfChequeIsValid(office,bank,cheque_number){
     
@@ -381,8 +381,16 @@ $("#cheque_number").on('change',function(){
     var bank = $("#bank").val();
     var cheque_number = $("#cheque_number").val();
 
+    if($(this).val() && $("#bank").val() != ""){
+        showHiddenButtons(true,true,false);
+    }
+
     checkIfChequeIsValid(office,bank,cheque_number);
 })
+
+// $("#cheque_number").on('change',function(){
+    
+// });
 
 function getOfficeBanks(office_id){
     
