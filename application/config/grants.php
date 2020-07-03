@@ -37,7 +37,7 @@
 	$config['use_voucher_type_abbreviation'] = true; 
 	$config['only_allow_voucher_details_from_request'] = false;
 	$config['append_office_code_to_voucher_number'] = true;
-	$config['use_default_logo'] = false;
+	$config['use_default_logo'] = true;
 	$config['toggle_accounts_by_allocation'] = true; // When true, the voucher allocation codes will be used to filter accounts
 
 	//Financial Report Configs

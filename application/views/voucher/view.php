@@ -49,11 +49,7 @@
 
                 <div class='row form_rows visible-print'>
                     <div class='col-xs-12' style='text-align:center;'>
-                        <?php if(!$this->config->item('use_default_logo') && file_exists(APPPATH."../uploads/office_logos/".$header['office_id'].".png")){?>
-                            <img src="<?=base_url();?>uploads/office_logos/<?=$header['office_id'];?>.png"  style="max-height:150px;" alt='Logo'/>
-                        <?php }else{?>
-                            <img src="<?=base_url();?>uploads/logo.png"  style="max-height:150px;" alt='Logo'/>
-                        <?php }?>
+                        <?=show_logo();?>
                     </div>
                     <div class='col-xs-12' style='text-align:center;margin-top:60px;'>
                             <?=get_phrase('payment_voucher');?>
