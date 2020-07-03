@@ -4,7 +4,7 @@ $check_sum = array_column($expense_report,'check_sum');
 $cnt = 0;
 foreach($expense_report as $income_record){
     $cnt++;
-    if($check_sum[$cnt - 1] == 0) continue;  // Skips expense tables that lack records
+    if($check_sum[$cnt - 1] == 0 && $this->config->item('skip_empty_expense_reports')) continue;  // Skips expense tables that lack records
 
 ?>
 
@@ -29,6 +29,13 @@ foreach($expense_report as $income_record){
             $budget_to_date = 0;
 
             foreach($income_record['expense_accounts'] as $expense_account){
+
+                if(
+                    $expense_account['month_expense'] == 0
+                    && $expense_account['month_expense_to_date'] == 0
+                        && $expense_account['budget_to_date'] == 0
+                          && !$this->config->item('show_empty_rows_in_expense_report')
+                ) continue;
         ?>
             <tr>
                 <td><?=$expense_account['expense_account']['expense_account_code'].' - '.$expense_account['expense_account']['expense_account_name'];?></td>

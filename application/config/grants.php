@@ -43,6 +43,8 @@
 	//Financial Report Configs
 	$config['only_combined_center_financial_reports'] = false; // If true only drop lowest context office report in the MFR office filter
 	$config['funding_balance_report_aggregate_method'] = "receipt"; // receipt or allocation
+	$config['show_empty_rows_in_expense_report'] = false;
+	$config['skip_empty_expense_reports'] = true;
 
 
 
