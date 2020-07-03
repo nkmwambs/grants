@@ -379,7 +379,7 @@ if(!function_exists('currency_conversion')){
 	function show_logo($office_id) {
 		$logo = "";
 
-		if(!$this->config->item('use_default_logo') && file_exists(APPPATH."../uploads/office_logos/".$header['office_id'].".png")){
+		if(!$this->config->item('use_default_logo') && file_exists(APPPATH."../uploads/office_logos/".$office_id.".png")){
 			$logo ='<img src="'.base_url().'uploads/office_logos/'.$office_id.'.png"  style="max-height:150px;" alt="Logo"/>';
 		}else{
 			$logo = '<img src="'.base_url().'uploads/logo.png"  style="max-height:150px;" alt="Logo"/>';

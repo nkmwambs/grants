@@ -49,7 +49,7 @@
 
                 <div class='row form_rows visible-print'>
                     <div class='col-xs-12' style='text-align:center;'>
-                        <?=show_logo();?>
+                        <?=show_logo($header['office_id']);?>
                     </div>
                     <div class='col-xs-12' style='text-align:center;margin-top:60px;'>
                             <?=get_phrase('payment_voucher');?>
