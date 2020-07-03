@@ -761,12 +761,12 @@ function insertRow(response_is_contra = false){
 
     //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
-    if(response_is_contra == true){
-        toggle_accounts_by_allocation = false;
-        //alert(tbl_head.find('tr').eq(0).find('th').eq(5).html());
-        tbl_head.find('tr').eq(0).find('th').eq(5).html('<?=get_phrase('account');?>');
-        tbl_head.find('tr').eq(0).find('th').eq(6).html('<?=get_phrase('allocation_code');?>');
-    }
+    // if(response_is_contra == true){
+    //     toggle_accounts_by_allocation = false;
+    //     //alert(tbl_head.find('tr').eq(0).find('th').eq(5).html());
+    //     tbl_head.find('tr').eq(0).find('th').eq(5).html('<?=get_phrase('account');?>');
+    //     tbl_head.find('tr').eq(0).find('th').eq(6).html('<?=get_phrase('allocation_code');?>');
+    // }
 
     if(toggle_accounts_by_allocation){
         cell += allocationCodeCell(); 
@@ -841,12 +841,13 @@ function updateAccountAndAllocationField(){
             
             var response_allocation = response_objects['project_allocation'];
 
-            //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+            var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
             var response_is_contra = response_objects['is_contra'];
 
             //alert(response);
             insertRow(response_is_contra);
+            
             if(toggle_accounts_by_allocation){
                 create_allocation_select_options(response_allocation);
             } else {

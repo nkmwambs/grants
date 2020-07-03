@@ -456,7 +456,8 @@ class Api extends CI_Controller{
     $this->load->model('financial_report_model');
     $office_ids = [1];
     $reporting_month = '2020-04-01';
-    $result = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','cash');
+    $project_ids = [1];
+    $result = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'income','cash',$project_ids);
     echo json_encode($result);
   }
 

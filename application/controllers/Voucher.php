@@ -360,6 +360,7 @@ class Voucher extends MY_Controller
     }
 
     if($voucher_type_effect == 'contra'){
+      $response['project_allocation'] = $project_allocation;
       $response['is_contra'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
       array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
@@ -695,7 +696,7 @@ class Voucher extends MY_Controller
   }
 
   function get_accounts_for_project_allocation(){
-
+    //voucher_type_id
     $post = $this->input->post();
 
     $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($post['voucher_type_id']);
@@ -706,6 +707,7 @@ class Voucher extends MY_Controller
     $accounts = [];
 
     $project_allocation_id = $post['allocation_id'];
+    $office_bank_id = $post['office_bank_id'];
 
     $office_accounting_system = $this->office_account_system($this->input->post('office_id'));
     
@@ -718,12 +720,17 @@ class Voucher extends MY_Controller
       $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
       $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
       $accounts = $this->db->get('expense_account')->result_array();
-    }else{
+    }elseif($voucher_type_effect == 'expense'){
       $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
       $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
       $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
       $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
       $accounts = $this->db->get('income_account')->result_array();
+    }else{// Only contra effect enters here
+      $this->db->where(array('fk_office_bank_id'=>$office_bank_id,'voucher_type_account_code'=>$voucher_type_account));
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name'));
+      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
+      $accounts = $this->db->get_where('contra_account')->result_array();
     }  
     
     echo json_encode($accounts);

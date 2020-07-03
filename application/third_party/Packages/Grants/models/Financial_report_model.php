@@ -430,14 +430,27 @@ class Financial_report_model extends MY_Model{
     
         $voucher_detail_total_cost = 0;
         $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
-        
-        //$alternate_voucher_type_account_code = $voucher_type_account == 'bank'?"bank":"cash";
 
-        //$cond_string = "voucher_date<= '".$end_of_reporting_month."'  AND (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$alternate_voucher_type_account_code."' AND voucher_type_effect_code = 'contra')";
-        $cond_string = "(voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = '".$transaction_type."')";
+        //$cond_string = "(voucher_type_account_code = '".$voucher_type_account."' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = 'contra' )";
+        
+        if($voucher_type_account == 'bank' && $transaction_type == 'income'){
+            $cond_string = "((voucher_type_account_code = 'bank' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'cash' AND  voucher_type_effect_code = 'contra'))";
+            $this->db->where($cond_string);
+        }elseif($voucher_type_account == 'bank' && $transaction_type == 'expense'){
+            $cond_string = "((voucher_type_account_code = 'bank' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'bank' AND  voucher_type_effect_code = 'contra'))";
+            $this->db->where($cond_string);
+        }elseif($voucher_type_account == 'cash' && $transaction_type == 'income'){
+            $cond_string = "((voucher_type_account_code = 'cash' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'bank' AND  voucher_type_effect_code = 'contra'))";
+            $this->db->where($cond_string);
+        }elseif($voucher_type_account == 'cash' && $transaction_type == 'expense'){
+            $cond_string = "((voucher_type_account_code = 'cash' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'cash' AND  voucher_type_effect_code = 'contra'))";
+            $this->db->where($cond_string);
+        }
+        
+        
 
         $this->db->select_sum('voucher_detail_total_cost');
-        $this->db->where($cond_string);
+
         $this->db->where_in('voucher.fk_office_id',$office_ids);
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
         $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
