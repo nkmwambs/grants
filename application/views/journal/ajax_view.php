@@ -66,11 +66,11 @@
                     <th colspan='7'></th>
                     
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
-                        <th colspan='3' style='text-align:center;'>Bank (<?=$bank_account['account_name']?>)</th>
+                        <th colspan='3' style='text-align:center;'>Bank (<?=$bank_account['account_name'];?>)</th>
                     <?php }?>
 
                     <?php foreach($month_opening_balance['cash_balance'] as $office_cash_id => $cash_account){?>
-                        <th colspan='3' style='text-align:center;'>Cash (<?=$cash_account['account_name']?>)</th>
+                        <th colspan='3' style='text-align:center;'>Cash (<?=$cash_account['account_name'];?>)</th>
                     <?php }?>
                     
                     <!-- <th colspan='3' style='text-align:center;'>Cash</th> -->
@@ -101,20 +101,17 @@
                     <th><?=get_phrase('cheque_number');?></th>
                     
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
-                        <th><?=get_phrase('bank_income');?></th>
-                        <th><?=get_phrase('bank_expense');?></th>
-                        <th><?=get_phrase('bank_balance');?></th>
+                        <th><?=get_phrase('bank_income').' ('.$bank_account['account_name'].')';?></th>
+                        <th><?=get_phrase('bank_expense').' ('.$bank_account['account_name'].')';?></th>
+                        <th><?=get_phrase('bank_balance').' ('.$bank_account['account_name'].')';?></th>
                     <?php }?>
 
                     <?php foreach($month_opening_balance['cash_balance'] as $office_cash_id => $cash_account){?>
-                        <th><?=get_phrase('cash_income');?></th>
-                        <th><?=get_phrase('cash_expense');?></th>
-                        <th><?=get_phrase('cash_balance');?></th>
+                        <th><?=$cash_account['account_name'].' '.get_phrase('income');?></th>
+                        <th><?=$cash_account['account_name'].' '.get_phrase('expense');?></th>
+                        <th><?=$cash_account['account_name'].' '.get_phrase('balance');?></th>
                     <?php }?>
-
-                    <!-- <th><?=get_phrase('cash_income');?></th>
-                    <th><?=get_phrase('cash_expense');?></th>
-                    <th><?=get_phrase('cash_balance');?></th> -->
+                    
                     
                     <?php foreach($accounts['income'] as $income_account_code){ ?>
                         <th><?=$income_account_code;?></th>
