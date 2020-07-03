@@ -867,22 +867,22 @@ function update_bank_reconciliation_balance(){
 
      if($reconciliation_record == 0){
 
-      $data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
-      $data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
+      $reconciliation_data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
+      $reconciliation_data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
      
-      $data['fk_financial_report_id'] = $financial_report_id;
-      $data['fk_office_bank_id'] = $office_bank_id;
-      $data['reconciliation_statement_balance'] = $post['balance'];
-      $data['reconciliation_suspense_amount'] = 0;
+      $reconciliation_data['fk_financial_report_id'] = $financial_report_id;
+      $reconciliation_data['fk_office_bank_id'] = $office_bank_id;
+      $reconciliation_data['reconciliation_statement_balance'] = $post['balance'];
+      $reconciliation_data['reconciliation_suspense_amount'] = 0;
 
-      $data['reconciliation_created_by'] = $this->session->user_id;
-      $data['reconciliation_created_date'] = date('Y-m-d');
-      $data['reconciliation_last_modified_by'] = $this->session->user_id;
+      $reconciliation_data['reconciliation_created_by'] = $this->session->user_id;
+      $reconciliation_data['reconciliation_created_date'] = date('Y-m-d');
+      $reconciliation_data['reconciliation_last_modified_by'] = $this->session->user_id;
       
-      $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
-      $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
+      //$reconciliation_data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
+      //$reconciliation_data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
       //$message = json_encode($data);
-      $this->db->insert('reconciliation',$data);
+      $this->db->insert('reconciliation',$reconciliation_data);
       $message = $reconciliation_record;
      }else{
     //   $this->db->where($condition_array);
