@@ -865,7 +865,7 @@ function update_bank_reconciliation_balance(){
 
     $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
 
-    $message = $reconciliation_record;
+    $message = $reconciliation_record;//
 
     // if($reconciliation_record == 0){
 
