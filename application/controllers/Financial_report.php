@@ -896,10 +896,11 @@ function update_bank_reconciliation_balance(){
     $this->db->trans_complete();
 
     if($this->db->trans_status() == false){
-      //echo "Error in updating bank reconciliation balance";
-      echo $message;
+      echo "Error in updating bank reconciliation balance";
+      //echo $message;
     }else{
-      echo "Update completed";
+      //echo "Update completed";
+      echo $message;
     }
 
 
