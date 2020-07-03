@@ -198,6 +198,8 @@
 
 <script>
 
+var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+
 $(document).ready(function(){
     //get_approved_unvouched_request_details
     $('.date-field').hide();
@@ -206,6 +208,7 @@ $(document).ready(function(){
     $('.btn-save-new').hide();
     $('.btn-retrieve-request').hide();
 
+    
 });
 
 function load_approved_requests(){
@@ -746,8 +749,9 @@ function copyRow(){
     });
 }
 
-function insertRow(){
+function insertRow(response_is_contra = false){
     var tbl_body = $("#tbl_voucher_body tbody");
+    var tbl_head = $("#tbl_voucher_body thead");
 
     var cell = actionCell(); 
     cell += quantityCell(); 
@@ -755,7 +759,14 @@ function insertRow(){
     cell += unitCostCell(); 
     cell += totalCostCell(); 
 
-    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+    //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+
+    if(response_is_contra == true){
+        toggle_accounts_by_allocation = false;
+        //alert(tbl_head.find('tr').eq(0).find('th').eq(5).html());
+        tbl_head.find('tr').eq(0).find('th').eq(5).html('<?=get_phrase('account');?>');
+        tbl_head.find('tr').eq(0).find('th').eq(6).html('<?=get_phrase('allocation_code');?>');
+    }
 
     if(toggle_accounts_by_allocation){
         cell += allocationCodeCell(); 
@@ -775,12 +786,15 @@ $(".btn-insert").on('click',function(){
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
 
     if(tbl_body_rows.length == 0){
-        if((!$("#bank").attr('disabled') && $("#bank").val() > 0) || $("#bank").attr('disabled')){
-            insertRow();
+        if(
+            ((!$("#bank").attr('disabled') && $("#bank").val() > 0) || $("#bank").attr('disabled'))
+            && ((!$("#cash_account").attr('disabled') && $("#cash_account").val() > 0) || $("#cash_account").attr('disabled'))
+        ){
+            //insertRow();
             updateAccountAndAllocationField();
             showHiddenButtons(false,false,true);
         }else{
-            alert('Choose a bank account');
+            alert('Choose a bank or cash account');
         }
         
     }else{
@@ -827,8 +841,12 @@ function updateAccountAndAllocationField(){
             
             var response_allocation = response_objects['project_allocation'];
 
-            var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+            //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
+            var response_is_contra = response_objects['is_contra'];
+
+            //alert(response);
+            insertRow(response_is_contra);
             if(toggle_accounts_by_allocation){
                 create_allocation_select_options(response_allocation);
             } else {
@@ -928,7 +946,7 @@ $(document).on('change','.account',function(){
 
     var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
 
-    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+    //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
     if(!toggle_accounts_by_allocation){
 
@@ -968,7 +986,7 @@ $(document).on('change','.allocation',function(){
     var url = "<?=base_url();?>voucher/get_accounts_for_project_allocation/";
     var data = {'office_id':office_id,'allocation_id':allocation_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id};
     
-    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+    //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
     if(toggle_accounts_by_allocation){
 
@@ -1014,7 +1032,7 @@ function totalCostCell(value = 0){
 }
 
 function accountCell(value = 0){
-    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+    //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
     
     if(toggle_accounts_by_allocation){
         return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
@@ -1025,7 +1043,7 @@ function accountCell(value = 0){
 }
 
 function allocationCodeCell(value = 0){
-    var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
+    //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
     if(toggle_accounts_by_allocation){
         return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
