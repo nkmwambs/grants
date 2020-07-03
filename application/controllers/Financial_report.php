@@ -841,52 +841,55 @@ function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
 
 function update_bank_reconciliation_balance(){
   $post = $_POST;
+
+  $message = "";
   
   if(count($post['office_ids']) > 1 || count($post['project_ids']) > 1){
-    echo "Cannot update balances when multiple offices or banks are selected";
+    echo "Cannot update balances when multiple offices, banks or projects are selected";
   }else{
 
     $this->db->trans_start();
     $financial_report_id = $this->db->get_where('financial_report',
     array('financial_report_month'=>$post['reporting_month'],'fk_office_id'=>$post['office_ids'][0]))->row()->financial_report_id;
 
-    $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
-    $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+    $message = $financial_report_id;
+    // $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+    // $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
     
-    $office_bank_id = $this->db->get_where('office_bank',
-    array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
+    // $office_bank_id = $this->db->get_where('office_bank',
+    // array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
 
-    $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
+    // $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
 
-    // Check if reconciliation record exists and update else create
+    // // Check if reconciliation record exists and update else create
 
-    $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
+    // $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
 
-    if($reconciliation_record == 0){
+    // if($reconciliation_record == 0){
 
-      $data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
-      $data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
+    //   $data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
+    //   $data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
      
-      $data['fk_financial_report_id'] = $financial_report_id;
-      $data['fk_office_bank_id'] = $office_bank_id;
-      $data['reconciliation_statement_balance'] = $post['balance'];
-      $data['reconciliation_suspense_amount'] = 0;
+    //   $data['fk_financial_report_id'] = $financial_report_id;
+    //   $data['fk_office_bank_id'] = $office_bank_id;
+    //   $data['reconciliation_statement_balance'] = $post['balance'];
+    //   $data['reconciliation_suspense_amount'] = 0;
 
-      $data['reconciliation_created_by'] = $this->session->user_id;
-      $data['reconciliation_created_date'] = date('Y-m-d');
-      $data['reconciliation_last_modified_by'] = $this->session->user_id;
+    //   $data['reconciliation_created_by'] = $this->session->user_id;
+    //   $data['reconciliation_created_date'] = date('Y-m-d');
+    //   $data['reconciliation_last_modified_by'] = $this->session->user_id;
       
-      $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
-      $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
+    //   $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
+    //   $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
 
-      $this->db->insert('reconciliation',$data);
+    //   $this->db->insert('reconciliation',$data);
 
-    }else{
-      $this->db->where($condition_array);
+    // }else{
+    //   $this->db->where($condition_array);
 
-      $data['reconciliation_statement_balance'] = $post['balance'];
-      $this->db->update('reconciliation',$data);
-    }
+    //   $data['reconciliation_statement_balance'] = $post['balance'];
+    //   $this->db->update('reconciliation',$data);
+    // }
 
     
 
@@ -894,7 +897,7 @@ function update_bank_reconciliation_balance(){
 
     if($this->db->trans_status() == false){
       //echo "Error in updating bank reconciliation balance";
-      echo json_encode($post);
+      echo $message;
     }else{
       echo "Update completed";
     }
