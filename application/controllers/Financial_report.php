@@ -852,12 +852,14 @@ function update_bank_reconciliation_balance(){
     $financial_report_id = $this->db->get_where('financial_report',
     array('financial_report_month'=>$post['reporting_month'],'fk_office_id'=>$post['office_ids'][0]))->row()->financial_report_id;
 
-    $message = $financial_report_id;
-    // $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
-    // $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+ 
+    $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+    $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
     
-    // $office_bank_id = $this->db->get_where('office_bank',
-    // array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
+    $office_bank_id = $this->db->get_where('office_bank',
+    array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
+
+    $message = $office_bank_id;
 
     // $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
 
