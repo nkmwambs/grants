@@ -841,7 +841,7 @@ function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
 
 function update_bank_reconciliation_balance(){
   $post = $_POST;
-
+  
   if(count($post['office_ids']) > 1 || count($post['project_ids']) > 1){
     echo "Cannot update balances when multiple offices or banks are selected";
   }else{
@@ -893,7 +893,8 @@ function update_bank_reconciliation_balance(){
     $this->db->trans_complete();
 
     if($this->db->trans_status() == false){
-      echo "Error in updating bank reconciliation balance";
+      //echo "Error in updating bank reconciliation balance";
+      echo json_encode($post);
     }else{
       echo "Update completed";
     }
