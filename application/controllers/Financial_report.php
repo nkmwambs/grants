@@ -841,8 +841,6 @@ function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
 
 function update_bank_reconciliation_balance(){
   $post = $_POST;
-
-  $message = "";
   
   if(count($post['office_ids']) > 1 || count($post['project_ids']) > 1){
     echo "Cannot update balances when multiple offices, banks or projects are selected";
@@ -852,7 +850,6 @@ function update_bank_reconciliation_balance(){
     $financial_report_id = $this->db->get_where('financial_report',
     array('financial_report_month'=>$post['reporting_month'],'fk_office_id'=>$post['office_ids'][0]))->row()->financial_report_id;
 
- 
     $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
     $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
     
@@ -865,31 +862,31 @@ function update_bank_reconciliation_balance(){
 
     $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
 
-     if($reconciliation_record == 0){
+    if($reconciliation_record == 0){
 
-      $reconciliation_data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
-      $reconciliation_data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
+      $data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
+      $data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
      
-      $reconciliation_data['fk_financial_report_id'] = $financial_report_id;
-      $reconciliation_data['fk_office_bank_id'] = $office_bank_id;
-      $reconciliation_data['reconciliation_statement_balance'] = $post['balance'];
-      $reconciliation_data['reconciliation_suspense_amount'] = 0;
+      $data['fk_financial_report_id'] = $financial_report_id;
+      $data['fk_office_bank_id'] = $office_bank_id;
+      $data['reconciliation_statement_balance'] = $post['balance'];
+      $data['reconciliation_suspense_amount'] = 0;
 
-      $reconciliation_data['reconciliation_created_by'] = $this->session->user_id;
-      $reconciliation_data['reconciliation_created_date'] = date('Y-m-d');
-      $reconciliation_data['reconciliation_last_modified_by'] = $this->session->user_id;
+      $data['reconciliation_created_by'] = $this->session->user_id;
+      $data['reconciliation_created_date'] = date('Y-m-d');
+      $data['reconciliation_last_modified_by'] = $this->session->user_id;
       
-      //$reconciliation_data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
-      //$reconciliation_data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
-      //$message = json_encode($data);
-      $this->db->insert('reconciliation',$reconciliation_data);
-      $message = $reconciliation_record;
-     }else{
-    //   $this->db->where($condition_array);
+      $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
+      $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
 
-    //   $data['reconciliation_statement_balance'] = $post['balance'];
-    //   $this->db->update('reconciliation',$data);
-     }
+      $this->db->insert('reconciliation',$data);
+
+    }else{
+      $this->db->where($condition_array);
+
+      $data['reconciliation_statement_balance'] = $post['balance'];
+      $this->db->update('reconciliation',$data);
+    }
 
     
 
@@ -897,10 +894,8 @@ function update_bank_reconciliation_balance(){
 
     if($this->db->trans_status() == false){
       echo "Error in updating bank reconciliation balance";
-      //echo $message;
     }else{
-      //echo "Update completed";
-      echo $message;
+      echo "Update completed";
     }
 
 
