@@ -881,9 +881,9 @@ function update_bank_reconciliation_balance(){
       
       $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
       $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
-      $message = json_encode($data);
-    //   $this->db->insert('reconciliation',$data);
-
+      //$message = json_encode($data);
+      $this->db->insert('reconciliation',$data);
+      $message = $reconciliation_record;
      }else{
     //   $this->db->where($condition_array);
 
