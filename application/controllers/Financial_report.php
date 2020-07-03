@@ -82,7 +82,7 @@ class Financial_report extends MY_Controller
     $bank_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'income','bank',$project_ids);//$this->_cash_income_to_date($office_ids,$reporting_month);
     $bank_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','bank',$project_ids);//$this->_cash_expense_to_date($office_ids,$reporting_month);
     
-    return $bank_income_to_date;//$opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
+    return $opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
   }
 
 

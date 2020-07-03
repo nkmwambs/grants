@@ -401,7 +401,7 @@ class Financial_report_model extends MY_Model{
     function system_opening_cash_balance($office_ids,$project_ids = []){
         $balance = 0;
     
-        $this->db->select(array('opening_cash_balance_amount'));
+        $this->db->select_sum('opening_cash_balance_amount');
         $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
         $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
 
@@ -434,7 +434,7 @@ class Financial_report_model extends MY_Model{
         //$alternate_voucher_type_account_code = $voucher_type_account == 'bank'?"bank":"cash";
 
         //$cond_string = "voucher_date<= '".$end_of_reporting_month."'  AND (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$alternate_voucher_type_account_code."' AND voucher_type_effect_code = 'contra')";
-        $cond_string = "(voucher_type_account_code = 'bank' AND voucher_type_effect_code = 'income')";
+        $cond_string = "(voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = '".$transaction_type."')";
 
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->where($cond_string);
@@ -455,7 +455,7 @@ class Financial_report_model extends MY_Model{
           $voucher_detail_total_cost = $voucher_detail_total_cost_obj->row()->voucher_detail_total_cost;
         }
       
-        return $voucher_detail_total_cost;
+        return $voucher_detail_total_cost == null ? 0 : $voucher_detail_total_cost;
       }
 
       function get_month_active_projects($office_ids,$reporting_month,$show_active_only = false){

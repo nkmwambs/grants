@@ -43,7 +43,7 @@ class Opening_allocation_balance_model extends MY_Model{
         return ['opening_allocation_balance_track_number','opening_allocation_balance_name','project_allocation_name','opening_allocation_balance_amount'];
     }
 
-    function opening_allocation_balance_office_id(){
+    function opening_allocation_balance_project_allocation_id(){
         //echo hash_id($this->id,'decode');exit;
         $this->db->select(array('fk_project_allocation_id'));
         $result = $this->db->get_where('opening_allocation_balance',
@@ -54,7 +54,7 @@ class Opening_allocation_balance_model extends MY_Model{
 
     function lookup_values_where($table = ''){
         return [
-                 'project_allocation'=>['project_allocation_id'=>$this->opening_allocation_balance_office_id()]
+                 'project_allocation'=>['project_allocation_id'=>$this->opening_allocation_balance_project_allocation_id()]
                ];
       }
 }

@@ -443,5 +443,29 @@ class Api extends CI_Controller{
 
     echo json_encode($result);
   }
+
+  function system_opening_bank_balance(){
+    $this->load->model('financial_report_model');
+    $office_ids = [1];
+    $result = $this->financial_report_model->system_opening_bank_balance($office_ids);
+    echo json_encode($result);
+  }
+
+
+  function cash_transactions_to_date(){
+    $this->load->model('financial_report_model');
+    $office_ids = [1];
+    $reporting_month = '2020-04-01';
+    $result = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','cash');
+    echo json_encode($result);
+  }
+
+
+  function system_opening_cash_balance(){
+    $this->load->model('financial_report_model');
+    $office_ids = [1];
+    $result = $this->financial_report_model->system_opening_cash_balance($office_ids);
+    echo json_encode($result);
+  }
   
 }
