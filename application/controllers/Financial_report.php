@@ -859,13 +859,13 @@ function update_bank_reconciliation_balance(){
     $office_bank_id = $this->db->get_where('office_bank',
     array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
 
-    $message = $office_bank_id;
+    $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
 
-    // $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
+    // Check if reconciliation record exists and update else create
 
-    // // Check if reconciliation record exists and update else create
+    $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
 
-    // $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
+    $message = $reconciliation_record;
 
     // if($reconciliation_record == 0){
 
