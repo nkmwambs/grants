@@ -1112,7 +1112,8 @@ function max_number_of_menu_items(){
 
 private function _run_list_query($table, $selected_columns, $lookup_tables, 
 $model_where_method = "list_table_where", $filter_where_array = array() ){
-
+  
+  //print_r($table);exit;
   // Run column selector
   $this->db->select($selected_columns);
  

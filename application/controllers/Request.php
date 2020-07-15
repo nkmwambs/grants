@@ -108,7 +108,7 @@ function insert_new_request(){
   {
     echo "Request posting failed";
   }else{
-    $this->grants->move_temp_files_to_attachments($this->controller,$this->session->upload_session,$header_id);
+    //$this->grants->move_temp_files_to_attachments($this->controller,$this->session->upload_session,$header_id);
     echo "Request posted successfully";
   }
 
