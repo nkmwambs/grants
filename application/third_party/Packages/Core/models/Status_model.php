@@ -52,7 +52,11 @@ public function list(){}
 public function view(){}
 
 public function single_form_add_visible_columns(){
-  return ['status_name','approval_flow_name','status_approval_sequence','status_approval_direction','status_backflow_sequence','status_is_requiring_approver_action','role_name'];
+  return ['status_name','approval_flow_name','status_approval_sequence','status_approval_direction','status_backflow_sequence','status_is_requiring_approver_action'];
+}
+
+function transaction_validate_duplicates_columns(){
+  return ['approval_flow_name','status_approval_sequence'];
 }
 
 

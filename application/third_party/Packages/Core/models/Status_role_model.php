@@ -12,14 +12,14 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Status_role_model extends MY_Model{
 
-    public $table = 'Status_role'; 
+    public $table = 'status_role'; 
     public $dependant_table = '';
-    public $name_field = 'Status_role_name';
-    public $create_date_field = "Status_role_created_date";
-    public $created_by_field = "Status_role_created_by";
-    public $last_modified_date_field = "Status_role_last_modified_date";
-    public $last_modified_by_field = "Status_role_last_modified_by";
-    public $deleted_at_field = "Status_role_deleted_at";
+    public $name_field = 'status_role_name';
+    public $create_date_field = "status_role_created_date";
+    public $created_by_field = "status_role_created_by";
+    public $last_modified_date_field = "status_role_last_modified_date";
+    public $last_modified_by_field = "status_role_last_modified_by";
+    public $deleted_at_field = "status_role_deleted_at";
     
     function __construct(){
         parent::__construct();
@@ -40,9 +40,10 @@ class Status_role_model extends MY_Model{
         return ['role_name'];
     }
 
-    // function edit_visible_columns(){
-    //     return ['role_name'];
-    // }
+    function edit_visible_columns(){
+        return ['role_name'];
+    }
+    
 
     /**
      * @override
@@ -91,8 +92,9 @@ class Status_role_model extends MY_Model{
 
     
     function detail_list_query(){
+        $this->db->join('role','role.role_id=status_role.fk_role_id');
         $this->db->join('approval','approval.approval_id=status_role.fk_approval_id');
-        $this->db->join('status','status.status_id=status_role.fk_status_id');
+        $this->db->join('status','status.status_id=status_role.status_role_status_id');
         $this->db->where(array('status_role_status_id'=>hash_id($this->id,'decode')));
         $result = $this->db->get('status_role')->result_array();
 
@@ -100,7 +102,8 @@ class Status_role_model extends MY_Model{
     }
 
     function detail_list_table_visible_columns(){
-        return ['status_role_track_number','role_name','status_name'];
+        return ['status_role_track_number','role_name'];
     }
+    
 
 }
