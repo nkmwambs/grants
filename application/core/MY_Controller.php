@@ -364,55 +364,63 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   }
 
   function status_change($change_type = 'approve'){
-        // Get status of current id - to taken to grants_model
-        $master_action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
 
-        //Update master record
-        $data['fk_status_id'] = $master_action_labels['next_approval_status'];
-        if($change_type == 'decline'){
-          $data['fk_status_id'] = $master_action_labels['next_decline_status'];
-        }
-        
-        $this->db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
-        $this->db->update(strtolower($this->controller),$data);
-        
-        $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
-
-        $item_approval_id = $this->db->get_where($this->controller,
-          array($this->controller.'_id'=>hash_id($this->id,'decode')))->row()->fk_approval_id;
-          
-        if($is_max_approval_status_id){
-          
-          $this->db->where(array('approval_id'=>$item_approval_id));
-          $this->db->update('approval',array('fk_status_id'=>103));
-        
-        }else{
-          $this->db->where(array('approval_id'=>$item_approval_id));
-          $this->db->update('approval',array('fk_status_id'=>102));
-        }
-
-        //Update detail record
-        $detail_record = $this->grants->dependant_table($this->controller);
+    $status_id =$this->general_model->get_status_id($this->controller,hash_id($this->id,'decode'));
+    $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,$status_id);
     
-        //Get id of detail table
-        $detail_id = $detail_record.'_id';
-        $primary_table_id = 'fk_'.$this->controller.'_id';
-        
-        $detail_key = $this->db->get_where($detail_record,
-        array($primary_table_id=>hash_id($this->id,'decode')))->row()->$detail_id;
-    
-        $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
-        
-        $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+    // Prevent update of status when max status id is reached
+    if(!$is_max_approval_status_id){
+       // Get status of current id - to be taken to grants_model
+       $master_action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
 
-        if($change_type == 'decline'){
-          $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
-        }
-        
-        $this->db->where(array($primary_table_id=>hash_id($this->id,'decode')));
-        $this->db->update($detail_record,$detail_data);
+       //Update master record
+       $data['fk_status_id'] = $master_action_labels['next_approval_status'];
+       if($change_type == 'decline'){
+         $data['fk_status_id'] = $master_action_labels['next_decline_status'];
+       }
+       
+       $this->db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
+       $this->db->update(strtolower($this->controller),$data);
+       
+       $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
+
+       $item_approval_id = $this->db->get_where($this->controller,
+         array($this->controller.'_id'=>hash_id($this->id,'decode')))->row()->fk_approval_id;
+         
+       if($is_max_approval_status_id){
+         
+         $this->db->where(array('approval_id'=>$item_approval_id));
+         $this->db->update('approval',array('fk_status_id'=>103));
+       
+       }else{
+         $this->db->where(array('approval_id'=>$item_approval_id));
+         $this->db->update('approval',array('fk_status_id'=>102));
+       }
+
+       //Update detail record
+       $detail_record = $this->grants->dependant_table($this->controller);
+   
+       //Get id of detail table
+       $detail_id = $detail_record.'_id';
+       $primary_table_id = 'fk_'.$this->controller.'_id';
+       
+       $detail_key = $this->db->get_where($detail_record,
+       array($primary_table_id=>hash_id($this->id,'decode')))->row()->$detail_id;
+   
+       $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
+       
+       $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+
+       if($change_type == 'decline'){
+         $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
+       }
+       
+       $this->db->where(array($primary_table_id=>hash_id($this->id,'decode')));
+       $this->db->update($detail_record,$detail_data);
+    }    
+       
     
-        redirect(base_url() .$this->controller.'/view/'.$this->id, 'refresh');
+    redirect(base_url() .$this->controller.'/view/'.$this->id, 'refresh');
   }
 
   function approve(){
