@@ -172,5 +172,9 @@ class MY_Model extends CI_Model
       return true;
     }
 
+    function action_after_insert($post_array, $approval_id, $header_id){
+      return true;
+    }
+
     
 }
