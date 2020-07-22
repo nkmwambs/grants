@@ -236,31 +236,6 @@ function generate_item_track_number_and_name($approveable_item){
       
 
     }
-
-    // End the transaction and determine if successful
-    //$this->db->trans_complete();
-    
-    // if ($this->db->trans_status() === FALSE)
-    // {       
-    //         $this->db->trans_rollback();
-    //         // return json_encode($header_columns);
-    //         //return "Insert not successful";
-    //         return get_phrase('insert_failed');
-    // }
-    // else
-    // {
-    //         $this->db->trans_commit();
-
-    //         $this->grants->action_after_insert($post_array,$approval_id,$header_id);
-
-    //         // This runs after post is successful. It is defined in feature model wrapped via grants model
-    //       //if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
-    //         return get_phrase('insert_successful');
-    //       //}else{
-    //         //return get_phrase('insert_successful_without_post_action');
-    //       //}
-    // }
-
    
     $model = $this->controller.'_model';
     
@@ -269,7 +244,7 @@ function generate_item_track_number_and_name($approveable_item){
     $transaction_validate_duplicates = $this->transaction_validate_duplicates($this->controller,$header,$transaction_validate_duplicates_columns);
     $transaction_validate_by_computation = $this->transaction_validate_by_computation($this->controller, $header);
 
-    return $this->transaction_validate([$transaction_validate_duplicates,$transaction_validate_by_computation]);
+    return $this->transaction_validate([$transaction_validate_duplicates,$transaction_validate_by_computation],$header_columns, $header_id,$approval_id);
      
   }
 
@@ -284,7 +259,7 @@ function generate_item_track_number_and_name($approveable_item){
     
   }
 
-  function transaction_validate($validation_flags_and_failure_messages){
+  function transaction_validate($validation_flags_and_failure_messages,$post_array = [] ,$header_id = 0, $approval_id = 0){
     $message = '';
 
     $validation_flags = array_column($validation_flags_and_failure_messages,'flag');
@@ -306,6 +281,7 @@ function generate_item_track_number_and_name($approveable_item){
     
         }else{
           $this->db->trans_commit();
+          $this->grants->action_after_insert($post_array,$approval_id,$header_id);
           $message = get_phrase('insert_successful');
         }
     }
@@ -1112,7 +1088,8 @@ function max_number_of_menu_items(){
 
 private function _run_list_query($table, $selected_columns, $lookup_tables, 
 $model_where_method = "list_table_where", $filter_where_array = array() ){
-
+  
+  //print_r($table);exit;
   // Run column selector
   $this->db->select($selected_columns);
  
