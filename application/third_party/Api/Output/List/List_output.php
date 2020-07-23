@@ -150,6 +150,10 @@ function feature_model_list_table_visible_columns(): Array {
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
 
+          // Hide status and approval columns if the active controller/table is not approveable
+          if($this->CI->grants_model->approveable_item($lookup_table) &&
+             ($lookup_table == 'status' || $lookup_table == 'approval')) continue;
+
           $lookup_table_columns = $this->CI->grants_model->get_all_table_fields($lookup_table);
 
           foreach ($lookup_table_columns as $lookup_table_column) {
