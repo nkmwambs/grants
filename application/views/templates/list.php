@@ -83,7 +83,8 @@ extract($result);
                               echo '<a href="'.base_url().$this->controller.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            }elseif($column !='approval_name' && $column!='status_name'){
+                            //  }elseif($column !='approval_name' && $column!='status_name'){
+                            }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
                             }
 
