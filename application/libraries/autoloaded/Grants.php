@@ -1749,19 +1749,20 @@ function feature_model_list_table_visible_columns() {
       // Throw error when a column doesn't exists to avoid Datatable server side loading error
 
        //Add the lookup table name to the all fields array
-      $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
-      $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
-      $all_fields = array_merge($all_fields,$lookup_name_fields);
-      
-      foreach($list_table_visible_columns as $_column){
-        if(!in_array($_column,$all_fields) && $_column !==""){
-          $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
-          $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
-          show_error($message,500,'An Error As Encountered');
-          
-        }
-
-      }
+       $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
+       $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
+       $all_fields = array_merge($all_fields,$lookup_name_fields);
+       $lookup_tables = $this->lookup_tables($this->controller);
+       
+       foreach($list_table_visible_columns as $_column){
+         if(!in_array($_column,$all_fields) && $_column !==""){
+           $message = "The column ".$_column." does not exist in the table ".$this->controller." or its lookup tables ".implode(',',$lookup_tables)."</br>";
+           $message .= "Check the 'list_table_visible_columns' or 'lookup_tables' functions of the ".$this->controller."_model for the source";
+           show_error($message,500,'An Error As Encountered');
+           
+         }
+ 
+       }
     }
   }
 
