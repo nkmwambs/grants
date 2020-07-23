@@ -58,13 +58,15 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   //public $widget = null;
 
+  public $max_status_id = null;
+
   function __construct(){
     
     parent::__construct();
 
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core');
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants');
-    //$this->widget = new Widget_base();
+    $this->load->model('general_model');
 
     $segment = $this->uri->segment(1, 'dashboard');
     $action = $this->uri->segment(2, 'list');
@@ -95,6 +97,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }
 
     $this->id = $this->uri->segment(3,null);
+
+    $this->max_status_id = $this->general_model->get_max_approval_status_id($this->controller);
     
     //Set the Language Context
     $this->load->library('Language_library');

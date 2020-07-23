@@ -38,6 +38,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
               <?php
               
               //print_r($action_labels);
+              //echo $this->max_status_id;
 
               if(isset($action_labels['show_label_as_button']) && $action_labels['show_label_as_button']){ 
                 if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update'))
