@@ -475,7 +475,7 @@ function get_max_approval_status_id(String $approveable_item):Int{
     array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
   
   }
-  
+  //print_r($max_status_id);exit;
   return $max_status_id;
  
 }
