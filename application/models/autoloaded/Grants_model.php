@@ -349,8 +349,10 @@ function generate_item_track_number_and_name($approveable_item){
    */
   public function get_all_table_fields(String $table_name = ""):Array{
     //$this->controller = 'dashboard';
-    $table = $table_name == ""?$this->controller:$table_name;
-    return $this->db->table_exists($table)?$this->db->list_fields($table):array();
+    $table = $table_name == ""?strtolower($this->controller):strtolower($table_name);
+    $fields =  $this->db->table_exists($table)?$this->db->list_fields($table):array();
+    //print_r($fields);exit;
+    return $fields;
   }
 
   function lookup_tables($table_name = ""){
@@ -1146,6 +1148,7 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
       show_error($message,500,'An Error Was Encountered');
     }else{
       $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
+      //print_r($filter_where_array);exit;
       return $this->db->get($table)->result_array();
     }
     

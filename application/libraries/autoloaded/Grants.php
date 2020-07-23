@@ -1721,6 +1721,7 @@ function feature_model_list_table_visible_columns() {
     is_array($this->CI->$model->list_table_visible_columns())
   ){
     $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+    
 
     // This part couldn't work as the function $this->unset_status_if_item_not_approveable()
     
@@ -1735,7 +1736,7 @@ function feature_model_list_table_visible_columns() {
       }
     }
 
-
+    
      //Add the table id columns if does not exist in $columns
     if(   is_array($list_table_visible_columns) && 
           !in_array($this->primary_key_field($this->controller),
@@ -1743,20 +1744,17 @@ function feature_model_list_table_visible_columns() {
       ){
 
       array_unshift($list_table_visible_columns,
-      $this->primary_key_field($this->controller));
-
+      $this->primary_key_field(strtolower($this->controller)));
+   
       // Throw error when a column doesn't exists to avoid Datatable server side loading error
+
+       //Add the lookup table name to the all fields array
+      $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
+      $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
+      $all_fields = array_merge($all_fields,$lookup_name_fields);
+      
       foreach($list_table_visible_columns as $_column){
-        
-        $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
-
-        //Add the lookup table name to the all fields array
-        $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
-        $all_fields = array_merge($all_fields,$lookup_name_fields);
-        
-        //print_r($all_fields);exit();
-
-        if(!in_array($_column,$all_fields)){
+        if(!in_array($_column,$all_fields) && $_column !==""){
           $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
           $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
           show_error($message,500,'An Error As Encountered');
