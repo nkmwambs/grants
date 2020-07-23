@@ -122,7 +122,7 @@ function feature_model_list_table_visible_columns(): Array {
     // Check if the table has list_table_visible_columns not empty
     $list_table_visible_columns = $this->feature_model_list_table_visible_columns();
     $lookup_tables = $this->CI->grants->lookup_tables();
-
+    
     $get_all_table_fields = $this->CI->grants_model->get_all_table_fields();
 
 
@@ -150,9 +150,11 @@ function feature_model_list_table_visible_columns(): Array {
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
 
-          // Hide status and approval columns if the active controller/table is not approveable
-          if($this->CI->grants_model->approveable_item($lookup_table) &&
-             ($lookup_table == 'status' || $lookup_table == 'approval')) continue;
+          // // Hide status and approval columns if the active controller/table is not approveable
+          // if(!$this->CI->grants_model->approveable_item($lookup_table) &&
+          //    ($lookup_table == 'status' || $lookup_table == 'approval')) {
+          //     continue;
+          //    }
 
           $lookup_table_columns = $this->CI->grants_model->get_all_table_fields($lookup_table);
 
@@ -166,7 +168,7 @@ function feature_model_list_table_visible_columns(): Array {
         }
       }
     }
-
+    
     return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
   }
   
@@ -206,7 +208,7 @@ function feature_model_list_table_visible_columns(): Array {
   
     // Get the tables foreign key relationship
     $lookup_tables = $this->CI->grants->lookup_tables();
-  
+    //print_r($lookup_tables);exit;
     // Get result from grants model if feature model list returns empty
     $query_result = $this->list_internal_query_results($lookup_tables); // System generated query result
     

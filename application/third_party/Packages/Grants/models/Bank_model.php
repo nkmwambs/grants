@@ -31,7 +31,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function lookup_tables(){
-    
+    return ['status','approval'];
   }
 
   function detail_tables(){

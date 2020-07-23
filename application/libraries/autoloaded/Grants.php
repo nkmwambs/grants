@@ -268,6 +268,19 @@ function lookup_tables(String $table_name = ""): Array{
       is_array($this->CI->$model->lookup_tables())
     ){
     $lookup_tables = $this->CI->$model->lookup_tables();
+
+     // Hide status and approval columns if the active controller/table is not approveable
+     if(!$this->CI->grants_model->approveable_item($table_name)) {
+      if(in_array('status',$lookup_tables)){
+        unset($lookup_tables[array_search('status',$lookup_tables)]);
+      }
+
+      if(in_array('approval',$lookup_tables)){
+        unset($lookup_tables[array_search('approval',$lookup_tables)]);
+      }
+   }
+
+   
   }else{
     // This part of a code is meant to offer an alternative to lookup_tables 
     // methods in models that overrided the MY_Model method
