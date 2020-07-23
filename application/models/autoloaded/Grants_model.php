@@ -365,13 +365,26 @@ function generate_item_track_number_and_name($approveable_item){
       $foreign_tables_array_padded_with_false = array_map(function($elem){
         return substr($elem,0,3) =='fk_'?substr($elem,3,-3):false;
       },$fields);
-
+      
+      //print_r($foreign_tables_array_padded_with_false);exit;
+      
       // Prevent listing false values and status or approval tables for lookup. 
       // Add status_name and approval_name to the correct visible_columns method in models to see these fields in a page
       $foreign_tables_array = array_filter($foreign_tables_array_padded_with_false,function($elem){
         return $elem?$elem:false;
       });
 
+       // Hide status and approval columns if the active controller/table is not approveable
+       if(!$this->grants_model->approveable_item($table_name)) {
+          if(in_array('status',$foreign_tables_array)){
+            unset($foreign_tables_array[array_search('status',$foreign_tables_array)]);
+          }
+
+          if(in_array('approval',$foreign_tables_array)){
+            unset($foreign_tables_array[array_search('approval',$foreign_tables_array)]);
+          }
+       }
+      
       return $foreign_tables_array;
   }
 
