@@ -2165,6 +2165,14 @@ function feature_model_list_table_visible_columns() {
       $this->CI->db->select(array('approve_item_name'));
       $approveable_items = $this->CI->db->get_where('approve_item')->result_array();
 
+      if(!file_exists('uploads/')){
+        mkdir('uploads/');
+      }
+
+      if(!file_exists('uploads/attachments/')){
+        mkdir('uploads/attachments/');
+      }
+      
       foreach($approveable_items as $approveable_item){
         if(!file_exists('uploads/attachments/'.$approveable_item['approve_item_name'])){
           mkdir('uploads/attachments/'.$approveable_item['approve_item_name']);
