@@ -247,6 +247,28 @@ function load_detail_model(String $table_name = ""): String{
   return $model;
 }
 
+function add_mandatory_lookup_tables(&$existing_lookup_tables,
+   $mandatory_lookup_tables = ['status','approval']){
+
+    foreach($mandatory_lookup_tables as $mandatory_lookup_table){
+      if(!in_array($mandatory_lookup_table,$existing_lookup_tables)){
+        array_unshift($existing_lookup_tables,$mandatory_lookup_table);
+      }
+    }
+}
+
+function remove_mandatory_lookup_tables(&$existing_lookup_tables,
+   $mandatory_lookup_tables = ['status','approval']){
+
+    foreach($mandatory_lookup_tables as $mandatory_lookup_table){
+        if(in_array($mandatory_lookup_table,$existing_lookup_tables)){
+        unset($existing_lookup_tables[array_search($mandatory_lookup_table,$existing_lookup_tables)]);
+      }
+    }
+
+}
+
+
 /**
  * lookup_tables
  * 
@@ -269,16 +291,13 @@ function lookup_tables(String $table_name = ""): Array{
     ){
     $lookup_tables = $this->CI->$model->lookup_tables();
 
+    // Check if status and approval lookup tables doesn't exist and add them
+    $this->add_mandatory_lookup_tables($lookup_tables);
+    
      // Hide status and approval columns if the active controller/table is not approveable
      if(!$this->CI->grants_model->approveable_item($table_name)) {
-      if(in_array('status',$lookup_tables)){
-        unset($lookup_tables[array_search('status',$lookup_tables)]);
-      }
-
-      if(in_array('approval',$lookup_tables)){
-        unset($lookup_tables[array_search('approval',$lookup_tables)]);
-      }
-   }
+      $this->remove_mandatory_lookup_tables($lookup_tables);
+    }
 
    
   }else{
@@ -286,7 +305,7 @@ function lookup_tables(String $table_name = ""): Array{
     // methods in models that overrided the MY_Model method
     $lookup_tables = $this->CI->grants_model->lookup_tables();
   }
-
+  //print_r($table_name);exit;
   return $lookup_tables;
 }
 
