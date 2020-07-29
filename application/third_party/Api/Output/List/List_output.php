@@ -77,16 +77,11 @@ function feature_model_list_table_visible_columns(): Array {
     ){
       $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
 
-      // This part couldn't work as the function $this->CI->grants->unset_status_if_item_not_approveable()
-      if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
-        $columns = ['status_name','approval_name'];
-
-        foreach($columns as $column){
-          if(in_array($column,$list_table_visible_columns)){
-            $column_name_key = array_search($column,$list_table_visible_columns);
-            unset($list_table_visible_columns[$column_name_key]);
-          }
-        }
+      // Add status and approval columns if approveable
+      if(!$this->CI->grants_model->approveable_item($this->controller)) {
+        $this->CI->grants->remove_mandatory_lookup_tables($list_table_visible_columns,['status_name','approval_name']);
+      }else{
+        $this->CI->grants->add_mandatory_lookup_tables($list_table_visible_columns,['status_name','approval_name']);
       }
   
        //Add the table id columns if does not exist in $columns
@@ -146,15 +141,10 @@ function feature_model_list_table_visible_columns(): Array {
 
     if(is_array($list_table_visible_columns) && count($list_table_visible_columns) > 0 ){
       $visible_columns = $list_table_visible_columns;
+
     }else{
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
-
-          // // Hide status and approval columns if the active controller/table is not approveable
-          // if(!$this->CI->grants_model->approveable_item($lookup_table) &&
-          //    ($lookup_table == 'status' || $lookup_table == 'approval')) {
-          //     continue;
-          //    }
 
           $lookup_table_columns = $this->CI->grants_model->get_all_table_fields($lookup_table);
 

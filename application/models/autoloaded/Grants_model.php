@@ -1104,7 +1104,7 @@ function max_number_of_menu_items(){
 private function _run_list_query($table, $selected_columns, $lookup_tables, 
 $model_where_method = "list_table_where", $filter_where_array = array() ){
   
-  //print_r($table);exit;
+  //print_r($selected_columns);exit;
   // Run column selector
   $this->db->select($selected_columns);
  
@@ -1161,7 +1161,7 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
       show_error($message,500,'An Error Was Encountered');
     }else{
       $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
-      //print_r($filter_where_array);exit;
+      //print_r($lookup_tables);exit;
       return $this->db->get($table)->result_array();
     }
     

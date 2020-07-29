@@ -31,11 +31,15 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function lookup_tables(){
-    return ['status','approval'];
+    //return ['status','approval'];
   }
 
   function detail_tables(){
     return ['office_bank'];
+  }
+
+  public function list_table_visible_columns(){
+    return ['bank_track_number','bank_name','bank_swift_code','bank_is_active'];
   }
 
   function list(){
