@@ -258,7 +258,7 @@ public $controller;
         // the cohort level (immediate next level to a country) to the center level  
         
         $this->session->set_userdata('hierarchy_offices',
-           $this->user_model->user_hierarchy_offices($row->user_id));
+           $this->user_model->user_hierarchy_offices($row->user_id, true));
 
         
         $this->session->set_userdata('role_is_department_strict',

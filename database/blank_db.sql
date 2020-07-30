@@ -1573,6 +1573,7 @@ CREATE TABLE `user` (
   `user_is_system_admin` int(5) NOT NULL DEFAULT '0',
   `fk_language_id` int(100) DEFAULT NULL COMMENT 'User''s default language',
   `fk_country_currency_id` int(100) DEFAULT NULL,
+  `fk_account_system_id` int(100) DEFAULT NULL,
   `user_is_active` int(5) NOT NULL DEFAULT '1',
   `fk_role_id` int(100) DEFAULT NULL,
   `user_password` varchar(100) NOT NULL,
@@ -1585,6 +1586,7 @@ CREATE TABLE `user` (
   `user_last_modified_by` int(100) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 DROP TABLE IF EXISTS `variance_note`;

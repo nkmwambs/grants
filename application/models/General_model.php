@@ -471,6 +471,8 @@ function get_max_approval_status_id(String $approveable_item):Int{
     $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
 
+    //print_r($approveable_item); exit();
+
     $max_status_id = $this->db->get_where('status',
     array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
   

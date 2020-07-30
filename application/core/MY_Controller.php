@@ -208,8 +208,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    function views_dir():String{
     $view_path = strtolower($this->controller);
 
-    if(!file_exists(VIEWPATH.$view_path.'/'.$this->session->user_account_system.'/'.$this->page_name().'.php') || !$this->has_permission ){
-      $view_path =  'templates';
+    if(file_exists(VIEWPATH.$view_path.'/'.$this->session->user_account_system.'/'.$this->page_name().'.php') || !$this->has_permission ){
+      $view_path .= '/'.$this->session->user_account_system;
     }elseif(!file_exists(VIEWPATH.$view_path.'/'.$this->page_name().'.php') || !$this->has_permission ){
       $view_path =  'templates';
     }

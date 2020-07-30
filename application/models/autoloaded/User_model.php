@@ -229,7 +229,7 @@ class User_model extends MY_Model
      * @return Array - Office ids
      */
 
-    function get_user_context_offices(int $user_id):Array{
+    function get_user_context_offices(int $user_id){
 
       $context_defs = $this->grants->context_definitions();
            
@@ -241,10 +241,10 @@ class User_model extends MY_Model
       $context_user_table = $context_defs[$user_context_name]['context_user_table'];
 
       $this->db->select(array('office_name','office_id'));
-      
       $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_user_table.'.fk_'.$context_table.'_id');
       $this->db->join('office','office.office_id='.$context_table.'.fk_office_id');
       $user_context_obj = $this->db->get_where($context_user_table,array('fk_user_id'=>$user_id));
+
       
       $user_offices =  array();    
 
@@ -256,6 +256,8 @@ class User_model extends MY_Model
       }
       
       return $user_offices;
+
+      //return  $user_context_obj->result_array();
     }
 
   /**
@@ -395,6 +397,7 @@ class User_model extends MY_Model
       $user_hierarchy_offices_ids = [];
       
       $user_context_definition = $this->get_user_context_definition($user_id);
+      
       
       /**
        * $this->get_user_context_definition($user_id):

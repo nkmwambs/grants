@@ -1161,7 +1161,7 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
       show_error($message,500,'An Error Was Encountered');
     }else{
       $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
-      //print_r($lookup_tables);exit;
+      //print_r($filter_where_array);exit;
       return $this->db->get($table)->result_array();
     }
     
