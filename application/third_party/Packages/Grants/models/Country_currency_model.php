@@ -35,4 +35,17 @@ class Country_currency_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function intialize_table(Array $foreign_keys_values = []){
+        
+        $user_data['country_currency_id'] = 1;
+        $user_data['country_currency_track_number'] = $this->grants_model->generate_item_track_number_and_name('country_currency')['country_currency_track_number'];
+        $user_data['country_currency_name'] = 'USD';
+        $user_data['country_currency_code'] = 'USD';
+            
+        $user_data_to_insert = $this->grants_model->merge_with_history_fields('country_currency',$user_data,false);
+        $this->db->insert('country_currency',$user_data_to_insert);
+      
+        return $this->db->insert_id();
+      }
 }
