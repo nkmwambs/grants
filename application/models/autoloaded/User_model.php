@@ -960,6 +960,7 @@ function intialize_table(Array $foreign_keys_values = []){
   $user_data['user_is_context_manager'] = 0;
   $user_data['user_is_system_admin'] = 1;
   $user_data['fk_language_id'] = $foreign_keys_values['language_id'];
+  $user_data['fk_country_currency_id']=1;
   $user_data['user_is_active'] = 1;
   $user_data['fk_role_id'] = $foreign_keys_values['role_id'];
   $user_data['user_password'] =  $this->db->get_where('setting',array('type'=>'setup_password'))->row()->description;//md5('#Compassion321');

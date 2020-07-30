@@ -5,6 +5,7 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+DROP TABLE IF EXISTS `account_system`;
 CREATE TABLE `account_system` (
   `account_system_id` int(100) NOT NULL AUTO_INCREMENT,
   `account_system_track_number` varchar(100) NOT NULL,
@@ -21,6 +22,7 @@ CREATE TABLE `account_system` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `approval`;
 CREATE TABLE `approval` (
   `approval_id` int(11) NOT NULL AUTO_INCREMENT,
   `approval_track_number` varchar(100) NOT NULL,
@@ -37,6 +39,7 @@ CREATE TABLE `approval` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `approval_flow`;
 CREATE TABLE `approval_flow` (
   `approval_flow_id` int(100) NOT NULL AUTO_INCREMENT,
   `approval_flow_name` varchar(100) NOT NULL,
@@ -57,6 +60,7 @@ CREATE TABLE `approval_flow` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `approve_item`;
 CREATE TABLE `approve_item` (
   `approve_item_id` int(100) NOT NULL AUTO_INCREMENT,
   `approve_item_track_number` varchar(100) NOT NULL,
@@ -73,6 +77,7 @@ CREATE TABLE `approve_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
   `bank_id` int(100) NOT NULL AUTO_INCREMENT,
   `bank_track_number` varchar(100) DEFAULT NULL,
@@ -89,6 +94,7 @@ CREATE TABLE `bank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the banks for centers';
 
 
+DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
   `budget_id` int(100) NOT NULL AUTO_INCREMENT,
   `budget_track_number` varchar(45) DEFAULT NULL,
@@ -112,6 +118,7 @@ CREATE TABLE `budget` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the budget items by activity';
 
 
+DROP TABLE IF EXISTS `budget_item`;
 CREATE TABLE `budget_item` (
   `budget_item_id` int(100) NOT NULL AUTO_INCREMENT,
   `budget_item_track_number` varchar(100) DEFAULT NULL,
@@ -141,6 +148,7 @@ CREATE TABLE `budget_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This hold activties and their budgeted cost';
 
 
+DROP TABLE IF EXISTS `budget_item_detail`;
 CREATE TABLE `budget_item_detail` (
   `budget_item_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `budget_item_detail_track_number` varchar(100) DEFAULT NULL,
@@ -163,6 +171,7 @@ CREATE TABLE `budget_item_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
 
+DROP TABLE IF EXISTS `cheque_book`;
 CREATE TABLE `cheque_book` (
   `cheque_book_id` int(11) NOT NULL AUTO_INCREMENT,
   `cheque_book_track_number` varchar(100) NOT NULL,
@@ -184,6 +193,7 @@ CREATE TABLE `cheque_book` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `ci_sessions`;
 CREATE TABLE `ci_sessions` (
   `id` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `ip_address` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
@@ -200,6 +210,7 @@ CREATE TABLE `ci_sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+DROP TABLE IF EXISTS `context_center`;
 CREATE TABLE `context_center` (
   `context_center_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_center_track_number` varchar(100) DEFAULT NULL,
@@ -218,6 +229,7 @@ CREATE TABLE `context_center` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_center_user`;
 CREATE TABLE `context_center_user` (
   `context_center_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_center_user_track_number` varchar(100) DEFAULT NULL,
@@ -236,6 +248,7 @@ CREATE TABLE `context_center_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cluster`;
 CREATE TABLE `context_cluster` (
   `context_cluster_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cluster_track_number` varchar(100) DEFAULT NULL,
@@ -254,6 +267,7 @@ CREATE TABLE `context_cluster` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cluster_user`;
 CREATE TABLE `context_cluster_user` (
   `context_cluster_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cluster_user_track_number` varchar(100) DEFAULT NULL,
@@ -272,6 +286,7 @@ CREATE TABLE `context_cluster_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cohort`;
 CREATE TABLE `context_cohort` (
   `context_cohort_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cohort_track_number` varchar(100) DEFAULT NULL,
@@ -290,6 +305,7 @@ CREATE TABLE `context_cohort` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cohort_user`;
 CREATE TABLE `context_cohort_user` (
   `context_cohort_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cohort_user_track_number` varchar(100) DEFAULT NULL,
@@ -308,13 +324,14 @@ CREATE TABLE `context_cohort_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_country`;
 CREATE TABLE `context_country` (
   `context_country_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_country_track_number` varchar(100) DEFAULT NULL,
   `context_country_name` varchar(100) DEFAULT NULL,
   `context_country_description` varchar(100) DEFAULT NULL,
-  `fk_office_id` varchar(100) NOT NULL,
-  `fk_context_definition_id` varchar(100) DEFAULT NULL,
+  `fk_office_id` int(11) NOT NULL,
+  `fk_context_definition_id` int(11) DEFAULT NULL,
   `fk_context_region_id` int(100) DEFAULT NULL,
   `context_country_created_date` date DEFAULT '0000-00-00',
   `context_country_created_by` int(100) DEFAULT NULL,
@@ -326,6 +343,7 @@ CREATE TABLE `context_country` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_country_user`;
 CREATE TABLE `context_country_user` (
   `context_country_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_country_user_track_number` varchar(100) DEFAULT NULL,
@@ -344,6 +362,7 @@ CREATE TABLE `context_country_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_definition`;
 CREATE TABLE `context_definition` (
   `context_definition_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_definition_track_number` varchar(100) DEFAULT NULL,
@@ -367,6 +386,7 @@ CREATE TABLE `context_definition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `context_global`;
 CREATE TABLE `context_global` (
   `context_global_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_global_track_number` varchar(100) NOT NULL,
@@ -384,6 +404,7 @@ CREATE TABLE `context_global` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `context_global_user`;
 CREATE TABLE `context_global_user` (
   `context_global_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_global_user_track_number` varchar(100) NOT NULL,
@@ -402,14 +423,15 @@ CREATE TABLE `context_global_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `context_region`;
 CREATE TABLE `context_region` (
   `context_region_id` int(100) NOT NULL AUTO_INCREMENT,
-  `context_region_track_number` varchar(100) DEFAULT NULL,
-  `context_region_name` varchar(100) DEFAULT NULL,
-  `context_region_description` varchar(100) DEFAULT NULL,
-  `fk_office_id` varchar(100) NOT NULL,
-  `fk_context_definition_id` varchar(100) DEFAULT NULL,
-  `fk_context_global_id` int(100) DEFAULT NULL,
+  `context_region_track_number` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `context_region_name` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `context_region_description` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `fk_office_id` int(11) NOT NULL,
+  `fk_context_definition_id` int(11) NOT NULL,
+  `fk_context_global_id` int(100) NOT NULL,
   `context_region_created_date` date DEFAULT '0000-00-00',
   `context_region_created_by` int(100) DEFAULT NULL,
   `context_region_last_modified_date` timestamp NULL DEFAULT '0000-00-00 00:00:00',
@@ -420,6 +442,7 @@ CREATE TABLE `context_region` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_region_user`;
 CREATE TABLE `context_region_user` (
   `context_region_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_region_user_track_number` varchar(100) DEFAULT NULL,
@@ -438,6 +461,7 @@ CREATE TABLE `context_region_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `contra_account`;
 CREATE TABLE `contra_account` (
   `contra_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `contra_account_track_number` varchar(100) NOT NULL,
@@ -463,6 +487,7 @@ CREATE TABLE `contra_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `country_currency`;
 CREATE TABLE `country_currency` (
   `country_currency_id` int(100) NOT NULL AUTO_INCREMENT,
   `country_currency_name` varchar(100) NOT NULL,
@@ -479,6 +504,7 @@ CREATE TABLE `country_currency` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `currency_conversion`;
 CREATE TABLE `currency_conversion` (
   `currency_conversion_id` int(100) NOT NULL AUTO_INCREMENT,
   `currency_conversion_name` varchar(100) NOT NULL,
@@ -494,6 +520,7 @@ CREATE TABLE `currency_conversion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `currency_conversion_detail`;
 CREATE TABLE `currency_conversion_detail` (
   `currency_conversion_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `currency_conversion_detail_name` varchar(100) NOT NULL,
@@ -511,6 +538,7 @@ CREATE TABLE `currency_conversion_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `dashboard`;
 CREATE TABLE `dashboard` (
   `dashboard_id` int(100) NOT NULL AUTO_INCREMENT,
   `dashboard_name` varchar(100) DEFAULT NULL,
@@ -524,6 +552,7 @@ CREATE TABLE `dashboard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department` (
   `department_id` int(100) NOT NULL AUTO_INCREMENT,
   `department_track_number` varchar(100) NOT NULL,
@@ -544,6 +573,7 @@ CREATE TABLE `department` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `department_user`;
 CREATE TABLE `department_user` (
   `department_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `department_user_track_number` varchar(100) NOT NULL,
@@ -560,6 +590,7 @@ CREATE TABLE `department_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `designation`;
 CREATE TABLE `designation` (
   `designation_id` int(100) NOT NULL AUTO_INCREMENT,
   `designation_track_number` varchar(100) NOT NULL,
@@ -581,6 +612,7 @@ CREATE TABLE `designation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `expense_account`;
 CREATE TABLE `expense_account` (
   `expense_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `expense_account_track_number` varchar(100) DEFAULT NULL,
@@ -603,6 +635,7 @@ CREATE TABLE `expense_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the expense accounts';
 
 
+DROP TABLE IF EXISTS `financial_report`;
 CREATE TABLE `financial_report` (
   `financial_report_id` int(100) NOT NULL AUTO_INCREMENT,
   `financial_report_track_number` varchar(100) NOT NULL,
@@ -621,6 +654,7 @@ CREATE TABLE `financial_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `funder`;
 CREATE TABLE `funder` (
   `funder_id` int(100) NOT NULL AUTO_INCREMENT,
   `funder_track_number` varchar(100) DEFAULT NULL,
@@ -637,6 +671,7 @@ CREATE TABLE `funder` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds donor (funders) bio-information';
 
 
+DROP TABLE IF EXISTS `funding_status`;
 CREATE TABLE `funding_status` (
   `funding_status_id` int(100) NOT NULL AUTO_INCREMENT,
   `funding_status_track_number` varchar(100) DEFAULT NULL,
@@ -653,6 +688,7 @@ CREATE TABLE `funding_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history` (
   `history_id` int(100) NOT NULL AUTO_INCREMENT,
   `reference_table` varchar(45) DEFAULT NULL,
@@ -668,6 +704,7 @@ CREATE TABLE `history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `income_account`;
 CREATE TABLE `income_account` (
   `income_account_id` int(11) NOT NULL AUTO_INCREMENT,
   `income_account_track_number` varchar(100) NOT NULL,
@@ -690,6 +727,7 @@ CREATE TABLE `income_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table contains the income accounts. ';
 
 
+DROP TABLE IF EXISTS `journal`;
 CREATE TABLE `journal` (
   `journal_id` int(11) NOT NULL AUTO_INCREMENT,
   `journal_track_number` varchar(100) NOT NULL,
@@ -706,6 +744,7 @@ CREATE TABLE `journal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
   `language_id` int(100) NOT NULL AUTO_INCREMENT,
   `language_track_number` varchar(100) NOT NULL,
@@ -722,6 +761,7 @@ CREATE TABLE `language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `language_phrase`;
 CREATE TABLE `language_phrase` (
   `language_phrase_id` int(11) NOT NULL AUTO_INCREMENT,
   `phrase` longtext,
@@ -740,6 +780,7 @@ CREATE TABLE `language_phrase` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(100) NOT NULL AUTO_INCREMENT,
   `menu_name` varchar(100) DEFAULT NULL,
@@ -755,6 +796,7 @@ CREATE TABLE `menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
   `menu_user_order_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_user_id` int(100) NOT NULL,
@@ -776,6 +818,7 @@ CREATE TABLE `menu_user_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `message_id` int(100) NOT NULL AUTO_INCREMENT,
   `message_track_number` varchar(100) DEFAULT NULL,
@@ -796,6 +839,7 @@ CREATE TABLE `message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `message_detail`;
 CREATE TABLE `message_detail` (
   `message_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `message_detail_track_number` varchar(100) NOT NULL,
@@ -818,6 +862,7 @@ CREATE TABLE `message_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `month`;
 CREATE TABLE `month` (
   `month_id` int(11) NOT NULL AUTO_INCREMENT,
   `month_track_number` varchar(100) NOT NULL,
@@ -836,6 +881,7 @@ CREATE TABLE `month` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `office`;
 CREATE TABLE `office` (
   `office_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_track_number` varchar(100) DEFAULT NULL,
@@ -862,6 +908,7 @@ CREATE TABLE `office` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the remote sites for the organization';
 
 
+DROP TABLE IF EXISTS `office_bank`;
 CREATE TABLE `office_bank` (
   `office_bank_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_bank_track_number` varchar(100) DEFAULT NULL,
@@ -884,6 +931,7 @@ CREATE TABLE `office_bank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `office_bank_project_allocation`;
 CREATE TABLE `office_bank_project_allocation` (
   `office_bank_project_allocation_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_bank_project_allocation_name` varchar(100) NOT NULL,
@@ -900,6 +948,7 @@ CREATE TABLE `office_bank_project_allocation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `office_cash`;
 CREATE TABLE `office_cash` (
   `office_cash_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_cash_name` varchar(100) NOT NULL,
@@ -916,6 +965,7 @@ CREATE TABLE `office_cash` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_allocation_balance`;
 CREATE TABLE `opening_allocation_balance` (
   `opening_allocation_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_system_opening_balance_id` int(100) NOT NULL,
@@ -937,6 +987,7 @@ CREATE TABLE `opening_allocation_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_bank_balance`;
 CREATE TABLE `opening_bank_balance` (
   `opening_bank_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_system_opening_balance_id` int(100) NOT NULL,
@@ -954,6 +1005,7 @@ CREATE TABLE `opening_bank_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_cash_balance`;
 CREATE TABLE `opening_cash_balance` (
   `opening_cash_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `opening_cash_balance_track_number` varchar(100) NOT NULL,
@@ -978,6 +1030,7 @@ CREATE TABLE `opening_cash_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_deposit_transit`;
 CREATE TABLE `opening_deposit_transit` (
   `opening_deposit_transit_id` int(100) NOT NULL AUTO_INCREMENT,
   `opening_deposit_transit_track_number` varchar(100) NOT NULL,
@@ -1001,6 +1054,7 @@ CREATE TABLE `opening_deposit_transit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_fund_balance`;
 CREATE TABLE `opening_fund_balance` (
   `opening_fund_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_system_opening_balance_id` int(100) NOT NULL,
@@ -1022,6 +1076,7 @@ CREATE TABLE `opening_fund_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_outstanding_cheque`;
 CREATE TABLE `opening_outstanding_cheque` (
   `opening_outstanding_cheque_id` int(100) NOT NULL AUTO_INCREMENT,
   `opening_outstanding_cheque_name` varchar(100) NOT NULL,
@@ -1047,6 +1102,7 @@ CREATE TABLE `opening_outstanding_cheque` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `page_view`;
 CREATE TABLE `page_view` (
   `page_view_id` int(100) NOT NULL AUTO_INCREMENT,
   `page_view_track_number` varchar(100) NOT NULL,
@@ -1070,6 +1126,7 @@ CREATE TABLE `page_view` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `page_view_condition`;
 CREATE TABLE `page_view_condition` (
   `page_view_condition_id` int(100) NOT NULL AUTO_INCREMENT,
   `page_view_condition_track_number` varchar(100) NOT NULL,
@@ -1092,6 +1149,7 @@ CREATE TABLE `page_view_condition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `page_view_role`;
 CREATE TABLE `page_view_role` (
   `page_view_role_id` int(100) NOT NULL AUTO_INCREMENT,
   `page_view_role_track_number` varchar(100) NOT NULL,
@@ -1117,6 +1175,7 @@ CREATE TABLE `page_view_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
   `permission_id` int(11) NOT NULL AUTO_INCREMENT,
   `permission_track_number` varchar(100) NOT NULL,
@@ -1138,6 +1197,7 @@ CREATE TABLE `permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
   `permission_label_id` int(100) NOT NULL AUTO_INCREMENT,
   `permission_label_track_number` varchar(100) NOT NULL,
@@ -1154,6 +1214,7 @@ CREATE TABLE `permission_label` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `project_id` int(100) NOT NULL AUTO_INCREMENT,
   `project_track_number` varchar(100) DEFAULT NULL,
@@ -1182,6 +1243,7 @@ CREATE TABLE `project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A project is a single funded proposal that need to be implemented and reported as a unit. It''s related to single funder ';
 
 
+DROP TABLE IF EXISTS `project_allocation`;
 CREATE TABLE `project_allocation` (
   `project_allocation_id` int(100) NOT NULL AUTO_INCREMENT,
   `project_allocation_track_number` varchar(100) DEFAULT NULL,
@@ -1205,6 +1267,7 @@ CREATE TABLE `project_allocation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project_allocation_detail`;
 CREATE TABLE `project_allocation_detail` (
   `project_allocation_detail_id` int(11) NOT NULL,
   `project_allocation_detail_track_number` varchar(100) NOT NULL,
@@ -1223,6 +1286,7 @@ CREATE TABLE `project_allocation_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project_cost_proportion`;
 CREATE TABLE `project_cost_proportion` (
   `project_cost_proportion_id` int(11) NOT NULL,
   `voucher_detail_id` int(100) DEFAULT NULL,
@@ -1244,6 +1308,7 @@ CREATE TABLE `project_cost_proportion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `reconciliation`;
 CREATE TABLE `reconciliation` (
   `reconciliation_id` int(100) NOT NULL AUTO_INCREMENT,
   `reconciliation_track_number` varchar(100) DEFAULT NULL,
@@ -1266,6 +1331,7 @@ CREATE TABLE `reconciliation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request`;
 CREATE TABLE `request` (
   `request_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_track_number` varchar(100) DEFAULT NULL,
@@ -1286,6 +1352,7 @@ CREATE TABLE `request` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_conversion`;
 CREATE TABLE `request_conversion` (
   `request_conversion_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_conversion_name` varchar(100) NOT NULL,
@@ -1306,6 +1373,7 @@ CREATE TABLE `request_conversion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
   `request_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_detail_track_number` varchar(100) DEFAULT NULL,
@@ -1333,6 +1401,7 @@ CREATE TABLE `request_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_type`;
 CREATE TABLE `request_type` (
   `request_type_id` int(11) NOT NULL AUTO_INCREMENT,
   `request_type_track_number` varchar(100) NOT NULL,
@@ -1351,6 +1420,7 @@ CREATE TABLE `request_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `role_id` int(100) NOT NULL AUTO_INCREMENT,
   `role_track_number` varchar(100) DEFAULT NULL,
@@ -1371,6 +1441,7 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission` (
   `role_permission_id` int(100) NOT NULL AUTO_INCREMENT,
   `role_permission_track_number` varchar(100) NOT NULL,
@@ -1392,6 +1463,7 @@ CREATE TABLE `role_permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(100) DEFAULT NULL,
@@ -1405,20 +1477,7 @@ CREATE TABLE `setting` (
   PRIMARY KEY (`setting_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-TRUNCATE `setting`;
-INSERT INTO `setting` (`setting_id`, `type`, `description`, `setting_created_date`, `setting_created_by`, `setting_last_modified_by`, `setting_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'system_name',	'Grants Management System',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(2,	'system_title',	'Grants Management System',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(3,	'address',	'1945 Nairobi',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(4,	'phone',	'+254711808071',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(5,	'system_email',	'nkmwambs@gmail.com',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(6,	'language',	'1',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(7,	'text_align',	'left-to-right',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(8,	'skin_colour',	'blue',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(9,	'system_setup_completed',	'0',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(10,	'setup_password',	'06d59f4b5eb00a76399920e82e6858b0',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(11,	'base_currency_code',	'36',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL);
-
+DROP TABLE IF EXISTS `status`;
 CREATE TABLE `status` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,
   `status_track_number` varchar(100) NOT NULL,
@@ -1438,6 +1497,7 @@ CREATE TABLE `status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
   `status_role_id` int(100) NOT NULL AUTO_INCREMENT,
   `status_role_track_number` varchar(100) NOT NULL,
@@ -1456,6 +1516,7 @@ CREATE TABLE `status_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `system_opening_balance`;
 CREATE TABLE `system_opening_balance` (
   `system_opening_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `system_opening_balance_track_number` varchar(100) NOT NULL,
@@ -1474,6 +1535,7 @@ CREATE TABLE `system_opening_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `translation`;
 CREATE TABLE `translation` (
   `translation_id` int(100) NOT NULL AUTO_INCREMENT,
   `language_phrase_id` int(100) DEFAULT NULL,
@@ -1498,6 +1560,7 @@ CREATE TABLE `translation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(100) NOT NULL AUTO_INCREMENT,
   `user_track_number` varchar(100) NOT NULL,
@@ -1524,6 +1587,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `variance_note`;
 CREATE TABLE `variance_note` (
   `variance_note_id` int(100) NOT NULL AUTO_INCREMENT,
   `reconciliation_id` int(100) DEFAULT NULL,
@@ -1547,6 +1611,7 @@ CREATE TABLE `variance_note` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher`;
 CREATE TABLE `voucher` (
   `voucher_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_track_number` varchar(50) DEFAULT NULL,
@@ -1581,6 +1646,7 @@ CREATE TABLE `voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
 
+DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
   `voucher_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_detail_track_number` varchar(100) DEFAULT NULL,
@@ -1608,6 +1674,7 @@ CREATE TABLE `voucher_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_track_number` varchar(100) NOT NULL,
@@ -1634,6 +1701,7 @@ CREATE TABLE `voucher_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_type_account`;
 CREATE TABLE `voucher_type_account` (
   `voucher_type_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_account_track_number` varchar(100) NOT NULL,
@@ -1649,6 +1717,7 @@ CREATE TABLE `voucher_type_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_type_effect`;
 CREATE TABLE `voucher_type_effect` (
   `voucher_type_effect_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_effect_track_number` varchar(100) NOT NULL,
@@ -1664,6 +1733,7 @@ CREATE TABLE `voucher_type_effect` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
   `workplan_id` int(100) NOT NULL,
   `workplan_track_number` varchar(100) DEFAULT NULL,
@@ -1682,6 +1752,7 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `workplan_task`;
 CREATE TABLE `workplan_task` (
   `workplan_task_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_workplan_id` int(100) NOT NULL,
@@ -1707,4 +1778,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-07-29 19:20:03
+-- 2020-07-29 08:25:19
