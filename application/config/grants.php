@@ -28,7 +28,7 @@
 											'voucher_type_effect',
 											'month',
 											'country_currency',
-											//'permission'
+											'department'
 										];
 	// Can be changed on initialization but must be in the order from the lowest to the highest
 	$config['context_definitions'] = ['center','cluster','cohort','country','region'];// global is the highest context and should not be added in this array

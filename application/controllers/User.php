@@ -43,14 +43,15 @@ class User extends MY_Controller
 }
 
 /**
- * @todo - This will change with the approval status update 
+ * @todo - This will change with the approval status update [Completed]
  */
 private function _get_approval_assignments($role_id){
   $this->db->select(array('status_name','approve_item_name'));
   
   $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
   $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
-  $status = $this->db->get_where('status',array('fk_role_id'=>$role_id,'status_is_requiring_approver_action'=>1))->result_array();
+  $this->db->join('status_role','status_role.status_role_status_id=status.status_id');
+  $status = $this->db->get_where('status',array('status_role.fk_role_id'=>$role_id,'status_is_requiring_approver_action'=>1))->result_array();
 
   return $status;
 }
@@ -167,6 +168,7 @@ private function _get_approval_assignments($role_id){
     $user['fk_role_id'] = $post['fk_role_id'];
     $user['fk_country_currency_id'] = $post['fk_country_currency_id'];
     $user['user_password'] = md5($post['user_password']);
+    $user['fk_account_system_id'] = $post['fk_account_system_id'];
 
 
     $user_to_insert = $this->grants_model->merge_with_history_fields($this->controller,$user,false);
@@ -175,7 +177,7 @@ private function _get_approval_assignments($role_id){
 
     $user_id = $this->db->insert_id();
 
-    // Insert an office context 
+    // Insert an a user a context table 
     $context_definition_name = $this->db->get_where('context_definition',array('context_definition_id'=>$post['fk_context_definition_id']))->row()->context_definition_name;
     $context_definition_user_table = 'context_'.$context_definition_name.'_user';
 
