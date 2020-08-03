@@ -268,6 +268,18 @@ class Voucher extends MY_Controller
     $result = $this->get_transaction_voucher($this->id);
 
      return $result;
+    // }elseif($this->action == 'multi_form_add'){
+    //   $result = [];
+    
+    //   $user_account_system =  $this->session->user_account_system; 
+    //    if(file_exists(APPPATH.'third_party/Packages/Grants/models/as_models/'.$user_account_system.'/As_Voucher_model.php')){
+    //     $this->load->model('as_models/'.$user_account_system.'/As_Voucher_model'); 
+    //     $result = $this->As_Voucher_model->get_transaction_voucher($id);
+    //    }else{
+    //      $result = ['Hello there 2'];
+    //    }    
+ 
+    //   return $result; 
     }else{
       return parent::result($id = '');
     }

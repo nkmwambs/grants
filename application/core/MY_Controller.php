@@ -165,17 +165,48 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
         exit;
     }
 
+    $render_model_result = 'render_'.$this->action.'_page_data';
 
     if($this->action == 'list' || $this->action == 'view'){
-      // Just to test if the third party API are working for list output
-      // This is the way to go for all outputs. Move all outputs to the Output API  
-      $this->list_result = Output_base::load($this->action);
+
+        if(!$this->render_data_from_model($render_model_result)){
+          // Render from default API
+          $this->list_result = Output_base::load($this->action);
+        }
+
     }else{
-      $this->list_result = $this->$lib->$action();
+      if(!$this->render_data_from_model($render_model_result)){
+        // Render from default API
+        $this->list_result = $this->$lib->$action();
+      }
     }
-    //var_dump(debug_backtrace());
     
     return $this->list_result;
+  }
+
+  function render_data_from_model($render_model_result){
+    // Render custom data for list and view pages if render_list_page_data or 
+    // render_view_page_data method are defined
+    // in the specific feature models
+
+    $is_model_set = false;
+        if(
+            check_and_load_account_system_model_exists($this->controller.'_model') &&
+            method_exists($this->{'As_'.$this->controller.'_model'},$render_model_result) 
+        ){
+          // Render results from account system model
+            $this->list_result = $this->{'As_'.$this->controller.'_model'}->{$render_model_result}();
+
+            $is_model_set = true;
+        }elseif(
+          // Render results from feature model
+          method_exists($this->{$this->controller.'_model'},$render_model_result)
+        ){
+          $this->list_result = $this->{$this->controller.'_model'}->{$render_model_result}();
+          $is_model_set = true;
+        }
+
+        return $is_model_set;
   }
    /**
    * page_name() 
@@ -208,8 +239,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    function views_dir():String{
     $view_path = strtolower($this->controller);
 
-    if(!file_exists(VIEWPATH.$view_path.'/'.$this->session->user_account_system.'/'.$this->page_name().'.php') || !$this->has_permission ){
-      $view_path =  'templates';
+    if(file_exists(VIEWPATH.$view_path.'/'.$this->session->user_account_system.'/'.$this->page_name().'.php') || !$this->has_permission ){
+      $view_path .= '/'.$this->session->user_account_system;
     }elseif(!file_exists(VIEWPATH.$view_path.'/'.$this->page_name().'.php') || !$this->has_permission ){
       $view_path =  'templates';
     }

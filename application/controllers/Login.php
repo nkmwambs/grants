@@ -55,6 +55,8 @@ public $controller;
         // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
         // populate setup tables, add mandatory fields, create item approval flow and permissions
         $this->system_setup_check();
+
+        $this->run_migrations();
         
 
         if ($this->session->userdata('user_login') == 1){
@@ -75,6 +77,15 @@ public $controller;
 
         $this->load->view('general/login');
 
+    }
+
+    function run_migrations(){
+        $this->load->library('migration');
+
+        if ($this->migration->current() === FALSE)
+        {
+            show_error($this->migration->error_string());
+        }
     }
 
     function create_mandatory_role_permissions(){
@@ -216,7 +227,9 @@ public $controller;
         $this->session->set_userdata('user_currency_code',$this->db->get_where('country_currency',
             array('country_currency_id'=>$row->fk_country_currency_id))->row()->country_currency_code);           
         
-        $this->session->set_userdata('user_account_system',$row->fk_account_system_id);           
+        $account_system_code = $this->db->get_where('account_system',array('account_system_id'=>$row->fk_account_system_id))->row()->account_system_code;    
+        $this->session->set_userdata('user_account_system',$account_system_code);   
+        
             
         $this->session->set_userdata('base_currency_id',
             $this->db->get_where('setting',array('type'=>'base_currency_code'))->row()->description);

@@ -65,5 +65,9 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   function transaction_validate_duplicates_columns(){
     return ['bank_swift_code'];
   }
+
+  // function render_view_page_data(){
+  //   return ['Hello'];
+  // }
  
 }

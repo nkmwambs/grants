@@ -216,7 +216,7 @@ function get_centers_in_center_group_hierarchy($user_id){
 function load_detail_model(String $table_name = ""): String{
   $model =  $this->current_model;
 
-  if($table_name !== "" && !is_array($table_name)){
+  if($table_name !== "" && !is_array($table_name) && $table_name != 'migrations'){
     
     if(!file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.$table_name.'.php') && 
       $this->CI->grants_model->table_exists($table_name)){

@@ -464,16 +464,23 @@ function get_max_approval_status_id(String $approveable_item):Int{
   $max_status_approval_sequence_obj = $this->db->select_max('status_approval_sequence')
   ->get_where('status',array('approve_item_name'=>$approveable_item));
 
-  if($max_status_approval_sequence_obj->num_rows() >0){
+  if($max_status_approval_sequence_obj->num_rows() >0 && 
+    $max_status_approval_sequence_obj->row()->status_approval_sequence > 0){
     // Get the status_id
     $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
     $this->db->select('status_id');
     $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
 
+    //print_r($max_status_approval_sequence); exit();
+
     $max_status_id = $this->db->get_where('status',
     array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
   
+  }else{
+    $message = "You have no initial status set for the feature ".$approveable_item.". Please check if all approval workflow related tables are correctly set</br>";
+
+    show_error($message,500,'An Error was Encountered');
   }
   //print_r($max_status_id);exit;
   return $max_status_id;

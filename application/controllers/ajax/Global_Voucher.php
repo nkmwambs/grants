@@ -1,5 +1,4 @@
-
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nicodemus Karisa
@@ -9,17 +8,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-
-class %controller% extends MY_Controller
-{
-
+class Global_Voucher extends CI_Controller{
   function __construct(){
     parent::__construct();
-    $this->load->library('%library%');
+  }
+    
+  function index(){
+   
   }
 
-  function index(){}
-
-  //static function get_menu_list(){}
-
+  function testing(){
+      echo "Hello";
+  }
 }
