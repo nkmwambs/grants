@@ -3,7 +3,7 @@
 //print_r($this->grants_model->approveable_item('office_bank'));
 // print_r($this->session->context_offices);
 // print_r($this->user_model->get_user_context_offices(1));
-print_r($this->session->user_account_system);
+//print_r($this->session->user_account_system);
 ?>
 
   <div class="row">
