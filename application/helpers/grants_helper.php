@@ -389,3 +389,36 @@ if(!function_exists('show_logo')){
 		return $logo;
 	}
 }
+
+// Some how not working
+if(!function_exists('is_valid_array_from_contract_method')){
+	function is_valid_array_from_contract_method($method_class_name,$contract_method){
+		$CI = & get_instance();
+		$is_valid = false;
+		
+		if(
+			method_exists($CI->{$method_class_name},$contract_method) &&
+			is_array($CI->{$method_class_name}->{$contract_method}()) && 
+			count($CI->{$method_class_name}->{$contract_method}()) > 0		
+		){
+			$is_valid = true;
+		}
+
+		return true;
+	}
+}
+
+if(!function_exists('check_if_account_system_model_exists')){
+	function check_and_load_account_system_model_exists($model_name,$package_name = 'Grants'){
+		$CI = & get_instance();
+		$user_account_system = $CI->session->user_account_system;
+		
+		$is_existing = false; 
+		if(file_exists(APPPATH.'third_party/Packages/'.$package_name.'/models/as_models/'.$user_account_system.'/As_'.$model_name.'.php')){
+			$CI->load->model('as_models/'.$user_account_system.'/As_'.$model_name);
+			$is_existing = true; 
+		}
+		
+		return $is_existing;
+	}
+}
