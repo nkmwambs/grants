@@ -32,7 +32,9 @@ class Account_system_model extends MY_Model{
         return array();
     }
 
-    public function detail_tables(){}
+    public function detail_tables(){
+        //return ['office'];
+    }
 
     public function detail_multi_form_add_visible_columns(){}
 

@@ -76,6 +76,13 @@
                         </div>
                     </div>
 
+                    <div class='form-group'>
+                        <label class='col-xs-2 control-label'>Office Currency</label>
+                        <div class='col-xs-4'>
+                            <?=$this->grants->header_row_field('country_currency_name');?>
+                        </div>
+                    </div>
+
                     <!-- <div class='form-group'>
                         <label class='col-xs-2 control-label'>Country Currency</label>
                         <div class='col-xs-4'>

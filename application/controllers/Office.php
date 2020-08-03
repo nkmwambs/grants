@@ -44,7 +44,8 @@ class Office extends MY_Controller
     $office['office_code'] = $post['office_code'];
     $office['fk_context_definition_id'] = $post['fk_context_definition_id'];
     $office['office_start_date'] = $post['office_start_date'];
-    $office['office_end_date'] = '0000-00-00';
+    $office['office_start_date'] = $post['office_start_date'];
+    $office['fk_country_currency_id'] = $post['fk_country_currency_id'];
     $office['office_is_active'] = $post['office_is_active'];
     $office['fk_account_system_id'] = $post['fk_account_system_id'];
     //$office['fk_country_currency_id'] = $post['fk_country_currency_id'];
