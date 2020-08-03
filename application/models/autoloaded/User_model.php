@@ -50,7 +50,7 @@ class User_model extends MY_Model
   }
 
   function lookup_tables(){
-    return array('language','role','context_definition');
+    return array('language','role','context_definition','account_system');
   }
 
   /**

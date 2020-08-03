@@ -123,7 +123,14 @@
                             <?=$this->grants->header_row_field('country_currency_name');?>
                         </div>
 
-                    </div>    
+                    </div>  
+
+                    <div class='form-group'>
+                        <label class='col-xs-2 control-label'>User accounting system</label>
+                        <div class='col-xs-4'>
+                        <?=$this->grants->header_row_field('account_system_name');?>
+                        </div>
+                    </div>  
 
                     <div class='form-group'>
                         <label class='col-xs-2 control-label'>User Password</label>
@@ -274,7 +281,7 @@ $(".btn-save, .btn-save-new").on('click',function(ev){
         type:"POST",
         success:function(response){
             alert(response);
-
+            console.log(response);
             if(btn.hasClass('btn-save')){
                 location.href = document.referrer 
             }else{
