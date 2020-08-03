@@ -23,6 +23,7 @@ function get_count_of_user_menu_items(){
 
 function upsert_menu($menus){
   $data = array();
+  $this->load->model('permission_model');
 
       foreach ($menus as $menu=>$menuItems) {
         $data['menu_name'] = $menu;
@@ -30,6 +31,11 @@ function upsert_menu($menus){
 
         if($this->db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
             $this->db->insert('menu',$data);
+
+            $permission_data['menu_id'] = $this->db->insert_id();
+            $permission_data['table_name'] = $menu;
+
+            $this->permission_model->add($permission_data);
         }else{
           $this->db->where(array('menu_derivative_controller'=>$menu));
           $this->db->update('menu',$data);
