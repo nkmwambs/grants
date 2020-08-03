@@ -216,7 +216,9 @@ public $controller;
         $this->session->set_userdata('user_currency_code',$this->db->get_where('country_currency',
             array('country_currency_id'=>$row->fk_country_currency_id))->row()->country_currency_code);           
         
-        $this->session->set_userdata('user_account_system',$row->fk_account_system_id);           
+        $account_system_code = $this->db->get_where('account_system',array('account_system_id'=>$row->fk_account_system_id))->row()->account_system_code;    
+        $this->session->set_userdata('user_account_system',$account_system_code);   
+        
             
         $this->session->set_userdata('base_currency_id',
             $this->db->get_where('setting',array('type'=>'base_currency_code'))->row()->description);
