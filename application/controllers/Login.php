@@ -55,6 +55,8 @@ public $controller;
         // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
         // populate setup tables, add mandatory fields, create item approval flow and permissions
         $this->system_setup_check();
+
+        $this->run_migrations();
         
 
         if ($this->session->userdata('user_login') == 1){
@@ -75,6 +77,15 @@ public $controller;
 
         $this->load->view('general/login');
 
+    }
+
+    function run_migrations(){
+        $this->load->library('migration');
+
+        if ($this->migration->current() === FALSE)
+        {
+            show_error($this->migration->error_string());
+        }
     }
 
     function create_mandatory_role_permissions(){

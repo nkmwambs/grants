@@ -1401,19 +1401,6 @@ CREATE TABLE `setting` (
   PRIMARY KEY (`setting_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-TRUNCATE `setting`;
-INSERT INTO `setting` (`setting_id`, `type`, `description`, `setting_created_date`, `setting_created_by`, `setting_last_modified_by`, `setting_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
-(1,	'system_name',	'Grants Management System',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(2,	'system_title',	'Grants Management System',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(3,	'address',	'1945 Nairobi',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(4,	'phone',	'+254711808071',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(5,	'system_email',	'nkmwambs@gmail.com',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(6,	'language',	'1',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(7,	'text_align',	'left-to-right',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(8,	'skin_colour',	'blue',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(9,	'system_setup_completed',	'0',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(10,	'setup_password',	'06d59f4b5eb00a76399920e82e6858b0',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL),
-(11,	'base_currency_code',	'1',	'2020-04-29',	1,	1,	'2020-04-29 13:05:19',	NULL,	NULL);
 
 CREATE TABLE `status` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,

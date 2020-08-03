@@ -650,7 +650,7 @@ function generate_item_track_number_and_name($approveable_item){
 
   function insert_status_for_approveable_item($approve_item_name){
     //$approve_item_name = "country_currency";
-    if(strlen($approve_item_name) > 5){
+    if(strlen($approve_item_name) > 2){
       $this->db->trans_start();
       
       $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;
