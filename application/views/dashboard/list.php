@@ -17,10 +17,14 @@
 
   <div class='row'>
     <div class='col-xs-12'>
-      
+      <div class='btn btn-default' id='btn_test'>Test</div>
     </div>
   </div>
 
-  
+<script>
+$("#btn_test").on('click',function(response){
+  alert(response);
+});
+</script>
 
 
