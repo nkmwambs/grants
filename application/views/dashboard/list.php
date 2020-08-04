@@ -22,8 +22,13 @@
   </div>
 
 <script>
-$("#btn_test").on('click',function(response){
-  alert(response);
+$("#btn_test").on('click',function(){
+  var url = "<?=base_url();?><?=$this->controller;?>/custom_ajax_call";
+  var data = {'ajax_method':'testing','return_as_json':false};
+
+  $.post(url,data,function(response){
+    alert(response);
+  });
 });
 </script>
 

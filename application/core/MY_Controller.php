@@ -191,7 +191,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $is_model_set = false;
         if(
-            check_and_load_account_system_model_exists($this->controller.'_model') &&
+            check_and_load_account_system_model_exists('As_'.$this->controller.'_model') &&
             method_exists($this->{'As_'.$this->controller.'_model'},$render_model_result) 
         ){
           // Render results from account system model
@@ -545,5 +545,45 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   
   }
   
+  function custom_ajax_call(){
+    // This implementation has 2 predefined keys i.e. ajax_method and return_as_json and must be passed in the 
+    // ajax post call from pages for this to work
+    // ajax_method carries the method name of the implementing account system model while return_as_json is a bool
+    // indicating if the returned result is in json or string format
+
+    $post = $this->input->post();
+    $model_name = 'As_'.$this->controller.'_model';
+    $ajax_method = $post['ajax_method'];
+    $return_as_json = !isset($post['return_as_json']) || $post['return_as_json'] == 'true' ? true : false;
+    $package_name = !isset($post['package_name']) ? "Grants" : $post['package_name'];
+    $return = [];
+    
+    if(check_and_load_account_system_model_exists($model_name,$package_name)){
+        if(is_valid_array_from_contract_method($model_name,$ajax_method)){
+          $return = $this->{$model_name}->{$ajax_method}();
+        }elseif(
+            method_exists($this->{$this->controller.'_model'},$ajax_method) &&
+            is_valid_array_from_contract_method($this->{$this->controller.'_model'},$ajax_method)
+          ){
+          $return = $this->{$this->controller.'_model'}->{$ajax_method}();
+        }else{
+          $return = "Missing method `".$ajax_method."` in the account system or feature model for `".$this->controller."`";
+        }
+    }elseif(
+        method_exists($this->{$this->controller.'_model'},$ajax_method) &&
+        is_valid_array_from_contract_method($this->{$this->controller.'_model'},$ajax_method)
+      ){
+        $return = $this->{$this->controller}->{$ajax_method}();
+    }else{
+      $return = "Missing account system or feature model for `".$this->controller."`";
+    }
+
+    if($return_as_json || is_array($return)){
+      echo json_encode($return);
+    }else{
+      echo $return;
+    }
+    
+  }
 
 }

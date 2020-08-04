@@ -54,4 +54,8 @@ public function detail_tables(){}
 
   public function view(){}
 
+  // function testingss(){
+  //   return "Works";
+  // }
+
 }
