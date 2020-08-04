@@ -22,3 +22,5 @@ class Migration_Alter_account_system extends CI_Migration {
                 $this->db->query($sql);
         }
 }
+
+//fk_account_system_id in bank table added

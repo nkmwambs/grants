@@ -80,6 +80,7 @@ CREATE TABLE `bank` (
   `bank_name` varchar(45) DEFAULT NULL,
   `bank_swift_code` varchar(45) DEFAULT NULL,
   `bank_is_active` int(5) NOT NULL DEFAULT '1',
+  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',  
   `bank_created_date` date DEFAULT NULL,
   `bank_created_by` int(100) DEFAULT NULL,
   `bank_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
