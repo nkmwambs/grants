@@ -36,6 +36,23 @@ class Account_system_model extends MY_Model{
         //return ['office'];
     }
 
+    // function lookup_values(){
+        
+    //     $lookup_values = [];
+        
+    //     if(!$this->session->system_admin){
+    //         $results = $this->db->select(array('account_system_id','account_system_name'))->
+    //         get_where('account_system',array('account_system_code'=>$this->session->user_account_system));
+
+    //         if($results->num_rows() > 0){
+    //             $lookup_values = $results->result_array();
+    //         }
+            
+    //         return $lookup_values;
+    //     }
+        
+    // }
+
     public function detail_multi_form_add_visible_columns(){}
 
     function intialize_table(Array $foreign_keys_values = []){

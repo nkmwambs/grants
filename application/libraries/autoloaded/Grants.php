@@ -1993,6 +1993,7 @@ function feature_model_list_table_visible_columns() {
           && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
         ) 
       ){  
+        
           $result = $this->CI->$current_model->lookup_values($table)[$table];
 
           $ids_array = array_column($result,$this->primary_key_field($table));
