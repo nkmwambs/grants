@@ -47,7 +47,7 @@
 	$config['skip_empty_expense_reports'] = true;
 
 	//Submit MFR without controls
-	$config['submit_mfr_without_controls']=false;
+	$config['submit_mfr_without_controls']=true;
 
 
 
