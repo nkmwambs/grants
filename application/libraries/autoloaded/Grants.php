@@ -1999,14 +1999,14 @@ function feature_model_list_table_visible_columns() {
           $ids_array = array_column($result,$this->primary_key_field($table));
           $value_array = array_column($result,$this->name_field($table));
 
-          $lookup_values =  [];//array_combine($ids_array,$value_array);
+          $lookup_values = array_combine($ids_array,$value_array);
           
-          $count = 0;
+          // $count = 0;
 
-          foreach ($value_array as $value) {
-            $lookup_values[$ids_array[$count]] = $value;
-            $count ++;
-          }
+          // foreach ($value_array as $value) {
+          //   $lookup_values[$ids_array[$count]] = $value;
+          //   $count ++;
+          // }
       }
       elseif(         
         (
