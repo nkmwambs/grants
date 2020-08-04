@@ -31,7 +31,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function lookup_tables(){
-    //return ['status','approval'];
+    return ['account_system'];
   }
 
   function detail_tables(){
@@ -39,7 +39,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   public function list_table_visible_columns(){
-    return ['bank_track_number','bank_name','bank_swift_code','bank_is_active'];
+    return ['bank_track_number','bank_name','bank_swift_code','bank_is_active','account_system_name'];
   }
 
   function list(){
@@ -65,6 +65,24 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   function transaction_validate_duplicates_columns(){
     return ['bank_swift_code'];
   }
+
+  
+  function lookup_values(){
+        
+        $lookup_values = [];
+        
+        if(!$this->session->system_admin){
+            $results = $this->db->select(array('account_system_id','account_system_name'))->
+            get_where('account_system',array('account_system_code'=>$this->session->user_account_system));
+
+            if($results->num_rows() > 0){
+                $lookup_values['account_system'] = $results->result_array();
+            }
+            
+            return $lookup_values;
+        }
+        
+    }
 
   // function render_view_page_data(){
   //   return ['Hello'];
