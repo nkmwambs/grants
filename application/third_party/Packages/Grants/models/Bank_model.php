@@ -26,6 +26,7 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+
   function delete($id = null){
 
   }
@@ -87,5 +88,14 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   // function render_view_page_data(){
   //   return ['Hello'];
   // }
+
+  function list_table_where(){
+    if(!$this->session->system_admin){
+      $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+    }
+    
+  }
+  
+  
  
 }
