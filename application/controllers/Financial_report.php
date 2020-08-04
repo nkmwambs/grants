@@ -793,7 +793,7 @@ function submit_financial_report(){
   // // Check if their is a bank statement
   $bank_statements_uploaded = $this->_check_if_bank_statements_are_uploaded($post['office_id'],$post['reporting_month']);
 
-  if(!$report_reconciled || !$vouchers_approved || !$bank_statements_uploaded){
+  if((!$report_reconciled || !$vouchers_approved || !$bank_statements_uploaded) && !$this->config->item('submit_mfr_without_controls')){
     $message = "You have missing requirements and report is not submitted. Check the following items:\n";
 
     $items = "";
