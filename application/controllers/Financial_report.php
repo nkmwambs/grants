@@ -782,7 +782,7 @@ function delete_statement(){
 function submit_financial_report(){
   $post = $this->input->post();
   
-  $message = true;
+  $message = 'MFR Submitted Successful';
 
   // Check if the report has reconciled
   $report_reconciled = $this->_check_if_report_has_reconciled($post['office_id'],$post['reporting_month']);
