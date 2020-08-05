@@ -252,7 +252,7 @@ function add_mandatory_lookup_tables(&$existing_lookup_tables,
 
     foreach($mandatory_lookup_tables as $mandatory_lookup_table){
       if(!in_array($mandatory_lookup_table,$existing_lookup_tables)){
-        array_unshift($existing_lookup_tables,$mandatory_lookup_table);
+        array_push($existing_lookup_tables,$mandatory_lookup_table);
       }
     }
 }

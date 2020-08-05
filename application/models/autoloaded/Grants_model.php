@@ -1110,7 +1110,11 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
  
   // Model defined where condition
   $model = $table.'_model';
-  $this->load->model($model);
+  
+  if(!$this->load->is_loaded($model)){
+    $this->load->model($model);
+  }
+  
 
   if(method_exists($this->$model,$model_where_method)){
     $this->$model->$model_where_method();
