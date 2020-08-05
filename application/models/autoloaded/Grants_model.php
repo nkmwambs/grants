@@ -399,6 +399,7 @@ function generate_item_track_number_and_name($approveable_item){
    */
   public function table_fields_metadata($table_name = ""){
     $table = $table_name == ""?$this->controller:$table_name;
+    //print_r($this->db->field_data($table));exit;
     return $this->db->table_exists($table)?$this->db->field_data($table):array();
   }
 
