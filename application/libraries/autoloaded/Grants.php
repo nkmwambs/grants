@@ -373,6 +373,7 @@ public function primary_key_field(String $table_name):String {
   foreach($metadata as $data){
     if($data->primary_key == 1){
       $primary_key_field = $data->name;
+      break;
     }
   }
 
