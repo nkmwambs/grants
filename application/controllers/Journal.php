@@ -24,6 +24,7 @@ class Journal extends MY_Controller
   function index(){}
 
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
+    
     return [
       'bank_balance'=>$this->journal_library->month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id)['bank'],
       'cash_balance'=>$this->journal_library->month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id)['cash']

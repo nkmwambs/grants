@@ -20,7 +20,7 @@
 </style>
 
 <?php
-    //print_r($month_opening_balance['bank_balance']);
+    print_r($month_opening_balance['cash_balance']);
     extract($result);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
