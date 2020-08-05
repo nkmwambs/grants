@@ -4,6 +4,8 @@
 // print_r($this->session->context_offices);
 // print_r($this->user_model->get_user_context_offices(1));
 //print_r($this->session->user_account_system);
+//  $string='Kenya National Office-account & system  ';
+//  echo sanitize_characters($string);
 ?>
 
   <div class="row">

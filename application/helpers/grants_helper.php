@@ -429,3 +429,15 @@ if(!function_exists('check_if_account_system_model_exists')){
 		return $is_existing;
 	}
 }
+
+if(!function_exists('sanitize_characters')){
+
+	function sanitize_characters($string) {
+		$string = str_replace(' ', '', $string); // Replaces all spaces with hyphens.
+		return strtolower(preg_replace('/[^A-Za-z0-9]/', '', $string)); // Removes special chars.
+		
+	 }
+
+}
+
+
