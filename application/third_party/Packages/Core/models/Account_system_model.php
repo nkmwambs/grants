@@ -26,7 +26,27 @@ class Account_system_model extends MY_Model{
         $this->load->database();
     }
 
+
     function index(){}
+
+    function action_before_insert($post_array){
+
+        $update_post_array=[];
+        foreach($post_array['header'] as $column_name=>$column_value){
+          if($column_name=='account_system_code'){
+            $column_value=sanitize_characters($column_value);
+          }
+           
+          $update_post_array['header'][$column_name]=$column_value;
+
+        }
+        return $update_post_array;
+    }
+
+    function transaction_validate_duplicates_columns(){
+        return ['account_system_code'];
+    }
+
 
     public function lookup_tables(){
         return array();
@@ -67,4 +87,5 @@ class Account_system_model extends MY_Model{
 
         return $this->db->insert();
     }
+
 }
