@@ -468,5 +468,18 @@ class Api extends CI_Controller{
     $result = $this->financial_report_model->system_opening_cash_balance($office_ids);
     echo json_encode($result);
   }
+
+  function get_cash_income_or_expense_to_date(){
+    $this->load->model('journal_model');
+    $office_id=1;
+    $transacting_month='2020-07-01';
+    $cash_account='cash';
+    $transaction_effect='income';
+    $office_bank_id = 0;
+    $office_cash_id = 2;
+    $result=$this->journal_model->get_cash_income_or_expense_to_date($office_id,$transacting_month,$cash_account,$transaction_effect,$office_bank_id,$office_cash_id);
+
+    echo json_encode($result);
+  }
   
 }
