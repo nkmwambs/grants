@@ -32,6 +32,7 @@ class Journal extends MY_Controller
   }
 
   function journal_records($office_id,$transacting_month, $project_allocation_ids = [], $office_bank_id = 0){
+    
       return $this->journal_library->journal_records($office_id,$transacting_month, $project_allocation_ids, $office_bank_id);
   }
 

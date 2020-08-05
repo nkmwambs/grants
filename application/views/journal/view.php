@@ -4,7 +4,8 @@
 
     //$role_has_journal_update_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
     $role_has_voucher_create_permission = $this->user_model->check_role_has_permissions(ucfirst('voucher'),'create');
-
+   
+     
 ?>
 
 <style>

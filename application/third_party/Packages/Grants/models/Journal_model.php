@@ -179,19 +179,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function get_cash_income_or_expense_to_date($office_id,$transacting_month,$cash_account,$transaction_effect,$office_bank_id = 0, $office_cash_id = 0){
 
-     /*1: Cash income has [voucher_type_account_code of cash and a voucher_type_effect_code of income] 
-      OR [voucher_type_account_code of  bank and a voucher_type_effect_code of contra] 
-
-      2: Cash expense has [voucher_type_account_code of cash and a voucher_type_effect_code of expense] 
-      OR [voucher_type_account_code of  cash and a voucher_type_effect_code of contra] 
-
-      3: Bank income has [voucher_type_account_code of bank and a voucher_type_effect_code of income] 
-      OR [voucher_type_account_code of  cash and a voucher_type_effect_code of contra] 
-
-      4: Bank expense has [voucher_type_account_code of bank and a voucher_type_effect_code of expense] 
-      OR [voucher_type_account_code of  bank and a voucher_type_effect_code of contra] 
     
-    */
 
     $this->db->select_sum('voucher_detail_total_cost');
 
@@ -211,7 +199,19 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
 
-    //$this->db->where(array('voucher_type_effect_code'=>$transaction_effect));
+     /*1: Cash income has [voucher_type_account_code of cash and a voucher_type_effect_code of income] 
+      OR [voucher_type_account_code of  bank and a voucher_type_effect_code of contra] 
+
+      2: Cash expense has [voucher_type_account_code of cash and a voucher_type_effect_code of expense] 
+      OR [voucher_type_account_code of  cash and a voucher_type_effect_code of contra] 
+
+      3: Bank income has [voucher_type_account_code of bank and a voucher_type_effect_code of income] 
+      OR [voucher_type_account_code of  cash and a voucher_type_effect_code of contra] 
+
+      4: Bank expense has [voucher_type_account_code of bank and a voucher_type_effect_code of expense] 
+      OR [voucher_type_account_code of  bank and a voucher_type_effect_code of contra] 
+    
+    */
 
     if(($cash_account=='cash' && $transaction_effect=='income') || ($cash_account=='bank' && $transaction_effect=='contra') ){
       $this->db->group_start();
@@ -371,6 +371,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
       $month_start_date = date('Y-m-01',strtotime($transacting_month));
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
+
+      //print_r($month_end_date); exit;
       
       $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
@@ -383,9 +385,9 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       
       //$this->db->select_sum('voucher_detail_total_cost');
       
-      $this->db->where('voucher_date >=', $month_start_date);
-      $this->db->where('voucher_date <=', $month_end_date);
-      $this->db->where('fk_office_id',$office_id);
+      $this->db->where(array('voucher_date >='=> $month_start_date,'voucher_date <='=> $month_end_date,'fk_office_id'=>$office_id));
+      // $this->db->where('voucher_date <=', $month_end_date);
+      // $this->db->where('fk_office_id',$office_id);
       //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
       
       $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
@@ -394,8 +396,11 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       $this->db->join('voucher_detail','voucher_detail.fk_voucher_id=voucher.voucher_id');
       
       if(count($project_allocation_ids)>0 && $office_bank_id > 0){
-        $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
-        $this->db->or_where('fk_office_bank_id',$office_bank_id);
+        $this->db->group_start();
+          $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
+          $this->db->or_where('fk_office_bank_id',$office_bank_id);
+        $this->db->group_end();
+        
       }elseif(count($project_allocation_ids) == 0 && $office_bank_id > 0){
         $this->db->where('fk_office_bank_id',$office_bank_id);
       }
@@ -501,6 +506,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   }
 
   function journal_records($office_id,$transacting_month,$project_allocation_ids = [], $office_bank_id = 0){
+    
     return $this->reorder_office_month_vouchers($office_id,$transacting_month, $project_allocation_ids, $office_bank_id);
   }
 
