@@ -45,8 +45,8 @@ class Department_model extends MY_Model{
         $department_data['department_is_active'] = 1;
         
         $department_data_to_insert = $this->grants_model->merge_with_history_fields('account_system',$department_data,false);
-        $this->db->insert('department',$department_data_to_insert);
+        $this->write_db->insert('department',$department_data_to_insert);
 
-        return $this->db->insert();
+        return $this->write_db->insert();
     }
 }

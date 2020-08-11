@@ -65,11 +65,11 @@ class Setting_model extends MY_Model
     ];
 
     $reset_auto_increment = "ALTER TABLE setting AUTO_INCREMENT = 1";
-    $this->db->query($reset_auto_increment);
+    $this->write_db->query($reset_auto_increment);
 
-    $this->db->insert_batch('setting',$settings);
+    $this->write_db->insert_batch('setting',$settings);
 
-    //return $this->db->insert();
+    //return $this->write_db->insert();
   }
 
 }

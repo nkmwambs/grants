@@ -154,7 +154,7 @@ private function _get_approval_assignments($role_id){
   function create_new_user(){
     $post = $this->input->post()['header'];
     
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
     $user['user_name'] = $post['user_name'];
     $user['user_firstname'] = $post['user_firstname'];
@@ -173,9 +173,9 @@ private function _get_approval_assignments($role_id){
 
     $user_to_insert = $this->grants_model->merge_with_history_fields($this->controller,$user,false);
 
-    $this->db->insert('user',$user_to_insert);
+    $this->write_db->insert('user',$user_to_insert);
 
-    $user_id = $this->db->insert_id();
+    $user_id = $this->write_db->insert_id();
 
     // Insert an a user a context table 
     $context_definition_name = $this->db->get_where('context_definition',array('context_definition_id'=>$post['fk_context_definition_id']))->row()->context_definition_name;
@@ -197,7 +197,7 @@ private function _get_approval_assignments($role_id){
 
     $context_to_insert = $this->grants_model->merge_with_history_fields($context_definition_user_table,$context,false);
 
-    $this->db->insert($context_definition_user_table,$context_to_insert);
+    $this->write_db->insert($context_definition_user_table,$context_to_insert);
 
     // Insert user department
     $department['department_user_name'] = "Department for ".$post['user_firstname']." ".$post['user_lastname'];
@@ -206,11 +206,11 @@ private function _get_approval_assignments($role_id){
     
     $department_to_insert = $this->grants_model->merge_with_history_fields('department_user',$department,false);
 
-    $this->db->insert('department_user',$department_to_insert);
+    $this->write_db->insert('department_user',$department_to_insert);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       //echo "Error occurred";
       echo json_encode($context_to_insert);
     }else{

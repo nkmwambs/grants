@@ -64,7 +64,7 @@ class Status_role_model extends MY_Model{
 
     function add(){
 
-        $this->db->trans_begin();
+        $this->write_db->trans_begin();
 
         $header = $this->input->post('header');
 
@@ -79,7 +79,7 @@ class Status_role_model extends MY_Model{
         $status_role_data['status_role_last_modified_date'] = date('Y-m-d h:i:s');
         $status_role_data['fk_approval_id'] = $this->grants_model->insert_approval_record('status_role');
 
-        $this->db->insert('status_role',$status_role_data);
+        $this->write_db->insert('status_role',$status_role_data);
         
     
         $model = $this->controller.'_model';

@@ -20,9 +20,14 @@ class Login extends CI_Controller {
 public $auth;
 public $controller;
 
+
     function __construct() {
         parent::__construct();
-        $this->load->database();
+
+        $this->write_db = $this->load->database('write_db', true); // Master DB on Port 3306
+        $this->read_db = $this->grants_model->read_database_connection();
+        
+        //$this->load->database();
 
         $this->load->add_package_path(APPPATH.'third_party/Packages/Core');
         $this->load->model('user_model');
@@ -114,7 +119,7 @@ public $controller;
             
             $role_permission_data_to_insert = $this->grants_model->merge_with_history_fields('role_permission',$role_permission_data,false);
 
-            $this->db->insert('role_permission',$role_permission_data_to_insert);
+            $this->write_db->insert('role_permission',$role_permission_data_to_insert);
         }
     }
 

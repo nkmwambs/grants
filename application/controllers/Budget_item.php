@@ -74,7 +74,7 @@ class Budget_item extends MY_Controller
     
     $post = $this->input->post();
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
     $header['budget_item_track_number'] = $this->grants_model->generate_item_track_number_and_name('budget_item')['budget_item_track_number'];
     $header['budget_item_name'] = $this->grants_model->generate_item_track_number_and_name('budget_item')['budget_item_name'];
@@ -91,8 +91,8 @@ class Budget_item extends MY_Controller
     $header['fk_approval_id'] = $this->grants_model->insert_approval_record('budget_item');
     $header['fk_status_id'] = $this->grants_model->initial_item_status('budget_item');
 
-    $this->db->insert('budget_item',$header);
-    $header_id = $this->db->insert_id();
+    $this->write_db->insert('budget_item',$header);
+    $header_id = $this->write_db->insert_id();
     
     $row = [];
     
@@ -114,12 +114,12 @@ class Budget_item extends MY_Controller
       $row[] = $body;
     }
 
-    $this->db->insert_batch('budget_item_detail',$row);
+    $this->write_db->insert_batch('budget_item_detail',$row);
     
     
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if ($this->db->trans_status() === FALSE)
+    if ($this->write_db->trans_status() === FALSE)
     {
       //echo json_encode($row);
       echo "Budget Item posting failed";

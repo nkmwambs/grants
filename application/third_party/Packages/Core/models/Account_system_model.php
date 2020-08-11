@@ -83,9 +83,9 @@ class Account_system_model extends MY_Model{
         $account_system_data['account_system_is_allocation_linked_to_account'] = 0;
         
         $account_system_data_to_insert = $this->grants_model->merge_with_history_fields('account_system',$account_system_data,false);
-        $this->db->insert('account_system',$account_system_data_to_insert);
+        $this->write_db->insert('account_system',$account_system_data_to_insert);
 
-        return $this->db->insert();
+        return $this->write_db->insert();
     }
 
 }

@@ -104,7 +104,7 @@ class Permission_label extends MY_Controller
   function create_a_new_role_permission(){
     $post = $this->input->post();
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
     $permission = $this->db->get_where('permission',array('permission_id'=>$post['permission_id']))->row();
 
@@ -115,11 +115,11 @@ class Permission_label extends MY_Controller
     
     $roles_permission_data_to_insert = $this->grants_model->merge_with_history_fields('role_permission',$roles_permission_data,false);
 
-    $this->db->insert('role_permission',$roles_permission_data_to_insert);
+    $this->write_db->insert('role_permission',$roles_permission_data_to_insert);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       echo false;
     }else{
       echo true;
@@ -130,15 +130,15 @@ class Permission_label extends MY_Controller
   function update_role_permission(){
     $post = $this->input->post();
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
-    $this->db->where(array('fk_role_id'=>$post['role_id'],'fk_permission_id'=>$post['permission_id']));
+    $this->write_db->where(array('fk_role_id'=>$post['role_id'],'fk_permission_id'=>$post['permission_id']));
     $role_permission_data = array('role_permission_is_active'=>$post['role_permission_is_active']);
-    $this->db->update('role_permission',$role_permission_data);
+    $this->write_db->update('role_permission',$role_permission_data);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       echo "Update failure";
     }else{
       echo "Update successful";

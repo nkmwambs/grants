@@ -703,16 +703,16 @@ class Financial_report extends MY_Controller
       array('fk_office_id'=>$post['office_id'],
       'financial_report_month'=>date('Y-m-01',strtotime($post['reporting_month']))));
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
-        $this->db->where(array('financial_report_id'=>$financial_report_obj->row()->financial_report_id));
+        $this->write_db->where(array('financial_report_id'=>$financial_report_obj->row()->financial_report_id));
         $update_financial_report_data['financial_report_statement_balance'] = $post['bank_statement_balance'];
         $update_financial_report_data['financial_report_statement_date'] = $post['statement_date'];
-        $this->db->update('financial_report',$update_financial_report_data);
+        $this->write_db->update('financial_report',$update_financial_report_data);
      
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
     
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       echo "Update failed";
     }else{
       echo "Updated successful";
@@ -732,15 +732,15 @@ class Financial_report extends MY_Controller
     }
     
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
-    $this->db->where(array('voucher_id'=>$post['voucher_id']));
+    $this->write_db->where(array('voucher_id'=>$post['voucher_id']));
 
-    $this->db->update('voucher',$update_data);
+    $this->write_db->update('voucher',$update_data);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       echo false;
     }else{
       echo true;
@@ -806,9 +806,9 @@ function submit_financial_report(){
 
   }else{
     // Update financial report table
-    $this->db->where(array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']));
+    $this->write_db->where(array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']));
     $update_data = ['financial_report_is_submitted'=>1];
-    $this->db->update('financial_report',$update_data);
+    $this->write_db->update('financial_report',$update_data);
   }
 
   echo $message;
@@ -846,7 +846,7 @@ function update_bank_reconciliation_balance(){
     echo "Cannot update balances when multiple offices, banks or projects are selected";
   }else{
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
     $financial_report_id = $this->db->get_where('financial_report',
     array('financial_report_month'=>$post['reporting_month'],'fk_office_id'=>$post['office_ids'][0]))->row()->financial_report_id;
 
@@ -879,20 +879,20 @@ function update_bank_reconciliation_balance(){
       $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
       $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
 
-      $this->db->insert('reconciliation',$data);
+      $this->write_db->insert('reconciliation',$data);
 
     }else{
-      $this->db->where($condition_array);
+      $this->write_db->where($condition_array);
 
       $data['reconciliation_statement_balance'] = $post['balance'];
-      $this->db->update('reconciliation',$data);
+      $this->write_db->update('reconciliation',$data);
     }
 
     
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       echo "Error in updating bank reconciliation balance";
     }else{
       echo "Update completed";

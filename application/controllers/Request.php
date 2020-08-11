@@ -70,10 +70,10 @@ function insert_new_request(){
   $header['fk_approval_id'] = $this->grants_model->insert_approval_record('request');
   $header['fk_status_id'] = $this->grants_model->initial_item_status('request');
 
-  $this->db->trans_start();
-  $this->db->insert('request',$header);
+  $this->write_db->trans_start();
+  $this->write_db->insert('request',$header);
 
-  $header_id = $this->db->insert_id();
+  $header_id = $this->write_db->insert_id();
 
   for ($i=0; $i < sizeof($this->input->post('request_detail_quantity')); $i++) { 
     
@@ -100,11 +100,11 @@ function insert_new_request(){
   }
 
   //echo json_encode($row);
-  $this->db->insert_batch('request_detail',$row);
+  $this->write_db->insert_batch('request_detail',$row);
 
-  $this->db->trans_complete();
+  $this->write_db->trans_complete();
 
-  if ($this->db->trans_status() === FALSE)
+  if ($this->write_db->trans_status() === FALSE)
   {
     echo "Request posting failed";
   }else{
