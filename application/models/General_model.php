@@ -465,7 +465,8 @@ function get_max_approval_status_id(String $approveable_item):Int{
   ->get_where('status',array('approve_item_name'=>$approveable_item));
 
   if($max_status_approval_sequence_obj->num_rows() >0 && 
-    $max_status_approval_sequence_obj->row()->status_approval_sequence > 0){
+    $max_status_approval_sequence_obj->row()->status_approval_sequence > 0
+    ){
     // Get the status_id
     $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
     $this->db->select('status_id');
@@ -477,6 +478,8 @@ function get_max_approval_status_id(String $approveable_item):Int{
     $max_status_id = $this->db->get_where('status',
     array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
   
+  }elseif(in_array($approveable_item,$this->config->item('table_that_dont_require_history_fields'))){
+    // Nothing to do
   }else{
     $message = "You have no initial status set for the feature ".$approveable_item.". Please check if all approval workflow related tables are correctly set</br>";
 

@@ -19,6 +19,7 @@ public $auth;
         parent::__construct();
         $this->load->database();
         $this->load->library('dashboard_library');
+        
     }
 
 
