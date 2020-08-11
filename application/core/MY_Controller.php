@@ -109,14 +109,15 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $this->load->model('ajax_model','dt_model');
 
-    //Temporary, should be done on login
+    //Temporary, should be done on login/ auto load/ or check if already loaded
     $this->load->model('office_model');
     $this->load->model('approval_model');
     $this->load->model('general_model');
     $this->load->model('message_model');
 
-    // Table set up. Add missing mandatory fields and status
-    //$this->grants->table_setup($this->controller);
+    //Check if account system models and libraries are loaded if not load them
+    //check_and_load_account_system_model_exists('As_'.$this->controller.'_library','Grants','library');
+    check_and_load_account_system_model_exists('As_'.$this->controller.'_model','Grants','model');
 
     // Logout if the user session expire
     if(!$this->session->user_id){

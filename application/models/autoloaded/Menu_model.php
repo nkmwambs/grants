@@ -57,6 +57,13 @@ function upsert_menu($menus){
 
 }
 
+function get_id_of_default_menu_item(){
+  $menu_id = $this->db->get_where('menu',
+  array('menu_derivative_controller'=>$this->config->item('default_launch_page')))->row()->menu_id;
+
+  return $menu_id;
+}
+
 function upsert_user_menu(){
 
     // Get all menu elements
@@ -84,6 +91,10 @@ function upsert_user_menu(){
           $user_menu_data['menu_user_order_priority_item'] = 0;
         }elseif($order > $this->config->item('max_priority_menu_items') - 1){
           $user_menu_data['menu_user_order_priority_item'] = 0;
+        }
+
+        if($this->get_id_of_default_menu_item() ==  $menu_id){
+          $user_menu_data['menu_user_order_priority_item'] = 1;
         }
 
         $order++;

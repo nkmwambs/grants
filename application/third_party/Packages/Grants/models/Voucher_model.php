@@ -23,7 +23,9 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   function __construct(){
     parent::__construct();
     $this->load->database();
-    
+
+    // Load dependant model
+    $this->load_dependant_model();
   }
 
   function index(){}
@@ -617,5 +619,58 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     return  $approved_vouchers == $count_of_month_raised_vouchers ? true : false;
   }
 
+
+
+  /**
+   * Voucher form implementation
+   */
+
+  function load_dependant_model(){
+        
+  }
+
+  function form_header_voucher_date(){
+      return "form_header_voucher_date";
+  }
+
+  function form_header_voucher_number(){
+      return "form_header_voucher_number";
+  }
+
+  function form_header_office_name(){
+      return "form_header_office_name";
+  }
+
+  function form_header_voucher_type_name(){
+      return "form_header_voucher_type_name";
+  }
+
+  function form_header_office_bank_name(){
+      return "form_header_office_bank_name";
+  }
+
+  function form_header_office_cash_name(){
+      return "form_header_office_cash_name";
+  }
+
+  function form_header_voucher_cheque_number(){
+      return "form_header_voucher_cheque_number";
+  }
+
+  function form_header_voucher_vendor(){
+      return "form_header_voucher_vendor";
+  }
+
+  function form_header_voucher_vendor_address(){
+      return "form_header_voucher_vendor";
+  }
+
+  function form_header_voucher_description(){
+      return "form_header_voucher_vendor";
+  }
+
+  function render_form(){
+      
+  }
   
 }

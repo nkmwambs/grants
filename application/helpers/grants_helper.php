@@ -414,15 +414,17 @@ if(!function_exists('is_valid_array_from_contract_method')){
 	}
 }
 
-if(!function_exists('check_if_account_system_model_exists')){
-	function check_and_load_account_system_model_exists($model_name,$package_name = 'Grants'){
+
+if(!function_exists('check_and_load_account_system_model_exists')){
+	function check_and_load_account_system_model_exists($model_name,$package_name = 'Grants',$class_type = 'model'){
 		$CI =& get_instance();
 		$user_account_system = $CI->session->user_account_system;
 		$is_existing = false; 
-		$path = APPPATH.'third_party'.DS.'Packages'.DS.$package_name.DS.'models'.DS.'as_models'.DS.$user_account_system.DS.$model_name.'.php';
+		$class_type_dir = $class_type == 'model' ? 'models' : 'libraries';
+		$path = APPPATH.'third_party'.DS.'Packages'.DS.$package_name.DS.$class_type_dir.DS.'as_'.$class_type_dir.DS.$user_account_system.DS.$model_name.'.php';
 
-		if(file_exists($path)){
-			$CI->load->model('as_models/'.$user_account_system.'/'.$model_name);
+		if(file_exists($path) && !$CI->load->is_loaded($model_name)){
+			$CI->load->{$class_type}('as_'.$class_type_dir.'/'.$user_account_system.'/'.$model_name);
 			$is_existing = true; 
 		}
 
