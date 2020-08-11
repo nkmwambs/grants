@@ -71,7 +71,7 @@ class Permission_label_model extends MY_Model implements CrudModelInterface, Tab
     }
 
     
-    $this->db->insert_batch('permission_label',$permission_label_data);
+    $this->write_db->insert_batch('permission_label',$permission_label_data);
 
     return 2;
 }

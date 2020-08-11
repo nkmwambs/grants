@@ -44,8 +44,8 @@ class Country_currency_model extends MY_Model{
         $user_data['country_currency_code'] = 'USD';
             
         $user_data_to_insert = $this->grants_model->merge_with_history_fields('country_currency',$user_data,false);
-        $this->db->insert('country_currency',$user_data_to_insert);
+        $this->write_db->insert('country_currency',$user_data_to_insert);
       
-        return $this->db->insert_id();
+        return $this->write_db->insert_id();
       }
 }

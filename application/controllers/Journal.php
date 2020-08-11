@@ -135,11 +135,11 @@ class Journal extends MY_Controller
     $voucher_description = '<strike>'.$voucher['voucher_description'].'</strike> [Reversal of voucher number '.$voucher['voucher_number'].']';
     $voucher = array_replace($voucher,['voucher_vendor'=>'<strike>'.$voucher['voucher_vendor'].'<strike>','voucher_is_reversed'=>1,'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
     //Insert the next voucher record and get the insert id
-    $this->db->insert('voucher',$voucher);
+    $this->write_db->insert('voucher',$voucher);
 
-    $new_voucher_id = $this->db->insert_id();
+    $new_voucher_id = $this->write_db->insert_id();
 
     // Update details array and insert 
     
@@ -150,17 +150,17 @@ class Journal extends MY_Controller
       $updated_voucher_details[] = array_replace($voucher_detail,['fk_voucher_id'=>$new_voucher_id,'voucher_detail_unit_cost'=>-$voucher_detail['voucher_detail_unit_cost'],'voucher_detail_total_cost'=>-$voucher_detail['voucher_detail_total_cost']]);
     }
 
-    $this->db->insert_batch('voucher_detail',$updated_voucher_details);
+    $this->write_db->insert_batch('voucher_detail',$updated_voucher_details);
 
     // Update the original voucher record by flagging it reversed
-    $this->db->where(array('voucher_id'=>$voucher_id));
+    $this->write_db->where(array('voucher_id'=>$voucher_id));
     $update_data['voucher_is_reversed'] = 1;
     $update_data['voucher_cheque_number'] = $voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number'];
-    $this->db->update('voucher',$update_data);
+    $this->write_db->update('voucher',$update_data);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       $message = "Reversal failed";
     }
 
@@ -171,18 +171,18 @@ class Journal extends MY_Controller
 
     $message = "Update Successful";
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
     $post = $this->input->post();
 
     $update_data[$post['column']] = $post['content'];
-    $this->db->where(array('voucher_id'=>$post['voucher_id']));
+    $this->write_db->where(array('voucher_id'=>$post['voucher_id']));
 
-    $this->db->update('voucher',$update_data);
+    $this->write_db->update('voucher',$update_data);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       $message = "Update failed";
     }
 

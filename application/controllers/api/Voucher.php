@@ -40,7 +40,7 @@ class Voucher extends REST_Controller {
     public function index_post()
     {
         $input = $this->input->post();
-        $this->db->insert($_table,$input);
+        $this->write_db->insert($_table,$input);
      
         $this->response(['Item created successfully.'], REST_Controller::HTTP_OK);
     } 
@@ -53,7 +53,7 @@ class Voucher extends REST_Controller {
     public function index_put($id)
     {
         $input = $this->put();
-        $this->db->update($_table, $input, array($_id=>$id));
+        $this->write_db->update($_table, $input, array($_id=>$id));
      
         $this->response(['Item updated successfully.'], REST_Controller::HTTP_OK);
     }
@@ -65,7 +65,7 @@ class Voucher extends REST_Controller {
     */
     public function index_delete($id)
     {
-        $this->db->delete($_table, array($_id=>$id));
+        $this->write_db->delete($_table, array($_id=>$id));
        
         $this->response(['Item deleted successfully.'], REST_Controller::HTTP_OK);
     }

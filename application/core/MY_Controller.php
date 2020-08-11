@@ -60,9 +60,15 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   public $max_status_id = null;
 
+  public $write_db = null;
+  public $read_db = null;
+
   function __construct(){
     
     parent::__construct();
+
+    $this->write_db = $this->load->database('write_db', true); // Master DB on Port 3306
+    $this->read_db = $this->grants_model->read_database_connection();
 
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core');
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants');
@@ -125,6 +131,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }
 
   }
+
+
   /**
    * result() 
    * This method returns the contents that will be consumed in the view file
@@ -417,8 +425,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
          $data['fk_status_id'] = $master_action_labels['next_decline_status'];
        }
        
-       $this->db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
-       $this->db->update(strtolower($this->controller),$data);
+       $this->write_db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
+       $this->write_db->update(strtolower($this->controller),$data);
        
        $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
 
@@ -427,12 +435,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
          
        if($is_max_approval_status_id){
          
-         $this->db->where(array('approval_id'=>$item_approval_id));
-         $this->db->update('approval',array('fk_status_id'=>103));
+         $this->write_db->where(array('approval_id'=>$item_approval_id));
+         $this->write_db->update('approval',array('fk_status_id'=>103));
        
        }else{
-         $this->db->where(array('approval_id'=>$item_approval_id));
-         $this->db->update('approval',array('fk_status_id'=>102));
+         $this->write_db->where(array('approval_id'=>$item_approval_id));
+         $this->write_db->update('approval',array('fk_status_id'=>102));
        }
 
        //Update detail record
@@ -453,8 +461,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
          $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
        }
        
-       $this->db->where(array($primary_table_id=>hash_id($this->id,'decode')));
-       $this->db->update($detail_record,$detail_data);
+       $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
+       $this->write_db->update($detail_record,$detail_data);
     }    
        
     
@@ -493,8 +501,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $message_id = 0;
 
     if($open_thread->num_rows() == 0){
-      $this->db->insert('message',$message);
-      $message_id = $this->db->insert_id();
+      $this->write_db->insert('message',$message);
+      $message_id = $this->write_db->insert_id();
     }else{
       $message_id = $open_thread->row()->message_id;
     }
@@ -510,7 +518,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $message_detail['message_detail_is_reply'] = 0;
     $message_detail['message_detail_replied_message_key'] = 0;
 
-    $this->db->insert('message_detail',$message_detail);
+    $this->write_db->insert('message_detail',$message_detail);
 
     $returned_response = [
       'message'=>$post['message_detail_content'],

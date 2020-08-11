@@ -8,7 +8,6 @@
  *	NKarisa@ke.ci.org
  */
 
-
 class Grants_model extends CI_Model
 {
 
@@ -41,6 +40,19 @@ public $single_form_add_visible_columns = [];
 
   }
 
+  function read_database_connection(){
+    $read_db = $this->load->database('read_db', true); // Slave DB on Port 3307
+
+    $read_db_connected = $read_db->initialize();
+    
+    // Check if Slave is Connected
+    if (!$read_db_connected) {
+      $read_db = $this->database->load('write_db',TRUE);
+    } 
+
+    return $read_db;
+  }
+
   
 /**
  * edit
@@ -61,18 +73,18 @@ function edit(String $id):String{
 
   $post_array = $this->grants->action_before_edit($post_array);
  
-  $this->db->trans_begin();
-  $this->db->where(array($this->grants->primary_key_field($this->controller) => $id));
-  $this->db->update($this->controller,$data);
+  $this->write_db->trans_begin();
+  $this->write_db->where(array($this->grants->primary_key_field($this->controller) => $id));
+  $this->write_db->update($this->controller,$data);
 
-  if ($this->db->trans_status() === FALSE)
+  if ($this->write_db->trans_status() === FALSE)
   {
-          $this->db->trans_rollback();
+          $this->write_db->trans_rollback();
           return "Update not successful";
   }
   else
   {
-          $this->db->trans_commit();
+          $this->write_db->trans_commit();
           return "Update completed";
   }
 
@@ -97,9 +109,9 @@ function insert_approval_record($approveable_item){
     $approval['fk_approve_item_id'] = $this->db->get_where('approve_item',array('approve_item_name'=>strtolower($approveable_item)))->row()->approve_item_id;
     $approval['fk_status_id'] = $this->initial_item_status($approveable_item);
 
-    $this->db->insert('approval',$approval);
+    $this->write_db->insert('approval',$approval);
 
-    $insert_id = $this->db->insert_id();
+    $insert_id = $this->write_db->insert_id();
   //}
 
   return $insert_id;
@@ -142,7 +154,7 @@ function generate_item_track_number_and_name($approveable_item){
     $detail_records_require_approval = $this->approveable_item($this->grants->dependant_table($this->controller));
 
     // Start a transaction
-    $this->db->trans_begin();
+    $this->write_db->trans_begin();
 
     $approval = array();
     $details = array();
@@ -184,10 +196,10 @@ function generate_item_track_number_and_name($approveable_item){
     $header_columns[$this->controller.'_last_modified_by'] = $this->session->user_id;
 
     // Insert header record
-    $this->db->insert($this->controller,$header_columns);
+    $this->write_db->insert($this->controller,$header_columns);
     //echo json_encode($header_columns);
     // Get the insert id of the header record inserted
-    $header_id = $this->db->insert_id();
+    $header_id = $this->write_db->insert_id();
     
     // Proceed with inserting details after checking if $post_has_detail
     if($post_has_detail){
@@ -232,7 +244,7 @@ function generate_item_track_number_and_name($approveable_item){
 
 
       // Insert the details using insert batch
-      $this->db->insert_batch($this->grants->dependant_table($this->controller),$detail_columns);
+      $this->write_db->insert_batch($this->grants->dependant_table($this->controller),$detail_columns);
       
 
     }
@@ -264,14 +276,14 @@ function generate_item_track_number_and_name($approveable_item){
 
     $validation_flags = array_column($validation_flags_and_failure_messages,'flag');
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
 
-      $this->db->trans_rollback();
+      $this->write_db->trans_rollback();
       return get_phrase('insert_failed');
     
     }else{
         if(in_array(false,$validation_flags)){
-          $this->db->trans_rollback();
+          $this->write_db->trans_rollback();
     
           foreach($validation_flags_and_failure_messages as $validation_check){
             if(!$validation_check['flag']){
@@ -280,7 +292,7 @@ function generate_item_track_number_and_name($approveable_item){
           }
     
         }else{
-          $this->db->trans_commit();
+          $this->write_db->trans_commit();
           $this->grants->action_after_insert($post_array,$approval_id,$header_id);
           $message = get_phrase('insert_successful');
         }
@@ -652,7 +664,7 @@ function generate_item_track_number_and_name($approveable_item){
   function insert_status_for_approveable_item($approve_item_name){
     //$approve_item_name = "country_currency";
     if(strlen($approve_item_name) > 2){
-      $this->db->trans_start();
+      $this->write_db->trans_start();
       
       $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;
 
@@ -692,9 +704,9 @@ function generate_item_track_number_and_name($approveable_item){
         
       }
       
-      $this->db->trans_complete();
+      $this->write_db->trans_complete();
 
-      if($this->db->trans_status() == false){
+      if($this->write_db->trans_status() == false){
         $message = "Error occurred when creating missing status";
         show_error($message,500,'An Error As Encountered');
         return false;
@@ -718,9 +730,9 @@ function generate_item_track_number_and_name($approveable_item){
     $approval_flow_data['approval_flow_created_date'] = date('Y-m-d');
     $approval_flow_data['approval_flow_last_modified_by'] = $user_id;
 
-    $this->db->insert('approval_flow',$approval_flow_data);
+    $this->write_db->insert('approval_flow',$approval_flow_data);
     
-    return $this->db->insert_id();
+    return $this->write_db->insert_id();
   }
 
   function insert_new_status($approval_flow_id,$user_id){
@@ -742,9 +754,9 @@ function generate_item_track_number_and_name($approveable_item){
     $status_data['status_created_by'] = $user_id;
     $status_data['status_last_modified_by']  = $user_id;
               
-    $this->db->insert('status',$status_data); 
+    $this->write_db->insert('status',$status_data); 
     
-    $status_id = $this->db->insert_id();
+    $status_id = $this->write_db->insert_id();
 
     // $status_role_data['status_role_track_number'] =  $this->generate_item_track_number_and_name('status_role')['status_role_number'];
     // $status_role_data['status_role_name']  =  $this->generate_item_track_number_and_name('status_role')['status_role_name'];
@@ -757,7 +769,7 @@ function generate_item_track_number_and_name($approveable_item){
     // $status_role_data['status_role_last_modified_date'] = date('Y-m-d h:i:s');
     // $status_role_data['fk_approval_id'] = 0;
 
-    // $this->db->insert('status_role',$status_role_data);
+    // $this->write_db->insert('status_role',$status_role_data);
 
     return $status_id;
   }
@@ -806,9 +818,9 @@ function insert_missing_approveable_item($table){
     $data['approve_item_last_modified_by'] = 1;//$this->session->user_id;
 
     //$approve_item_data_to_insert = $this->merge_with_history_fields('approve_item',$data,false);
-    $this->db->insert('approve_item',$data);
+    $this->write_db->insert('approve_item',$data);
 
-    $approve_item_id = $this->db->insert_id();
+    $approve_item_id = $this->write_db->insert_id();
 
   }else{
     $approve_item_id = $approve_items->row()->approve_item_id;
@@ -1538,7 +1550,7 @@ function create_missing_page_access_permission(){
 
   //$this->grants_model->mandatory_fields('permission');
 
-  $this->db->trans_start();
+  $this->write_db->trans_start();
   
   // Only create a permission if count of menus are more that the permissions available
   //if(($count_of_page_access_permissions * $count_of_permission_labels) < ($count_of_menus * $count_of_permission_labels) ){
@@ -1561,16 +1573,16 @@ function create_missing_page_access_permission(){
             $permission_data_to_insert = $this->merge_with_history_fields('permission',$permission_data,false);
 
 
-            $this->db->insert('permission',$permission_data_to_insert);
+            $this->write_db->insert('permission',$permission_data_to_insert);
         
           }
       }
     //}
   }
 
-  $this->db->trans_complete();
+  $this->write_db->trans_complete();
 
-  if($this->db->trans_status() == false){
+  if($this->write_db->trans_status() == false){
     $message = "Error occurred when mass creating system page access permissions";
     show_error($message,500,'An Error As Encountered');
     return false;
@@ -1589,8 +1601,8 @@ function update_status(){
   $action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
 
   $data['fk_status_id'] = $action_labels['next_approval_status'];
-  $this->db->where(array('request_id'=>hash_id($this->id,'decode')));
-  $this->db->update('request',$data);
+  $this->write_db->where(array('request_id'=>hash_id($this->id,'decode')));
+  $this->write_db->update('request',$data);
 }
 
 

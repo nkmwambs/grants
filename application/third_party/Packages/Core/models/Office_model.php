@@ -176,9 +176,9 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
     $office_data['fk_account_system_id'] = 1;//$foreign_keys_values['account_system_id'];
         
     $office_data_to_insert = $this->grants_model->merge_with_history_fields('office',$office_data,false);
-    $this->db->insert('office',$office_data_to_insert);
+    $this->write_db->insert('office',$office_data_to_insert);
 
-    return $this->db->insert_id();
+    return $this->write_db->insert_id();
 }
   
 }

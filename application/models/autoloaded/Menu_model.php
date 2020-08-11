@@ -30,15 +30,15 @@ function upsert_menu($menus){
         $data['menu_derivative_controller'] = $menu;
 
         if($this->db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
-            $this->db->insert('menu',$data);
+            $this->write_db->insert('menu',$data);
 
-            $permission_data['menu_id'] = $this->db->insert_id();
+            $permission_data['menu_id'] = $this->write_db->insert_id();
             $permission_data['table_name'] = $menu;
 
             $this->permission_model->add($permission_data);
         }else{
-          $this->db->where(array('menu_derivative_controller'=>$menu));
-          $this->db->update('menu',$data);
+          $this->write_db->where(array('menu_derivative_controller'=>$menu));
+          $this->write_db->update('menu',$data);
         }
       }
 
@@ -105,7 +105,7 @@ function upsert_user_menu(){
 
         if($this->db->get_where('menu_user_order',
         array('fk_user_id'=>$this->session->user_id,'fk_menu_id'=>$menu_id))->num_rows() == 0){
-            $this->db->insert('menu_user_order',$user_menu_data);
+            $this->write_db->insert('menu_user_order',$user_menu_data);
         
         }
         

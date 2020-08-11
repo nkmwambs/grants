@@ -59,9 +59,9 @@ class Designation_model extends MY_Model{
         $designation_data['fk_context_definition_id'] = 6;//$global_context_key;
       
         $designation_data_to_insert = $this->grants_model->merge_with_history_fields('designation',$designation_data,false);
-        $this->db->insert('designation',$designation_data_to_insert);
+        $this->write_db->insert('designation',$designation_data_to_insert);
     
-        return $this->db->insert_id();
+        return $this->write_db->insert_id();
     }
 
     

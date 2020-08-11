@@ -70,11 +70,11 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
         $permission_data['fk_menu_id'] = $data_array['menu_id'];//$menu_obj->row()->menu_id;
         
         $permission_data_to_insert = $this->grants_model->merge_with_history_fields('permission',$permission_data,false);
-        $this->db->insert('permission',$permission_data_to_insert);
+        $this->write_db->insert('permission',$permission_data_to_insert);
       }
     
 
-    return $this->db->insert();
+    return $this->write_db->insert();
 }
 
 }

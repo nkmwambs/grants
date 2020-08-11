@@ -525,9 +525,9 @@ class Voucher extends MY_Controller
 
     //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
 
-    $this->db->insert('journal',$new_journal);
+    $this->write_db->insert('journal',$new_journal);
 
-    //return $this->db->insert_id();
+    //return $this->write_db->insert_id();
   }
 
   function create_financial_report($financial_report_date){
@@ -539,7 +539,7 @@ class Voucher extends MY_Controller
 
       $new_mfr_to_insert = $this->grants_model->merge_with_history_fields('financial_report',$new_mfr);
 
-      $this->db->insert('financial_report',$new_mfr_to_insert);
+      $this->write_db->insert('financial_report',$new_mfr_to_insert);
   }
 
   function insert_new_voucher(){
@@ -548,7 +548,7 @@ class Voucher extends MY_Controller
     $detail = [];
     $row = [];
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
     
     // Check if this is the first voucher in the month, if so create a new journal record for the month
     // This must be run before a voucher is created
@@ -590,9 +590,9 @@ class Voucher extends MY_Controller
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
 
     
-    $this->db->insert('voucher',$header);
+    $this->write_db->insert('voucher',$header);
 
-    $header_id = $this->db->insert_id();
+    $header_id = $this->write_db->insert_id();
 
     for ($i=0; $i < sizeof($this->input->post('voucher_detail_quantity')); $i++) { 
       
@@ -647,12 +647,12 @@ class Voucher extends MY_Controller
     }
 
     //echo json_encode($row);
-    $this->db->insert_batch('voucher_detail',$row);
+    $this->write_db->insert_batch('voucher_detail',$row);
 
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if ($this->db->trans_status() === FALSE)
+    if ($this->write_db->trans_status() === FALSE)
     {
       echo "Voucher posting failed";
     }else{

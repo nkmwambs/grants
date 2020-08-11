@@ -970,9 +970,9 @@ function intialize_table(Array $foreign_keys_values = []){
   $user_data['user_password'] =  $this->db->get_where('setting',array('type'=>'setup_password'))->row()->description;//md5('#Compassion321');
       
   $user_data_to_insert = $this->grants_model->merge_with_history_fields('user',$user_data,false);
-  $this->db->insert('user',$user_data_to_insert);
+  $this->write_db->insert('user',$user_data_to_insert);
 
-  return $this->db->insert_id();
+  return $this->write_db->insert_id();
 }
 
 }
