@@ -58,15 +58,18 @@ class Setting_model extends MY_Model
       [
         'type'=>'setup_password','description'=>md5('@Compassion123'),'setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
       ],
+      [
+        'type'=>'base_currency_code','description'=>'1','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
 
     ];
 
     $reset_auto_increment = "ALTER TABLE setting AUTO_INCREMENT = 1";
-    $this->db->query($reset_auto_increment);
+    $this->write_db->query($reset_auto_increment);
 
-    $this->db->insert_batch('setting',$settings);
+    $this->write_db->insert_batch('setting',$settings);
 
-    //return $this->db->insert();
+    //return $this->write_db->insert();
   }
 
 }

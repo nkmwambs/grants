@@ -45,7 +45,7 @@ class Context_global_model extends MY_Model{
         $context_global_data['context_global_name'] = 'Head Office Context';
         $context_global_data['context_global_description'] = 'Head Office Context';
         $context_global_data['fk_office_id'] = $foreign_keys_values['office_id'];; 
-        $context_global_data['fk_context_definition_id'] = 3;
+        $context_global_data['fk_context_definition_id'] = 6;
         // $context_global_data['context_global_created_by'] = 1;
         // $context_global_data['context_global_created_date'] = date('Y-m-d');
         // $context_global_data['context_global_last_modified_by'] = 1;

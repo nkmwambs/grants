@@ -569,7 +569,7 @@ function getAccountsByVoucherType(voucherTypeSelect){
         type:"POST",
         data:extra_data,
         success:function(response){
-
+            console.log(response);
             var response_objects = JSON.parse(response);
 
             var response_accounts = response_objects['accounts'];
@@ -583,11 +583,14 @@ function getAccountsByVoucherType(voucherTypeSelect){
             var response_approved_requests = response_objects['approved_requests'];
             var response_voucher_type_requires_cheque_referencing = response_objects['voucher_type_requires_cheque_referencing'];
             var response_is_allocation_linked_to_account = response_objects['is_allocation_linked_to_account'];
-            
+            var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
             //alert(response_voucher_type_requires_cheque_referencing);
             
-            create_accounts_select_options(response_accounts);
-            //create_allocation_select_options(response_allocation);
+            //if(toggle_accounts_by_allocation){
+                create_accounts_select_options(response_accounts);
+                //create_allocation_select_options(response_allocation);
+            //}
+            
             
             showHiddenButtons(response_is_expense,response_is_bank_payment,false);
 
@@ -657,10 +660,15 @@ function create_office_cash_dropdown(response_office_cash){
     $("#cash_account").html(account_select_option);
 }
 
+// Returns if a value is an object
+function isObject (value) {
+    return value && typeof value === 'object' && value.constructor === Object ? true : false;
+}
+
 function create_accounts_select_options(response_accounts){
     var account_select_option = "<option value=''>Select an account</option>";
 
-    if(response_accounts.length > 0){
+    if(isObject(response_accounts) && response_accounts.length > 0){
         $.each(response_accounts,function(i,el){
             account_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
         });
@@ -831,6 +839,7 @@ function updateAccountAndAllocationField(){
 
         },
         success:function(response){
+            console.log(response);
             var account_select_option = "<option value=''>Select an account</option>";
 
             var allocation_select_option = "<option value=''>Select an allocation code</option>";
@@ -847,7 +856,7 @@ function updateAccountAndAllocationField(){
 
             //alert(response);
             insertRow(response_is_contra);
-            
+            console.log(toggle_accounts_by_allocation);
             if(toggle_accounts_by_allocation){
                 create_allocation_select_options(response_allocation);
             } else {

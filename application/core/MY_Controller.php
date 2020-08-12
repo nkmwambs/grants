@@ -60,9 +60,15 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
   public $max_status_id = null;
 
+  public $write_db = null;
+  public $read_db = null;
+
   function __construct(){
     
     parent::__construct();
+
+    $this->write_db = $this->load->database('write_db', true); // Master DB on Port 3306
+    $this->read_db = $this->grants_model->read_database_connection();
 
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core');
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants');
@@ -109,14 +115,15 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $this->load->model('ajax_model','dt_model');
 
-    //Temporary, should be done on login
+    //Temporary, should be done on login/ auto load/ or check if already loaded
     $this->load->model('office_model');
     $this->load->model('approval_model');
     $this->load->model('general_model');
     $this->load->model('message_model');
 
-    // Table set up. Add missing mandatory fields and status
-    //$this->grants->table_setup($this->controller);
+    //Check if account system models and libraries are loaded if not load them
+    //check_and_load_account_system_model_exists('As_'.$this->controller.'_library','Grants','library');
+    check_and_load_account_system_model_exists('As_'.$this->controller.'_model','Grants','model');
 
     // Logout if the user session expire
     if(!$this->session->user_id){
@@ -124,6 +131,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }
 
   }
+
+
   /**
    * result() 
    * This method returns the contents that will be consumed in the view file
@@ -165,17 +174,48 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
         exit;
     }
 
+    $render_model_result = 'render_'.$this->action.'_page_data';
 
     if($this->action == 'list' || $this->action == 'view'){
-      // Just to test if the third party API are working for list output
-      // This is the way to go for all outputs. Move all outputs to the Output API  
-      $this->list_result = Output_base::load($this->action);
+
+        if(!$this->render_data_from_model($render_model_result)){
+          // Render from default API
+          $this->list_result = Output_base::load($this->action);
+        }
+
     }else{
-      $this->list_result = $this->$lib->$action();
+      if(!$this->render_data_from_model($render_model_result)){
+        // Render from default API
+        $this->list_result = $this->$lib->$action();
+      }
     }
-    //var_dump(debug_backtrace());
     
     return $this->list_result;
+  }
+
+  function render_data_from_model($render_model_result){
+    // Render custom data for list and view pages if render_list_page_data or 
+    // render_view_page_data method are defined
+    // in the specific feature models
+
+    $is_model_set = false;
+        if(
+            check_and_load_account_system_model_exists('As_'.$this->controller.'_model') &&
+            method_exists($this->{'As_'.$this->controller.'_model'},$render_model_result) 
+        ){
+          // Render results from account system model
+            $this->list_result = $this->{'As_'.$this->controller.'_model'}->{$render_model_result}();
+
+            $is_model_set = true;
+        }elseif(
+          // Render results from feature model
+          method_exists($this->{$this->controller.'_model'},$render_model_result)
+        ){
+          $this->list_result = $this->{$this->controller.'_model'}->{$render_model_result}();
+          $is_model_set = true;
+        }
+
+        return $is_model_set;
   }
    /**
    * page_name() 
@@ -208,7 +248,9 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    function views_dir():String{
     $view_path = strtolower($this->controller);
 
-    if(!file_exists(VIEWPATH.$view_path.'/'.$this->page_name().'.php') || !$this->has_permission ){
+    if(file_exists(VIEWPATH.$view_path.'/'.$this->session->user_account_system.'/'.$this->page_name().'.php') || !$this->has_permission ){
+      $view_path .= '/'.$this->session->user_account_system;
+    }elseif(!file_exists(VIEWPATH.$view_path.'/'.$this->page_name().'.php') || !$this->has_permission ){
       $view_path =  'templates';
     }
 
@@ -383,8 +425,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
          $data['fk_status_id'] = $master_action_labels['next_decline_status'];
        }
        
-       $this->db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
-       $this->db->update(strtolower($this->controller),$data);
+       $this->write_db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
+       $this->write_db->update(strtolower($this->controller),$data);
        
        $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
 
@@ -393,12 +435,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
          
        if($is_max_approval_status_id){
          
-         $this->db->where(array('approval_id'=>$item_approval_id));
-         $this->db->update('approval',array('fk_status_id'=>103));
+         $this->write_db->where(array('approval_id'=>$item_approval_id));
+         $this->write_db->update('approval',array('fk_status_id'=>103));
        
        }else{
-         $this->db->where(array('approval_id'=>$item_approval_id));
-         $this->db->update('approval',array('fk_status_id'=>102));
+         $this->write_db->where(array('approval_id'=>$item_approval_id));
+         $this->write_db->update('approval',array('fk_status_id'=>102));
        }
 
        //Update detail record
@@ -419,8 +461,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
          $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
        }
        
-       $this->db->where(array($primary_table_id=>hash_id($this->id,'decode')));
-       $this->db->update($detail_record,$detail_data);
+       $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
+       $this->write_db->update($detail_record,$detail_data);
     }    
        
     
@@ -459,8 +501,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $message_id = 0;
 
     if($open_thread->num_rows() == 0){
-      $this->db->insert('message',$message);
-      $message_id = $this->db->insert_id();
+      $this->write_db->insert('message',$message);
+      $message_id = $this->write_db->insert_id();
     }else{
       $message_id = $open_thread->row()->message_id;
     }
@@ -476,7 +518,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $message_detail['message_detail_is_reply'] = 0;
     $message_detail['message_detail_replied_message_key'] = 0;
 
-    $this->db->insert('message_detail',$message_detail);
+    $this->write_db->insert('message_detail',$message_detail);
 
     $returned_response = [
       'message'=>$post['message_detail_content'],
@@ -512,5 +554,45 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   
   }
   
+  function custom_ajax_call(){
+    // This implementation has 2 predefined keys i.e. ajax_method and return_as_json and must be passed in the 
+    // ajax post call from pages for this to work
+    // ajax_method carries the method name of the implementing account system model while return_as_json is a bool
+    // indicating if the returned result is in json or string format
+
+    $post = $this->input->post();
+    $model_name = 'As_'.$this->controller.'_model';
+    $ajax_method = $post['ajax_method'];
+    $return_as_json = !isset($post['return_as_json']) || $post['return_as_json'] == 'true' ? true : false;
+    $package_name = !isset($post['package_name']) ? "Grants" : $post['package_name'];
+    $return = [];
+    
+    if(check_and_load_account_system_model_exists($model_name,$package_name)){
+        if(is_valid_array_from_contract_method($model_name,$ajax_method)){
+          $return = $this->{$model_name}->{$ajax_method}();
+        }elseif(
+            method_exists($this->{$this->controller.'_model'},$ajax_method) &&
+            is_valid_array_from_contract_method($this->{$this->controller.'_model'},$ajax_method)
+          ){
+          $return = $this->{$this->controller.'_model'}->{$ajax_method}();
+        }else{
+          $return = "Missing method `".$ajax_method."` in the account system or feature model for `".$this->controller."`";
+        }
+    }elseif(
+        method_exists($this->{$this->controller.'_model'},$ajax_method) &&
+        is_valid_array_from_contract_method($this->{$this->controller.'_model'},$ajax_method)
+      ){
+        $return = $this->{$this->controller}->{$ajax_method}();
+    }else{
+      $return = "Missing account system or feature model for `".$this->controller."`";
+    }
+
+    if($return_as_json || is_array($return)){
+      echo json_encode($return);
+    }else{
+      echo $return;
+    }
+    
+  }
 
 }

@@ -73,7 +73,7 @@ function action_after_insert($post_array, $approval_id, $header_id){
     array('approve_item_name'=>$approve_item_detail_name))->row();
 
   if($approve_item_detail_name !== ""){
-    $this->db->trans_start();
+    $this->write_db->trans_start();
       $data['status_track_number'] = $this->grants_model->generate_item_track_number_and_name('status')['status_track_number'];
       $data['status_name'] = $post_array['status_name'];
       $data['fk_approval_flow_id'] = $dependant_table_approval_flow->approval_flow_id;
@@ -87,10 +87,10 @@ function action_after_insert($post_array, $approval_id, $header_id){
       $data['fk_approval_id'] = $post_array['fk_approval_id'];
       $data['fk_status_id'] = $post_array['fk_status_id'];
 
-      $this->db->insert('status',$data);
-    $this->db->trans_complete();
+      $this->write_db->insert('status',$data);
+      $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       return false;
     }else{
       return true;

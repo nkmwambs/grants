@@ -110,18 +110,33 @@ class Fields_base{
     return $this->default_field_value;
   }
 
+  function column_max_length(){
+    $all_fields = $this->CI->grants_model->table_fields_metadata($this->table);
+
+    $array_of_columns = array_column($all_fields,'name');
+    $array_of_max_length = array_column($all_fields,'max_length');
+
+    $name_max_length = array_combine($array_of_columns,$array_of_max_length);
+
+    return $name_max_length[$this->column];
+  }
+
   function number_field($value = 0){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $maxlength = $this->column_max_length();
+
+    return '<input id="'.$id.'" maxlength="'.$maxlength.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function text_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $maxlength = $this->column_max_length();
+
+    return '<input id="'.$id.'" maxlength="'.$maxlength.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function email_field($value = ""){

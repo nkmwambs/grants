@@ -268,6 +268,18 @@ class Voucher extends MY_Controller
     $result = $this->get_transaction_voucher($this->id);
 
      return $result;
+    // }elseif($this->action == 'multi_form_add'){
+    //   $result = [];
+    
+    //   $user_account_system =  $this->session->user_account_system; 
+    //    if(file_exists(APPPATH.'third_party/Packages/Grants/models/as_models/'.$user_account_system.'/As_Voucher_model.php')){
+    //     $this->load->model('as_models/'.$user_account_system.'/As_Voucher_model'); 
+    //     $result = $this->As_Voucher_model->get_transaction_voucher($id);
+    //    }else{
+    //      $result = ['Hello there 2'];
+    //    }    
+ 
+    //   return $result; 
     }else{
       return parent::result($id = '');
     }
@@ -330,7 +342,7 @@ class Voucher extends MY_Controller
     if( 
         !$office_accounting_system->account_system_is_allocation_linked_to_account || 
         $this->config->item("toggle_accounts_by_allocation")){
-
+        
         $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
         $this->db->select(array('project_allocation_id','project_allocation_name'));
         $this->db->join('project','project.project_id=project_allocation.fk_project_id');
@@ -371,7 +383,7 @@ class Voucher extends MY_Controller
     }
 
     if($voucher_type_effect == 'income'){
-
+      //echo "Hey";exit;
       $response['project_allocation'] = $project_allocation;
       
       $this->db->select(array('income_account_id as account_id','income_account_name as account_name','income_account_code as account_code'));
@@ -419,6 +431,47 @@ class Voucher extends MY_Controller
 
     echo json_encode($response);
 
+  }
+
+  function get_accounts_for_project_allocation(){
+    //voucher_type_id
+    $post = $this->input->post();
+
+    $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($post['voucher_type_id']);
+
+    $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
+    $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
+    
+    $accounts = [];
+
+    $project_allocation_id = $post['allocation_id'];
+    $office_bank_id = $post['office_bank_id'];
+
+    $office_accounting_system = $this->office_account_system($this->input->post('office_id'));
+    
+    $this->db->where(array('fk_account_system_id'=>$office_accounting_system->account_system_id));
+
+    if($voucher_type_effect == 'expense'){
+      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
+      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+      $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
+      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+      $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
+      $accounts = $this->db->get('expense_account')->result_array();
+    }elseif($voucher_type_effect == 'income'){
+      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
+      $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
+      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+      $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
+      $accounts = $this->db->get('income_account')->result_array();
+    }else{// Only contra effect enters here
+      $this->db->where(array('fk_office_bank_id'=>$office_bank_id,'voucher_type_account_code'=>$voucher_type_account));
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name'));
+      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
+      $accounts = $this->db->get_where('contra_account')->result_array();
+    }  
+    
+    echo json_encode($accounts);
   }
 
   function get_office_banks(){
@@ -513,9 +566,9 @@ class Voucher extends MY_Controller
 
     //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
 
-    $this->db->insert('journal',$new_journal);
+    $this->write_db->insert('journal',$new_journal);
 
-    //return $this->db->insert_id();
+    //return $this->write_db->insert_id();
   }
 
   function create_financial_report($financial_report_date){
@@ -527,7 +580,7 @@ class Voucher extends MY_Controller
 
       $new_mfr_to_insert = $this->grants_model->merge_with_history_fields('financial_report',$new_mfr);
 
-      $this->db->insert('financial_report',$new_mfr_to_insert);
+      $this->write_db->insert('financial_report',$new_mfr_to_insert);
   }
 
   function insert_new_voucher(){
@@ -536,7 +589,7 @@ class Voucher extends MY_Controller
     $detail = [];
     $row = [];
 
-    $this->db->trans_start();
+    $this->write_db->trans_start();
     
     // Check if this is the first voucher in the month, if so create a new journal record for the month
     // This must be run before a voucher is created
@@ -578,9 +631,9 @@ class Voucher extends MY_Controller
     $header['fk_status_id'] = $this->grants_model->initial_item_status('voucher');
 
     
-    $this->db->insert('voucher',$header);
+    $this->write_db->insert('voucher',$header);
 
-    $header_id = $this->db->insert_id();
+    $header_id = $this->write_db->insert_id();
 
     for ($i=0; $i < sizeof($this->input->post('voucher_detail_quantity')); $i++) { 
       
@@ -635,12 +688,12 @@ class Voucher extends MY_Controller
     }
 
     //echo json_encode($row);
-    $this->db->insert_batch('voucher_detail',$row);
+    $this->write_db->insert_batch('voucher_detail',$row);
 
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if ($this->db->trans_status() === FALSE)
+    if ($this->write_db->trans_status() === FALSE)
     {
       echo "Voucher posting failed";
     }else{
@@ -695,46 +748,7 @@ class Voucher extends MY_Controller
 
   }
 
-  function get_accounts_for_project_allocation(){
-    //voucher_type_id
-    $post = $this->input->post();
-
-    $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($post['voucher_type_id']);
-
-    $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
-    $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
-    
-    $accounts = [];
-
-    $project_allocation_id = $post['allocation_id'];
-    $office_bank_id = $post['office_bank_id'];
-
-    $office_accounting_system = $this->office_account_system($this->input->post('office_id'));
-    
-    $this->db->where(array('fk_account_system_id'=>$office_accounting_system->account_system_id));
-
-    if($voucher_type_effect == 'expense'){
-      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
-      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-      $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
-      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
-      $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
-      $accounts = $this->db->get('expense_account')->result_array();
-    }elseif($voucher_type_effect == 'expense'){
-      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
-      $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
-      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
-      $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
-      $accounts = $this->db->get('income_account')->result_array();
-    }else{// Only contra effect enters here
-      $this->db->where(array('fk_office_bank_id'=>$office_bank_id,'voucher_type_account_code'=>$voucher_type_account));
-      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name'));
-      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
-      $accounts = $this->db->get_where('contra_account')->result_array();
-    }  
-    
-    echo json_encode($accounts);
-  }
+  
 
   function update_request_detail_status_on_vouching($request_detail_id,$voucher_id){
         // $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request_detail'))->row()->approve_item_id;

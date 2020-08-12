@@ -11,8 +11,8 @@
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = false;
 
-	//Set up configs - Change the sequence of this array if you know what yo are doing
-	$config['table_that_dont_require_history_fields'] = ['status','approve_item','account_system','approval_flow','ci_sessions'];
+	//Set up configs - Change the sequence of this array if you know what yo are doing. These tables do not require approvals
+	$config['table_that_dont_require_history_fields'] = ['status','approve_item','approval_flow','ci_sessions'];
 	// Order of relationship MUST be maintained
 	$config['setup_initialized_tables'] = [	'account_system',
 											'context_definition',
@@ -27,6 +27,8 @@
 											'voucher_type_account',
 											'voucher_type_effect',
 											'month',
+											'country_currency',
+											'department'
 										];
 	// Can be changed on initialization but must be in the order from the lowest to the highest
 	$config['context_definitions'] = ['center','cluster','cohort','country','region'];// global is the highest context and should not be added in this array
@@ -45,6 +47,9 @@
 	$config['funding_balance_report_aggregate_method'] = "receipt"; // receipt or allocation
 	$config['show_empty_rows_in_expense_report'] = false;
 	$config['skip_empty_expense_reports'] = true;
+
+	//Submit MFR without controls
+	$config['submit_mfr_without_controls']=true;
 
 
 

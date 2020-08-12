@@ -216,7 +216,7 @@ function get_centers_in_center_group_hierarchy($user_id){
 function load_detail_model(String $table_name = ""): String{
   $model =  $this->current_model;
 
-  if($table_name !== "" && !is_array($table_name)){
+  if($table_name !== "" && !is_array($table_name) && $table_name != 'migrations'){
     
     if(!file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.$table_name.'.php') && 
       $this->CI->grants_model->table_exists($table_name)){
@@ -252,7 +252,7 @@ function add_mandatory_lookup_tables(&$existing_lookup_tables,
 
     foreach($mandatory_lookup_tables as $mandatory_lookup_table){
       if(!in_array($mandatory_lookup_table,$existing_lookup_tables)){
-        array_unshift($existing_lookup_tables,$mandatory_lookup_table);
+        array_push($existing_lookup_tables,$mandatory_lookup_table);
       }
     }
 }
@@ -373,6 +373,7 @@ public function primary_key_field(String $table_name):String {
   foreach($metadata as $data){
     if($data->primary_key == 1){
       $primary_key_field = $data->name;
+      break;
     }
   }
 
@@ -1993,19 +1994,20 @@ function feature_model_list_table_visible_columns() {
           && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
         ) 
       ){  
+        
           $result = $this->CI->$current_model->lookup_values($table)[$table];
 
           $ids_array = array_column($result,$this->primary_key_field($table));
           $value_array = array_column($result,$this->name_field($table));
 
-          $lookup_values =  [];//array_combine($ids_array,$value_array);
+          $lookup_values = array_combine($ids_array,$value_array);
           
-          $count = 0;
+          // $count = 0;
 
-          foreach ($value_array as $value) {
-            $lookup_values[$ids_array[$count]] = $value;
-            $count ++;
-          }
+          // foreach ($value_array as $value) {
+          //   $lookup_values[$ids_array[$count]] = $value;
+          //   $count ++;
+          // }
       }
       elseif(         
         (
@@ -2165,6 +2167,14 @@ function feature_model_list_table_visible_columns() {
       $this->CI->db->select(array('approve_item_name'));
       $approveable_items = $this->CI->db->get_where('approve_item')->result_array();
 
+      if(!file_exists('uploads/')){
+        mkdir('uploads/');
+      }
+
+      if(!file_exists('uploads/attachments/')){
+        mkdir('uploads/attachments/');
+      }
+      
       foreach($approveable_items as $approveable_item){
         if(!file_exists('uploads/attachments/'.$approveable_item['approve_item_name'])){
           mkdir('uploads/attachments/'.$approveable_item['approve_item_name']);

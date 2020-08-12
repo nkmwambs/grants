@@ -36,5 +36,17 @@ class Department_model extends MY_Model{
         return array('department_user');
     }
 
-    
+    function intialize_table(Array $foreign_keys_values = []){
+        
+        $department_data['department_id'] = 1;
+        $department_data['department_track_number'] = $this->grants_model->generate_item_track_number_and_name('department')['department_track_number'];
+        $department_data['department_name'] = "Administration";
+        $department_data['department_description'] = "Administration";
+        $department_data['department_is_active'] = 1;
+        
+        $department_data_to_insert = $this->grants_model->merge_with_history_fields('account_system',$department_data,false);
+        $this->write_db->insert('department',$department_data_to_insert);
+
+        return $this->write_db->insert();
+    }
 }

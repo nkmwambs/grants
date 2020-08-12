@@ -51,9 +51,9 @@ class Month_model extends MY_Model{
             $months_data['month_order'] = $month_order; 
                 
             $months_data_to_insert = $this->grants_model->merge_with_history_fields('month',$months_data,false);
-            $this->db->insert('month',$months_data_to_insert);
+            $this->write_db->insert('month',$months_data_to_insert);
 
-            $insert_ids[] = $this->db->insert_id();
+            $insert_ids[] = $this->write_db->insert_id();
         }
         
     

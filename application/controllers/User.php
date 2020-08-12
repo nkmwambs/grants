@@ -43,14 +43,15 @@ class User extends MY_Controller
 }
 
 /**
- * @todo - This will change with the approval status update 
+ * @todo - This will change with the approval status update [Completed]
  */
 private function _get_approval_assignments($role_id){
   $this->db->select(array('status_name','approve_item_name'));
   
   $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
   $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
-  $status = $this->db->get_where('status',array('fk_role_id'=>$role_id,'status_is_requiring_approver_action'=>1))->result_array();
+  $this->db->join('status_role','status_role.status_role_status_id=status.status_id');
+  $status = $this->db->get_where('status',array('status_role.fk_role_id'=>$role_id,'status_is_requiring_approver_action'=>1))->result_array();
 
   return $status;
 }
@@ -153,7 +154,7 @@ private function _get_approval_assignments($role_id){
   function create_new_user(){
     $post = $this->input->post()['header'];
     
-    $this->db->trans_start();
+    $this->write_db->trans_start();
 
     $user['user_name'] = $post['user_name'];
     $user['user_firstname'] = $post['user_firstname'];
@@ -167,15 +168,16 @@ private function _get_approval_assignments($role_id){
     $user['fk_role_id'] = $post['fk_role_id'];
     $user['fk_country_currency_id'] = $post['fk_country_currency_id'];
     $user['user_password'] = md5($post['user_password']);
+    $user['fk_account_system_id'] = $post['fk_account_system_id'];
 
 
     $user_to_insert = $this->grants_model->merge_with_history_fields($this->controller,$user,false);
 
-    $this->db->insert('user',$user_to_insert);
+    $this->write_db->insert('user',$user_to_insert);
 
-    $user_id = $this->db->insert_id();
+    $user_id = $this->write_db->insert_id();
 
-    // Insert an office context 
+    // Insert an a user a context table 
     $context_definition_name = $this->db->get_where('context_definition',array('context_definition_id'=>$post['fk_context_definition_id']))->row()->context_definition_name;
     $context_definition_user_table = 'context_'.$context_definition_name.'_user';
 
@@ -195,7 +197,7 @@ private function _get_approval_assignments($role_id){
 
     $context_to_insert = $this->grants_model->merge_with_history_fields($context_definition_user_table,$context,false);
 
-    $this->db->insert($context_definition_user_table,$context_to_insert);
+    $this->write_db->insert($context_definition_user_table,$context_to_insert);
 
     // Insert user department
     $department['department_user_name'] = "Department for ".$post['user_firstname']." ".$post['user_lastname'];
@@ -204,11 +206,11 @@ private function _get_approval_assignments($role_id){
     
     $department_to_insert = $this->grants_model->merge_with_history_fields('department_user',$department,false);
 
-    $this->db->insert('department_user',$department_to_insert);
+    $this->write_db->insert('department_user',$department_to_insert);
 
-    $this->db->trans_complete();
+    $this->write_db->trans_complete();
 
-    if($this->db->trans_status() == false){
+    if($this->write_db->trans_status() == false){
       //echo "Error occurred";
       echo json_encode($context_to_insert);
     }else{
