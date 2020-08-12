@@ -36,6 +36,17 @@ class Country_currency_model extends MY_Model{
 
     public function detail_multi_form_add_visible_columns(){}
 
+    function lookup_values(){
+        $lookup_values = $this->db->get('country_currency')->result_array();
+
+        if(!$this->session->system_admin){
+            $user_currency_code = $this->session->user_currency_code;
+            $lookup_values = $this->db->get_where('country_currency',array('country_currency_code'=>$user_currency_code))->result_array();
+        }
+        
+        return $lookup_values;
+    }
+
     function intialize_table(Array $foreign_keys_values = []){
         
         $user_data['country_currency_id'] = 1;

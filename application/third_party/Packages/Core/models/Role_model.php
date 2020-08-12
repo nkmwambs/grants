@@ -49,6 +49,16 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   //   return array('role_name');
   // }
 
+  function lookup_values(){
+    $lookup_values = $this->db->get('role')->result_array();
+
+    if(!$this->session->system_admin){
+        $lookup_values = $this->db->get_where('role',array('role_id <>'=>1))->result_array();
+    }
+    
+    return $lookup_values;
+}
+
   function intialize_table(Array $foreign_keys_values = []){  
 
     $role_data['role_track_number'] = $this->grants_model->generate_item_track_number_and_name('role')['role_track_number'];
