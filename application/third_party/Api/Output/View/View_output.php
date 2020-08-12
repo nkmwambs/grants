@@ -361,8 +361,8 @@ class View_output extends Output_template{
         //print_r($lookup_tables);exit;
         $select_columns = $this->toggle_detail_list_select_columns($table);
         
-        $filter_where = array($table.'.fk_'.$this->controller.'_id'=> hash_id($this->CI->uri->segment(3,0),'decode') );
-     
+        $filter_where = array($table.'.fk_'.strtolower($this->controller).'_id'=> hash_id($this->CI->uri->segment(3,0),'decode') );
+        //print_r($filter_where);exit;
         return $this->CI->grants_model->run_list_query($table,$select_columns,$lookup_tables,'detail_list_table_where',$filter_where);
       }   
 

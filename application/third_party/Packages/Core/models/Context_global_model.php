@@ -33,7 +33,7 @@ class Context_global_model extends MY_Model{
     }
 
     public function detail_tables(){
-        return array('context_global_user','context_region','context_definition');
+        return array('context_global_user','context_region');
     }
 
     function intialize_table(Array $foreign_keys_values = []){
