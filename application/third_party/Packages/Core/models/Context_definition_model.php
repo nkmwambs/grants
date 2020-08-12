@@ -80,4 +80,10 @@ class Context_definition_model extends MY_Model{
         return $insert_ids;
         
     }    
+
+    function lookup_values(){
+        $context_definition_name = str_replace('context_','',$this->controller);
+        $lookup_values = $this->db->get_where('context_definition',array('context_definition_name'=>$context_definition_name))->result_array();
+        return $lookup_values;
+    }
 }
