@@ -158,6 +158,20 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
 
   }
 
+  function lookup_values(){
+    
+    $lookup_values = [];
+
+    // Use this when filling in context tables
+    if(substr($this->controller,0,8) == 'context_'){
+      $context_definition_name = str_replace('context_','',$this->controller);
+      $this->db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+      $lookup_values = $this->db->get_where('office',array('context_definition_name'=>$context_definition_name))->result_array();
+    }
+
+    return $lookup_values;
+  }
+
 
   function intialize_table(Array $foreign_keys_values = []){
   
