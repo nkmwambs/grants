@@ -493,7 +493,7 @@ function generate_item_track_number_and_name($approveable_item){
       $exploded_sql = explode(';',$sql);
 
       foreach($exploded_sql as $query){
-        $this->db->query($query);
+        $this->write_db->query($query);
       }
    
     }
