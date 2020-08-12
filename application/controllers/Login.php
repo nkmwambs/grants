@@ -124,6 +124,9 @@ public $controller;
     }
 
     function system_setup_check(){
+        // Use the write db for read queries due to slave replication delays
+        $this->db = $this->load->database('write_db',true);
+
         $system_setup_state = $this->db->get_where('setting',
         array('type'=>'system_setup_completed'))->row()->description;
       
