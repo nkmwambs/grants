@@ -67,4 +67,5 @@ class Context_global_model extends MY_Model{
         }
         
     } 
+    
 }
