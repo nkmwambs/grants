@@ -26,7 +26,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   }
 
   public function lookup_tables(){
-    return array('approval','status','context_definition','account_system','country_currency');
+    return array('context_definition','account_system','country_currency');
   }
 
   private function context_definition_name_by_office_id($office_id){
@@ -169,15 +169,16 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
     $office_data['office_description'] = 'Head Office';
     $office_data['office_code'] = 'G001'; 
     $office_data['fk_context_definition_id'] = $global_context_key;
+    $office_data['fk_country_currency_id'] = 1;
     $office_data['office_start_date'] = date('Y-m-01');
     $office_data['office_end_date'] = "0000-00-00";
     $office_data['office_is_active'] = 1;
     $office_data['fk_account_system_id'] = 1;//$foreign_keys_values['account_system_id'];
         
     $office_data_to_insert = $this->grants_model->merge_with_history_fields('office',$office_data,false);
-    $this->db->insert('office',$office_data_to_insert);
+    $this->write_db->insert('office',$office_data_to_insert);
 
-    return $this->db->insert_id();
+    return $this->write_db->insert_id();
 }
   
 }

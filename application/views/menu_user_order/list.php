@@ -84,7 +84,7 @@ extract($result);
         connectWith: "#sortable-main-menu, #sortable-sub-menu",
         placeholder: "highlight",
         dropOnEmpty: false,
-        cancel: ".<?=strtolower($this->config->item('default_launch_page'));?>",
+        //cancel: ".<?=strtolower($this->config->item('default_launch_page'));?>",
         //items: "li:not(.dashboard)",
         update: function(event, ui) {
                   var menu_name = $(this).sortable('widget').attr('id');

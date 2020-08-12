@@ -50,7 +50,7 @@ class User_model extends MY_Model
   }
 
   function lookup_tables(){
-    return array('language','role','context_definition');
+    return array('language','role','context_definition','account_system');
   }
 
   /**
@@ -229,7 +229,7 @@ class User_model extends MY_Model
      * @return Array - Office ids
      */
 
-    function get_user_context_offices(int $user_id):Array{
+    function get_user_context_offices(int $user_id){
 
       $context_defs = $this->grants->context_definitions();
            
@@ -241,10 +241,10 @@ class User_model extends MY_Model
       $context_user_table = $context_defs[$user_context_name]['context_user_table'];
 
       $this->db->select(array('office_name','office_id'));
-      
       $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_user_table.'.fk_'.$context_table.'_id');
       $this->db->join('office','office.office_id='.$context_table.'.fk_office_id');
       $user_context_obj = $this->db->get_where($context_user_table,array('fk_user_id'=>$user_id));
+
       
       $user_offices =  array();    
 
@@ -256,6 +256,8 @@ class User_model extends MY_Model
       }
       
       return $user_offices;
+
+      //return  $user_context_obj->result_array();
     }
 
   /**
@@ -395,6 +397,7 @@ class User_model extends MY_Model
       $user_hierarchy_offices_ids = [];
       
       $user_context_definition = $this->get_user_context_definition($user_id);
+      
       
       /**
        * $this->get_user_context_definition($user_id):
@@ -960,14 +963,16 @@ function intialize_table(Array $foreign_keys_values = []){
   $user_data['user_is_context_manager'] = 0;
   $user_data['user_is_system_admin'] = 1;
   $user_data['fk_language_id'] = $foreign_keys_values['language_id'];
+  $user_data['fk_country_currency_id']=1;
   $user_data['user_is_active'] = 1;
   $user_data['fk_role_id'] = $foreign_keys_values['role_id'];
+  $user_data['fk_account_system_id'] = 1;
   $user_data['user_password'] =  $this->db->get_where('setting',array('type'=>'setup_password'))->row()->description;//md5('#Compassion321');
       
   $user_data_to_insert = $this->grants_model->merge_with_history_fields('user',$user_data,false);
-  $this->db->insert('user',$user_data_to_insert);
+  $this->write_db->insert('user',$user_data_to_insert);
 
-  return $this->db->insert_id();
+  return $this->write_db->insert_id();
 }
 
 }

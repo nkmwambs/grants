@@ -61,9 +61,9 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
         
     $role_data_to_insert = $this->grants_model->merge_with_history_fields('role',$role_data,false);
-    $this->db->insert('role',$role_data_to_insert);
+    $this->write_db->insert('role',$role_data_to_insert);
 
-    return $this->db->insert_id();
+    return $this->write_db->insert_id();
 }
 
 }

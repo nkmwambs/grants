@@ -20,7 +20,7 @@
 </style>
 
 <?php
-    //print_r($month_opening_balance['bank_balance']);
+    
     extract($result);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
@@ -28,6 +28,8 @@
     //$role_has_voucher_create_permission = $this->user_model->check_role_has_permissions(ucfirst('voucher'),'create');
     $check_if_financial_report_is_submitted = $this->financial_report_model->check_if_financial_report_is_submitted([$office_id],$transacting_month);
     //echo $check_if_financial_report_is_submitted;
+
+   // print_r($transacting_month);
 ?>
 
 <?php if(isset($office_bank_name)){?>

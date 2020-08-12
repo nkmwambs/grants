@@ -23,16 +23,22 @@ function get_count_of_user_menu_items(){
 
 function upsert_menu($menus){
   $data = array();
+  $this->load->model('permission_model');
 
       foreach ($menus as $menu=>$menuItems) {
         $data['menu_name'] = $menu;
         $data['menu_derivative_controller'] = $menu;
 
         if($this->db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
-            $this->db->insert('menu',$data);
+            $this->write_db->insert('menu',$data);
+
+            $permission_data['menu_id'] = $this->write_db->insert_id();
+            $permission_data['table_name'] = $menu;
+
+            $this->permission_model->add($permission_data);
         }else{
-          $this->db->where(array('menu_derivative_controller'=>$menu));
-          $this->db->update('menu',$data);
+          $this->write_db->where(array('menu_derivative_controller'=>$menu));
+          $this->write_db->update('menu',$data);
         }
       }
 
@@ -49,6 +55,13 @@ function upsert_menu($menus){
         }
       }
 
+}
+
+function get_id_of_default_menu_item(){
+  $menu_id = $this->db->get_where('menu',
+  array('menu_derivative_controller'=>$this->config->item('default_launch_page')))->row()->menu_id;
+
+  return $menu_id;
 }
 
 function upsert_user_menu(){
@@ -80,6 +93,10 @@ function upsert_user_menu(){
           $user_menu_data['menu_user_order_priority_item'] = 0;
         }
 
+        if($this->get_id_of_default_menu_item() ==  $menu_id){
+          $user_menu_data['menu_user_order_priority_item'] = 1;
+        }
+
         $order++;
 
         $user_menu_data['fk_user_id'] = $this->session->user_id;
@@ -88,7 +105,7 @@ function upsert_user_menu(){
 
         if($this->db->get_where('menu_user_order',
         array('fk_user_id'=>$this->session->user_id,'fk_menu_id'=>$menu_id))->num_rows() == 0){
-            $this->db->insert('menu_user_order',$user_menu_data);
+            $this->write_db->insert('menu_user_order',$user_menu_data);
         
         }
         

@@ -32,9 +32,9 @@ class Language_model extends MY_Model
     $language_data['language_code'] = 'en';
         
     $language_data_to_insert = $this->grants_model->merge_with_history_fields('language',$language_data,false);
-    $this->db->insert('language',$language_data_to_insert);
+    $this->write_db->insert('language',$language_data_to_insert);
 
-    return $this->db->insert_id();
+    return $this->write_db->insert_id();
 }
 
 }

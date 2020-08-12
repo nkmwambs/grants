@@ -27,6 +27,7 @@ class Journal_library extends Grants
   }
 
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
+    // print_r($office_bank_id); exit;
     return $this->CI->journal_model->month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id);
   }
 

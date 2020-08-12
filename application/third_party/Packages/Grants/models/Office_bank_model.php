@@ -46,7 +46,10 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
     public function list_table_hidden_columns(){}
 
-    public function detail_list_table_visible_columns(){}
+    public function detail_list_table_visible_columns(){
+      return ['office_bank_track_number','office_bank_name',
+      'office_bank_account_number','office_name','bank_name','status_name','approval_name'];
+    }
 
     public function detail_list_table_hidden_columns(){}
 

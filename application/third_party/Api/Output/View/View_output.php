@@ -222,6 +222,13 @@ class View_output extends Output_template{
             !in_array($this->CI->grants->primary_key_field($table),$detail_list_table_visible_columns)){
             array_unshift($detail_list_table_visible_columns,$this->CI->grants->primary_key_field($table));
         }
+
+        //Remove status and approval columns if the approveable item is not approveable
+        if(!$this->CI->grants_model->approveable_item($table)) {
+            $this->CI->grants->remove_mandatory_lookup_tables($detail_list_table_visible_columns,['status_name','approval_name']);
+          }else{
+            $this->CI->grants->add_mandatory_lookup_tables($detail_list_table_visible_columns,['status_name','approval_name']);
+          }
     
         }
     
@@ -246,30 +253,29 @@ class View_output extends Output_template{
         
         //Table lookup tables
         $lookup_tables = $this->CI->grants->lookup_tables($table);
-    
+       
+
         $get_all_table_fields = $this->CI->grants_model->get_all_table_fields($table);
 
-
         // Replace the list visible columns if the current controller is approval
-        $list_visible_columns = array();
+        //$list_visible_columns = array();
             
-        $model = $this->CI->grants->load_detail_model($table);
-        
-        $list_visible_columns = [];
-        if(method_exists($this->CI->$model,'list_table_visible_columns')){
-            $list_visible_columns = $this->CI->$model->list_table_visible_columns();
-        }   
+        $model = $this->CI->grants->load_detail_model($table); 
        
+        // Removing approval_id field in the select fields
         if( $this->CI->controller == 'approval'){
-            if(is_array($list_visible_columns) && 
-            count($list_visible_columns) > 0){
-                array_unshift($list_visible_columns,$this->CI->grants->primary_key_field($table));
+            if(is_array($detail_list_table_visible_columns) && 
+            count($detail_list_table_visible_columns) > 0){
+                array_unshift($detail_list_table_visible_columns,$this->CI->grants->primary_key_field($table));
 
-                $detail_list_table_visible_columns = $list_visible_columns;
+                //$detail_list_table_visible_columns = $list_visible_columns;
             }
             
         }
-    
+
+        //print_r($list_visible_columns);exit;
+        
+        // Unset history fields
         foreach ($get_all_table_fields as $get_all_table_field) {
     
           //Unset foreign keys columns, created_by and last_modified_by columns
@@ -287,13 +293,15 @@ class View_output extends Output_template{
     
     
         $visible_columns = $get_all_table_fields;
-        $lookup_columns = array();
-    
+
+        
         if(is_array($detail_list_table_visible_columns) && count($detail_list_table_visible_columns) > 0 ){
           $visible_columns = $detail_list_table_visible_columns;
+          //print_r($visible_columns);exit;
         }else{
           if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
             foreach ($lookup_tables as $lookup_table) {
+  
     
               $lookup_table_columns = $this->CI->grants_model->get_all_table_fields($lookup_table);
     
@@ -308,7 +316,7 @@ class View_output extends Output_template{
             }
           }
         }
-    
+        //print_r($detail_list_table_visible_columns);exit;
         return $this->access->control_column_visibility($table,$visible_columns,'read');
     
       }
@@ -350,7 +358,7 @@ class View_output extends Output_template{
       function detail_list_internal_query_result($table){
 
         $lookup_tables = $this->CI->grants->lookup_tables($table);
-        
+        //print_r($lookup_tables);exit;
         $select_columns = $this->toggle_detail_list_select_columns($table);
         
         $filter_where = array($table.'.fk_'.$this->controller.'_id'=> hash_id($this->CI->uri->segment(3,0),'decode') );

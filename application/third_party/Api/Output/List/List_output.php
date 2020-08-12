@@ -77,16 +77,11 @@ function feature_model_list_table_visible_columns(): Array {
     ){
       $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
 
-      // This part couldn't work as the function $this->CI->grants->unset_status_if_item_not_approveable()
-      if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
-        $columns = ['status_name','approval_name'];
-
-        foreach($columns as $column){
-          if(in_array($column,$list_table_visible_columns)){
-            $column_name_key = array_search($column,$list_table_visible_columns);
-            unset($list_table_visible_columns[$column_name_key]);
-          }
-        }
+      // Add status and approval columns if approveable
+      if(!$this->CI->grants_model->approveable_item($this->controller)) {
+        $this->CI->grants->remove_mandatory_lookup_tables($list_table_visible_columns,['status_name','approval_name']);
+      }else{
+        $this->CI->grants->add_mandatory_lookup_tables($list_table_visible_columns,['status_name','approval_name']);
       }
   
        //Add the table id columns if does not exist in $columns
@@ -122,7 +117,7 @@ function feature_model_list_table_visible_columns(): Array {
     // Check if the table has list_table_visible_columns not empty
     $list_table_visible_columns = $this->feature_model_list_table_visible_columns();
     $lookup_tables = $this->CI->grants->lookup_tables();
-
+    
     $get_all_table_fields = $this->CI->grants_model->get_all_table_fields();
 
 
@@ -146,6 +141,7 @@ function feature_model_list_table_visible_columns(): Array {
 
     if(is_array($list_table_visible_columns) && count($list_table_visible_columns) > 0 ){
       $visible_columns = $list_table_visible_columns;
+
     }else{
       if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
         foreach ($lookup_tables as $lookup_table) {
@@ -162,7 +158,7 @@ function feature_model_list_table_visible_columns(): Array {
         }
       }
     }
-
+    
     return $this->access->control_column_visibility($this->controller,$visible_columns,'read');
   }
   
@@ -202,7 +198,7 @@ function feature_model_list_table_visible_columns(): Array {
   
     // Get the tables foreign key relationship
     $lookup_tables = $this->CI->grants->lookup_tables();
-  
+    //print_r($lookup_tables);exit;
     // Get result from grants model if feature model list returns empty
     $query_result = $this->list_internal_query_results($lookup_tables); // System generated query result
     

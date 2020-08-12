@@ -113,7 +113,7 @@ $("#submit_report").on('click',function(ev){
         success:function(response){
             //alert(response);
             if(response){
-                alert('Report submitted successfully');
+                alert(response);
                 location.href = document.referrer;
             }else{
                 alert(response);

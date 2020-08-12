@@ -216,7 +216,7 @@ function get_centers_in_center_group_hierarchy($user_id){
 function load_detail_model(String $table_name = ""): String{
   $model =  $this->current_model;
 
-  if($table_name !== "" && !is_array($table_name)){
+  if($table_name !== "" && !is_array($table_name) && $table_name != 'migrations'){
     
     if(!file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.$table_name.'.php') && 
       $this->CI->grants_model->table_exists($table_name)){
@@ -247,6 +247,28 @@ function load_detail_model(String $table_name = ""): String{
   return $model;
 }
 
+function add_mandatory_lookup_tables(&$existing_lookup_tables,
+   $mandatory_lookup_tables = ['status','approval']){
+
+    foreach($mandatory_lookup_tables as $mandatory_lookup_table){
+      if(!in_array($mandatory_lookup_table,$existing_lookup_tables)){
+        array_push($existing_lookup_tables,$mandatory_lookup_table);
+      }
+    }
+}
+
+function remove_mandatory_lookup_tables(&$existing_lookup_tables,
+   $mandatory_lookup_tables = ['status','approval']){
+
+    foreach($mandatory_lookup_tables as $mandatory_lookup_table){
+        if(in_array($mandatory_lookup_table,$existing_lookup_tables)){
+        unset($existing_lookup_tables[array_search($mandatory_lookup_table,$existing_lookup_tables)]);
+      }
+    }
+
+}
+
+
 /**
  * lookup_tables
  * 
@@ -268,12 +290,22 @@ function lookup_tables(String $table_name = ""): Array{
       is_array($this->CI->$model->lookup_tables())
     ){
     $lookup_tables = $this->CI->$model->lookup_tables();
+
+    // Check if status and approval lookup tables doesn't exist and add them
+    $this->add_mandatory_lookup_tables($lookup_tables);
+    
+     // Hide status and approval columns if the active controller/table is not approveable
+     if(!$this->CI->grants_model->approveable_item($table_name)) {
+      $this->remove_mandatory_lookup_tables($lookup_tables);
+    }
+
+   
   }else{
     // This part of a code is meant to offer an alternative to lookup_tables 
     // methods in models that overrided the MY_Model method
     $lookup_tables = $this->CI->grants_model->lookup_tables();
   }
-
+  //print_r($table_name);exit;
   return $lookup_tables;
 }
 
@@ -341,6 +373,7 @@ public function primary_key_field(String $table_name):String {
   foreach($metadata as $data){
     if($data->primary_key == 1){
       $primary_key_field = $data->name;
+      break;
     }
   }
 
@@ -1649,9 +1682,6 @@ function get_record_office_id($table,$primary_key){
 
 function action_labels($table,$primary_key){
 
-  //$this->load_detail_model('approval');
-  //$this->CI->load->model('approval');
-
   return $this->CI->general_model->display_approver_status_action($this->CI->session->role_id, $table, $primary_key);
 
 }
@@ -1724,6 +1754,7 @@ function feature_model_list_table_visible_columns() {
     is_array($this->CI->$model->list_table_visible_columns())
   ){
     $list_table_visible_columns = $this->CI->$model->list_table_visible_columns();
+    
 
     // This part couldn't work as the function $this->unset_status_if_item_not_approveable()
     
@@ -1738,7 +1769,7 @@ function feature_model_list_table_visible_columns() {
       }
     }
 
-
+    
      //Add the table id columns if does not exist in $columns
     if(   is_array($list_table_visible_columns) && 
           !in_array($this->primary_key_field($this->controller),
@@ -1746,27 +1777,25 @@ function feature_model_list_table_visible_columns() {
       ){
 
       array_unshift($list_table_visible_columns,
-      $this->primary_key_field($this->controller));
-
+      $this->primary_key_field(strtolower($this->controller)));
+   
       // Throw error when a column doesn't exists to avoid Datatable server side loading error
-      foreach($list_table_visible_columns as $_column){
-        
-        $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
 
-        //Add the lookup table name to the all fields array
-        $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
-        $all_fields = array_merge($all_fields,$lookup_name_fields);
-        
-        //print_r($all_fields);exit();
-
-        if(!in_array($_column,$all_fields)){
-          $message = "The column ".$_column." does not exist in the table ".$this->controller."</br>";
-          $message .= "Check the list_table_visible_columns function of the ".$this->controller."_model for the source";
-          show_error($message,500,'An Error As Encountered');
-          
-        }
-
-      }
+       //Add the lookup table name to the all fields array
+       $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
+       $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
+       $all_fields = array_merge($all_fields,$lookup_name_fields);
+       $lookup_tables = $this->lookup_tables($this->controller);
+       
+       foreach($list_table_visible_columns as $_column){
+         if(!in_array($_column,$all_fields) && $_column !==""){
+           $message = "The column ".$_column." does not exist in the table ".$this->controller." or its lookup tables ".implode(',',$lookup_tables)."</br>";
+           $message .= "Check the 'list_table_visible_columns' or 'lookup_tables' functions of the ".$this->controller."_model for the source";
+           show_error($message,500,'An Error As Encountered');
+           
+         }
+ 
+       }
     }
   }
 
@@ -1965,19 +1994,20 @@ function feature_model_list_table_visible_columns() {
           && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
         ) 
       ){  
+        
           $result = $this->CI->$current_model->lookup_values($table)[$table];
 
           $ids_array = array_column($result,$this->primary_key_field($table));
           $value_array = array_column($result,$this->name_field($table));
 
-          $lookup_values =  [];//array_combine($ids_array,$value_array);
+          $lookup_values = array_combine($ids_array,$value_array);
           
-          $count = 0;
+          // $count = 0;
 
-          foreach ($value_array as $value) {
-            $lookup_values[$ids_array[$count]] = $value;
-            $count ++;
-          }
+          // foreach ($value_array as $value) {
+          //   $lookup_values[$ids_array[$count]] = $value;
+          //   $count ++;
+          // }
       }
       elseif(         
         (
@@ -2137,6 +2167,14 @@ function feature_model_list_table_visible_columns() {
       $this->CI->db->select(array('approve_item_name'));
       $approveable_items = $this->CI->db->get_where('approve_item')->result_array();
 
+      if(!file_exists('uploads/')){
+        mkdir('uploads/');
+      }
+
+      if(!file_exists('uploads/attachments/')){
+        mkdir('uploads/attachments/');
+      }
+      
       foreach($approveable_items as $approveable_item){
         if(!file_exists('uploads/attachments/'.$approveable_item['approve_item_name'])){
           mkdir('uploads/attachments/'.$approveable_item['approve_item_name']);

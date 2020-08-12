@@ -389,3 +389,57 @@ if(!function_exists('show_logo')){
 		return $logo;
 	}
 }
+
+// Some how not working
+if(!function_exists('is_valid_array_from_contract_method')){
+	function is_valid_array_from_contract_method($method_class_name,$contract_method,$check_if_result_is_array_not_empty = false){
+		$CI =& get_instance();
+		$is_valid = false;
+		
+		if($check_if_result_is_array_not_empty){
+			if(
+				method_exists($CI->{$method_class_name},$contract_method) &&
+				is_array($CI->{$method_class_name}->{$contract_method}()) &&
+				count($CI->{$method_class_name}->{$contract_method}()) > 0
+			){
+				$is_valid = true;
+			}
+		}else{
+			if(method_exists($method_class_name,$contract_method)){
+				$is_valid = true;
+			}
+		}
+		
+		return $is_valid;
+	}
+}
+
+
+if(!function_exists('check_and_load_account_system_model_exists')){
+	function check_and_load_account_system_model_exists($model_name,$package_name = 'Grants',$class_type = 'model'){
+		$CI =& get_instance();
+		$user_account_system = $CI->session->user_account_system;
+		$is_existing = false; 
+		$class_type_dir = $class_type == 'model' ? 'models' : 'libraries';
+		$path = APPPATH.'third_party'.DS.'Packages'.DS.$package_name.DS.$class_type_dir.DS.'as_'.$class_type_dir.DS.$user_account_system.DS.$model_name.'.php';
+
+		if(file_exists($path) && !$CI->load->is_loaded($model_name)){
+			$CI->load->{$class_type}('as_'.$class_type_dir.'/'.$user_account_system.'/'.$model_name);
+			$is_existing = true; 
+		}
+
+		return $is_existing;
+	}
+}
+
+if(!function_exists('sanitize_characters')){
+
+	function sanitize_characters($string) {
+		$string = str_replace(' ', '', $string); // Replaces all spaces with hyphens.
+		return strtolower(preg_replace('/[^A-Za-z0-9]/', '', $string)); // Removes special chars.
+		
+	 }
+
+}
+
+
