@@ -41,4 +41,12 @@ class Approval_flow_model extends MY_Model{
     public function single_form_add_visible_columns(){
         return ['approval_flow_name','approve_item_name','account_system_name'];
     }
+
+    function show_add_button(){
+        // These items are automatically added by the system
+        if($this->session->system_admin){
+          return true;
+        }
+          
+      }
 }
