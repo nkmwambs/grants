@@ -1,5 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-    //print_r($this->session->context_definition);
+     //print_r($this->session->hierarchy_offices);
+     print_r($this->user_model->get_user_context_association(1));
     //print_r($this->session->context_definition['context_definition_id']);
 ?>
 
