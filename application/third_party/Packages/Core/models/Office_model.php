@@ -53,6 +53,13 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   public function list_table_visible_columns(){
       return ['office_track_number','office_code','office_name','context_definition_name','office_start_date','status_name'];
   }
+  public function list_table_where(){
+
+    if(!$this->session->system_admin){
+      $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+    }
+
+  }
 
   public function list_table_hidden_columns(){}
 
