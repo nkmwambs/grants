@@ -56,6 +56,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   public function list_table_where(){
 
     if(!$this->session->system_admin){
+      
       $this->db->where(array('account_system_code'=>$this->session->user_account_system));
     }
 
