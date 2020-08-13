@@ -450,6 +450,7 @@ class User_model extends MY_Model
 
       // A user can have multiple context association records e.g. Multiple countries
       $user_context_association = array_column($this->get_user_context_association($user_id),$user_context_table.'_id');
+      
         /**
          * $this->get_user_context_association($user_id):
          * 
