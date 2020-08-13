@@ -156,7 +156,7 @@ private function _get_approval_assignments($role_id){
     
     $this->write_db->trans_start();
 
-    $user['user_name'] = $post['user_name'];
+    $user['user_name'] = sanitize_characters($post['user_name']);
     $user['user_firstname'] = $post['user_firstname'];
     $user['user_lastname'] = $post['user_lastname'];
     $user['user_email'] = $post['user_email'];

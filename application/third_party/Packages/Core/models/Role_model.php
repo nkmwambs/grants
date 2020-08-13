@@ -45,6 +45,10 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
 
   }
 
+  function action_before_insert($post_array){
+    return $this->grants->sanitize_post_value_before_insert($post_array,'role_shortname');
+  }
+
   // function master_table_visible_columns(){
   //   return array('role_name');
   // }
