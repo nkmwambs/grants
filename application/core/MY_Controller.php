@@ -225,7 +225,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
   function page_name():String{
     //return the page name if the user has permissions otherwise error page of user not allowed access display
 
-    if((hash_id($this->id,'decode') == null && $this->action == 'view') || (!$this->has_permission && strtolower($this->controller)!='menu')){
+    if((hash_id($this->id,'decode') == null && $this->action == 'view') || !$this->has_permission){
       return 'error';
     }else{
       return $this->action;
