@@ -168,6 +168,13 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
       $this->db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
       $lookup_values = $this->db->get_where('office',array('context_definition_name'=>$context_definition_name))->result_array();
     }
+    else{
+       $office_ids=array_column($this->session->hierarchy_offices,'office_id');
+
+       $this->db->where_in('office_id',$office_ids);
+
+        $lookup_values = $this->db->get('office')->result_array();
+    }
 
     return $lookup_values;
   }
