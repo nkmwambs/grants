@@ -90,6 +90,12 @@ class Context_definition_model extends MY_Model{
         }elseif(!$this->session->system_admin){
             $lookup_values = $this->db->get_where('context_definition',array('context_definition_id'=>$this->session->context_definition['context_definition_id']))->result_array(); 
         }
+        else{
+            $context_defination_level=$this->session->context_definition['context_definition_level'];
+
+            $lookup_values = $this->db->get_where('context_definition',array('context_definition_level <= '=>$context_defination_level))->result_array();
+
+        }
 
         return $lookup_values;
     }
