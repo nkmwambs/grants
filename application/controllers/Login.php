@@ -124,11 +124,19 @@ public $controller;
     }
 
     function system_setup_check(){
-        // Use the write db for read queries due to slave replication delays
-        $this->db = $this->load->database('write_db',true);
 
-        $system_setup_state = $this->db->get_where('setting',
-        array('type'=>'system_setup_completed'))->row()->description;
+        $system_setup_state_obj = $this->db->get_where('setting',
+        array('type'=>'system_setup_completed'));
+
+        $system_setup_state = 0;
+
+        if($system_setup_state_obj->num_rows() == 0){
+             // Use the write db for read queries due to slave replication delays
+            $this->db = $this->load->database('write_db',true);
+        }else{
+            $system_setup_state = $system_setup_state_obj->row()->description;
+        }
+       
       
         if($system_setup_state == false){
             
