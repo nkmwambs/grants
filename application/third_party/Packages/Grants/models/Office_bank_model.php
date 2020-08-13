@@ -63,6 +63,12 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
     function detail_list(){}
 
+    function lookup_values(){
+      $lookup_values['bank'] = $this->db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
+
+      return $lookup_values;
+    }
+
     function master_view(){}
 
     public function list(){}
