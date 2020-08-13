@@ -838,6 +838,7 @@ class User_model extends MY_Model
             && count($this->session->departments) > 0
           ) 
           || $this->session->system_admin
+          || $active_controller == 'Menu'
         ){
           $has_permission = true;
         } 
