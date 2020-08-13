@@ -48,6 +48,14 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
 
   }
 
+  function show_add_button(){
+    // These items are automatically added by the system
+    if($this->session->system_admin){
+      return true;
+    }
+      
+  }
+
   function add($data_array){
     
     $crud_operations = $this->db->get('permission_label')->result_object();

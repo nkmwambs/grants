@@ -23,6 +23,18 @@
 </style>
 
 <div class='row'>
+  <div class='col-xs-12'>
+    <?php
+        if($this->grants->show_add_button('permission') && $this->user_model->check_role_has_permissions('permission','create')){
+            echo add_record_button('permission', false,null,false);
+        }
+    ?>   
+  </div>
+</div>
+
+<hr/>
+
+<div class='row'>
     <div class='col-xs-12'>
 
     <div class="panel panel-default" data-collapsed="0">
@@ -34,6 +46,8 @@
             </div>
 	    
             <div class="panel-body"  style="max-width:50; overflow: auto;">	
+
+            
                 <table class='table'>
                     <?php
                         foreach($permission_labels as $permission_label_id=>$permission_label){
