@@ -1977,6 +1977,19 @@ function feature_model_list_table_visible_columns() {
 
     }
 
+    function sanitize_post_value_before_insert($post_array, $column_value_from_post){
+      $update_post_array=[];
+      foreach($post_array['header'] as $column_name=>$column_value){
+        if($column_name==$column_value_from_post){
+          $column_value=sanitize_characters($column_value);
+        }
+         
+        $update_post_array['header'][$column_name]=$column_value;
+  
+      }
+      return $update_post_array;
+    }
+
     function lookup_values($table){
       
       $lookup_values = array();
