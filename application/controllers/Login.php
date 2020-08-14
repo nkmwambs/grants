@@ -85,6 +85,7 @@ public $controller;
     }
 
     function run_migrations(){
+        // Not in use at the moment since has been switch off in the migration config
         $this->load->library('migration');
 
         if ($this->migration->current() === FALSE)

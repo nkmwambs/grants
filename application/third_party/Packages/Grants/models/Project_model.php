@@ -24,11 +24,11 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
     function index(){}
 
     function lookup_tables(){
-      return array('funding_status','income_account','funder');
+      return array('funding_status','funder');
     }
 
     function detail_tables(){
-      return array('project_allocation');
+      return array('project_allocation','project_income_account');
     }
 
     public function master_table_visible_columns(){}

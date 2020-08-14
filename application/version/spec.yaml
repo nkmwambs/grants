@@ -52,6 +52,11 @@ grants:
   
   tables:
 
+    project_income_account:
+      lookup_tables:
+        - project
+        - income_account
+
     office_cash:
       lookup_tables:
         - account_system
