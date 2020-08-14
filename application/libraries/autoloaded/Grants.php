@@ -1566,12 +1566,20 @@ function create_missing_system_files_from_yaml_setup(){
   $specs_array = yaml_parse($raw_specs,0);
 
   $this->create_missing_system_files($specs_array);
+
 }
 
 function create_missing_system_files($table_array){
   foreach($table_array as $app_name => $app_tables){
     foreach($app_tables['tables'] as $table_name => $setup){
      $this->create_missing_system_files_methods($table_name,$app_name,$setup);
+
+     // Create approve item, 
+     $this->CI->grants_model->insert_missing_approveable_item($table_name);
+     $this->CI->grants_model->mandatory_fields($table_name);
+     $this->CI->grants_model->insert_status_if_missing($table_name);
+     $this->create_resource_upload_directory_structure();
+    
     }
   }
 }
