@@ -367,8 +367,9 @@ class Financial_report_model extends MY_Model{
         $office_account_system_ids = $this->db->get('office')->result_array();
        
         if(count($project_ids) > 0){
-            $this->db->where_in('project_id',$project_ids);
-            $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
+            $this->db->where_in('fk_project_id',$project_ids);
+            $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+            //$this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
             //$this->db->join('project_allocation','project_allocation.fk_income_account_id=income_account.income_account_id');
         }
         

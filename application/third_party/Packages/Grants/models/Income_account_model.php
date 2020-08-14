@@ -33,7 +33,7 @@ class Income_account_model extends MY_Model implements CrudModelInterface, Table
   }
 
   function detail_tables(){
-    return ['expense_account','project'];
+    return ['expense_account','project_income_account'];
   }
 
   function list(){
