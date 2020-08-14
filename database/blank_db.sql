@@ -1160,7 +1160,6 @@ CREATE TABLE `project` (
   `project_start_date` date NOT NULL,
   `project_end_date` date NOT NULL,
   `fk_funder_id` int(100) NOT NULL,
-  `fk_income_account_id` int(11) NOT NULL,
   `project_cost` double(10,2) NOT NULL,
   `fk_funding_status_id` int(100) DEFAULT NULL,
   `project_created_by` int(100) NOT NULL,
@@ -1170,10 +1169,8 @@ CREATE TABLE `project` (
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`project_id`),
-  KEY `fk_income_account_id` (`fk_income_account_id`),
   KEY `fk_funder_id` (`fk_funder_id`),
   KEY `fk_funding_status_id` (`fk_funding_status_id`),
-  CONSTRAINT `project_ibfk_1` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`),
   CONSTRAINT `project_ibfk_2` FOREIGN KEY (`fk_funder_id`) REFERENCES `funder` (`funder_id`),
   CONSTRAINT `project_ibfk_3` FOREIGN KEY (`fk_funding_status_id`) REFERENCES `funding_status` (`funding_status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A project is a single funded proposal that need to be implemented and reported as a unit. It''s related to single funder ';
@@ -1240,6 +1237,24 @@ CREATE TABLE `project_cost_proportion` (
   CONSTRAINT `project_cost_proportion_ibfk_1` FOREIGN KEY (`voucher_detail_id`) REFERENCES `voucher_detail` (`voucher_detail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `project_income_account` (
+  `project_income_account_id` int(100) NOT NULL AUTO_INCREMENT,
+  `project_income_account_name` varchar(100) NOT NULL,
+  `project_income_account_track_number` varchar(100) NOT NULL,
+  `fk_project_id` int(100) NOT NULL,
+  `fk_income_account_id` int(11) NOT NULL,
+  `project_income_account_created_date` date NOT NULL,
+  `project_income_account_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `project_income_account_created_by` int(100) NOT NULL,
+  `project_income_account_last_modified_by` int(100) NOT NULL,
+  `fk_approval_id` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  PRIMARY KEY (`project_income_account_id`),
+  KEY `fk_project_id` (`fk_project_id`),
+  KEY `fk_income_account_id` (`fk_income_account_id`),
+  CONSTRAINT `project_income_account_ibfk_1` FOREIGN KEY (`fk_project_id`) REFERENCES `project` (`project_id`),
+  CONSTRAINT `project_income_account_ibfk_2` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `reconciliation` (
   `reconciliation_id` int(100) NOT NULL AUTO_INCREMENT,
