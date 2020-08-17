@@ -2007,52 +2007,57 @@ function feature_model_list_table_visible_columns() {
       $this->CI->load->model($model);
 
       $current_model = $this->current_model;
-      
-      if(
-        (
-          method_exists($this->CI->$current_model,'lookup_values') && 
-          is_array($this->CI->$current_model->lookup_values($table)) 
-          && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
-        ) 
-      ){  
-        
-          $result = $this->CI->$current_model->lookup_values($table)[$table];
+      //try{
+        //throw new GrantsException;
+          if(
+            (
+              method_exists($this->CI->$current_model,'lookup_values') 
+              && !$this->CI->db->error()
+              && is_array($this->CI->$current_model->lookup_values($table)) 
+              && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
+            ) 
+          ){  
 
-          $ids_array = array_column($result,$this->primary_key_field($table));
-          $value_array = array_column($result,$this->name_field($table));
+            // if($this->CI->db->error()){
+            //   $this->CI->db->db_debug = false;
+            //   show_error('Db error occurred',500);
+            // }
+            
+              $result = $this->CI->$current_model->lookup_values($table)[$table];
 
-          $lookup_values = array_combine($ids_array,$value_array);
-          
-          // $count = 0;
+              $ids_array = array_column($result,$this->primary_key_field($table));
+              $value_array = array_column($result,$this->name_field($table));
 
-          // foreach ($value_array as $value) {
-          //   $lookup_values[$ids_array[$count]] = $value;
-          //   $count ++;
-          // }
-      }
-      elseif(         
-        (
-          method_exists($this->CI->$model,'lookup_values') && 
-          is_array($this->CI->$model->lookup_values())
-        )
-      ){
+              $lookup_values = array_combine($ids_array,$value_array);
+              
+              
+          }
+          elseif(         
+            (
+              method_exists($this->CI->$model,'lookup_values') && 
+              is_array($this->CI->$model->lookup_values())
+            )
+          ){
 
-        $result = $this->CI->$model->lookup_values();
+            $result = $this->CI->$model->lookup_values();
 
-        $ids_array = array_column($result,$this->primary_key_field($table));
-        $value_array = array_column($result,$this->name_field($table));
+            $ids_array = array_column($result,$this->primary_key_field($table));
+            $value_array = array_column($result,$this->name_field($table));
 
-        $lookup_values =  [];//array_combine($ids_array,$value_array);
-        $count = 0;
+            $lookup_values =  [];//array_combine($ids_array,$value_array);
+            $count = 0;
 
-        foreach ($value_array as $value) {
-          $lookup_values[$ids_array[$count]] = $value;
-          $count ++;
-        }
-        
-      }else{
-        $lookup_values = $this->CI->grants_model->lookup_values($table);
-      }
+            foreach ($value_array as $value) {
+              $lookup_values[$ids_array[$count]] = $value;
+              $count ++;
+            }
+            
+          }else{
+            $lookup_values = $this->CI->grants_model->lookup_values($table);
+          }
+    //}catch(GrantsException $e){    
+      //  show_error($e->db_error(),500);
+    //}
 
       return $lookup_values;
     }
