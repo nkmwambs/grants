@@ -36,6 +36,18 @@ class Contra_account_model extends MY_Model{
 
     }
 
+    function lookup_values(){
+
+        $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array(); 
+
+        if(!$this->session->system_admin){
+
+            $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',array('fk_account_system_id'=>$this->session->user_account_system))->result_array();
+        }
+  
+        return $lookup_values;
+      }
+  
     public function single_form_add_visible_columns(){
         //return ['contra_account_name','contra_account_code','contra_account_description','account_system_name','voucher_type_account_name','office_bank_name'];
     }
