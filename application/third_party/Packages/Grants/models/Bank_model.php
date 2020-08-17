@@ -81,6 +81,8 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
             }
             
             return $lookup_values;
+        }else{
+              $lookup_values['account_system'] = $results->result_array();
         }
         
     }

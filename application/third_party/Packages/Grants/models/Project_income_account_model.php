@@ -32,9 +32,9 @@ class Project_income_account_model extends MY_Model{
         return array('project','income_account');
     }
 
-    function single_form_add_visible_columns(){
-        return ['project_name','income_account_name'];
-    }
+    // function single_form_add_visible_columns(){
+    //     return ['project_name','income_account_name'];
+    // }
 
     public function detail_tables(){}
 
