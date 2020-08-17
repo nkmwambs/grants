@@ -64,8 +64,17 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
     function detail_list(){}
 
     function lookup_values(){
+      
       $lookup_values['bank'] = $this->db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
+      $lookup_values = $this->db->get('office_bank')->result_array();
 
+      if(!$this->session->system_admin){
+        $lookup_values['bank'] = $this->db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
+        
+        $this->read_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
+        $this->read_db->join('account_system','account_system.account_system_id=bank.fk_account_system_id');
+        $lookup_values = $this->db->get('office_bank')->result_array();
+      }
       return $lookup_values;
     }
 
