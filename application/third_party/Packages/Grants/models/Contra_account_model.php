@@ -38,14 +38,16 @@ class Contra_account_model extends MY_Model{
 
     function lookup_values(){
 
-        $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array(); 
+        // $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array(); 
 
-        if(!$this->session->system_admin){
+        // if(!$this->session->system_admin){
 
-            $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',array('fk_account_system_id'=>$this->session->user_account_system))->result_array();
-        }
+        //     $this->read_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
+        //     $this->read_db->join('account_system','account_system.account_system_id=bank.fk_account_system_id');
+        //     $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',array('account_system_code'=>$this->session->user_account_system))->result_array();
+        // }
   
-        return $lookup_values;
+        // return $lookup_values;
       }
   
     public function single_form_add_visible_columns(){
