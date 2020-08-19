@@ -30,6 +30,7 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
     function detail_tables(){
       return array('project_allocation','project_income_account');
     }
+    
 
     public function master_table_visible_columns(){}
 

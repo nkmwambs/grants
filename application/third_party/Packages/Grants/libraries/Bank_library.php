@@ -22,17 +22,5 @@ class Bank_library extends Grants
 
   }
 
-  function list(){
-
-    $result = $this->CI->Bank_model->list();
-
-    $table_array = array(
-      'table_header'=>$this->CI->general_library->camel_case_header('bank',$this->CI->Bank_model->hidden_columns),
-      'table_body'=>$result
-    );
-
-    return $this->CI->load->view('templates/list',$table_array,true);
-
-  }
-
+  
 }

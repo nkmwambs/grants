@@ -52,5 +52,11 @@ class Voucher_type_model extends MY_Model implements CrudModelInterface, TableRe
 
     return $voucher_type_is_cheque_referenced;
   }
+
+  function list_table_where(){
+    if(!$this->session->system_admin){
+      $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+    }
+  }
   
 }
