@@ -36,6 +36,12 @@ class Income_account_model extends MY_Model implements CrudModelInterface, Table
     return ['expense_account','project_income_account'];
   }
 
+  function list_table_where(){
+    if(!$this->session->system_admin){
+      $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+    }
+  }
+
   function list(){
 
   }
