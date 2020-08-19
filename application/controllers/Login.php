@@ -66,9 +66,9 @@ public $controller;
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-             //if(parse_url(base_url())['host'] == 'localhost'){
+             if(parse_url(base_url())['host'] == 'localhost'){
                 $this->grants->create_missing_system_files_from_yaml_setup(); 
-              //}
+              }
             
               // Create table permissions
              $this->grants_model->create_missing_page_access_permission();
