@@ -174,8 +174,31 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                 <tr>
                   <td class='hidden-print'>
                       <?php
-                        echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
+                        //echo $this->grants->action_list($detail_table_name,$row[$detail_table_name.'_id'],$is_approveable_item);
                       ?>
+                      <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+                        <?=get_phrase('action');?>
+                      <span class="caret"></span></button>
+                      <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                        <?php if($this->user_model->check_role_has_permissions(ucfirst($detail_table_name),'update')){ ?>
+                        <li><?=list_table_edit_action($detail_table_name,$row[$detail_table_name.'_id']);?></li>
+                        <li class="divider"></li>
+                        <?php }?>
+                        <?php if($this->user_model->check_role_has_permissions(ucfirst($detail_table_name),'delete')){ ?>
+                        <li><?=list_table_delete_action($detail_table_name,$row[$detail_table_name.'_id']);?></li>
+                        <?php }?>
+
+                        <?php if(
+                            !$this->user_model->check_role_has_permissions(ucfirst($detail_table_name),'update') && 
+                            !$this->user_model->check_role_has_permissions(ucfirst($detail_table_name),'delete')
+
+                        ){ 
+                            echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
+                        }?>
+
+                      </ul>
+                    </div>
                   </td>
                   <?php
                       
