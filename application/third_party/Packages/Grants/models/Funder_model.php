@@ -34,6 +34,12 @@ class Funder_model extends MY_Model implements CrudModelInterface, TableRelation
       return array('project');
     }
 
+    // function list_table_where(){
+    //   if(!$this->session->system_admin){
+    //     $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+    //   }
+    // }
+
     public function master_table_visible_columns(){}
 
     public function master_table_hidden_columns(){}

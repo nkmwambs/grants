@@ -32,6 +32,11 @@ class Office_cash_model extends MY_Model{
         return array('account_system');
     }
 
+    function list_table_where(){
+        if(!$this->session->system_admin){
+          $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+        }
+      }
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
