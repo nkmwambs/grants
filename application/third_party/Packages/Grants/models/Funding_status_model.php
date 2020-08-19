@@ -38,6 +38,15 @@ class Funding_status_model extends MY_Model{
         //return ['funding_status_name','funding_status_is_active'];
     }
 
+    public function list_table_where(){
+
+        if(!$this->session->system_admin){
+          
+          $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+        }
+    
+    }
+
     // function show_add_button(){
     //     return false;
     // }
