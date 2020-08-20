@@ -100,6 +100,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
       $this->id = hash_id($this->uri->segment(3,0),'decode');// Not sure what's this line does
     }elseif ($this->action == 'list') {
       $this->session->set_userdata('master_table',null);
+      $this->id = hash_id($this->uri->segment(3,0),'decode');// Use by filters only
     }
 
     $this->id = $this->uri->segment(3,null);
