@@ -22,6 +22,9 @@ function get_count_of_user_menu_items(){
 }
 
 function upsert_menu($menus){
+
+  $this->db = $this->load->database('write_db',true);
+
   $data = array();
   $this->load->model('permission_model');
 
@@ -29,7 +32,7 @@ function upsert_menu($menus){
         $data['menu_name'] = $menu;
         $data['menu_derivative_controller'] = $menu;
 
-        if($this->db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
+        if($this->write_db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
             $this->write_db->insert('menu',$data);
 
             $permission_data['menu_id'] = $this->write_db->insert_id();
@@ -37,10 +40,10 @@ function upsert_menu($menus){
 
             $this->permission_model->add($permission_data);
 
-            $this->grants_model->insert_missing_approveable_item(strtolower($menu));
-            $this->grants_model->mandatory_fields(strtolower($menu));
-            $this->grants_model->insert_status_if_missing(strtolower($menu));
-            $this->grants->create_resource_upload_directory_structure();
+            // $this->grants_model->insert_missing_approveable_item(strtolower($menu));
+            // $this->grants_model->mandatory_fields(strtolower($menu));
+            // $this->grants_model->insert_status_if_missing(strtolower($menu));
+            // $this->grants->create_resource_upload_directory_structure();
 
         }else{
           $this->write_db->where(array('menu_derivative_controller'=>$menu));

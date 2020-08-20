@@ -58,7 +58,7 @@ class Access_output{
     */
     function get_user_context_definition(int $user_id):Array{
 
-      $user_context_definition = "";
+      $user_context_definition = [];
   
       $this->db->select(array('context_definition_id','context_definition_name',
       'context_definition_level','context_definition_is_active'));
