@@ -54,16 +54,16 @@ class Context_global_model extends MY_Model{
             
         $context_global_data_to_insert = $this->grants_model->merge_with_history_fields('context_global',$context_global_data,false);
         
-        $this->db->trans_start();
+        $this->write_db->trans_start();
         
-        $this->db->insert('context_global',$context_global_data_to_insert);
+        $this->write_db->insert('context_global',$context_global_data_to_insert);
 
-        $this->db->trans_complete();
+        $this->write_db->trans_complete();
         
-        if($this->db->trans_status() == false){
-            show_error('Error occurred when populating context_global table ...',500,"An Error Occurred");
+        if($this->write_db->trans_status() == false){
+            show_error('Error occurred when populating context_global table',500,"An Error Occurred");
         }else{
-            return $this->db->insert_id();
+            return $this->write_db->insert_id();
         }
         
     } 
