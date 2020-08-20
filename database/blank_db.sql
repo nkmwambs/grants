@@ -18,7 +18,8 @@ CREATE TABLE `account_system` (
   `account_system_last_modified_date` date DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`account_system_id`)
+  PRIMARY KEY (`account_system_id`),
+  UNIQUE KEY `account_system_code` (`account_system_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -856,6 +857,7 @@ CREATE TABLE `office` (
   `fk_approval_id` int(11) DEFAULT NULL,
   `fk_status_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`office_id`),
+  UNIQUE KEY `office_code` (`office_code`),
   KEY `fk_approval_id` (`fk_approval_id`),
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_center_group_hierarchy_id` (`fk_context_definition_id`),
