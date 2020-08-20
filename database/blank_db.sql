@@ -750,8 +750,10 @@ CREATE TABLE `menu` (
   `menu_last_modified_by` int(100) DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`menu_id`)
+  PRIMARY KEY (`menu_id`),
+  UNIQUE KEY `menu_derivative_controller` (`menu_derivative_controller`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 CREATE TABLE `menu_user_order` (
