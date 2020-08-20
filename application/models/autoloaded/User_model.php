@@ -272,7 +272,7 @@ class User_model extends MY_Model
     */
 
     function get_user_context_association(int $user_id):Array {
-
+      
       $associations_array = array();
 
       $context_definition = $this->get_user_context_definition($user_id);

@@ -61,7 +61,7 @@ public $controller;
         // populate setup tables, add mandatory fields, create item approval flow and permissions
         $this->system_setup_check();
 
-        $this->run_migrations();
+        //$this->run_migrations();
         
 
         if ($this->session->userdata('user_login') == 1){
@@ -126,7 +126,7 @@ public $controller;
 
     function system_setup_check(){
 
-        $system_setup_state_obj = $this->db->get_where('setting',
+        $system_setup_state_obj = $this->write_db->get_where('setting',
         array('type'=>'system_setup_completed'));
 
         $system_setup_state = 0;

@@ -44,8 +44,8 @@ class Context_global_user_model extends MY_Model{
         $context_global_user_data['context_global_user_is_active'] = 1;
             
         $context_global_user_data_to_insert = $this->grants_model->merge_with_history_fields('context_global_user',$context_global_user_data,false);
-        $this->db->insert('context_global_user',$context_global_user_data_to_insert);
+        $this->write_db->insert('context_global_user',$context_global_user_data_to_insert);
     
-        return $this->db->insert_id();
+        return $this->write_db->insert_id();
     }
 }

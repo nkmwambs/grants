@@ -72,9 +72,9 @@ class Context_definition_model extends MY_Model{
             $context_definition_data['context_definition_created_date'] = date('Y-m-d');
             
             $context_definition_data_to_insert = $this->grants_model->merge_with_history_fields('context_definition',$context_definition_data,false);
-            $this->db->insert('context_definition',$context_definition_data);
+            $this->write_db->insert('context_definition',$context_definition_data);
 
-            $insert_ids[$context_definition_level] = $this->db->insert_id();
+            $insert_ids[$context_definition_level] = $this->write_db->insert_id();
         }
 
         return $insert_ids;
