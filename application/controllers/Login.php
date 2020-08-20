@@ -195,7 +195,9 @@ public $controller;
 
           //Update system_setup_completed setting to true if all tables are set up
           if($are_tables_populated){
-            $this->db->update('setting',array('description'=>true),array('type'=>'system_setup_completed'));
+            $setting_data['description'] = 1;
+            $this->write_db->where(array('type'=>'system_setup_completed'));
+            $this->write_db->update('setting',$setting_data);
           }
 
           // Create upload folders
