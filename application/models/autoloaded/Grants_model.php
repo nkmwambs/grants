@@ -805,7 +805,7 @@ function generate_item_track_number_and_name($approveable_item){
 
 function insert_missing_approveable_item($table){
 
-  $approve_items = $this->db->get_where('approve_item',array('approve_item_name'=>$table));
+  $approve_items = $this->write_db->get_where('approve_item',array('approve_item_name'=>$table));
 
   $approve_item_id = 0;
 

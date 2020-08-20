@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 	<?php
-	$system_name	=	$this->db->get_where('setting' , array('type'=>'system_name'))->row()->description;
-	$system_title	=	$this->db->get_where('setting' , array('type'=>'system_title'))->row()->description;
+	$system_name	=	$this->write_db->get_where('setting' , array('type'=>'system_name'))->row()->description;
+	$system_title	=	$this->write_db->get_where('setting' , array('type'=>'system_title'))->row()->description;
 	?>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -94,9 +94,9 @@ var baseurl = '<?php echo base_url();?>';
 						<?php 
 							$setup_email = "";
 							$disable_password = "";
-							$user_obj = $this->db->get('user');
+							$user_obj = $this->write_db->get('user');
 							if($user_obj->num_rows() == 1){
-								$setup_email = $this->db->get_where('setting',array('type'=>'system_email'))->row()->description;
+								$setup_email = $this->write_db->get_where('setting',array('type'=>'system_email'))->row()->description;
 								//$disable_password = "hide";
 							}
 						?>

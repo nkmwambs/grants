@@ -22,6 +22,9 @@ function get_count_of_user_menu_items(){
 }
 
 function upsert_menu($menus){
+
+  $this->db = $this->load->database('write_db',true);
+
   $data = array();
   $this->load->model('permission_model');
 
@@ -29,7 +32,7 @@ function upsert_menu($menus){
         $data['menu_name'] = $menu;
         $data['menu_derivative_controller'] = $menu;
 
-        if($this->db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
+        if($this->write_db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
             $this->write_db->insert('menu',$data);
 
             $permission_data['menu_id'] = $this->write_db->insert_id();
