@@ -51,7 +51,7 @@ core:
 grants:
   
   tables:
-
+    
     project_income_account:
       lookup_tables:
         - project
