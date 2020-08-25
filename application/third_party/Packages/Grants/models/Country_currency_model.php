@@ -32,7 +32,9 @@ class Country_currency_model extends MY_Model{
         return array();
     }
 
-    public function detail_tables(){}
+    public function detail_tables(){
+        return ['currency_conversion'];
+    }
 
     public function detail_multi_form_add_visible_columns(){}
 

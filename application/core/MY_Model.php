@@ -83,6 +83,18 @@ class MY_Model extends CI_Model
       return $this->_derived_lookup_tables($table_name);
     }
 
+    function list_table_where(){
+      $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
+      $filter_where_array = hash_id($this->CI->id,'decode') > 0 && !in_array($table,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
+      
+      print_r($filter_where_array);exit;
+
+      if(count($filter_where_array) > 0){
+        $this->db->where($filter_where_array);
+      }
+      
+    }
+
     public function detail_tables(){}
 
     public function master_table_visible_columns(){}
