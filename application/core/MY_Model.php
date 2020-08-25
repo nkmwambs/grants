@@ -92,7 +92,6 @@ class MY_Model extends CI_Model
       if(count($filter_where_array) > 0){
         $this->db->where($filter_where_array);
       }
-
       
     }
 
