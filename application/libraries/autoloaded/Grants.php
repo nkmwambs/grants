@@ -2006,6 +2006,8 @@ function feature_model_list_table_visible_columns() {
       $this->CI->load->model($model);
 
       $current_model = $this->current_model;
+      
+      // echo $this->CI->id; exit;
       //try{
         //throw new GrantsException;
           if(
@@ -2016,6 +2018,7 @@ function feature_model_list_table_visible_columns() {
               && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
             ) 
           ){  
+            
 
             // if($this->CI->db->error()){
             //   $this->CI->db->db_debug = false;
