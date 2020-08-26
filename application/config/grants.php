@@ -12,6 +12,8 @@
 	$config['use_select2_plugin'] = false;
 	$config['drop_only_center'] = true;
 
+	$config['tables_allowing_drop_only_centers'] = ['office_bank','project_allocation'];
+
 	//Set up configs - Change the sequence of this array if you know what yo are doing. These tables do not require approvals
 	$config['table_that_dont_require_history_fields'] = ['status','approve_item','approval_flow','ci_sessions'];
 	// Order of relationship MUST be maintained
