@@ -151,6 +151,13 @@ class MY_Model extends CI_Model
 
       foreach($lookup_tables as $lookup_table){
 
+        //This ensure only lowest level offices e.g. center
+        //$this->config->item('drop_only_center') && in_array($lookup_table,$this->config->item('tables_allowing_drop_only_centers')) && 
+        if($this->config->item('drop_only_center')  && $lookup_table=='office' && in_array($current_table,$this->config->item('tables_allowing_drop_only_centers'))){
+
+          $this->read_db->where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
+        }
+
         $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
 
         if(!$this->session->system_admin){
@@ -163,6 +170,7 @@ class MY_Model extends CI_Model
             if($check_if_table_has_account_system){
               $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
             }
+            
            
             $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
 
@@ -170,9 +178,13 @@ class MY_Model extends CI_Model
             $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
           }
         }else{
+          
+         
+
           if($this->id==null){
             $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
           }else{
+
             $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
           }
         }
