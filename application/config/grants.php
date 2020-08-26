@@ -9,7 +9,7 @@
 	$config['max_priority_menu_items'] = 8;
 	$config['default_launch_page'] = "Dashboard";
 	$config['use_context_office'] = false;
-	$config['use_select2_plugin'] = false;
+	$config['use_select2_plugin'] = true;
 	$config['drop_only_center'] = true;
 
 	$config['tables_allowing_drop_only_centers'] = ['office_bank','project_allocation','office_cash'];
