@@ -161,32 +161,21 @@ class MY_Model extends CI_Model
         $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
 
         if(!$this->session->system_admin){
-          if($this->id==null) {
-            
-            if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
-              $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
-            }
 
-            if($check_if_table_has_account_system){
-              $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
-            }
-            
-           
-            $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
-
-          }else{
-            $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
+          if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
+            $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
           }
+
+          if($check_if_table_has_account_system){
+            $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
+          }
+
+          $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+
         }else{
           
-         
-
-          if($this->id==null){
-            $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
-          }else{
-
-            $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
-          }
+          $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+          
         }
       }
 
