@@ -317,7 +317,7 @@ function check_if_table_has_account_system($table){
   {
     $table_has_account_system = true;
   }
-
+//echo 1;exit;
   return $table_has_account_system;
 }
 
