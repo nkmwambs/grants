@@ -63,29 +63,27 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
     function detail_list(){}
 
-    function lookup_values(){
+    // function lookup_values(){
       
-      $lookup_values['bank'] = $this->read_db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
-      $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array();
+    //   $lookup_values = [];
+    
+    //   if(!$this->session->system_admin){
+    //     if($this->id==null) {
+    //       $this->read_db->join('account_system', 'account_system.account_system_id=bank.fk_account_system_id');
+    //       $lookup_values['bank'] = $this->read_db->get_where('bank',array('account_system_code'=>$this->session->user_account_system))->result_array();
+    //     }else{
+    //       $lookup_values['bank'] = $this->read_db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
+    //     }
+    //   }else{
+    //     if($this->id==null){
+    //       $lookup_values['bank'] = $this->read_db->get('bank')->result_array();
+    //     }else{
+    //       $lookup_values['bank'] = $this->read_db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
+    //     }
+    //   }
 
-      if(!$this->session->system_admin){
-      //  if($this->id==null) {
-
-      //  $this->read_db->join('account_system', 'account_system.account_system_id=bank.fk_account_system_id');
-      //    $lookup_values['bank'] = $this->read_db->get_where('bank',array('account_system_code'=>$this->session->user_account_system))->result_array();
-      //   }
-        //else{
-          $lookup_values['bank'] = $this->read_db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
-        //}
-        
-        
-        
-        $this->read_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
-        $this->read_db->join('account_system','account_system.account_system_id=bank.fk_account_system_id');
-        $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array();
-      }
-      return $lookup_values;
-    }
+    //   return $lookup_values;
+    // }
 
     function master_view(){}
 

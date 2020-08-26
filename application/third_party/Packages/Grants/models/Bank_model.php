@@ -73,32 +73,25 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
 
-  function lookup_values()
-  {
+  // function lookup_values()
+  // {
 
-    $lookup_values = [];
+  //   $lookup_values = [];
 
+  //   if (!$this->session->system_admin) {
+  //     $results = $this->db->select(array('account_system_id', 'account_system_name'))->get_where('account_system', array('account_system_code' => $this->session->user_account_system));
 
-
-    if (!$this->session->system_admin) {
-
-      $lookup_values['bank']=$this->read_db->get('bank')->result_array();
-
-      $results = $this->db->select(array('account_system_id', 'account_system_name'))->get_where('account_system', array('account_system_code' => $this->session->user_account_system));
-
-      if ($results->num_rows() > 0) {
-        $lookup_values['account_system'] = $results->result_array();
-      }
-
+  //     if ($results->num_rows() > 0) {
+  //       $lookup_values['account_system'] = $results->result_array();
+  //     }
       
-      
-    } else {
-      $results = $this->db->select(array('account_system_id', 'account_system_name'))->get_where('account_system', array('account_system_code' => $this->session->user_account_system));
-      $lookup_values['account_system'] = $results->result_array();
-    }
+  //   } else {
+  //     $results = $this->db->select(array('account_system_id', 'account_system_name'))->get('account_system');
+  //     $lookup_values['account_system'] = $results->result_array();
+  //   }
 
-    return $lookup_values;
-  }
+  //   return $lookup_values;
+  // }
 
   // function render_view_page_data(){
   //   return ['Hello'];

@@ -141,6 +141,46 @@ class MY_Model extends CI_Model
       return [];
     }
 
+    function lookup_values(){
+
+      $current_table =  strtolower($this->controller);
+
+      $lookup_tables = $this->grants->lookup_tables($current_table);
+
+      $lookup_values = [];
+
+      foreach($lookup_tables as $lookup_table){
+
+        $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
+
+        if(!$this->session->system_admin){
+          if($this->id==null) {
+            
+            if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
+              $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
+            }
+
+            if($check_if_table_has_account_system){
+              $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
+            }
+           
+            $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+
+          }else{
+            $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
+          }
+        }else{
+          if($this->id==null){
+            $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+          }else{
+            $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
+          }
+        }
+      }
+
+      return $lookup_values;
+    }
+
     /**
      * Use is a master table to filter the values of the lookup columns
      * Lookup tables are keys of the condition arrays
