@@ -158,7 +158,8 @@ class MY_Model extends CI_Model
           $this->read_db->where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
         }
 
-        $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
+        //$check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
+        $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($current_table);
 
         if(!$this->session->system_admin){
           if($this->id==null) {
@@ -166,7 +167,7 @@ class MY_Model extends CI_Model
             if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
               $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
             }
-
+             //echo $current_table; exit;
             if($check_if_table_has_account_system){
               $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
             }
