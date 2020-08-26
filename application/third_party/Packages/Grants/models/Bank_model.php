@@ -16,34 +16,38 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
   public $protected = array(); // ...Or you can set an array with the fields that cannot be filled by insert/update
   public $hidden_columns = array();
 
-  function __construct(){
+  function __construct()
+  {
     parent::__construct();
     $this->load->database();
-
   }
 
-  function index(){
-
+  function index()
+  {
   }
 
 
-  function delete($id = null){
-
+  function delete($id = null)
+  {
   }
 
-  function lookup_tables(){
+  function lookup_tables()
+  {
     return ['account_system'];
   }
 
-  function detail_tables(){
+  function detail_tables()
+  {
     return ['office_bank'];
   }
 
-  public function list_table_visible_columns(){
-    return ['bank_track_number','bank_name','bank_swift_code','bank_is_active','account_system_name'];
+  public function list_table_visible_columns()
+  {
+    return ['bank_track_number', 'bank_name', 'bank_swift_code', 'bank_is_active', 'account_system_name'];
   }
 
-  function list(){
+  function list()
+  {
     // $table_columns = $this->grants->table_columns('approval',$this->hidden_columns);
     // $this->db->select($table_columns);
     // $this->db->join('approval_status','approval_status.approval_status_id=approval.fk_approval_status_id');
@@ -51,8 +55,8 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
     //return $this->db->get('bank')->result_array();
   }
 
-  function view(){
-
+  function view()
+  {
   }
 
   /**
@@ -63,46 +67,48 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
    * 
    * @return Array
    */
-  function transaction_validate_duplicates_columns(){
+  function transaction_validate_duplicates_columns()
+  {
     return ['bank_swift_code'];
   }
 
-  
-  function lookup_values(){
-        
-        $lookup_values = [];
-        
-        if(!$this->session->system_admin){
-            $results = $this->db->select(array('account_system_id','account_system_name'))->
-            get_where('account_system',array('account_system_code'=>$this->session->user_account_system));
 
-            if($results->num_rows() > 0){
-                $lookup_values['account_system'] = $results->result_array();
-            }
-            
-            return $lookup_values;
-        }else{
-              $lookup_values['account_system'] = $results->result_array();
-        }
-        
-    }
+  // function lookup_values()
+  // {
+
+  //   $lookup_values = [];
+
+  //   if (!$this->session->system_admin) {
+  //     $results = $this->db->select(array('account_system_id', 'account_system_name'))->get_where('account_system', array('account_system_code' => $this->session->user_account_system));
+
+  //     if ($results->num_rows() > 0) {
+  //       $lookup_values['account_system'] = $results->result_array();
+  //     }
+      
+  //   } else {
+  //     $results = $this->db->select(array('account_system_id', 'account_system_name'))->get('account_system');
+  //     $lookup_values['account_system'] = $results->result_array();
+  //   }
+
+  //   return $lookup_values;
+  // }
 
   // function render_view_page_data(){
   //   return ['Hello'];
   // }
 
-  function list_table_where(){
-    if(!$this->session->system_admin){
-      $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+  function list_table_where()
+  {
+    if (!$this->session->system_admin) {
+      $this->db->where(array('account_system_code' => $this->session->user_account_system));
     }
-    
   }
 
 
   // function transaction_validate_duplicates_columns(){
   //   return ['bank_name','bank_swift_code'];
   // }
-  
-  
- 
+
+
+
 }

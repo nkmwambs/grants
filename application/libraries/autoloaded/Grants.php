@@ -309,6 +309,18 @@ function lookup_tables(String $table_name = ""): Array{
   return $lookup_tables;
 }
 
+function check_if_table_has_account_system($table){
+
+  $table_has_account_system = false;
+
+  if ($this->CI->read_db->field_exists('fk_account_system_id', $table))
+  {
+    $table_has_account_system = true;
+  }
+
+  return $table_has_account_system;
+}
+
 /**
  * dependant_table
  * 
@@ -2006,16 +2018,19 @@ function feature_model_list_table_visible_columns() {
       $this->CI->load->model($model);
 
       $current_model = $this->current_model;
+      
+      // echo $this->CI->id; exit;
       //try{
         //throw new GrantsException;
           if(
             (
               method_exists($this->CI->$current_model,'lookup_values') 
-              && !$this->CI->db->error()
+              //&& !$this->CI->db->error()
               && is_array($this->CI->$current_model->lookup_values($table)) 
               && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
             ) 
           ){  
+            
 
             // if($this->CI->db->error()){
             //   $this->CI->db->db_debug = false;
