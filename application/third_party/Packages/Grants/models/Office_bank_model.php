@@ -63,27 +63,29 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
     function detail_list(){}
 
-    // function lookup_values(){
-      
-    //   $lookup_values = [];
-    
-    //   if(!$this->session->system_admin){
-    //     if($this->id==null) {
-    //       $this->read_db->join('account_system', 'account_system.account_system_id=bank.fk_account_system_id');
-    //       $lookup_values['bank'] = $this->read_db->get_where('bank',array('account_system_code'=>$this->session->user_account_system))->result_array();
-    //     }else{
-    //       $lookup_values['bank'] = $this->read_db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
-    //     }
-    //   }else{
-    //     if($this->id==null){
-    //       $lookup_values['bank'] = $this->read_db->get('bank')->result_array();
-    //     }else{
-    //       $lookup_values['bank'] = $this->read_db->get_where('bank',array('bank_id'=>hash_id($this->id,'decode')))->result_array();
-    //     }
-    //   }
+    function lookup_values(){
+      $lookup_values=parent::lookup_values();// get all implementation from mother 'MY_model then overide the key 'office''
 
-    //   return $lookup_values;
-    // }
+      if($this->config->item('drop_only_center')){
+
+        if(!$this->session->system_admin){
+
+          $this->read_db->join('account_system','account_system.account_system_id=office.fk_account_system_id');
+
+          $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
+
+        }
+      
+        $this->read_db->where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
+        $lookup_values['office']=$this->read_db->get('office')->result_array();
+
+      }
+      
+
+      return $lookup_values;
+      
+      
+    }
 
     function master_view(){}
 

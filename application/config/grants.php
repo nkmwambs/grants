@@ -10,6 +10,7 @@
 	$config['default_launch_page'] = "Dashboard";
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = false;
+	$config['drop_only_center'] = true;
 
 	//Set up configs - Change the sequence of this array if you know what yo are doing. These tables do not require approvals
 	$config['table_that_dont_require_history_fields'] = ['status','approve_item','approval_flow','ci_sessions'];
