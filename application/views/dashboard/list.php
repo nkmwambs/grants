@@ -1,5 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-//if ($this->session->system_admin) {
+if ($this->session->system_admin) {
 
   //print_r($this->session->hierarchy_offices);
   //echo hash_id('1Oz3jEmZWr','decode');
@@ -9,7 +9,7 @@
   print_r($lookup_values);
   //print_r($this->session->context_definition['context_definition_id']);
 
-//}
+}
 
 ?>
 
