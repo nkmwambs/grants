@@ -85,9 +85,9 @@ class MY_Model extends CI_Model
 
     function list_table_where(){
       $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
-      $filter_where_array = hash_id($this->CI->id,'decode') > 0 && !in_array($table,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
+      $filter_where_array = hash_id($this->id,'decode') > 0 && !in_array($this->controller,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
       
-      print_r($filter_where_array);exit;
+      //print_r($filter_where_array);exit;
 
       if(count($filter_where_array) > 0){
         $this->db->where($filter_where_array);
@@ -139,6 +139,46 @@ class MY_Model extends CI_Model
 
     public function currency_fields(){
       return [];
+    }
+
+    function lookup_values(){
+
+      $current_table =  strtolower($this->controller);
+
+      $lookup_tables = $this->grants->lookup_tables($current_table);
+
+      $lookup_values = [];
+
+      foreach($lookup_tables as $lookup_table){
+
+        $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
+
+        if(!$this->session->system_admin){
+          if($this->id==null) {
+            
+            if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
+              $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
+            }
+
+            if($check_if_table_has_account_system){
+              $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
+            }
+           
+            $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+
+          }else{
+            $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
+          }
+        }else{
+          if($this->id==null){
+            $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+          }else{
+            $lookup_values[$lookup_table] = $this->read_db->get_where($lookup_table,array($lookup_table.'_id'=>hash_id($this->id,'decode')))->result_array();
+          }
+        }
+      }
+
+      return $lookup_values;
     }
 
     /**
