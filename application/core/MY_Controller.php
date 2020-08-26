@@ -53,7 +53,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     * to access the a particular page that you are trying to access. Action like edit point to apage
    */
   public $has_permission = false;
-  public $sub_action;
+  public $sub_action = null;
   public $capped_controller;
 
   //public $widget = null;
