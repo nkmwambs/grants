@@ -170,7 +170,7 @@ class Fields_base{
     return $field;
   }
 
-  function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = ''){
+  function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = '', $multi_select_field = ''){
 
     if($onchange_function_name == ''){
      $onchange_function_name =  'onchange_'.$this->column;
@@ -187,12 +187,21 @@ class Fields_base{
     $name = 'detail['.$this->column.'][]';
     $master_class = "detail";
 
+    $multiple = "";
+    $hide_select_label = "";
+
     if($this->is_header){
       $id = $this->column;
       $name = 'header['.$this->column.']';
       $master_class = 'master';
-    }
 
+      if($multi_select_field != "" && 'fk_'.$multi_select_field.'_id' == $this->column){
+        $multiple = "multiple='multiple'";
+        $hide_select_label = "hidden";
+        $name = 'header['.$this->column.'][]';
+      }
+
+    }
 
     $this->set_default_field_value();
    
@@ -200,8 +209,8 @@ class Fields_base{
 
     $select2 = $this->CI->config->item('use_select2_plugin')?'select2':'no-select';
 
-    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' required='required'>
-            <option value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
+    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' required='required' ".$multiple.">
+            <option class='".$hide_select_label."' value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
               foreach ($options as $option_value=>$option_html) {
