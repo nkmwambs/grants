@@ -23,7 +23,9 @@ class MY_Model extends CI_Model
       $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
       $filter_where_array = hash_id($this->id,'decode') > 0 && !in_array($this->controller,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
       
-      //print_r($filter_where_array);exit;
+      //if(strtolower($this->controller) !== 'account_system'){
+        //$this->grants->join_tables_with_account_system($this->controller);
+     // }
 
       if(count($filter_where_array) > 0){
         $this->db->where($filter_where_array);
@@ -87,6 +89,8 @@ class MY_Model extends CI_Model
 
       foreach($lookup_tables as $lookup_table){
 
+        $this->read_db->select(array($lookup_table.'_id',$lookup_table.'_name'));
+
         //This ensure only lowest level offices e.g. center
         //$this->config->item('drop_only_center') && in_array($lookup_table,$this->config->item('tables_allowing_drop_only_centers')) && 
         if($this->config->item('drop_only_center')  && $lookup_table=='office' && in_array($current_table,$this->config->item('tables_allowing_drop_only_centers'))){
@@ -94,17 +98,29 @@ class MY_Model extends CI_Model
           $this->read_db->where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
         }
 
-        $check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
+        //$check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
 
         if(!$this->session->system_admin){
 
-          if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
-            $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
-          }
+        //  $array_intersect = array_intersect($this->grants->lookup_tables($lookup_table),$this->config->item('tables_with_account_system_relationship'));
 
-          if($check_if_table_has_account_system){
-            $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
-          }
+        //   if(count($array_intersect)>0){
+        //     $this->read_db->join($array_intersect[0],$array_intersect[0].'.'.$array_intersect[0].'_id='.$lookup_table.'.fk_'.$array_intersect[0].'_id');
+        //     $this->read_db->join('account_system', 'account_system.account_system_id='.$array_intersect[0].'.fk_account_system_id');
+        //     $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
+        //   }
+
+        //   if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
+        //     $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
+        //   }
+
+        //   if($check_if_table_has_account_system){
+        //     $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
+        //   }
+
+        if(strtolower($this->controller) !== 'account_system'){
+          $this->grants->join_tables_with_account_system($lookup_table);
+        }
 
           $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
 
