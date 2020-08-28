@@ -231,6 +231,8 @@ class Fields_base{
 
     $select .= "</select>";
 
+    $select .= "<script>function ".$onchange_function_name."(elem){}</script>";
+
     return $select;
   }
 

@@ -179,21 +179,33 @@ function generate_item_track_number_and_name($approveable_item){
      *  'detail'=>[],
      * ]
      */
+  $message = "";
   if(count($multi_select_field_values) > 0){
     
     unset($header[$multi_select_field_name]);
-    
+    $success = 0;
+    $failed = 0;
     foreach($multi_select_field_values as $multi_select_field_value){
       
       $header[$multi_select_field_name] = $multi_select_field_value;
 
-      $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
+      $returned_validation_message = $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
+
+      if($returned_validation_message == get_phrase('insert_successful')){
+        $success ++;
+      }else{
+        $failed ++;
+      }
+
     }
+
+    $message .= $success .' '. str_replace('_',' ',$this->controller) .' inserted and '.$failed.' failed';
     
   }else{
-    $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
+    $message = $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
   }
    
+  return $message;
   
   }
 
