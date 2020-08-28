@@ -142,20 +142,77 @@ function generate_item_track_number_and_name($approveable_item){
     // Check if there is a before insert method set in the feature model wrapped via grants model
     $post_array = $this->grants->action_before_insert($post_array);
 
+    //$detail = [];
     // Extract the post array into header and detail variables
     extract($post_array);
 
     // Determine if the input post has details or not by checking if the detail variable is set
     $post_has_detail = isset($detail)?true:false;
+    $detail = $post_has_detail?$detail:[];
 
     // Check if the creation of the of the header and detail records requires an approval ticket
     $header_record_requires_approval = $this->approveable_item($this->controller);
     //$detail_records_require_approval = $this->approveable_item($this->controller.'_detail');
     $detail_records_require_approval = $this->approveable_item($this->grants->dependant_table($this->controller));
 
-    // Start a transaction
-    $this->write_db->trans_begin();
+    // Get the table name of multi select field
+    $multi_select_field_name = 'fk_'.$this->grants->multi_select_field().'_id';
 
+    $multi_select_field_values = [];
+
+    if($this->grants->multi_select_field() != ''){
+      $multi_select_field_values = $header[$multi_select_field_name];
+      //echo json_encode($multi_select_field_values);exit;
+    }
+
+    // Start a transaction
+    /**
+     * $post = [
+     *  'header'=>[
+     *    'role_permission_track_number'='CBNAJS',
+     *    'role_permission_name'=>'role permission name'
+     *    'fk_permission_id'=>[
+     *          0=>'Read',
+     *          1=>'Update',
+     *      ]
+     * ],
+     *  'detail'=>[],
+     * ]
+     */
+  $message = "";
+  if(count($multi_select_field_values) > 0){
+    
+    unset($header[$multi_select_field_name]);
+    $success = 0;
+    $failed = 0;
+    foreach($multi_select_field_values as $multi_select_field_value){
+      
+      $header[$multi_select_field_name] = $multi_select_field_value;
+
+      $returned_validation_message = $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
+
+      if($returned_validation_message == get_phrase('insert_successful')){
+        $success ++;
+      }else{
+        $failed ++;
+      }
+
+    }
+
+    $message .= $success .' '. str_replace('_',' ',$this->controller) .' inserted and '.$failed.' failed';
+    
+  }else{
+    $message = $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
+  }
+   
+  return $message;
+  
+  }
+
+
+  function add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail = []){
+    $this->write_db->trans_begin();
+    
     $approval = array();
     $details = array();
 
