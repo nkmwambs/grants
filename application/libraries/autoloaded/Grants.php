@@ -321,6 +321,25 @@ function check_if_table_has_account_system($table){
   return $table_has_account_system;
 }
 
+function join_tables_with_account_system($table){
+
+  $array_intersect = array_intersect($this->lookup_tables($table),$this->CI->config->item('tables_with_account_system_relationship'));
+
+  //if($table !== 'account_system'){
+      if($this->check_if_table_has_account_system($table)){
+        $this->CI->read_db->join('account_system', 'account_system.account_system_id='.$table.'.fk_account_system_id');
+        $this->CI->read_db->where(array('account_system_code'=>$this->CI->session->user_account_system));
+       
+      }elseif(count($array_intersect)>0){
+        $this->CI->read_db->join($array_intersect[0],$array_intersect[0].'.'.$array_intersect[0].'_id='.$table.'.fk_'.$array_intersect[0].'_id');
+        $this->CI->read_db->join('account_system', 'account_system.account_system_id='.$array_intersect[0].'.fk_account_system_id');
+        $this->CI->read_db->where(array('account_system_code'=>$this->CI->session->user_account_system));
+      }elseif($table == 'account_system'){
+        $this->CI->read_db->where(array('account_system_code'=>$this->CI->session->user_account_system));
+      }
+  //}
+}
+
 /**
  * dependant_table
  * 
