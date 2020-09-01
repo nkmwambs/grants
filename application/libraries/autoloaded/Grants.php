@@ -321,6 +321,25 @@ function check_if_table_has_account_system($table){
   return $table_has_account_system;
 }
 
+function join_tables_with_account_system($table){
+
+  $array_intersect = array_intersect($this->lookup_tables($table),$this->CI->config->item('tables_with_account_system_relationship'));
+
+  //if($table !== 'account_system'){
+      if($this->check_if_table_has_account_system($table)){
+        $this->CI->read_db->join('account_system', 'account_system.account_system_id='.$table.'.fk_account_system_id');
+        $this->CI->read_db->where(array('account_system_code'=>$this->CI->session->user_account_system));
+       
+      }elseif(count($array_intersect)>0){
+        $this->CI->read_db->join($array_intersect[0],$array_intersect[0].'.'.$array_intersect[0].'_id='.$table.'.fk_'.$array_intersect[0].'_id');
+        $this->CI->read_db->join('account_system', 'account_system.account_system_id='.$array_intersect[0].'.fk_account_system_id');
+        $this->CI->read_db->where(array('account_system_code'=>$this->CI->session->user_account_system));
+      }elseif($table == 'account_system'){
+        $this->CI->read_db->where(array('account_system_code'=>$this->CI->session->user_account_system));
+      }
+  //}
+}
+
 /**
  * dependant_table
  * 
@@ -971,7 +990,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         $field = $field_type."_field";
 
         if($field_type == 'select' && count($this->set_field_type[$column]['options']) > 0){
-          return $f->select_field($this->set_field_type[$column]['options'], $field_value);
+          return $f->select_field($this->set_field_type[$column]['options'], $field_value,false,'',$this->multi_select_field());
         }else{
           return $f->$field($field_value);
         }
@@ -983,7 +1002,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // The column should be in the name format and not id e.g. fk_user_id be user_name
         $lookup_table = strtolower(substr($column,0,-5));
         //echo $lookup_table;
-        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value);
+        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value,'',$this->multi_select_field());
      
       }elseif(strrpos($column,'_is_') == true ){
         
@@ -2221,6 +2240,23 @@ function feature_model_list_table_visible_columns() {
         }
       }
 
+    }
+
+    function multi_select_field($table_name = ""){
+
+      $model = $this->load_detail_model($table_name);
+
+      $multi_select_field =  '';
+    
+      if(method_exists($this->CI->$model,'multi_select_field') && 
+          strlen($this->CI->$model->multi_select_field()) > 0
+        ){
+
+        $multi_select_field = $this->CI->$model->multi_select_field();
+       
+      }
+
+      return $multi_select_field;
     }
 
     // function computed_currency_conversion_rate($base_curreny_id = "",$office_currency_id = "",$user_currency_id = ""){

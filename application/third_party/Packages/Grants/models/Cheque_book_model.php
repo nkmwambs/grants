@@ -29,7 +29,7 @@ class Cheque_book_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array();
+        return array('office_bank');
     }
 
     function single_form_add_visible_columns(){
@@ -39,4 +39,6 @@ class Cheque_book_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    static function get_menu_list(){}
 }

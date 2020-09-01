@@ -45,7 +45,7 @@ class Element{
       $panel_head = "<div class='panel-heading'>";
       $panel_head .= "<div class='panel-title'>";
       $panel_head .= "<i class='".$icon."'></i>";
-      $panel_head .= $title;
+      $panel_head .= str_replace('_',' ',$title);
       $panel_head .= "</div>";
       $panel_head .= "</div>";
   
