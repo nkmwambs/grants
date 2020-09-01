@@ -45,4 +45,17 @@ class System_opening_balance_model extends MY_Model{
     function single_form_add_visible_columns(){
         return ['system_opening_balance_name','month','office_name'];
     }
+
+    function list_table_where(){
+        if(!$this->session->system_admin){
+            $this->db->join('account_system','account_system.account_system_id=office.fk_account_system_id'); 
+            
+            if($this->config->item('tables_with_account_system_relationship')){
+                $this->db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+                $this->db->where(array('context_definition_level'=>1));
+            }
+
+            return $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+        }
+    }
 }
