@@ -1186,9 +1186,9 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
   }
   
 
-  if(method_exists($this->$model,$model_where_method)){
-    $this->$model->$model_where_method();
-  }
+  // if(method_exists($this->$model,$model_where_method)){
+  //   $this->$model->$model_where_method();
+  // }
 
   if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
     foreach ($lookup_tables as $lookup_table) {
@@ -1202,7 +1202,9 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
     }
   }
 
-  
+  if(method_exists($this->$model,$model_where_method)){
+    $this->$model->$model_where_method();
+  }
 
   //View OUTPUT API defined condition array
   if(is_array($filter_where_array) && count($filter_where_array) > 0){
