@@ -19,5 +19,5 @@ class Request_detail extends MY_Controller
 
   function index(){}
 
-
+  static function get_menu_list(){}
 }
