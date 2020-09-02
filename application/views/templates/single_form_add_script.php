@@ -13,7 +13,7 @@ $(".save, .save_new").on('click',function(ev){
   $('.form-control').each(function(i,el){
 
     if($(el).hasClass('select2')){
-      //$(el).find(':selected');
+      // To be completed later. Check if select2 is empty
     }else{
       if($(el).val() == ''){
         $(el).css('border','1px solid red');
