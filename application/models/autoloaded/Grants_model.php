@@ -1333,10 +1333,10 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
     $this->load->model($model);
 
-    if(method_exists($this->$model,'list_table_where') ){
-      // This is always a $this->db->where statement
-      $this->$model->list_table_where();
-    }
+    // if(method_exists($this->$model,'list_table_where') ){
+    //   // This is always a $this->db->where statement
+    //   $this->$model->list_table_where();
+    // }
 
     return $this->db->get($table)->row();
   }
@@ -1493,6 +1493,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
     
         $this->db->select($visible_columns);
         $this->db->where(array($table.'_id'=>hash_id($this->id,'decode')));
+        //print_r($this->grants_get_row($table));exit;
         return $this->grants_get_row($table);
   }
 

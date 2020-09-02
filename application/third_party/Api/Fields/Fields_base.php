@@ -34,6 +34,8 @@ class Fields_base{
 
     $all_fields = $this->CI->grants_model->table_fields_metadata($this->table);
 
+    //print_r($all_fields);exit;
+
     $array_of_columns = array_column($all_fields,'name');
     $array_of_types = array_column($all_fields,'type');
 
@@ -72,6 +74,10 @@ class Fields_base{
       }
 
     }
+
+    // if($this->column == 'fk_fk_role_id'){
+    //   echo $field_type;exit;
+    // }
 
     return $field_type;
 
@@ -171,7 +177,7 @@ class Fields_base{
   }
 
   function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = '', $multi_select_field = ''){
-
+    
     if($onchange_function_name == ''){
      $onchange_function_name =  'onchange_'.$this->column;
     } 

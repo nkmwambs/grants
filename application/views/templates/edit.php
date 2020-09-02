@@ -80,9 +80,13 @@ $(".edit, .edit_continue").on('click',function(ev){
    //Check if all required fields are filled
    var empty_fields_count = 0;
   $('.form-control').each(function(i,el){
-    if($(el).val() == ''){
-      $(el).css('border','1px solid red');
-      empty_fields_count++;
+    if($(el).hasClass('select2')){
+      //$(el).find(':selected');
+    }else{
+      if($(el).val() == ''){
+        $(el).css('border','1px solid red');
+        empty_fields_count++;
+      }
     }
   });
 
