@@ -71,10 +71,10 @@ public $controller;
               }
             
               // Create table permissions
-             $this->grants_model->create_missing_page_access_permission();
+             //$this->grants_model->create_missing_page_access_permission();
             
             // Create mandatory role_permission for default launch page  
-            $this->create_mandatory_role_permissions();
+            $this->create_default_launch_page_role_permissions();
             
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
@@ -94,14 +94,14 @@ public $controller;
         }
     }
 
-    function create_mandatory_role_permissions(){
+    function create_default_launch_page_role_permissions(){
         
-        $default_page = $this->config->item('default_launch_page');
+        $default_page = $this->config->item('default_launch_page');// Ex. Dashboard
         
         $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
         $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
         $role_permission_obj = $this->db->get_where('role_permission',
-        array('menu.menu_name'=>$default_page,
+        array('menu.menu_derivative_controller'=>$default_page,
         'role_permission.fk_role_id'=>$this->session->role_id));
 
         $role_name = $this->db->get_where('role',
@@ -111,7 +111,7 @@ public $controller;
             
             $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
             $permission_obj = $this->db->get_where('permission',
-            array('menu_name'=>$default_page));
+            array('menu_derivative_controller'=>$default_page));
 
             $role_permission_data['role_permission_name'] = "Read permission for ".$default_page." by ".$role_name;
             $role_permission_data['role_permission_is_active'] = 1;
