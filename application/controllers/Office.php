@@ -119,6 +119,12 @@ class Office extends MY_Controller
 
     $this->db->select(array($reporting_context_definition_table.'_id',$reporting_context_definition_table.'_name'));
     $this->db->join('office','office.office_id='.$reporting_context_definition_table.'.fk_office_id');
+
+    if(!$this->session->system_admin){
+      $this->db->join('account_system','account_system.account_system_id=office.fk_account_system_id');
+      $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+    }
+
     $result = $this->db->get_where($reporting_context_definition_table,array('office_is_active'=>1))->result_array();
 
     $office_contexts_combine = combine_name_with_ids($result,$reporting_context_definition_table.'_id',$reporting_context_definition_table.'_name');
