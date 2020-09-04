@@ -59,8 +59,34 @@ function upsert_menu($menus){
 
       if(count($removed_controllers) > 0){
         foreach ($removed_controllers as $removed_controller) {
-          $this->db->where(array('menu_derivative_controller'=>$removed_controller));
-          $this->db->delete('menu');
+          
+          $this->write_db->trans_start();
+
+          $removed_menu = $this->write_db->get_where('menu',
+          array('menu_derivative_controller'=>$removed_controller))->row();
+
+          // Get the all CRUD permission records from write db
+            $this->write_db->where(array('fk_menu_id'=>$removed_menu->menu_id));
+            $all_menu_permissions_obj = $this->write_db->get('permission');
+
+            if($all_menu_permissions_obj->num_rows() > 0){
+                foreach($all_menu_permissions_obj->result_object() as $permission){
+                  $permission_id = $permission->permission_id;
+
+                  $this->write_db->where(array('fk_permission_id'=>$permission_id));
+                  $this->write_db->delete('role_permission');
+                }
+            }
+
+          // Remove all permission: Note role_permission are deleted using ON DELETE CASCADE
+              $this->write_db->where(array('fk_menu_id'=>$removed_menu->menu_id));
+              $this->write_db->delete('permission');
+
+          // Delete the menu
+          $this->write_db->where(array('menu_derivative_controller'=>$removed_controller));
+          $this->write_db->delete('menu');
+
+          $this->write_db->trans_commit();
         }
       }
 
