@@ -274,7 +274,7 @@ class Financial_report_model extends MY_Model{
     }
 
     function month_income_account_receipts($office_ids, $start_date_of_month,$project_ids = []){
-
+        //print_r($project_ids);exit;
         $income_accounts = $this->income_accounts($office_ids,$project_ids);
 
         $month_income = [];
@@ -282,12 +282,12 @@ class Financial_report_model extends MY_Model{
         foreach($income_accounts as $income_account){
             $month_income[$income_account['income_account_id']] = $this->_get_account_month_income($office_ids,$income_account['income_account_id'],$start_date_of_month,$project_ids);
         }
-
+        //print_r($month_income);exit;
         return $month_income;
     }
 
     function _get_account_month_income($office_ids,$income_account_id,$start_date_of_month,$project_ids = []){
-        
+        //echo $income_account_id;exit;
         $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
 
         $month_income = 0;
@@ -427,9 +427,11 @@ class Financial_report_model extends MY_Model{
         // bank_expense = voucher of voucher_type_effect_code == expense or bank_contra and voucher_type_account_code == bank 
         // cash_income = voucher of voucher_type_effect_code == income or bank_contra and voucher_type_account_code == cash 
         // cash_expense = voucher of voucher_type_effect_code == expense or cash_contra and voucher_type_account_code == cash 
-    
+        
         $voucher_detail_total_cost = 0;
         $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+        $this->db->where(array('voucher_date<='=>$end_of_reporting_month));
 
         //$cond_string = "(voucher_type_account_code = '".$voucher_type_account."' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = 'contra' )";
         
