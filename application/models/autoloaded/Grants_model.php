@@ -379,7 +379,7 @@ function generate_item_track_number_and_name($approveable_item){
     return ['flag'=>$validation_successful,'error_message'=>$failure_message];
   }
 
-  public function transaction_validate_duplicates(String $table_name, Array $insert_array, Array $validation_fields = [],int $allowable_records = 1){
+  public function transaction_validate_duplicates(String $table_name, Array $insert_array, Array $validation_fields = [],int $allowable_records = 0){
 
     $validation_successful = true;
     $failure_message = get_phrase('duplicate_entries_not_allowed');
