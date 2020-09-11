@@ -79,4 +79,10 @@ class Account_system_model extends MY_Model{
         return $this->write_db->insert();
     }
 
+    function show_add_button(){
+        if(!$this->session->system_admin){
+            return false;
+        }
+    }
+
 }
