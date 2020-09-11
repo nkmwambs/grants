@@ -443,3 +443,25 @@ if(!function_exists('sanitize_characters')){
 }
 
 
+if(!function_exists('list_detail_tables')){
+	function list_detail_tables($master_table = ''){
+
+		$CI =& get_instance();
+		
+		if($master_table == ''){
+			$master_table = strtolower($CI->controller);
+		}
+		
+		$tables = $CI->read_db->list_tables();
+
+        foreach($tables as $row_id => $table){
+            if(!in_array('fk_'.$master_table.'_id',$CI->read_db->list_fields($table))){
+                unset($tables[$row_id]);
+            }
+        }
+
+        return $tables;
+	}
+}
+
+

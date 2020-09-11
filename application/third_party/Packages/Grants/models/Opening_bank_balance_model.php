@@ -35,4 +35,20 @@ class Opening_bank_balance_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function lookup_values(){
+        $lookup_values = [];
+        
+        if($this->id !== null){
+          
+           $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
+           array('system_opening_balance_id'=>hash_id($this->id,'decode')))->result_array();
+
+           $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',
+           array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id']))->result_array();
+
+           return $lookup_values;
+        }
+        
+    } 
 }

@@ -33,12 +33,16 @@ class System_opening_balance_model extends MY_Model{
     }
 
     function show_add_button(){
-        return true;
+        if(!$this->session->system_admin){
+            return false;
+        }else{
+            return true;
+        }
     }
 
-    public function detail_tables(){
-        return ['opening_fund_balance','opening_cash_balance','opening_bank_balance','opening_allocation_balance','opening_outstanding_cheque','opening_deposit_transit'];
-    }
+    // public function detail_tables(){
+    //     return ['opening_fund_balance','opening_cash_balance','opening_bank_balance','opening_allocation_balance','opening_outstanding_cheque','opening_deposit_transit'];
+    // }
 
     public function detail_multi_form_add_visible_columns(){}
 
@@ -58,4 +62,6 @@ class System_opening_balance_model extends MY_Model{
             return $this->db->where(array('account_system_code'=>$this->session->user_account_system));
         }
     }
+
+    
 }
