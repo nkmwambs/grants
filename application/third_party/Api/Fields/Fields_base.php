@@ -34,6 +34,8 @@ class Fields_base{
 
     $all_fields = $this->CI->grants_model->table_fields_metadata($this->table);
 
+    //print_r($all_fields);exit;
+
     $array_of_columns = array_column($all_fields,'name');
     $array_of_types = array_column($all_fields,'type');
 
@@ -72,6 +74,10 @@ class Fields_base{
       }
 
     }
+
+    // if($this->column == 'fk_fk_role_id'){
+    //   echo $field_type;exit;
+    // }
 
     return $field_type;
 
@@ -165,13 +171,14 @@ class Fields_base{
     extract($this->input_fields($value));
 
     $field =  '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $field .= '<script src="'.base_url().'assets/js/bootstrap-datepicker.js"></script>';
     $field .= "<script>$('.datepicker').datepicker({format:'yyyy-mm-dd'});</script>"; 
     
     return $field;
   }
 
   function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = '', $multi_select_field = ''){
-
+    
     if($onchange_function_name == ''){
      $onchange_function_name =  'onchange_'.$this->column;
     } 
@@ -210,7 +217,7 @@ class Fields_base{
     $select2 = $this->CI->config->item('use_select2_plugin')?'select2':'no-select';
 
     $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' required='required' ".$multiple.">
-            <option class='".$hide_select_label."' value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
+            <option class='".$hide_select_label."' value=''>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
               foreach ($options as $option_value=>$option_html) {
@@ -227,8 +234,7 @@ class Fields_base{
               }
               
             }
-            
-
+    
     $select .= "</select>";
 
     $select .= "<script>function ".$onchange_function_name."(elem){}</script>";

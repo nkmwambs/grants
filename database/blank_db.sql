@@ -873,6 +873,7 @@ CREATE TABLE `office_bank` (
   `fk_office_id` int(100) DEFAULT NULL,
   `fk_bank_id` int(100) DEFAULT NULL,
   `office_bank_is_active` int(5) DEFAULT '1',
+  `office_bank_is_default` int(5) DEFAULT '0',
   `office_bank_created_date` date DEFAULT NULL,
   `office_bank_created_by` int(100) DEFAULT NULL,
   `office_bank_last_modified_date` timestamp NULL DEFAULT NULL,

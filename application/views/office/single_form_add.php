@@ -20,9 +20,9 @@
 
                     <div class='form-group'>
                         <div class='col-xs-12'  style='text-align:center;'>
-                            <button id='' class='btn btn-default btn-reset'>Reset</button>
-                            <button id='' class='btn btn-default btn-save'>Save</button>
-                            <button id='' class='btn btn-default btn-save-new'>Save and New</button>
+                            <button  class='btn btn-default btn-reset'>Reset</button>
+                            <button  class='btn btn-default btn-save'>Save</button>
+                            <button  class='btn btn-default btn-save-new'>Save and New</button>
                         </div>
                     </div>
 
@@ -59,7 +59,7 @@
 
                         <label class='col-xs-2 control-label'>Reporting Context</label>
                         <div class='col-xs-4' id='div_office_context'>
-                            <select class='form-control' disabled='disabled'></select>
+                            <select class='form-control select2' disabled='disabled'></select>
                         </div>
                         
                     </div>
@@ -92,9 +92,9 @@
 
                     <div class='form-group'>
                         <div class='col-xs-12'  style='text-align:center;'>
-                            <button id='' class='btn btn-default btn-reset'>Reset</button>
-                            <button id='' class='btn btn-default btn-save'>Save</button>
-                            <button id='' class='btn btn-default btn-save-new'>Save and New</button>
+                            <button  class='btn btn-default btn-reset'>Reset</button>
+                            <button  class='btn btn-default btn-save'>Save</button>
+                            <button  class='btn btn-default btn-save-new'>Save and New</button>
                         </div>
                     </div>
 
@@ -118,8 +118,9 @@
                 //alert(response);
 
                 var obj = JSON.parse(response);
-
+                console.log(obj.office_context);
                 $("#div_office_context").html(obj.office_context);
+                $("#div_office_context").find('select').removeClass('select2');
             }
         });
     });
@@ -171,11 +172,11 @@ function onchange_fk_context_definition_id(elem){
 
 }
 
-function onchange_office_context(){
+function onchange_office_context(elem){
 
 }
 
-function onchange_fk_account_system_id(){
+function onchange_fk_account_system_id(elem){
 
 }
 

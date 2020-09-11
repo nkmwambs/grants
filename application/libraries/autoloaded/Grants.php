@@ -1048,7 +1048,7 @@ function add_form_fields(Array $visible_columns_array): Array {
 
 
 function edit_form_fields(Array $visible_columns_array): Array {
-
+  //print_r($visible_columns_array);exit;
   $fields = array();
   
   foreach ($visible_columns_array as $column => $value) {
@@ -1461,16 +1461,19 @@ function edit_query($table){
   $edit_query = array();
 
   foreach($keys as $column => $value){
-    if(strpos($column,'_id') == true && $column !== $table.'_id' ){
+    // Remove approval and Status fields
+
+    if($column == 'fk_approval_id' || $column == 'fk_status_id') continue;
+
+    if(strpos($column,'_id') == true && $column !== strtolower($table).'_id' ){
       $edit_query[substr($column,0,-3).'_name'] = $value;
     }else{
       $edit_query[$column] = $value;
     }
 
   }
-
-  //print_r($edit_query);
-  //exit();
+  //echo hash_id($this->CI->id,'decode');exit;
+  //print_r($edit_query);exit();
   return $edit_query;
 }
 
@@ -2249,7 +2252,8 @@ function feature_model_list_table_visible_columns() {
       $multi_select_field =  '';
     
       if(method_exists($this->CI->$model,'multi_select_field') && 
-          strlen($this->CI->$model->multi_select_field()) > 0
+          strlen($this->CI->$model->multi_select_field()) > 0 && 
+          $this->CI->action !== 'edit'
         ){
 
         $multi_select_field = $this->CI->$model->multi_select_field();

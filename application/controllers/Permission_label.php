@@ -22,7 +22,7 @@ class Permission_label extends MY_Controller
   function result($id = ""){
 
     // Create a missing CRUD Page Access permission
-    $this->grants_model->create_missing_page_access_permission();
+    //$this->grants_model->create_missing_page_access_permission();
 
     $permissions = $this->_get_permissions_grouped_by_label();
 
