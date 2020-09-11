@@ -35,4 +35,15 @@ class Opening_deposit_transit_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function single_form_add_visible_columns(){
+        return [
+            'opening_deposit_transit_name',
+            'system_opening_balance_name',
+            'opening_deposit_transit_description',
+            'office_bank_name',
+            'opening_deposit_transit_date',
+            'opening_deposit_transit_amount'
+        ];
+    }
 }
