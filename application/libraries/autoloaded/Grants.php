@@ -2052,12 +2052,7 @@ function feature_model_list_table_visible_columns() {
               && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
             ) 
           ){  
-            
 
-            // if($this->CI->db->error()){
-            //   $this->CI->db->db_debug = false;
-            //   show_error('Db error occurred',500);
-            // }
             
               $result = $this->CI->$current_model->lookup_values($table)[$table];
 

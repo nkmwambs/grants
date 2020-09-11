@@ -29,7 +29,9 @@ class MY_Model extends CI_Model
       
     }
 
-    public function detail_tables(){}
+    public function detail_tables(){
+      return list_detail_tables();
+    }
 
     public function master_table_visible_columns(){}
   
