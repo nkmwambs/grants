@@ -35,4 +35,16 @@ class Opening_outstanding_cheque_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function single_form_add_visible_columns(){
+        return [
+                'opening_outstanding_cheque_name',
+                'opening_outstanding_cheque_description',
+                'opening_outstanding_cheque_date',
+                'system_opening_balance_name',
+                'office_bank_name',
+                'opening_outstanding_cheque_number',
+                'opening_outstanding_cheque_amount',
+            ];
+    }
 }
