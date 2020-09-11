@@ -53,9 +53,9 @@ class Office_bank_project_allocation_model extends MY_Model{
         return ['office_bank_name','project_allocation_name'];
     }
 
-    function lookup_values(){
-        $lookup_values['office_bank'] = $this->db->get_where('office_bank',array('office_bank_id'=>hash_id($this->id,'decode')))->result_array();
+    // function lookup_values(){
+    //     $lookup_values['office_bank'] = $this->db->get_where('office_bank',array('office_bank_id'=>hash_id($this->id,'decode')))->result_array();
   
-        return $lookup_values;
-      }
+    //     return $lookup_values;
+    //   }
 }
