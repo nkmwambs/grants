@@ -20,16 +20,12 @@ class MY_Model extends CI_Model
     }
 
     function list_table_where(){
-      $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
-      $filter_where_array = hash_id($this->id,'decode') > 0 && !in_array($this->controller,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
+      // $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
+      // $filter_where_array = hash_id($this->id,'decode') > 0 && !in_array($this->controller,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
       
-      //if(strtolower($this->controller) !== 'account_system'){
-        //$this->grants->join_tables_with_account_system($this->controller);
-     // }
-
-      if(count($filter_where_array) > 0){
-        $this->db->where($filter_where_array);
-      }
+      // if(count($filter_where_array) > 0){
+      //   $this->db->where($filter_where_array);
+      // }
       
     }
 
