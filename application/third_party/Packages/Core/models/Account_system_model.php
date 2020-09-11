@@ -44,7 +44,7 @@ class Account_system_model extends MY_Model{
     }
 
     public function detail_tables(){
-        //return ['office'];
+        return list_detail_tables();
     }
 
     function lookup_values(){
@@ -82,6 +82,14 @@ class Account_system_model extends MY_Model{
     function show_add_button(){
         if(!$this->session->system_admin){
             return false;
+        }else{
+            return true;
+        }
+    }
+
+    function list_table_where(){
+        if(!$this->session->system_admin){
+            $this->db->where(array('account_system_code'=>$this->session->user_account_system));
         }
     }
 
