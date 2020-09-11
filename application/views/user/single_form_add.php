@@ -202,6 +202,10 @@ function onchange_fk_context_definition_id(elem){
             }else{
                 $('.user_message').html(null);
             }
+
+            $("#div_office_context").find('select').removeClass('select2');
+            $("#div_user_department").find('select').removeClass('select2');
+            $("#div_user_designation").find('select').removeClass('select2');
         }
     });
 }
