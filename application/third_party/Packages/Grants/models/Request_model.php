@@ -59,11 +59,11 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
 
   public function view(){}
 
-  function lookup_values($table){
+  function lookup_values(){
     
     $lookup_values = [];
 
-    if($table == 'office'){
+    //if($table == 'office'){
 
       if(count($this->session->hierarchy_offices) == 0){
         $message = "You do not have offices in your hierarchy. 
@@ -78,7 +78,7 @@ class Request_model extends MY_Model implements CrudModelInterface, TableRelatio
         }
       }
      
-    }
+    //}
 
     if($table = 'project_allocation'){
 

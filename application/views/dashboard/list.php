@@ -2,7 +2,11 @@
 if ($this->session->system_admin) {
 
   //print_r($this->session->hierarchy_offices);
-  print_r($this->user_model->get_user_context_association(1));
+  //echo hash_id('1Oz3jEmZWr','decode');
+
+  $this->read_db->join('account_system', 'account_system.account_system_id=bank.fk_account_system_id');
+  $lookup_values['bank'] = $this->read_db->get_where('bank',array('account_system_code'=>$this->session->user_account_system))->result_array();
+  print_r($lookup_values);
   //print_r($this->session->context_definition['context_definition_id']);
 
 }
