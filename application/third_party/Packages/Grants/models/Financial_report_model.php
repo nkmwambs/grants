@@ -140,6 +140,8 @@ class Financial_report_model extends MY_Model{
             $opening_balances[$income_account['income_account_id']] = $this->_get_income_account_opening_balance($office_ids,$income_account['income_account_id'],$start_date_of_month,$project_ids);
         }
 
+        //print_r($opening_balances);exit;
+
         return $opening_balances;
     }
 
@@ -165,12 +167,14 @@ class Financial_report_model extends MY_Model{
 
         }else{
 
-            $this->db->select_sum('opening_allocation_balance_amount');
-            $this->db->group_by('fk_income_account_id');
-            $this->db->join('opening_allocation_balance','opening_allocation_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
-            $this->db->join('project_allocation','project_allocation.project_allocation_id=opening_allocation_balance.fk_project_allocation_id');
-            $this->db->join('project','project.project_id=project_allocation.fk_project_id');
-
+            $this->db->select_sum('opening_fund_balance_amount');
+            $this->db->group_by(array('fk_income_account_id'));
+            $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+            $this->db->join('income_account','income_account.income_account_id=opening_fund_balance.fk_income_account_id');
+            $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+            $this->db->join('project','project.project_id=project_income_account.fk_project_id');
+            $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+            
             if(count($project_ids) > 0){
                 $this->db->where_in('fk_project_id',$project_ids);
             }   
@@ -274,7 +278,7 @@ class Financial_report_model extends MY_Model{
     }
 
     function month_income_account_receipts($office_ids, $start_date_of_month,$project_ids = []){
-
+        //print_r($project_ids);exit;
         $income_accounts = $this->income_accounts($office_ids,$project_ids);
 
         $month_income = [];
@@ -282,12 +286,12 @@ class Financial_report_model extends MY_Model{
         foreach($income_accounts as $income_account){
             $month_income[$income_account['income_account_id']] = $this->_get_account_month_income($office_ids,$income_account['income_account_id'],$start_date_of_month,$project_ids);
         }
-
+        //print_r($month_income);exit;
         return $month_income;
     }
 
     function _get_account_month_income($office_ids,$income_account_id,$start_date_of_month,$project_ids = []){
-        
+        //echo $income_account_id;exit;
         $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
 
         $month_income = 0;
@@ -428,9 +432,11 @@ class Financial_report_model extends MY_Model{
         // bank_expense = voucher of voucher_type_effect_code == expense or bank_contra and voucher_type_account_code == bank 
         // cash_income = voucher of voucher_type_effect_code == income or bank_contra and voucher_type_account_code == cash 
         // cash_expense = voucher of voucher_type_effect_code == expense or cash_contra and voucher_type_account_code == cash 
-    
+        
         $voucher_detail_total_cost = 0;
         $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+
+        $this->db->where(array('voucher_date<='=>$end_of_reporting_month));
 
         //$cond_string = "(voucher_type_account_code = '".$voucher_type_account."' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = 'contra' )";
         

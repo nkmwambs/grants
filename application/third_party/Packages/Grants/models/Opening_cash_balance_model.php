@@ -49,6 +49,9 @@ class Opening_cash_balance_model extends MY_Model{
            $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',
            array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id']))->result_array();
 
+           $lookup_values['office_cash'] = $this->read_db->get_where('office_cash',
+           array('fk_account_system_id'=>$this->session->user_account_system_id))->result_array();
+
            return $lookup_values;
         }
         

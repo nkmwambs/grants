@@ -706,7 +706,7 @@ class Financial_report extends MY_Controller
     $this->write_db->trans_start();
 
         $this->write_db->where(array('financial_report_id'=>$financial_report_obj->row()->financial_report_id));
-        $update_financial_report_data['financial_report_statement_balance'] = $post['bank_statement_balance'];
+        //$update_financial_report_data['financial_report_statement_balance'] = $post['bank_statement_balance'];
         $update_financial_report_data['financial_report_statement_date'] = $post['statement_date'];
         $this->write_db->update('financial_report',$update_financial_report_data);
      
@@ -841,23 +841,33 @@ function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
 
 function update_bank_reconciliation_balance(){
   $post = $_POST;
-  
-  if(count($post['office_ids']) > 1 || count($post['project_ids']) > 1){
+
+  $this->write_db->trans_start();
+
+ 
+  if(count($post['office_ids']) > 1 && is_array($post['project_ids']) && count($post['project_ids']) > 1){
     echo "Cannot update balances when multiple offices, banks or projects are selected";
+  
   }else{
 
-    $this->write_db->trans_start();
     $financial_report_id = $this->db->get_where('financial_report',
     array('financial_report_month'=>$post['reporting_month'],'fk_office_id'=>$post['office_ids'][0]))->row()->financial_report_id;
 
-    $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
-    $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+    $office_bank_id = 0;
+
+    if(is_array($post['project_ids']) && count($post['project_ids']) > 1){
+
+      $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+      $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
     
-    $office_bank_id = $this->db->get_where('office_bank',
-    array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
+      
+      $office_bank_id = $this->db->get_where('office_bank',
+      array('fk_project_id'=>$post['project_ids'][0]))->row()->office_bank_id;
 
     $condition_array = array('fk_financial_report_id'=>$financial_report_id,'fk_office_bank_id'=>$office_bank_id);
-
+    }else{
+      $condition_array = array('fk_financial_report_id'=>$financial_report_id);
+    }
     // Check if reconciliation record exists and update else create
 
     $reconciliation_record = $this->db->get_where('reconciliation',$condition_array)->num_rows();
@@ -882,6 +892,9 @@ function update_bank_reconciliation_balance(){
       $this->write_db->insert('reconciliation',$data);
 
     }else{
+
+     //$condition_array = array('fk_financial_report_id'=>$financial_report_id);
+
       $this->write_db->where($condition_array);
 
       $data['reconciliation_statement_balance'] = $post['balance'];
@@ -900,6 +913,8 @@ function update_bank_reconciliation_balance(){
 
 
   }
+
+  
 }
 
 static function get_menu_list(){}

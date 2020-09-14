@@ -86,7 +86,9 @@
 </div>
 
 <hr/>
-<?php if(!$multiple_offices_report && $multiple_projects_report && !$financial_report_submitted){?>
+<?php //if(!$multiple_offices_report && $multiple_projects_report && !$financial_report_submitted) 
+if(!$financial_report_submitted){
+    ?>
     <div class="row">
         <div class="col-xs-12" style="text-align:center;">
             <div class='btn btn-default' id="submit_report"><?=get_phrase('submit');?></div>
