@@ -821,9 +821,9 @@ class User_model extends MY_Model
 
       $permission = $this->session->role_permissions;
 
-      //if(isset($permission[$active_controller][$permission_type]) && array_key_exists($permission_label,$permission[$active_controller][$permission_type])){
-        //$this->update_permitted_permission_labels_based_on_depth($active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
-      //}
+      if(isset($permission[$active_controller][$permission_type]) && array_key_exists($permission_label,$permission[$active_controller][$permission_type])){
+        $permission = $this->update_permitted_permission_labels_based_on_depth($permission,$active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
+      }
 
       $lookup_tables = $this->grants->lookup_tables($this->controller);
 
