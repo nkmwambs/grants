@@ -858,10 +858,12 @@ CREATE TABLE `office` (
   `fk_status_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`office_id`),
   UNIQUE KEY `office_code` (`office_code`),
-  KEY `fk_approval_id` (`fk_approval_id`),
-  KEY `fk_status_id` (`fk_status_id`),
-  KEY `fk_center_group_hierarchy_id` (`fk_context_definition_id`),
-  KEY `fk_account_system_id` (`fk_account_system_id`)
+  KEY `fk_context_definition_id` (`fk_context_definition_id`),
+  KEY `fk_country_currency_id` (`fk_country_currency_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `office_ibfk_1` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`),
+  CONSTRAINT `office_ibfk_2` FOREIGN KEY (`fk_country_currency_id`) REFERENCES `country_currency` (`country_currency_id`),
+  CONSTRAINT `office_ibfk_3` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the remote sites for the organization';
 
 
@@ -1165,9 +1167,9 @@ CREATE TABLE `project` (
   `project_code` varchar(10) NOT NULL,
   `project_description` varchar(100) DEFAULT NULL,
   `project_start_date` date NOT NULL,
-  `project_end_date` date NOT NULL,
+  `project_end_date` date DEFAULT '0000-00-00',
   `fk_funder_id` int(100) NOT NULL,
-  `project_cost` double(10,2) NOT NULL,
+  `project_cost` double(10,2) DEFAULT '0.00',
   `fk_funding_status_id` int(100) DEFAULT NULL,
   `project_created_by` int(100) NOT NULL,
   `project_last_modified_by` int(100) NOT NULL,
