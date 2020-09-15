@@ -496,10 +496,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
         if($voucher_type_effect_code == 'income'){
           $spread[$count]['account_id'] = $fk_income_account_id;
-        }elseif($voucher_type_effect_code == 'bank_contra'){
-          $spread[$count]['account_id'] = $fk_bank_contra_account_id;
-        }elseif($voucher_type_effect_code == 'cash_contra'){  
-          $spread[$count]['account_id'] = $fk_cash_contra_account_id;
+        }elseif($voucher_type_effect_code == 'bank_contra' || $voucher_type_effect_code == 'cash_contra'){
+          $spread[$count]['account_id'] = $fk_contra_account_id;
         }else{
           $spread[$count]['account_id'] = $fk_expense_account_id;
         }

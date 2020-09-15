@@ -810,7 +810,7 @@ $(".btn-insert").on('click',function(){
     }  
 });
 
-//function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
+
 function updateAccountAndAllocationField(){
     var office_id = $("#office").val();
 
@@ -992,6 +992,7 @@ $(document).on('change','.allocation',function(){
     var voucher_type_id = $("#voucher_type").val();
     var transaction_date = $("#transaction_date").val();
     var office_bank_id = !$("#bank").attr('disabled')?$("#bank").val():0;
+    var row = $(this).closest('tr');
 
     var url = "<?=base_url();?>voucher/get_accounts_for_project_allocation/";
     var data = {'office_id':office_id,'allocation_id':allocation_id,'voucher_type_id':voucher_type_id,'transaction_date':transaction_date,'office_bank_id':office_bank_id};
@@ -1015,7 +1016,7 @@ $(document).on('change','.allocation',function(){
                     $(".account").prop('disabled','disabled');
                 }
 
-                $(".account").html(accounts_select_option);
+                row.find(".account").html(accounts_select_option);
         });
     }
 
