@@ -1,8 +1,12 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
  
+$perm = $this->session->role_permissions;
 //print_r($this->session->role_permissions);
-//print_r($this->user_model->update_permitted_permission_labels_based_on_depth($this->session->role_permissions,'Voucher','update',1));
-
+//print_r($this->user_model->check_role_has_permissions('Voucher','read'));
+//print_r($this->user_model->permission_label_depth('create'));
+//print_r($this->session->role_permissions);
+//print_r($this->user_model->update_permitted_permission_labels_based_on_depth($perm,'Voucher','read',1));
+//print_r($this->user_model->get_user_permissions(4));
 extract($result);
 //echo isset($this->session->master_table)?$this->session->master_table:"Not set";/ Create -> Read -> Update -> Delete
 ?>
