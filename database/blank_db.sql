@@ -1190,7 +1190,7 @@ CREATE TABLE `project_allocation` (
   `project_allocation_track_number` varchar(100) DEFAULT NULL,
   `fk_project_id` int(100) DEFAULT NULL,
   `project_allocation_name` varchar(100) DEFAULT NULL,
-  `project_allocation_amount` int(100) DEFAULT NULL,
+  `project_allocation_amount` int(100) DEFAULT '0',
   `project_allocation_is_active` int(5) DEFAULT '0',
   `fk_office_id` int(100) DEFAULT NULL,
   `fk_status_id` int(11) DEFAULT NULL,

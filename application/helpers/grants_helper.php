@@ -464,4 +464,44 @@ if(!function_exists('list_detail_tables')){
 	}
 }
 
+if(!function_exists('tables_with_account_system_relationship')){
+	function tables_with_account_system_relationship(){
+		
+		$CI =& get_instance();
+
+		$tables = $CI->read_db->list_tables();
+		
+		$tables_with_account_system_relationship = [];
+
+		foreach($tables as $table){
+			$table_fields = $CI->read_db->list_fields($table);
+
+			foreach($table_fields as $table_field){
+				if($table_field == 'fk_account_system_id'){
+					$tables_with_account_system_relationship[] = $table;
+				}
+			}
+		}
+
+		return $tables_with_account_system_relationship;
+	}
+}	
+
+// if(!function_exists('list_lookup_tables')){
+// 	function list_lookup_tables($table_name){
+		
+// 		$CI =& get_instance();
+
+// 		$table_fields = $CI->read_db->list_fields($table_name);
+
+// 		$list_lookup_tables = [];
+
+// 		foreach($table_fields as $table_field){
+// 			if($table_field == 'fk_account_system_id'){
+// 				$list_lookup_tables[] = $table;
+// 			}
+// 		}
+// 	}
+// }
+
 

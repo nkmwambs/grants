@@ -286,7 +286,7 @@ class Menu_library {
           $this->CI->session->set_userdata('breadcrumb_list',array($this->CI->uri->segment(1,'')));
         }
 
-        if(array_pop($breadcrumb_list) !== $this->CI->uri->segment(1,'') ){
+        if(array_pop($breadcrumb_list) !== $this->CI->uri->segment(1,'') && ){
           $breadcrumb_list = $this->CI->session->breadcrumb_list;
           $new = array($this->CI->uri->segment(1,'') );
 
