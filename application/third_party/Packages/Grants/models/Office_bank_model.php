@@ -63,6 +63,20 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
     function detail_list(){}
 
+    function action_before_insert($post_array){
+      $office_bank_is_default = $post_array['header']['office_bank_is_default'];
+      $office_id = $post_array['header']['fk_office_id'];
+      
+      $count_of_existing_default_bank_account = $this->read_db->get_where('office_bank',
+      array('fk_office_id'=>$office_id,'office_bank_is_default'=>1,'office_bank_is_active'=>1))->num_rows();
+
+      if($office_bank_is_default == 1 && $count_of_existing_default_bank_account > 0){
+        $post_array['header']['office_bank_is_default'] = 0;
+      }
+
+      return $post_array;
+    }
+
     // function lookup_values(){
     //   $lookup_values=parent::lookup_values();// get all implementation from mother 'MY_model then overide the key 'office''
 
