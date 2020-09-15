@@ -424,6 +424,10 @@ function generate_item_track_number_and_name($approveable_item){
     return $fields;
   }
 
+  /**
+  * Similar implementation in MY_Model - Prefer using the MY_Model
+  */
+
   function lookup_tables($table_name = ""){
     //return $this->my_model->lookup_tables();
 
