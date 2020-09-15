@@ -170,9 +170,9 @@ class Fields_base{
 
     extract($this->input_fields($value));
 
+    $value = $value == "0000-00-00" ? '': $value;
+
     $field =  '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
-    $field .= '<script src="'.base_url().'assets/js/bootstrap-datepicker.js"></script>';
-    $field .= "<script>$('.datepicker').datepicker({format:'yyyy-mm-dd'});</script>"; 
     
     return $field;
   }
