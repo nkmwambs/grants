@@ -810,7 +810,7 @@ $(".btn-insert").on('click',function(){
     }  
 });
 
-//function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
+
 function updateAccountAndAllocationField(){
     var office_id = $("#office").val();
 

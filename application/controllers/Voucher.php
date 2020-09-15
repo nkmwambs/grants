@@ -361,8 +361,10 @@ class Voucher extends MY_Controller
     $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
+    //$response['test'] = $voucher_type_effect_and_code;
+
     // Check if the voucher type is a bank payment
-    if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra') ){
+    if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'bank_contra') ){
       $response['is_bank_payment'] = true;
       
     }elseif($voucher_type_account == 'cash'){
@@ -371,7 +373,7 @@ class Voucher extends MY_Controller
       array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
     }
 
-    if($voucher_type_effect == 'contra'){
+    if($voucher_type_effect == 'bank_contra' || $voucher_type_effect == 'cash_contra'){
       $response['project_allocation'] = $project_allocation;
       $response['is_contra'] = true;
       $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
@@ -656,7 +658,7 @@ class Voucher extends MY_Controller
         $detail['fk_expense_account_id'] = 0; 
         $detail['fk_income_account_id'] = $this->input->post('voucher_detail_account')[$i]; 
         $detail['fk_contra_account_id'] = 0;    
-      }elseif($voucher_type_effect_code == 'contra'){
+      }elseif($voucher_type_effect_code == 'bank_contra' || $voucher_type_effect_code == 'cash_contra'){
         $detail['fk_expense_account_id'] = 0; 
         $detail['fk_income_account_id'] = 0; 
         $detail['fk_contra_account_id'] = $this->input->post('voucher_detail_account')[$i];    
