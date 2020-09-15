@@ -1,9 +1,10 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
  
-//print_r($result);
+//print_r($this->session->role_permissions);
+//print_r($this->user_model->update_permitted_permission_labels_based_on_depth($this->session->role_permissions,'Voucher','update',1));
 
 extract($result);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
+//echo isset($this->session->master_table)?$this->session->master_table:"Not set";/ Create -> Read -> Update -> Delete
 ?>
 
 <div class="row">
