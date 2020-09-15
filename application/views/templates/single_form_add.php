@@ -1,4 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+  // $fld = new Fields_base('project_end_date','project');
+
+  // print_r($fld->is_field_required());
+
   extract($result);
 
   $form = $this->element;

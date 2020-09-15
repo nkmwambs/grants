@@ -12,6 +12,8 @@ class Fields_base{
   private $CI = null;
 
   private $default_field_value = null;
+
+  private $is_field_required = true;
   
   function __construct($column, $table, $is_header = false){
 
@@ -24,10 +26,33 @@ class Fields_base{
     $this->is_header = $is_header;
 
     $this->set_default_field_value();
+
+    $this->is_field_required();
   }
 
   function index(){
 
+  }
+
+  function is_field_required(){
+
+    //$is_field_required = 1;
+    
+    $all_fields = $this->CI->grants_model->table_fields_metadata($this->table);
+
+    $array_of_columns = array_column($all_fields,'name');
+    $array_of_default = array_column($all_fields,'default');
+
+    $name_default = array_combine($array_of_columns,$array_of_default);
+
+    foreach ($name_default as $field => $default_value) {
+      if($this->column == $field && strlen($default_value) > 0){
+        $this->is_field_required = false;
+        break;
+      }
+    }
+
+    return $this->is_field_required;
   }
 
   function field_type(){
@@ -133,7 +158,9 @@ class Fields_base{
 
     $maxlength = $this->column_max_length();
 
-    return '<input id="'.$id.'" maxlength="'.$maxlength.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    return '<input id="'.$id.'" maxlength="'.$maxlength.'" '.$required.' type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function text_field($value = ""){
@@ -142,28 +169,36 @@ class Fields_base{
 
     $maxlength = $this->column_max_length();
 
-    return '<input id="'.$id.'" maxlength="'.$maxlength.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    return '<input id="'.$id.'" maxlength="'.$maxlength.'" value="'.$value.'" '.$required.' type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function email_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    return '<input id="'.$id.'" value="'.$value.'" '.$required.' type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function password_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    return '<input id="'.$id.'" value="'.$value.'" '.$required.'  type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
   }
 
   function longtext_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" >'.$value.'</textarea>';
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    return '<textarea id="'.$id.'" '.$required.' class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" >'.$value.'</textarea>';
   }
 
   function date_field($value = ""){
@@ -172,7 +207,9 @@ class Fields_base{
 
     $value = $value == "0000-00-00" ? '': $value;
 
-    $field =  '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    $field =  '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" '.$required.' readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
     
     return $field;
   }
@@ -216,7 +253,9 @@ class Fields_base{
 
     $select2 = $this->CI->config->item('use_select2_plugin')?'select2':'no-select';
 
-    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' required='required' ".$multiple.">
+    $required = $this->is_field_required ? "required='required'" : '';
+
+    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' '.$required.' ".$multiple.">
             <option class='".$hide_select_label."' value=''>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
