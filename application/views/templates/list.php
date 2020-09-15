@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
  
-$perm = $this->session->role_permissions;
+//$perm = $this->session->role_permissions;
 //print_r($this->session->role_permissions);
 //print_r($this->user_model->check_role_has_permissions('Voucher','read'));
 //print_r($this->user_model->permission_label_depth('create'));
