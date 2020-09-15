@@ -127,4 +127,10 @@ $(".edit, .edit_continue").on('click',function(ev){
   ev.preventDefault();
 });
 
+$('.datepicker').datepicker(
+  {
+    format:'yyyy-mm-dd',
+  }
+);
+
 </script>
