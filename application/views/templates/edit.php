@@ -47,18 +47,11 @@ extract($result);
                   }
                  ?>
 
-                 <!-- <div class="form-group">
-                   <div class="col-xs-12">
-                     <label class=""><?=get_phrase('attach_a_file(s)');?></label>
-                     <input type="file" name="attachments" multiple />
-                   </div>
-                </div> -->
-
 
                  <div class="form-group">
                    <div class="col-xs-12" style="text-align:center;">
-                     <button class="btn btn-default edit back"><?=get_phrase('edit');?></button>
-                     <button class="btn btn-default edit_continue"><?=get_phrase('edit_and_continue');?></button>
+                     <button class="btn btn-default edit back"><?=get_phrase('save');?></button>
+                     <button class="btn btn-default edit_continue"><?=get_phrase('save_and_continue');?></button>
                    </div>
                  </div>
                </form>  
