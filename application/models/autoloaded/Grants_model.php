@@ -349,9 +349,14 @@ function generate_item_track_number_and_name($approveable_item){
           }
     
         }else{
-          $this->write_db->trans_commit();
-          $this->grants->action_after_insert($post_array,$approval_id,$header_id);
-          $message = get_phrase('insert_successful');
+          if($this->grants->action_after_insert($post_array,$approval_id,$header_id)){
+            $this->write_db->trans_commit();
+            $message = get_phrase('insert_successful');
+          }else{
+            $this->write_db->trans_rollback();
+            $message = get_phrase('insert_failed');
+          }
+          
         }
     }
 
