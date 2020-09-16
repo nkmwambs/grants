@@ -15,8 +15,9 @@ class MY_Model extends CI_Model
     }
 
     function lookup_tables(){
-      $table_name = $this->controller;
-      return $this->_derived_lookup_tables($table_name);
+      //$table_name = $this->controller;
+      //return $this->_derived_lookup_tables($table_name);
+      return list_lookup_tables();
     }
 
     function list_table_where(){

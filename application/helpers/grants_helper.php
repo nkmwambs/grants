@@ -487,21 +487,25 @@ if(!function_exists('tables_with_account_system_relationship')){
 	}
 }	
 
-// if(!function_exists('list_lookup_tables')){
-// 	function list_lookup_tables($table_name){
+if(!function_exists('list_lookup_tables')){
+	function list_lookup_tables($table_name = ''){
 		
-// 		$CI =& get_instance();
+		$CI =& get_instance();
 
-// 		$table_fields = $CI->read_db->list_fields($table_name);
+		$table_name = $table_name == '' ? $CI->controller : $table_name;
 
-// 		$list_lookup_tables = [];
+		$table_fields = $CI->read_db->list_fields($table_name);
 
-// 		foreach($table_fields as $table_field){
-// 			if($table_field == 'fk_account_system_id'){
-// 				$list_lookup_tables[] = $table;
-// 			}
-// 		}
-// 	}
-// }
+		$list_lookup_tables = [];
+
+		foreach($table_fields as $table_field){
+			if(substr($table_field,0,3) =='fk_'){
+				$list_lookup_tables[] = substr($table_field,3,-3);
+			}
+		}
+
+		return $list_lookup_tables;
+	}
+}
 
 
