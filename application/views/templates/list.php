@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r($this->grants->lookup_tables());
+//print_r(list_lookup_tables('expense_account'));
 
 extract($result);
 
