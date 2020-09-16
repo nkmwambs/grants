@@ -68,4 +68,12 @@ class Contra_account_model extends MY_Model{
     //     return ['voucher_type_account','office_bank'];
     // }
 
+    function show_add_button(){
+        if(!$this->session->system_admin){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }

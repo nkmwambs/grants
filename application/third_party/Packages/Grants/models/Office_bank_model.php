@@ -77,6 +77,51 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
       return $post_array;
     }
 
+    function action_after_insert($post_array, $approval_id, $header_id){
+      // Create contra accounts for the newly added bank account
+      $this->read_db->select(array('voucher_type_account_id','voucher_type_account_name','voucher_type_account_code'));
+      $voucher_type_accounts = $this->read_db->get('voucher_type_account')->result_array();
+
+      $this->write_db->select(array('office_name','fk_account_system_id'));
+      $this->write_db->join('office_bank','office_bank.fk_office_id=office.office_id');
+      $this->write_db->where(array('office_bank_id'=>$header_id));
+      $office_info = $this->write_db->get('office')->row();
+
+      $this->write_db->trans_start();
+
+      foreach($voucher_type_accounts as $voucher_type_account){
+
+        $contra_account_name = $office_info->office_name." Bank to Cash";
+        $contra_account_code = "B2C";
+        
+        if($voucher_type_account['voucher_type_account_code'] == 'cash'){
+          $contra_account_name = $office_info->office_name." Cash to Bash";
+          $contra_account_code = "C2B";
+        }
+
+        $contra_account_record['contra_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('contra_account')['contra_account_track_number'];;
+        $contra_account_record['contra_account_name'] = $contra_account_name;
+        $contra_account_record['contra_account_code'] = $contra_account_code;
+        $contra_account_record['contra_account_description'] = $contra_account_name;;
+        $contra_account_record['fk_voucher_type_account_id'] = $voucher_type_account['voucher_type_account_id'];
+        $contra_account_record['fk_office_bank_id'] = $header_id;
+        $contra_account_record['fk_account_system_id'] = $office_info->fk_account_system_id;
+
+        $contra_account_data_to_insert = $this->grants_model->merge_with_history_fields('contra_account',$contra_account_record,false);
+        $this->write_db->insert('contra_account',$contra_account_data_to_insert);
+        
+      }
+
+      $this->write_db->trans_complete();
+
+      if ($this->db->trans_status() === FALSE)
+        {
+          return false;
+        }else{
+          return true;
+        }
+    }
+
     // function lookup_values(){
     //   $lookup_values=parent::lookup_values();// get all implementation from mother 'MY_model then overide the key 'office''
 
