@@ -43,6 +43,15 @@ class Office_bank_project_allocation_model extends MY_Model{
         return $result;
     }
 
+    public function detail_list_table_visible_columns(){
+        return [
+            'office_bank_project_allocation_track_number',
+            'office_bank_name',
+            'project_allocation_name',
+            'office_bank_project_allocation_created_date'
+        ];
+    }
+
     // public function lookup_values_where(){
     //     return [
     //         'project_allocation'=>['fk_office_id'=>$this->office_bank_project_allocation_office_id()]
@@ -58,4 +67,12 @@ class Office_bank_project_allocation_model extends MY_Model{
   
     //     return $lookup_values;
     //   }
+
+    function show_add_button(){
+        if($this->config->item('link_new_project_allocations_only_to_default_bank_accounts')){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
