@@ -114,7 +114,7 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
 
       $this->write_db->trans_complete();
 
-      if ($this->db->trans_status() === FALSE)
+      if ($this->write_db->trans_status() === FALSE)
         {
           return false;
         }else{

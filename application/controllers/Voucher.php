@@ -344,7 +344,7 @@ class Voucher extends MY_Controller
         $this->config->item("toggle_accounts_by_allocation")){
         
         $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
-        $this->db->select(array('project_allocation_id','project_allocation_name'));
+        $this->db->select(array('project_allocation_id','project_name as project_allocation_name'));
         $this->db->join('project','project.project_id=project_allocation.fk_project_id');
 
         if($this->input->post('office_bank_id')){
