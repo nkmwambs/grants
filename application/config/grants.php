@@ -40,12 +40,13 @@
 
 	//Voucher configurations
 	//If true cheque numbers can be skipped as long as are in the active cheque book
-	$config['allow_skipping_of_cheque_leaves'] = true; 
+	$config['allow_skipping_of_cheque_leaves'] = false; 
 	$config['use_voucher_type_abbreviation'] = true; 
 	$config['only_allow_voucher_details_from_request'] = false;
 	$config['append_office_code_to_voucher_number'] = true;
 	$config['use_default_logo'] = false;
 	$config['toggle_accounts_by_allocation'] = true; // When true, the voucher allocation codes will be used to filter accounts
+	$config['drop_only_lowest_context_offices'] = true;
 
 	//Financial Report Configs
 	$config['only_combined_center_financial_reports'] = false; // If true only drop lowest context office report in the MFR office filter

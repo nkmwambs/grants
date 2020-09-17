@@ -24,7 +24,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
   function index(){}
 
   function action_after_insert($post_array,$approval_id,$header_id){
-    
+
     // Get the insert allocation account system id
     $this->write_db->join('project','project.fk_funder_id=funder.funder_id');
     $this->write_db->where(array('project_id'=>$post_array['fk_project_id']));
@@ -34,12 +34,14 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
     $this->write_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
     $this->write_db->where(array('fk_account_system_id'=>$account_system_id,
     'fk_office_id'=>$post_array['fk_office_id']));
-
+    
     if($this->config->item('link_new_project_allocations_only_to_default_bank_accounts')){
       $this->write_db->where(array('office_bank_is_default'=>1));
     }
 
     $account_system_office_banks = $this->write_db->get('office_bank')->result_array();
+
+    //echo json_encode($account_system_id);exit;
 
     $this->write_db->trans_start();
 
@@ -154,6 +156,43 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
 
    function multi_select_field(){
      return "office";
+   }
+
+   function lookup_values(){
+    $lookup_values = [];
+
+    if(!$this->session->system_admin){
+      $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+      $this->read_db->join('funder','funder.funder_id=project.fk_funder_id');
+      $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
+    }else{
+      $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
+    }
+
+    if($this->sub_action != null){
+
+      //$this->read_db->select(array('office.office_id as office_id','office.office_name as office_name'));
+
+      if($this->config->item('drop_only_lowest_context_offices')){
+        $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+        $this->read_db->where(array('context_definition_level'=>1));
+      }
+
+      $this->read_db->order_by('office_name');
+      $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id)', '', FALSE);
+
+      $this->read_db->join('office_bank','office_bank.fk_office_id=office.office_id'); 
+
+      if(!$this->session->system_admin){
+        $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));       
+        $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      }else{
+        $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      }
+      
+    }
+
+    return $lookup_values;
    }
    
 }
