@@ -1451,6 +1451,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
   function edit_visible_columns(){
         
         $table = $this->controller;
+        $visible_columns = [];
 
         // Check if the table has list_table_visible_columns not empty
         $edit_visible_columns = $this->grants->edit_visible_columns();
@@ -1472,7 +1473,17 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
         $lookup_columns = array();
     
         if(is_array($edit_visible_columns) && count($edit_visible_columns) > 0 ){
-          $visible_columns = $edit_visible_columns;
+          $columns = [];
+          foreach($edit_visible_columns as $column){
+
+            if(strpos($column,'_name') == true && $column !== strtolower($table).'_name' ){
+             $columns[] = substr($column,0,-5).'_id';
+            }else{
+              $columns[] = $column;
+            }
+
+          }
+          $visible_columns = $columns;
         }else{
     
           if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
@@ -1499,7 +1510,9 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
               $this->db->join($lookup_table,$lookup_table.'.'.$lookup_table_id.'='.$table.'.fk_'.$lookup_table_id);
           }
         }
-    
+        
+        //print_r($visible_columns);exit;
+        
         $this->db->select($visible_columns);
         $this->db->where(array($table.'_id'=>hash_id($this->id,'decode')));
         //print_r($this->grants_get_row($table));exit;
