@@ -1174,7 +1174,7 @@ function single_form_add_visible_columns(){
 }
 
 function edit_visible_columns(){
-  $model = $this->current_model;
+  $model = $this->CI->current_model;
 
   $edit_visible_columns = array();
 
@@ -1457,7 +1457,7 @@ function edit_output($id = ""){
 function edit_query($table){
   
   $keys = $this->CI->grants_model->edit_visible_columns();
-
+  
   $edit_query = array();
 
   foreach($keys as $column => $value){

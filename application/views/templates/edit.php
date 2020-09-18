@@ -76,7 +76,7 @@ $(".edit, .edit_continue").on('click',function(ev){
     if($(el).hasClass('select2')){
       //$(el).find(':selected');
     }else{
-      if($(el).val() == ''){
+      if($(el).val() == '' && $(el).attr('required')){
         $(el).css('border','1px solid red');
         empty_fields_count++;
       }

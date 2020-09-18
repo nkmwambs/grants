@@ -105,9 +105,16 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
       return array('project_name','office_name','project_allocation_is_active','project_allocation_amount');
     }
 
-    // public function edit_visible_columns(){
-    //  return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','project_allocation_extended_end_date','office_name');
-    // }
+
+    public function edit_visible_columns(){
+      return [
+        'project_name',
+        'office_name',
+        'project_allocation_is_active',
+        'project_allocation_amount',
+        'project_allocation_extended_end_date'
+      ];
+    }
 
     public function single_form_add_hidden_columns(){}
 
