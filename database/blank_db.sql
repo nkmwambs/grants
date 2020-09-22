@@ -1396,7 +1396,7 @@ CREATE TABLE `role_permission` (
   `role_permission_id` int(100) NOT NULL AUTO_INCREMENT,
   `role_permission_track_number` varchar(100) NOT NULL,
   `role_permission_name` varchar(100) NOT NULL,
-  `role_permission_is_active` int(5) NOT NULL,
+  `role_permission_is_active` int(5) NOT NULL DEFAULT '1',
   `fk_role_id` int(100) NOT NULL,
   `fk_permission_id` int(11) NOT NULL,
   `fk_approval_id` int(100) NOT NULL,
