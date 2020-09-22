@@ -973,7 +973,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    */
     
   function header_row_field(String $column, String $field_value = "", bool $show_only_selected_value = false): String {
-
+      
       $f = new Fields_base($column,$this->controller,true);
 
       $this->set_change_field_type();
@@ -983,7 +983,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
       $field = $field_type."_field";
 
       $lib = strtolower($this->current_library);
-
+      
       if(array_key_exists($column,$this->set_field_type)){
 
         $field_type = $this->set_field_type[$column]['field_type'];
@@ -994,8 +994,6 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         }else{
           return $f->$field($field_value);
         }
-
-
       }elseif($field_type == 'select'){
         // $column has a _name suffix if is a foreign key in the table
         // This is converted from fk_xxxx_id where xxxx is the primary table name
@@ -1006,8 +1004,8 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
      
       }elseif(strrpos($column,'_is_') == true ){
         
-        $field_value =  $f->set_default_field_value() !== null ?$f->set_default_field_value():1;
-        return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value,$show_only_selected_value);
+        $field_value =  $f->set_default_field_value() !== null ?$f->set_default_field_value():$field_value;
+        return $f->select_field([get_phrase('no'),get_phrase('yes')], $field_value,$show_only_selected_value);
       }else{
         return $f->$field($field_value);
       }
