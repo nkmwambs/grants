@@ -178,6 +178,7 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
 
     if($this->sub_action != null){
 
+      $project_id=hash_id($this->id,'decode');
       //$this->read_db->select(array('office.office_id as office_id','office.office_name as office_name'));
 
       if($this->config->item('drop_only_lowest_context_offices')){
@@ -186,8 +187,8 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
       }
 
       $this->read_db->order_by('office_name');
-      $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id)', '', FALSE);
-
+      $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id AND fk_project_id='.$project_id.')', '', FALSE);
+      $this->read_db->where(array('office_bank_is_active'=>1));
       $this->read_db->join('office_bank','office_bank.fk_office_id=office.office_id'); 
 
       if(!$this->session->system_admin){
