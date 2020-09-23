@@ -144,7 +144,8 @@ $(".btn-save-new").on('click',function(){
 
 $(".btn-save").on('click',function(){
     save();
-    go_back();
+    //go_back();
+    location.href = document.referrer;
 });
 
 function save(){
