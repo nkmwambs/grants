@@ -24,7 +24,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
   function index(){}
 
   public function lookup_tables(){
-    return array('office');
+    return array('office','budget_tag');
   }
 
   public function detail_tables(){
@@ -35,7 +35,9 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
 
   public function master_table_hidden_columns(){}
 
-  public function list_table_visible_columns(){}
+  public function list_table_visible_columns(){
+    return ['budget_track_number','office_name','budget_tag_name','budget_year'];
+  }
 
   public function list_table_hidden_columns(){}
 
@@ -60,7 +62,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
   public function detail_multi_form_add_hidden_columns(){}
 
   public function single_form_add_visible_columns(){
-    return array('budget_name','budget_year','office_name');
+    return array('budget_tag_name','budget_year','office_name');
   }
 
   public function single_form_add_hidden_columns(){}

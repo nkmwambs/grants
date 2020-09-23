@@ -51,6 +51,10 @@ core:
 grants:
   
   tables:
+
+    budget_tag:
+      lookup_tables:
+        - account_system
     
     project_income_account:
       lookup_tables:
