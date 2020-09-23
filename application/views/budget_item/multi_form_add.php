@@ -46,7 +46,7 @@ extract($result);
                                 <option value=''><?=get_phrase('select_a_project_allocation');?></option>        
 
                                 <?php foreach($project_allocations as $project_allocation){?>
-                                    <option value='<?=$project_allocation->project_allocation_id;?>'><?=$project_allocation->project_allocation_name.' ('.$project_allocation->project_name.')';?></option>
+                                    <option value='<?=$project_allocation->project_allocation_id;?>'><?=$project_allocation->project_name;?></option>
                                 <?php }?>    
                             </select>
                         </div>
@@ -57,9 +57,7 @@ extract($result);
                                 
                                 <option value=''><?=get_phrase('select_an_account');?></option>
                                 
-                                <?php foreach($expense_accounts as $expense_account){?>
-                                    <option value='<?=$expense_account->expense_account_id;?>'> <?=$expense_account->expense_account_code;?> - <?=$expense_account->expense_account_name;?></option>
-                                <?php }?>
+                                
                             </select>
                         </div>
 
@@ -116,6 +114,31 @@ extract($result);
 </div>
 
 <script>
+
+$("#fk_project_allocation_id").on('change',function(){
+    var project_allocation_id = $(this).val();
+    var url = "<?=base_url();?>Budget_item/project_budgetable_expense_accounts/"+project_allocation_id;
+
+    let option = '<option value=""><?=get_phrase('select_expense_account');?></option>';
+
+    $('#fk_expense_account_id').html(option);
+
+
+    if(!$.isNumeric(project_allocation_id)){
+        return false;
+    }
+
+    $.get(url,function(response){
+        var accounts_obj = JSON.parse(response);
+
+        $.each(accounts_obj,function(i,el){
+            option += '<option value="'+accounts_obj[i].expense_account_id+'">'+accounts_obj[i].expense_account_name+'</option>';
+        });
+
+        $('#fk_expense_account_id').html(option);
+    });
+    
+});
 
 $('.month_spread').focusout(function(){
     if(!$.isNumeric($(this).val())){

@@ -130,5 +130,18 @@ class Budget_item extends MY_Controller
 
   }
 
+  function project_budgetable_expense_accounts($project_allocation_id){
+    
+    $this->read_db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $this->read_db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+    $this->read_db->join('project','project.project_id=project_income_account.fk_project_id');
+    $this->read_db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+    $this->read_db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_budgeted'=>1));
+    $this->read_db->select(array('expense_account_id','expense_account_name'));
+    $accounts = $this->read_db->get('expense_account')->result_array();
+
+    echo json_encode($accounts);
+  }
+
   static function get_menu_list(){}
 }
