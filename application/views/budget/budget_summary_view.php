@@ -63,7 +63,7 @@
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
-                       <?=get_phrase('year');?> <?=$current_year;?> <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> Budget Summary (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/schedule/<?=hash_id(1);?>'>Show budget schedule</a>)
+                       <?=get_phrase('year');?> <?=$current_year;?> <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> Budget Summary (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/<?=hash_id(1);?>'>Show budget schedule</a>)
                     </th>
                 </tr>
                 <tr>
