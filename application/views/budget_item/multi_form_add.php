@@ -155,6 +155,26 @@ function save(){
 
     let url = "<?=base_url();?>budget_item/insert_budget_item";
 
+    // var countOfEmptyFields=0;
+
+    // $('.form_control').each(function(index, item){
+
+    // //   if($(item).val()==''){
+    //     countOfEmptyFields++;
+    //     $(item).css('border','1px solid red');
+        
+    // //   }
+
+
+    // });
+
+    // if(countOfEmptyFields>0){
+    //     alert('<?=get_phrase('one_or_more_fields_missing');?>');
+    //     return false;
+    // }
+
+    // alert(countOfEmptyFields);
+    
     $.ajax({
         url:url,
         data:data,
