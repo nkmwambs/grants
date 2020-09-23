@@ -138,6 +138,21 @@ CREATE TABLE `budget_item` (
   CONSTRAINT `fk_budget_detail_id_expense_account_id` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This hold activties and their budgeted cost';
 
+CREATE TABLE `budget_tag` (
+  `budget_tag_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_tag_track_number` varchar(100) NOT NULL,
+  `budget_tag_name` varchar(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `budget_tag_created_date` date NOT NULL,
+  `budget_tag_created_by` int(100) NOT NULL,
+  `budget_tag_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `budget_tag_last_modified_by` int(1) NOT NULL,
+  `fk_approval_id` int(11) DEFAULT NULL,
+  `fk_status_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`budget_tag_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `budget_tag_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `budget_item_detail` (
   `budget_item_detail_id` int(100) NOT NULL AUTO_INCREMENT,
