@@ -20,7 +20,7 @@
     </div> -->
     
     <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
-        <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
+        <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/Budget">
             <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
         </a>
 
