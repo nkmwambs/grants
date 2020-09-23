@@ -17,7 +17,7 @@ extract($result);
        	    <div class="panel-heading">
            	    <div class="panel-title" >
            		    <i class="entypo-plus-circled"></i>
-					    <?php echo get_phrase('add_budget_item_for_');?> <?=$office->office_code.' - '.$office->office_name.' : '.get_phrase('year').' - '.$office->budget_year;?>
+					    <?php echo get_phrase('add_budget_item_for_');?> <?=$office->office_code.' - '.$office->office_name.' : '.get_phrase('FY').$office->budget_year;?>
            	    </div>
             </div>
 	    
@@ -94,7 +94,7 @@ extract($result);
                     <div class='form-group'>
                         <!-- <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label> -->
                         <div class='col-xs-2'>
-                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' />
+                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' value='0' />
                         </div>
                     </div>
 
@@ -114,6 +114,12 @@ extract($result);
 </div>
 
 <script>
+
+$(".form-control").on('change',function(){
+   if($(this).val() !== ''){
+     $(this).removeAttr('style');
+   }
+});
 
 $("#fk_project_allocation_id").on('change',function(){
     var project_allocation_id = $(this).val();
@@ -180,49 +186,59 @@ $("#btn-clear").on('click',function(){
 });
 
 $(".btn-save-new").on('click',function(){
-    save();
+    var count_of_empty_fields = 0;
+
+    $('.form-control').each(function(i,el){
+        if($(el).val() == ''){
+            count_of_empty_fields++;
+            $(el).css('border','1px solid red');
+        }
+    });
+
+    if(count_of_empty_fields > 0){
+        alert('<?=get_phrase("one_or_more_fields_are_empty");?>');
+        return false;
+    }
+
+    save(false);
     resetForm();
 });
 
 $(".btn-save").on('click',function(){
+
+    var count_of_empty_fields = 0;
+
+    $('.form-control').each(function(i,el){
+        if($(el).val() == ''){
+            count_of_empty_fields++;
+            $(el).css('border','1px solid red');
+        }
+    });
+
+    if(count_of_empty_fields > 0){
+        alert('<?=get_phrase("one_or_more_fields_are_empty");?>');
+        return false;
+    }
+
     save();
-    //go_back();
-    location.href = document.referrer;
 });
 
-function save(){
+function save(go_back = true){
     let frm = $("#frm_budget_item");
 
     let data = frm.serializeArray();
 
     let url = "<?=base_url();?>budget_item/insert_budget_item";
 
-    // var countOfEmptyFields=0;
-
-    // $('.form_control').each(function(index, item){
-
-    // //   if($(item).val()==''){
-    //     countOfEmptyFields++;
-    //     $(item).css('border','1px solid red');
-        
-    // //   }
-
-
-    // });
-
-    // if(countOfEmptyFields>0){
-    //     alert('<?=get_phrase('one_or_more_fields_missing');?>');
-    //     return false;
-    // }
-
-    // alert(countOfEmptyFields);
-    
     $.ajax({
         url:url,
         data:data,
         type:"POST",
         success:function(response){
             alert(response);
+            if(go_back) {
+                location.href = document.referrer;
+            }
         }
     });
 }
