@@ -75,14 +75,24 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
 
   public function view(){}
 
-  // public function lookup_values()
-  // {
+  public function lookup_values()
+  {
     
-  //   if(!$this->session->system_admin){
-  //     $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
-  //     $this->read_db->get('office')->result_array();
-  //   }
-  // }
+    $lookup_values = [];
+
+    if(!$this->session->system_admin){
+      $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
+      $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      
+      $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+      $lookup_values['budget_tag'] = $this->read_db->get('budget_tag')->result_array();
+    }
+
+    return $lookup_values;
+  }
+  function edit_visible_columns(){
+    return ['budget_tag_name','budget_year','office_name'];
+  }
 
   function list_table_where(){
     //print_r($this->session->hierarchy_offices); exit();

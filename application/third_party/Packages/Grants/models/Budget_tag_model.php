@@ -29,7 +29,13 @@ class Budget_tag_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('account_system');
+        return array('month','account_system');
+    }
+
+    function list_table_where(){
+        if(!$this->session->system_admin){
+            $this->db->where(array('account_system_id'=>$this->session->user_account_system_id));
+        }
     }
 
     public function detail_tables(){}

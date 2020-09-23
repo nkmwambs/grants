@@ -22,4 +22,18 @@ class Budget_library extends Grants
 
   }
 
+  function change_field_type(){
+    $fields = [];
+
+    $current_year = date('y');
+    $year_range = range($current_year - 1,$current_year + 3);
+
+    $fields['budget_year']['field_type'] = 'select';
+
+    foreach($year_range as $year){
+      $fields['budget_year']['options'][$year] = 'FY'.$year;
+    }
+    return $fields;
+  }
+
 }

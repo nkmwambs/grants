@@ -32,11 +32,23 @@ extract($result);
                         </div>
                     </div>
 
+                    <div class='form-group'>
+                        <div class="col-xs-12">
+                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'></textarea> 
+                        </div>         
+                    </div>
+
                     <div class="form-group">
 
-                        <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label>
+                        <label class='control-label col-xs-2'><?=get_phrase('project_allocation');?></label>
                         <div class='col-xs-2'>
-                            <input type='number' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' />
+                            <select name='fk_project_allocation_id' id='fk_project_allocation_id'  class='form-control resetable'>
+                                <option value=''><?=get_phrase('select_a_project_allocation');?></option>        
+
+                                <?php foreach($project_allocations as $project_allocation){?>
+                                    <option value='<?=$project_allocation->project_allocation_id;?>'><?=$project_allocation->project_allocation_name.' ('.$project_allocation->project_name.')';?></option>
+                                <?php }?>    
+                            </select>
                         </div>
 
                         <label class='control-label col-xs-2'><?=get_phrase('expense_account');?></label>
@@ -51,26 +63,7 @@ extract($result);
                             </select>
                         </div>
 
-                        <label class='control-label col-xs-2'><?=get_phrase('project_allocation');?></label>
-                        <div class='col-xs-2'>
-                            <select name='fk_project_allocation_id' id='fk_project_allocation_id'  class='form-control resetable'>
-                                <option value=''><?=get_phrase('select_a_project_allocation');?></option>        
-
-                                <?php foreach($project_allocations as $project_allocation){?>
-                                    <option value='<?=$project_allocation->project_allocation_id;?>'><?=$project_allocation->project_allocation_name.' ('.$project_allocation->project_name.')';?></option>
-                                <?php }?>    
-                            </select>
-                        </div>
-
-
                     </div>
-
-                    <div class='form-group'>
-                        <div class="col-xs-12">
-                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('enter_notes_here');?>"  class='form-control resetable'></textarea> 
-                        </div>         
-                    </div>
-
 
                     <div class='form-group'>
                         <table class="table table-striped">
@@ -101,6 +94,13 @@ extract($result);
                     </div>
 
                     <div class='form-group'>
+                        <!-- <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label> -->
+                        <div class='col-xs-2'>
+                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' />
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
@@ -116,19 +116,38 @@ extract($result);
 </div>
 
 <script>
-$("#budget_item_total_cost").on('change',function(){
-    let totalcost = $(this).val();
-    let month_spread_count = $(".month_spread").length;
-    let month_cost = parseInt(totalcost)/ parseInt(month_spread_count);
 
-    $.each($(".month_spread"),function(i,el){
-        if(isNaN(month_cost) == false){
-            $(el).val(month_cost);
-        }else{
-            $(el).val(0);
+$('.month_spread').focusout(function(){
+    if(!$.isNumeric($(this).val())){
+        $(this).val(0);
+    }
+});
+
+$('.month_spread').focusin(function(){
+    if($(this).val() == 0){
+        $(this).val('');
+    }
+});
+
+$('.month_spread').on('change',function(){
+    if($(this).val() < 0){
+        alert('<?=get_phrase('negative_values_not_allowed');?>');
+        $(this).val(0);
+    }
+});
+
+
+$('.month_spread').on('keyup',function(){
+    
+    var sum_spread = 0;
+
+    $('.month_spread').each(function(index,elem){
+        if($(elem).val() > 0){
+            sum_spread = sum_spread + parseFloat($(elem).val());
         }
     });
-    
+
+    $('#budget_item_total_cost').val(sum_spread);
 });
 
 $("#btn-clear").on('click',function(){
