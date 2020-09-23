@@ -36,9 +36,16 @@ class Budget_item_detail_model extends MY_Model implements CrudModelInterface, T
 
     public function list_table_hidden_columns(){}
 
-    public function detail_list_table_visible_columns(){}
+    public function detail_list_table_visible_columns(){
+      return ['budget_item_detail_track_number','month_name','budget_item_detail_amount'];
+    }
 
     public function detail_list_table_hidden_columns(){}
+
+    public function show_add_button()
+    {
+      return false;
+    }
 
     //public function single_form_add_visible_columns(){}
 
@@ -50,6 +57,7 @@ class Budget_item_detail_model extends MY_Model implements CrudModelInterface, T
       return array('budget_item_detail_name','budget_item_detail_amount','month_name');
     }
 
+    
     public function master_multi_form_add_hidden_columns(){}
 
     public function detail_multi_form_add_hidden_columns(){}

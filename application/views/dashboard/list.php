@@ -1,4 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+//print_r($this->session->hierarchy_offices);
 if ($this->session->system_admin) {
 
   //print_r($this->session->hierarchy_offices);

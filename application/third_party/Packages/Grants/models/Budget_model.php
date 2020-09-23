@@ -75,6 +75,14 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
 
   public function view(){}
 
+  public function lookup_values()
+  {
+    if(!$this->session->system_admin){
+      $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
+      $this->read_db->get('office')->result_array();
+    }
+  }
+
   function list_table_where(){
     //print_r($this->session->hierarchy_offices); exit();
     // Only list requests from the users' hierachy offices
