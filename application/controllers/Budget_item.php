@@ -31,7 +31,7 @@ class Budget_item extends MY_Controller
   }
 
   function result($id = ''){
-    if($this->action == 'multi_form_add'){
+    if($this->action == 'multi_form_add' || $this->action == 'edit'){
   
     $result = [];
     
@@ -41,8 +41,15 @@ class Budget_item extends MY_Controller
     
     $this->db->select(array('office_id','office_name','office_code','budget_year','fk_account_system_id'));
     $this->db->join('budget','budget.fk_office_id=office.office_id');
-    $office = $this->db->get_where('office',
-    array('budget_id'=>hash_id($this->id,'decode')))->row();
+    
+    if($this->action == 'multi_form_add'){
+      $this->db->where(array('budget_id'=>hash_id($this->id,'decode')));
+    }else{
+      $this->db->join('budget_item','budget_item.fk_budget_id=budget.budget_id');
+      $this->db->where(array('budget_item_id'=>hash_id($this->id,'decode')));
+    }
+
+    $office = $this->db->get('office')->row();
 
     
     $this->db->select(array('expense_account_id','expense_account_name','expense_account_code'));
@@ -63,6 +70,13 @@ class Budget_item extends MY_Controller
     $result['expense_accounts'] = $expense_accounts;
     $result['months'] = $months;
     $result['office'] = $office;
+
+    if($this->action == 'edit'){
+      $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
+      $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+      $this->db->where(array('budget_item_id'=>hash_id($this->id,'decode')));
+      $result['budget_item_details'] = $this->db->get('budget_item_detail')->result_array();
+    }
 
     return $result;
     }else{

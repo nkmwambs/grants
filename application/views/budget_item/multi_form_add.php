@@ -26,6 +26,8 @@ extract($result);
                     
                     <div class='form-group'>
                         <div class='col-xs-12 center'>
+                            <div class='btn btn-icon pull-left' id='btn_back'><i class='fa fa-arrow-left'></i></div>
+
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
@@ -242,6 +244,10 @@ function save(go_back = true){
         }
     });
 }
+
+$("#btn_back").on('click',function(){
+    location.href = document.referrer;
+});
 
 $(".btn-reset").on('click',function(){
     resetForm();
