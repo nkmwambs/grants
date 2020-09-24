@@ -62,29 +62,6 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $office_banks;
   }
 
-  // private function system_opening_cash_balance($office_id,$office_bank_id = 0){
-
-  //   $balance = 0;
-
-  //   //Only get balance if args project_allocation_ids and office_bank_id as supplied or none of them
-
-  //   if($office_bank_id > 0 ){
-  //       $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
-  //   }
-
-  //   $this->db->select_sum('opening_cash_balance_amount');
-  //   $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
-
-  //   $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
-    
-  //   if($opening_cash_balance_obj->num_rows()>0){
-  //      $balance = $opening_cash_balance_obj->row()->opening_cash_balance_amount; 
-  //   }
-   
-
-  //   return $balance;
-  // }
-
 
   private function system_opening_bank_balance($office_id, $office_bank_id = 0){
     $balances = [];
@@ -107,6 +84,21 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       }
     }
 
+    // Get all office banks 
+    $this->read_db->select(array('office_bank_id','office_bank_name'));
+    $office_banks_obj = $this->read_db->get_where('office_bank',array('fk_office_id'=>$office_id));
+
+    if($office_banks_obj->num_rows() > 0){
+      $office_banks = $office_banks_obj->result_array();
+
+      foreach($office_banks as $office_bank){
+        if(!array_key_exists($office_bank['office_bank_id'],$balances)){
+          $balances[$office_bank['office_bank_id']] = ['account_name'=>$office_bank['office_bank_name'],'amount'=>0];
+        }
+      }
+
+    }
+    
     return $balances;
   }
 
@@ -133,19 +125,31 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       $result[$petty_cash_account['fk_office_cash_id']]['amount'] = $petty_cash_account['opening_cash_balance_amount'];
     }
 
+    // Get all office cash boxes
+    $this->read_db->select(array('office_cash_id','office_cash_name'));
+    $this->read_db->join('account_system','account_system.account_system_id=office_cash.fk_account_system_id');
+    $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $office_cash_obj = $this->read_db->get_where('office_cash',array('office_id'=>$office_id));
+
+    if($office_cash_obj->num_rows() > 0){
+      $office_cash = $office_cash_obj->result_array();
+
+      foreach($office_cash as $box){
+        if(!array_key_exists($box['office_cash_id'],$result)){
+          $result[$box['office_cash_id']]['account_name'] = $box['office_cash_name'];
+          $result[$box['office_cash_id']]['amount'] = 0;
+        }
+      }
+    }
+
     return $result;
   }
 
   
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
 
-    //$transacting_month = '2020-08-01';
     $system_opening_bank = $this->system_opening_bank_balance($office_id, $office_bank_id); 
-    //$system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id); 
-    //$system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id);
     $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id);
-
-    //print_r($system_opening_cash); exit;
 
     $bank_to_date_income = [];
     $bank_to_date_expense = [];
