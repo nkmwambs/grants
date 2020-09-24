@@ -143,6 +143,7 @@ CREATE TABLE `budget_tag` (
   `budget_tag_track_number` varchar(100) NOT NULL,
   `budget_tag_name` varchar(100) NOT NULL,
   `fk_month_id` int(11) NOT NULL,
+  `budget_tag_level` int(5) NOT NULL,
   `fk_account_system_id` int(100) NOT NULL,
   `budget_tag_created_date` date NOT NULL,
   `budget_tag_created_by` int(100) NOT NULL,

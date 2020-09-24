@@ -23,4 +23,15 @@ class Budget_tag_library extends Grants
 
   function index(){}
 
+  function change_field_type(){
+    $field_type['budget_tag_level']['field_type'] = 'select';
+    $field_type['budget_tag_level']['options'] = [
+                                                  '1'=>'Initial Budget',
+                                                  '2'=>'First Budget Review',
+                                                  '3'=>'Second Budget Review', 
+                                                  '4'=>'Third Budget Review'];
+
+    return $field_type;
+  }
+
 } 
