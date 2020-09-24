@@ -51,7 +51,7 @@
 <?php foreach($budget_schedule as $income_group){?>
 <div class='row'>
     <div class='col-xs-12' style='text-align:center;font-weight:bold;'>
-        <?=$income_group['income_account']['income_account_name'];?> Budget Schedule for <?=$office;?> <?=$current_year;?> (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'>Show budget summary</a>)
+        <?=ucwords($income_group['income_account']['income_account_name']);?> <?=get_phrase('budget_schedule_for');?> <?=$office;?> <?=$current_year;?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'><?=get_phrase('show_budget_summary');?></a>)
     </div>
 </div>
 
@@ -66,16 +66,42 @@
                         </th>
                     </tr>
                     <tr>
-                        <th>Track Number</th>
-                        <th>Description</th>
-                        <th>Total Cost</th>                        
-                        <th>Status</th>
+                        <th><?=get_phrase('action');?></th>
+                        <th><?=get_phrase('description');?></th>
+                        <th><?=get_phrase('total_cost');?></th>                        
+                        <th><?=get_phrase('status');?></th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach($loop_budget_items['expense_items'] as $loop_expense_items){?>
+                <?php foreach($loop_budget_items['expense_items'] as $loop_expense_items){
+                    $primary_key = $loop_expense_items['budget_item_id']
+                    ?>
                     <tr>
-                        <td><?="<a href='".base_url()."budget_item/view/".hash_id($loop_expense_items['budget_item_id'],'encode')."' >".$loop_expense_items['budget_item_track_number']."</a>";?></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+                                    <?=get_phrase('action');?>
+                                <span class="caret"></span></button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update')){ ?>
+                                    <li><?=list_table_edit_action('budget_item',$primary_key);?></li>
+                                    <li class="divider"></li>
+                                    <?php }?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete')){ ?>
+                                    <li><?=list_table_delete_action('budget_item',$primary_key);?></li>
+                                    <?php }?>
+
+                                    <?php if(
+                                        !$this->user_model->check_role_has_permissions('Budget_item','update') && 
+                                        !$this->user_model->check_role_has_permissions('Budget_item','delete')
+
+                                    ){ 
+                                        echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
+                                    }?>
+
+                                </ul>
+                                </div>
+                        </td>
                         <td><?=$loop_expense_items['description']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
                         <td><?=$loop_expense_items['status']['status_name'];?></td>

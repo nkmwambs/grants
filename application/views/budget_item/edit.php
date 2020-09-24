@@ -5,9 +5,14 @@
 </style>
 
 <?php 
-//print_r($result);
+//print_r($result['budget_item_details']);
 
 extract($result);
+
+$budget_item = $budget_item_details[0];
+
+//print_r($budget_item);
+$total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'));
 
 ?>
 
@@ -16,8 +21,8 @@ extract($result);
         <div class="panel panel-default" data-collapsed="0">
        	    <div class="panel-heading">
            	    <div class="panel-title" >
-           		    <i class="entypo-plus-circled"></i>
-					    <?php echo get_phrase('add_budget_item_for_');?> <?=$office->office_code.' - '.$office->office_name.' : '.get_phrase('FY').$office->budget_year;?>
+           		    <i class="entypo-pencil"></i>
+					    <?php echo get_phrase('edit_budget_item_for_');?> <?=$office->office_code.' - '.$office->office_name.' : '.get_phrase('FY').$office->budget_year;?>
            	    </div>
             </div>
 	    
@@ -28,38 +33,22 @@ extract($result);
                         <div class='col-xs-12 center'>
                             <div class='btn btn-icon pull-left' id='btn_back'><i class='fa fa-arrow-left'></i></div>
 
-                            <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
-                            <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
+                            <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_continue');?></div>
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <div class="col-xs-12">
-                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'></textarea> 
+                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'><?=$budget_item['budget_item_description'];?></textarea> 
                         </div>         
                     </div>
 
                     <div class="form-group">
-
-                        <label class='control-label col-xs-2'><?=get_phrase('project_allocation');?></label>
-                        <div class='col-xs-2'>
-                            <select name='fk_project_allocation_id' id='fk_project_allocation_id'  class='form-control resetable'>
-                                <option value=''><?=get_phrase('select_a_project_allocation');?></option>        
-
-                                <?php foreach($project_allocations as $project_allocation){?>
-                                    <option value='<?=$project_allocation->project_allocation_id;?>'><?=$project_allocation->project_name;?></option>
-                                <?php }?>    
-                            </select>
-                        </div>
-
                         <label class='control-label col-xs-2'><?=get_phrase('expense_account');?></label>
                         <div class='col-xs-2'>
                             <select name='fk_expense_account_id' id='fk_expense_account_id'  class='form-control resetable'>
-                                
-                                <option value=''><?=get_phrase('select_an_account');?></option>
-                                
-                                
+                                <option value='<?=$budget_item['fk_expense_account_id'];?>'><?=$budget_item['expense_account_name'];?></option>                                
                             </select>
                         </div>
 
@@ -85,7 +74,7 @@ extract($result);
                                     <td><div class='btn btn-danger' id='btn-clear'><?=get_phrase('clear');?></div></td>
                                     
                                     <?php foreach($months as $month){ ?>
-                                        <td><input type='text' id='' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
+                                        <td><input type='text' id='' value='<?=$budget_item_details[$month->month_id - 1]['budget_item_detail_amount'];?>' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
                                     <?php }?>
                                 
                                 </tr>
@@ -96,15 +85,14 @@ extract($result);
                     <div class='form-group'>
                         <!-- <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label> -->
                         <div class='col-xs-2'>
-                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' value='0' />
+                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' value='<?=$total;?>' />
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <div class='col-xs-12 center'>
-                            <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
-                            <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
+                            <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_continue');?></div>
                         </div>
                     </div>                
                     <!--Hidden fields-->
