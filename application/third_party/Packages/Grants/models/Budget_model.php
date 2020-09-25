@@ -84,7 +84,7 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
       $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
       $lookup_values['office'] = $this->read_db->get('office')->result_array();
       
-      $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+      $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id,'budget_tag_is_active'=>1));
       $lookup_values['budget_tag'] = $this->read_db->get('budget_tag')->result_array();
     }
 
@@ -98,6 +98,10 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
     //print_r($this->session->hierarchy_offices); exit();
     // Only list requests from the users' hierachy offices
     $this->db->where_in($this->controller.'.fk_office_id',array_column($this->session->hierarchy_offices,'office_id'));
+  }
+
+  function transaction_validate_duplicates_columns(){
+    return ['fk_office_id','fk_budget_tag_id','budget_year'];
   }
 
 }
