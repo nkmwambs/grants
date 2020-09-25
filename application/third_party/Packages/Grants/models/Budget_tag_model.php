@@ -43,14 +43,14 @@ class Budget_tag_model extends MY_Model{
     public function detail_multi_form_add_visible_columns(){}
 
     function list_table_visible_columns(){
-        return ['budget_tag_track_number','budget_tag_level','month_name','account_system_name','budget_tag_created_date','budget_tag_last_modified_date'];
+        return ['budget_tag_track_number','budget_tag_name','budget_tag_level','budget_tag_is_active','month_name','account_system_name','budget_tag_created_date','budget_tag_last_modified_date'];
     }
 
     function single_form_add_visible_columns(){
-        return ['budget_tag_level','month_name','account_system_name'];
+        return ['budget_tag_name','budget_tag_level','month_name','account_system_name'];
     }
 
     function edit_visible_columns(){
-        return ['budget_tag_level','month_name','account_system_name'];
+        return ['budget_tag_name','budget_tag_level','budget_tag_is_active','month_name','account_system_name'];
     }
 }

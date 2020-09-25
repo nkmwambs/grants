@@ -196,9 +196,15 @@ $(".btn-save-new").on('click',function(){
             $(el).css('border','1px solid red');
         }
     });
+    
 
     if(count_of_empty_fields > 0){
         alert('<?=get_phrase("one_or_more_fields_are_empty");?>');
+        return false;
+    }
+
+    if($("#budget_item_total_cost").val() == 0){
+        alert('<?=get_phrase("budget_item_must_have_total_greater_than_zero");?>');
         return false;
     }
 
@@ -219,6 +225,11 @@ $(".btn-save").on('click',function(){
 
     if(count_of_empty_fields > 0){
         alert('<?=get_phrase("one_or_more_fields_are_empty");?>');
+        return false;
+    }
+
+    if($("#budget_item_total_cost").val() == 0){
+        alert('<?=get_phrase("budget_item_must_have_total_greater_than_zero");?>');
         return false;
     }
 

@@ -36,7 +36,7 @@ class Budget extends MY_Controller
     $this->db->where(array('fk_office_id'=>$budget_office->office_id,
     'budget_year'=>$budget_office->budget_year));
     $this->db->group_by(array('fk_month_id','expense_account_id','income_account_id'));
-    $this->db->order_by('month_number ASC');
+    $this->db->order_by('month_order ASC');
     $result_raw  = $this->db->get('budget')->result_object();
 
     $result = [];
