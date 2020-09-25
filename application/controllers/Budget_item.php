@@ -36,7 +36,7 @@ class Budget_item extends MY_Controller
     $result = [];
     
     $this->db->select(array('month_id','month_name'));
-    $this->db->order_by('month_number ASC');
+    $this->db->order_by('month_order ASC');
     $months = $this->db->get('month')->result_object();
     
     $this->db->select(array('office_id','office_name','office_code','budget_year','fk_account_system_id'));
