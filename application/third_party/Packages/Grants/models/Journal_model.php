@@ -226,38 +226,38 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     
     */
     
-    if(($cash_account=='cash' && $transaction_effect=='income') || ($cash_account=='bank' && $transaction_effect=='contra') ){
+    if(($cash_account=='cash' && $transaction_effect=='income') || ($cash_account=='bank' && $transaction_effect=='bank_contra') ){
       $this->db->group_start();
          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'income'));
 
           $this->db->or_group_start();
-            $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'contra'));
+            $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'bank_contra'));
           $this->db->group_end();
 
       $this->db->group_end();
 
     }
 
-    elseif(($cash_account=='cash' && $transaction_effect=='expense') || ($cash_account=='cash' && $transaction_effect=='contra') ){
+    elseif(($cash_account=='cash' && $transaction_effect=='expense') || ($cash_account=='cash' && $transaction_effect=='cash_contra') ){
 
       $this->db->group_start();
         $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'expense'));
 
         $this->db->or_group_start();
-          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'contra'));
+          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'cash_contra'));
         $this->db->group_end();
 
       $this->db->group_end();
 
     }
 
-    elseif(($cash_account=='bank' && $transaction_effect=='income') || ($cash_account=='cash' && $transaction_effect=='contra') ){
+    elseif(($cash_account=='bank' && $transaction_effect=='income') || ($cash_account=='cash' && $transaction_effect=='cash_contra') ){
 
       $this->db->group_start();
         $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'income'));
 
         $this->db->or_group_start();
-          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'contra'));
+          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'cash_contra'));
         $this->db->group_end();
 
       $this->db->group_end();       
@@ -265,26 +265,19 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
     }
 
-    elseif(($cash_account=='bank' && $transaction_effect=='expense') || ($cash_account=='bank' && $transaction_effect=='contra') ){
+    elseif(($cash_account=='bank' && $transaction_effect=='expense') || ($cash_account=='bank' && $transaction_effect=='bank_contra') ){
 
       $this->db->group_start();
         $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'expense'));
 
         $this->db->or_group_start();
-          $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'contra'));
+          $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'bank_contra'));
         $this->db->group_end();
 
       $this->db->group_end();
     }
    
-                 
-
     $this->db->group_by(array('voucher_type_account_code'));
-
-    // $total_cost= $this->db->get_where('voucher_detail',
-    // array('fk_office_id'=>$office_id,
-    // 'voucher_type_account_code'=>$cash_account,'voucher_type_effect_code'=>$transaction_effect))->row()->voucher_detail_total_cost;
-   // print_r($total_cost); exit();
 
    $total_cost=0;
    $total_cost_obj=$this->db->get('voucher_detail');
