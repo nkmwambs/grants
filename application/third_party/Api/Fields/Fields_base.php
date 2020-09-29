@@ -129,7 +129,7 @@ class Fields_base{
     
     $library = $this->CI->controller.'_library';
 
-    if(method_exists($this->CI->$library,'default_field_value')){
+    if(method_exists($this->CI->$library,'default_field_value') && count($this->CI->$library->default_field_value()) > 0){
      
       $default_fields_values = $this->CI->$library->default_field_value();
      

@@ -99,7 +99,7 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
           $contra_account_code = "C2B";
         }
 
-        $contra_account_record['contra_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('contra_account')['contra_account_track_number'];;
+        $contra_account_record['contra_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('contra_account')['contra_account_track_number'];
         $contra_account_record['contra_account_name'] = $contra_account_name;
         $contra_account_record['contra_account_code'] = $contra_account_code;
         $contra_account_record['contra_account_description'] = $contra_account_name;;
