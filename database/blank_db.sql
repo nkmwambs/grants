@@ -620,6 +620,26 @@ CREATE TABLE `expense_account` (
   CONSTRAINT `fk_expense_account_income_account` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the expense accounts';
 
+CREATE TABLE `event` (
+  `event_id` int(100) NOT NULL AUTO_INCREMENT,
+  `event_track_number` varchar(100) NOT NULL,
+  `event_name` varchar(100) NOT NULL,
+  `fk_approve_item_id` int(100) NOT NULL,
+  `event_action` int(5) NOT NULL COMMENT '1 = data, 2 = access',
+  `event_json_string` longtext NOT NULL,
+  `fk_user_id` int(100) NOT NULL,
+  `event_created_by` int(100) NOT NULL,
+  `event_created_date` date NOT NULL,
+  `event_last_modified_by` int(100) NOT NULL,
+  `event_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  PRIMARY KEY (`event_id`),
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  KEY `fk_user_id` (`fk_user_id`),
+  CONSTRAINT `event_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`),
+  CONSTRAINT `event_ibfk_2` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `financial_report` (
   `financial_report_id` int(100) NOT NULL AUTO_INCREMENT,

@@ -27,6 +27,8 @@ public $single_form_add_visible_columns = [];
    */
   function __construct(){
     parent::__construct();
+
+    $this->event_tracker();
   }
 
     /**
@@ -1828,6 +1830,33 @@ function get_type_record_by_foreign_key_id($type, $foreign_type, $foreign_key_id
     return array();
   }
 
+}
+
+function event_tracker(){
+  // $event = $this->input->post();
+
+  // $event_name = $this->action;
+  // $approve_item_id = 1;//$this->read_db->get_where('approve_item',array('approve_item_name'=>strtolower($this->controller)))->row()->approve_item_id;
+  // $event_action = $this->action;
+  // $event_json_string = "{}";
+  // $user_id = $this->session->user_id;
+
+  // $header['event_track_number'] = $this->generate_item_track_number_and_name('event')['event_track_number'];
+  // $header['event_name'] = $event_name;
+  // $header['fk_approve_item_id'] = $approve_item_id;
+  // $header['event_action'] = 'list';
+  // $header['event_json_string'] = $event_json_string;
+  // $header['event_record_id'] = 0;
+  // $header['fk_user_id'] = $user_id;
+ 
+  // $header['event_created_by'] = $user_id;
+  // $header['event_created_date'] = date('Y-m-d');
+  // $header['event_last_modified_by'] = $user_id;
+
+  // $header['fk_approval_id'] = 0;//$this->insert_approval_record('event');
+  // $header['fk_status_id'] = 0;//$this->initial_item_status('event');
+  // //print_r($header);
+  // $this->write_db->insert('event',$header);
 }
 
 }
