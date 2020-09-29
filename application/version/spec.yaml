@@ -2,6 +2,11 @@ core:
   tables:
     context_definition:
 
+    event:
+      lookup_tables:
+        - user
+        - approve_item
+
     language:
 
     context_global:

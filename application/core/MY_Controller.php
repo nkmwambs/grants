@@ -593,6 +593,10 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     }else{
       echo $return;
     }
+
+    function event_tracker(){
+      $this->grants_model->event_tracker();
+    }
     
   }
 
