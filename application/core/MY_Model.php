@@ -141,7 +141,11 @@ class MY_Model extends CI_Model
         if(strtolower($this->controller) !== 'account_system'){
           $this->grants->join_tables_with_account_system($lookup_table);
         }
-
+         
+        if ($this->db->field_exists($lookup_table.'_is_active', $lookup_table))
+        {
+            $this->read_db->where(array($lookup_table.'_is_active'=>1));
+        }
           $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
 
         }else{

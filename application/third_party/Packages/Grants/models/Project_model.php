@@ -44,6 +44,23 @@ class Project_model extends MY_Model implements CrudModelInterface, TableRelatio
       //return ['project_track_number','project_name','project_code','project_start_date','project_end_date','funder_name','project_cost','funding_status_name'];
     }
 
+    function action_before_insert($post_array){
+
+      $funder_id = $post_array['header']['fk_funder_id'];
+        
+      return $this->grants_model->overwrite_field_value_on_post(
+          $post_array,
+          'project',
+          'project_is_default',
+          1,
+          0,
+          [
+              'fk_funder_id'=>$funder_id,
+              'project_is_default'=>1
+          ]
+      );
+    }
+
     public function detail_list_table_hidden_columns(){}
 
     public function single_form_add_visible_columns(){}
