@@ -37,7 +37,7 @@ class Office_bank_model extends MY_Model implements CrudModelInterface, TableRel
   public function detail_tables(){
     $detail_tables = ['cheque_book'];
 
-    if($this->session->system_admin){
+    if($this->session->system_admin || $this->config->item('link_new_project_allocations_only_to_default_bank_accounts')){
       $detail_tables[] = 'office_bank_project_allocation';
     }
 
