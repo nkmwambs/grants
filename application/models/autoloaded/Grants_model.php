@@ -1832,6 +1832,22 @@ function get_type_record_by_foreign_key_id($type, $foreign_type, $foreign_key_id
 
 }
 
+function overwrite_field_value_on_post(Array $post_array, String $insert_table,String $field_to_overwrite,int $original_value_to_check,int $overwrite_value ,Array $checking_condition){
+  $param_to_overwrite_value = $post_array['header'][$field_to_overwrite];
+  
+  if(count($checking_condition) > 0){
+      $this->read_db->where($checking_condition);
+  }
+  
+  $count_records = $this->read_db->get($insert_table)->num_rows();
+
+  if($param_to_overwrite_value == $original_value_to_check && $count_records > 0){
+    $post_array['header'][$field_to_overwrite] = $overwrite_value;
+  }
+
+  return $post_array;
+}
+
 function event_tracker(){
   // $event = $this->input->post();
 
