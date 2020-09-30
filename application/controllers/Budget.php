@@ -34,7 +34,7 @@ class Budget extends MY_Controller
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
     $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
     $this->db->where(array('fk_office_id'=>$budget_office->office_id,
-    'budget_year'=>$budget_office->budget_year));
+    'budget_year'=>$budget_office->budget_year,'budget_id'=>hash_id($this->id,'decode')));
     $this->db->group_by(array('fk_month_id','expense_account_id','income_account_id'));
     $this->db->order_by('month_order ASC');
     $result_raw  = $this->db->get('budget')->result_object();
@@ -99,7 +99,8 @@ class Budget extends MY_Controller
     return $data;
   }
 
-  function budget_schedule_result($office_id = 9,$year = 2020,$income_account = 1,$funder_id = 1){
+  //function budget_schedule_result($office_id,$year,$income_account,$funder_id){
+  function budget_schedule_result(){  
     $result = [];
 
     $budget_office = $this->budget_office();
@@ -116,7 +117,7 @@ class Budget extends MY_Controller
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
     $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
     $this->db->join('status','status.status_id=budget_item.fk_status_id');
-    $this->db->where(array('fk_office_id'=>$budget_office->office_id,'budget_year'=>$budget_office->budget_year));
+    $this->db->where(array('fk_office_id'=>$budget_office->office_id,'budget_year'=>$budget_office->budget_year,'fk_budget_id'=>hash_id($this->id,'decode')));
     $result_raw = $this->db->get('budget_item_detail')->result_object();
 
     $result_grid = [];
