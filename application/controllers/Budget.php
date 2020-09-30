@@ -56,8 +56,9 @@ class Budget extends MY_Controller
   }
 
   function budget_office(){
-    $this->db->select(array('office_id','office_name','office_code','budget_year'));
+    $this->db->select(array('office_id','office_name','office_code','budget_year','budget_tag_id','budget_tag_name'));
     $this->db->join('office','office.office_id=budget.fk_office_id'); 
+    $this->db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
     $budget_office = $this->db->get_where('budget',
     array('budget_id'=>hash_id($this->id,'decode')))->row();
 
@@ -71,11 +72,13 @@ class Budget extends MY_Controller
     $budget_year = 0;
     $office_id = 0;
     $office_name = "";
+    $budget_tag_name = "";
     
     if(isset($budget_office->office_id)){
       $office_id = $budget_office->office_id;
       $budget_year = $budget_office->budget_year;
       $office_name = $budget_office->office_name;
+      $budget_tag_name = $budget_office->budget_tag_name;
     }
 
     $this->db->select(array('funder_id','funder_name','project_allocation_id','project_allocation_name'));
@@ -95,6 +98,7 @@ class Budget extends MY_Controller
 
     $data['current_year'] = $budget_year;
     $data['office'] = $office_name;
+    $data['budget_tag'] = $budget_tag_name;
 
     return $data;
   }
@@ -466,13 +470,43 @@ class Budget extends MY_Controller
         $result = array_merge($budget_header,$budget_summary);
       }else{
         $budget_schedule = $this->budget_schedule_result();
-        $result = array_merge($budget_header,$budget_schedule);
+        $is_current_review['is_current_review'] = $this->check_if_current_review();
+        $result = array_merge($budget_header,$budget_schedule,$is_current_review);
       }
     }else{
       $result = parent::result($id = '');
     }
 
     return $result;
+  }
+
+  function check_if_current_review(){
+    $budget_id = hash_id($this->id,'decode');
+
+    // Get office object for the budget
+    $this->read_db->select(array('budget_year','fk_office_id','budget_tag_level'));
+    $this->read_db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
+    $budget_obj = $this->read_db->get_where('budget',array('budget_id'=>$budget_id))->row();
+
+    $fy = $budget_obj->budget_year;
+    $office_id = $budget_obj->fk_office_id;
+    $current_budget_tag_level = $budget_obj->budget_tag_level;
+
+    // Get all used budget tag levels for office and fy
+    $this->read_db->select(array('budget_tag_level'));
+    $this->read_db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
+    $this->read_db->order_by('budget_tag_level ASC');
+    $budget_tag_levels = $this->read_db->get_where('budget',array('fk_office_id'=>$office_id,'budget_year'=>$fy))->result_array();
+
+    $budget_tag_levels_array = array_column($budget_tag_levels,'budget_tag_level');
+
+    $max_used_level = array_pop($budget_tag_levels_array);
+
+    if($current_budget_tag_level == $max_used_level){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   
