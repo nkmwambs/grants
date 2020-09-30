@@ -84,6 +84,51 @@ class Budget_item extends MY_Controller
     }
   }
 
+  function update_budget_item($budget_item_id){
+    $post = $this->input->post();
+
+    //echo $budget_item_id;exit;
+
+    $this->write_db->trans_start();
+
+    $header = [];
+
+    // Update budget item record
+    /**
+     * {"budget_item_description":"Secondary School fees for 2020",
+     * "fk_expense_account_id":"1",
+     * "fk_month_id":{"7":["2500000.00"],"8":["0.00"],"9":["0.00"],
+     * "10":["0.00"],"11":["0.00"],"12":["0.00"],"1":["2000000.00"],"2":["0.00"],
+     * "3":["0.00"],"4":["0.00"],"5":["0.00"],"6":["0.00"]},"budget_item_total_cost":"4500000",
+     * "fk_budget_id":"1"}
+     */
+
+    $header['budget_item_total_cost'] = $post['budget_item_total_cost'];
+    $header['budget_item_description'] = $post['budget_item_description'];
+
+    $this->write_db->where(array('budget_item_id'=>$budget_item_id));
+    $this->write_db->update('budget_item',$header);
+
+    // Update budget item detail
+    
+    foreach($post['fk_month_id'] as $month_id => $month_amount){
+
+      $body['budget_item_detail_amount'] = $month_amount[0];
+    
+      $this->write_db->where(array('fk_budget_item_id'=>$budget_item_id,'fk_month_id'=>$month_id));
+      $this->write_db->update('budget_item_detail',$body);
+    }
+
+    $this->write_db->trans_complete();
+
+    if ($this->write_db->trans_status() === FALSE)
+    {
+      echo "Budget Item Update failed";
+    }else{
+      echo "Budget Item Updated successfully";
+    }
+  }
+
   function insert_budget_item(){
     
     $post = $this->input->post();
