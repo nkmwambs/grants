@@ -112,16 +112,26 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
 
     // Checking the bugdet tag level of the posted budget and retrive the budget record that has n-1 budget tag level
     $budget_tag_id_of_new_budget = $post_array['fk_budget_tag_id'];
-    $budget_tag_id_of_previous_budget = $post_array['fk_budget_tag_id'] - 1;
     $office_id = $post_array['fk_office_id'];
     $current_budget_fy = $post_array['budget_year'];
 
-    if($budget_tag_id_of_previous_budget > 0){
+    // Get the budget tag id of the incoming budget
+    $incoming_budget_tag_id = $post_array['fk_budget_tag_id'];
+    $incoming_budget_tag_level = $this->read_db->get_where('budget_tag',array('budget_tag_id'=>$incoming_budget_tag_id))->row()->budget_tag_level;
 
-      $this->read_db->where(array('fk_budget_tag_id'=>$budget_tag_id_of_previous_budget,
+    $budget_tag_level_of_previous_budget = $incoming_budget_tag_level - 1;
+
+    //echo $budget_tag_level_of_previous_budget;exit;
+
+    if($budget_tag_level_of_previous_budget > 0 ){
+
+      $this->read_db->where(array('budget_tag_level'=>$budget_tag_level_of_previous_budget,
       'fk_office_id'=>$office_id,'budget_year'=>$current_budget_fy));
 
+        $this->read_db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
         $previous_budget_id = $this->read_db->get('budget')->row()->budget_id;
+
+        //echo $previous_budget_id;exit;
 
         // Get the budget items and budget item details for the previous budget
         $this->read_db->select(array(
