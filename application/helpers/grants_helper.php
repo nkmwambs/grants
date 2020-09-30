@@ -508,4 +508,30 @@ if(!function_exists('list_lookup_tables')){
 	}
 }
 
+if(!function_exists('financial_year_quarter_months')){
+	function financial_year_quarter_months($month_number){
+		
+		$CI =& get_instance();
+
+		$CI->read_db->select(array('month_number'));
+      	$CI->read_db->order_by('month_order ASC');
+      	$months = $CI->read_db->get('month')->result_array();
+
+      	$month_mumbers = array_column($months,'month_number');
+
+      	$months_in_quarters = array_combine([1,2,3,4],array_chunk($month_mumbers,3));
+
+      	$current_quarter_months = [];
+
+      	foreach($months_in_quarters as $quarter_number => $months_in_quarter){
+        	if(in_array($month_number,$months_in_quarter)){
+          	$current_quarter_months['quarter_number'] = $quarter_number;
+          	$current_quarter_months['months_in_quarter'] = $months_in_quarter;
+        	}
+		  }
+		  
+		return $current_quarter_months;
+	}
+}
+
 

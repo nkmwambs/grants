@@ -83,9 +83,18 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
     if(!$this->session->system_admin){
       $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
       $lookup_values['office'] = $this->read_db->get('office')->result_array();
+
+      $current_quarter_months = financial_year_quarter_months(date('n') + 1);
       
+      $this->read_db->select(array('budget_tag_id','budget_tag_name'));
+        $this->read_db->group_start();
+          $this->read_db->where_in('fk_month_id', $current_quarter_months['months_in_quarter']);
+          $this->read_db->or_where(array('budget_tag_level'=> $current_quarter_months['quarter_number'] - 1));
+        $this->read_db->group_end();
+
       $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id,'budget_tag_is_active'=>1));
       $lookup_values['budget_tag'] = $this->read_db->get('budget_tag')->result_array();
+
     }
 
     return $lookup_values;
@@ -105,6 +114,33 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
     return ['fk_office_id','fk_budget_tag_id','budget_year'];
   }
 
+  // function action_before_insert($post_array){
+
+  // }
+
+  function get_immediate_previous_budget($office_id,$current_budget_fy,$header_id){
+    // Get the budget tag level of the just previous budget
+
+    $budget_tag_level_of_previous_budget = 0;
+    $budget_id_of_previous_budget = 0;
+
+    $this->read_db->select(array('budget_tag_level','budget_id'));
+    $this->read_db->where(array('fk_office_id'=>$office_id,
+    'budget_year'=>$current_budget_fy,'budget_id<'=>$header_id));
+    $this->read_db->order_by('budget_tag_level ASC');
+    $this->read_db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
+    $previous_budgets_obj = $this->read_db->get('budget');
+
+    if($previous_budgets_obj->num_rows() > 0){
+      $previous_budget_tag_levels = array_column($previous_budgets_obj->result_array(),'budget_tag_level');
+      $budget_tag_level_of_previous_budget = array_pop($previous_budget_tag_levels);
+
+      $previous_budget_ids = array_column($previous_budgets_obj->result_array(),'budget_id');
+      $budget_id_of_previous_budget = array_pop($previous_budget_ids);
+    }
+
+    return ['budget_tag_level'=>$budget_tag_level_of_previous_budget,'budget_id' => $budget_id_of_previous_budget];
+  }
 
   function action_after_insert($post_array,$approval_id,$header_id){
     
@@ -115,23 +151,11 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
     $office_id = $post_array['fk_office_id'];
     $current_budget_fy = $post_array['budget_year'];
 
-    // Get the budget tag id of the incoming budget
-    $incoming_budget_tag_id = $post_array['fk_budget_tag_id'];
-    $incoming_budget_tag_level = $this->read_db->get_where('budget_tag',array('budget_tag_id'=>$incoming_budget_tag_id))->row()->budget_tag_level;
-
-    $budget_tag_level_of_previous_budget = $incoming_budget_tag_level - 1;
-
-    //echo $budget_tag_level_of_previous_budget;exit;
+    $budget_tag_level_of_previous_budget = $this->get_immediate_previous_budget($office_id,$current_budget_fy,$header_id)['budget_tag_level'];
 
     if($budget_tag_level_of_previous_budget > 0 ){
 
-      $this->read_db->where(array('budget_tag_level'=>$budget_tag_level_of_previous_budget,
-      'fk_office_id'=>$office_id,'budget_year'=>$current_budget_fy));
-
-        $this->read_db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
-        $previous_budget_id = $this->read_db->get('budget')->row()->budget_id;
-
-        //echo $previous_budget_id;exit;
+      $previous_budget_id = $this->get_immediate_previous_budget($office_id,$current_budget_fy,$header_id)['budget_id'];
 
         // Get the budget items and budget item details for the previous budget
         $this->read_db->select(array(
