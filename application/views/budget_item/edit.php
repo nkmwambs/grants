@@ -218,7 +218,11 @@ function save(go_back = true){
 
     let data = frm.serializeArray();
 
-    let url = "<?=base_url();?>budget_item/insert_budget_item";
+    let budget_item_id = '<?=hash_id($this->id,'decode');?>';
+
+    //alert(budget_item_id);
+
+    let url = "<?=base_url();?>Budget_item/update_budget_item/"+budget_item_id;
 
     $.ajax({
         url:url,
