@@ -23,7 +23,7 @@
     
     <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
         <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
-            <div class='btn btn-default'>Add new budget item</div>
+            <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
         </a>
 
     </div>
@@ -51,7 +51,7 @@
 <?php foreach($budget_schedule as $income_group){?>
 <div class='row'>
     <div class='col-xs-12' style='text-align:center;font-weight:bold;'>
-        <?=ucwords($income_group['income_account']['income_account_name']);?> <?=get_phrase('budget_schedule_for');?> <?=$office;?> <?=$current_year;?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'><?=get_phrase('show_budget_summary');?></a>)
+        <?=ucwords($income_group['income_account']['income_account_name']);?> <?=get_phrase('budget_schedule_for');?> <?=$office;?> <?=get_phrase('FY');?><?=$current_year;?> <?=$budget_tag;?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'><?=get_phrase('show_budget_summary');?></a>)
     </div>
 </div>
 
@@ -83,17 +83,18 @@
                                     <?=get_phrase('action');?>
                                 <span class="caret"></span></button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update')){ ?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review){ ?>
                                     <li><?=list_table_edit_action('budget_item',$primary_key);?></li>
                                     <li class="divider"></li>
                                     <?php }?>
-                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete')){ ?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review){ ?>
                                     <li><?=list_table_delete_action('budget_item',$primary_key);?></li>
                                     <?php }?>
 
                                     <?php if(
-                                        !$this->user_model->check_role_has_permissions('Budget_item','update') && 
+                                        (!$this->user_model->check_role_has_permissions('Budget_item','update') && 
                                         !$this->user_model->check_role_has_permissions('Budget_item','delete')
+                                        ) ||  !$is_current_review
 
                                     ){ 
                                         echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
