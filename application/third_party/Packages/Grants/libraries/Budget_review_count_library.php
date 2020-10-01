@@ -25,7 +25,7 @@ class Budget_review_count_library extends Grants
 
   function change_field_type(){
     $field_type = [
-      'budget_review_count_number'=>['field_type'=>'select','options'=>[1,2,3,4]]
+      'budget_review_count_number'=>['field_type'=>'select','options'=>[1=>1,2=>2,3=>3,4=>4]]
     ];
 
     return $field_type;

@@ -24,8 +24,15 @@ class Budget_tag_library extends Grants
   function index(){}
 
   function change_field_type(){
-    $max_review_count =  $this->CI->read_db->get_where('budget_review_count',
-    array('fk_account_system_id'=>$this->CI->session->user_account_system_id))->row()->budget_review_count_number;
+
+    $budget_review_count_obj = $this->CI->read_db->get_where('budget_review_count',
+    array('fk_account_system_id'=>$this->CI->session->user_account_system_id));
+
+    $max_review_count = 4;
+
+    if($budget_review_count_obj->num_rows() > 0){
+      $max_review_count = $budget_review_count_obj->row()->budget_review_count_number;
+    }
 
     $range_of_review_count = range(1, $max_review_count);
 
