@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 //print_r($this->session->hierarchy_offices);
+//echo budget_review_buffer_month(10);
+
 if ($this->session->system_admin) {
 
   //print_r($this->session->hierarchy_offices);

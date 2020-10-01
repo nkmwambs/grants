@@ -57,6 +57,9 @@
 	//Submit MFR without controls
 	$config['submit_mfr_without_controls']=true;
 
+	//Budget configs
+	$config['budget_review_buffer_months'] = 3;
+
 
 
 
