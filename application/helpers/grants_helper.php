@@ -163,7 +163,9 @@ if( ! function_exists('create_breadcrumb') ){
 		$string = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
 
 		foreach ($breadcrumb_list as $menuItem) {
-		
+			if($CI->read_db->get_where('menu',
+			array('menu_name'=>$menuItem,'menu_is_active'=>0))->num_rows() > 0) continue;
+			
 			$string .= '<li class="breadcrumb-item"><a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a></li>';
 		}
 
