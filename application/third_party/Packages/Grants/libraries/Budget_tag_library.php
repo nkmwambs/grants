@@ -39,7 +39,7 @@ class Budget_tag_library extends Grants
     $budget_tag_level = [];
 
     foreach($range_of_review_count as $review_count){
-      $budget_tag_level[$review_count] = $review_count == 1 ? get_phrase('initial_budget') : get_phrase('budget_review') .' '. $review_count;
+      $budget_tag_level[$review_count] = $review_count == 1 ? get_phrase('initial_budget') : addOrdinalNumberSuffix($review_count - 1). ' ' .get_phrase('budget_review');
     }
 
     $field_type['budget_tag_level']['field_type'] = 'select';
