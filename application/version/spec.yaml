@@ -56,6 +56,10 @@ core:
 grants:
   
   tables:
+  
+    budget_review_count:
+      lookup_tables:
+        - account_system
 
     budget_tag:
       lookup_tables:

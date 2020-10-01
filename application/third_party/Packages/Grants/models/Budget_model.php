@@ -84,12 +84,16 @@ class Budget_model extends MY_Model implements CrudModelInterface, TableRelation
       $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
       $lookup_values['office'] = $this->read_db->get('office')->result_array();
 
-      $current_quarter_months = financial_year_quarter_months(date('n') + 1);
+      $current_month = date('n');
+
+      $current_quarter_months = financial_year_quarter_months(budget_review_buffer_month($current_month));
       
       $this->read_db->select(array('budget_tag_id','budget_tag_name'));
         $this->read_db->group_start();
+        if(in_array(budget_review_buffer_month($current_month),$current_quarter_months['months_in_quarter'])){  
           $this->read_db->where_in('fk_month_id', $current_quarter_months['months_in_quarter']);
-          $this->read_db->or_where(array('budget_tag_level'=> $current_quarter_months['quarter_number'] - 1));
+        }
+        $this->read_db->or_where(array('budget_tag_level'=> $current_quarter_months['quarter_number'] - 1));
         $this->read_db->group_end();
 
       $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id,'budget_tag_is_active'=>1));

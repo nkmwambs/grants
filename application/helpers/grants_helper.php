@@ -519,7 +519,18 @@ if(!function_exists('financial_year_quarter_months')){
 
       	$month_mumbers = array_column($months,'month_number');
 
-      	$months_in_quarters = array_combine([1,2,3,4],array_chunk($month_mumbers,3));
+		$count_of_reviews_in_year = $CI->read_db->get_where('budget_review_count',array('fk_account_system_id'=>$CI->session->user_account_system_id))->row()->budget_review_count_number;
+		$count_of_months_in_period = count($month_mumbers)/$count_of_reviews_in_year;
+		/**
+		 * 1 - 12 
+		 * 2 - 6  
+		 * 3 - 4
+		 * 4 - 3
+		 */
+		$range_of_reviews = range(1,$count_of_reviews_in_year);// [1,2,3,4] - Assume the $count_of_reviews_in_year = 4
+		$month_arrays_in_period = array_chunk($month_mumbers,$count_of_months_in_period);//[[7,8,9],[10,11,12],[1,2,3],[4,5,6]]
+
+      	$months_in_quarters = array_combine($range_of_reviews,$month_arrays_in_period);
 
       	$current_quarter_months = [];
 
@@ -531,6 +542,27 @@ if(!function_exists('financial_year_quarter_months')){
 		  }
 		  
 		return $current_quarter_months;
+	}
+}
+
+if(!function_exists('budget_review_buffer_month')){
+	function budget_review_buffer_month($current_month){
+
+		$CI =& get_instance();
+
+		$current_month_with_buffer = $current_month + $CI->config->item('budget_review_buffer_months');
+
+		if($current_month_with_buffer > 12){
+
+			if($current_month_with_buffer > 24){
+				$current_month_with_buffer = $current_month_with_buffer % 12;
+			}else{
+				$current_month_with_buffer = $current_month_with_buffer - 12;
+			}
+
+		}
+
+		return $current_month_with_buffer;
 	}
 }
 
