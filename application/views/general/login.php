@@ -101,7 +101,7 @@ var baseurl = '<?php echo base_url();?>';
 							}
 						?>
 
-						<input type="text" value="<?=$setup_email;?>" class="form-control" name="email" id="email" placeholder="<?=get_phrase('email');?>" autocomplete="off" data-mask="email" />
+						<input type="text" value="" class="form-control" name="email" id="email" placeholder="<?=get_phrase('email');?>" autocomplete="off" data-mask="email" />
 					</div>
 
 				</div>
