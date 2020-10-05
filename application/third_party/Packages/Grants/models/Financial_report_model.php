@@ -134,6 +134,8 @@ class Financial_report_model extends MY_Model{
         
         $income_accounts = $this->income_accounts($office_ids,$project_ids);
 
+        //print_r($income_accounts);exit;
+
         $opening_balances = [];
 
         foreach($income_accounts as $income_account){
@@ -147,13 +149,15 @@ class Financial_report_model extends MY_Model{
 
     function _initial_opening_account_balance($office_ids,$income_account_id, $project_ids = []){
         $account_opening_balance = 0;
-
+        $initial_account_opening_balance_obj = null;
         $balance_column = '';
         
         // Check if account is donor funder
         $this->db->select(array('income_account_is_donor_funded'));
         $income_account_is_donor_funded = $this->db->get_where('income_account',
         array('income_account_id'=>$income_account_id))->row()->income_account_is_donor_funded;
+
+        //print_r($income_account_is_donor_funded);exit;
 
         if(!$income_account_is_donor_funded && empty($project_ids)){
 
@@ -167,8 +171,8 @@ class Financial_report_model extends MY_Model{
 
         }else{
 
-            $this->db->select_sum('opening_fund_balance_amount');
-            $this->db->group_by(array('fk_income_account_id'));
+            $this->db->select('opening_fund_balance_amount');
+            //$this->db->group_by(array('income_account_id'));
             $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
             $this->db->join('income_account','income_account.income_account_id=opening_fund_balance.fk_income_account_id');
             $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
@@ -179,13 +183,14 @@ class Financial_report_model extends MY_Model{
                 $this->db->where_in('fk_project_id',$project_ids);
             }   
            
-            $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
-                array('fk_income_account_id'=>$income_account_id));
+            $initial_account_opening_balance_obj = $this->db->get('system_opening_balance',
+                array('income_account_id'=>$income_account_id));
 
-            $balance_column = 'opening_allocation_balance_amount';
+            $balance_column = 'opening_fund_balance_amount';
 
         }
         
+        //print_r($initial_account_opening_balance_obj->result_array());exit;
         
         if($initial_account_opening_balance_obj->num_rows() == 1){
             $account_opening_balance = $initial_account_opening_balance_obj->row()->$balance_column;
@@ -203,7 +208,7 @@ class Financial_report_model extends MY_Model{
         //if(!$is_initial_report){
         $account_opening_balance = $this->_get_to_date_account_opening_balance($office_ids,$income_account_id,$start_date_of_month,$project_ids);
         //}
-
+        
         return $account_opening_balance;
     }
 
