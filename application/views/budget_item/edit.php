@@ -5,13 +5,16 @@
 </style>
 
 <?php 
-//print_r($result['budget_item_details']);
+
+//print_r(array_keys($result));
 
 extract($result);
 
-$budget_item = $budget_item_details[0];
+$budget_item = $budget_item_details[1];
 
-//print_r($budget_item);
+//print_r($months);
+//print_r($budget_item_details);
+
 $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'));
 
 ?>
@@ -74,7 +77,9 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                                     <td><div class='btn btn-danger' id='btn-clear'><?=get_phrase('clear');?></div></td>
                                     
                                     <?php foreach($months as $month){ ?>
-                                        <td><input type='text' id='' value='<?=$budget_item_details[$month->month_id - 1]['budget_item_detail_amount'];?>' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
+                                        <td>
+                                        <input type='text' id='' value='<?=$budget_item_details[$month->month_number]['budget_item_detail_amount'];?>' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' />
+                                        </td>
                                     <?php }?>
                                 
                                 </tr>

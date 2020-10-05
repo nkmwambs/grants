@@ -35,7 +35,7 @@ class Budget_item extends MY_Controller
   
     $result = [];
     
-    $this->db->select(array('month_id','month_name'));
+    $this->db->select(array('month_id','month_number','month_name'));
     $this->db->order_by('month_order ASC');
     $months = $this->db->get('month')->result_object();
     
@@ -74,8 +74,16 @@ class Budget_item extends MY_Controller
     if($this->action == 'edit'){
       $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
       $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+      $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
       $this->db->where(array('budget_item_id'=>hash_id($this->id,'decode')));
-      $result['budget_item_details'] = $this->db->get('budget_item_detail')->result_array();
+      $budget_item_details = $this->db->get('budget_item_detail')->result_array();
+      
+      $result['budget_item_details'] = [];
+      foreach($budget_item_details as $budget_item_detail){
+        $result['budget_item_details'][$budget_item_detail['month_number']] = $budget_item_detail;
+      }
+
+      //$result['budget_item_details'] = $this->db->get('budget_item_detail')->result_array();
     }
 
     return $result;
