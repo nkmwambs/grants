@@ -1,7 +1,15 @@
 <?php
     //print_r($result['budget_schedule'][1]['budget_items'][1]['expense_items']['month_spread']);
-    //print_r($result['budget_schedule']);
+    //print_r(array_shift($result['budget_schedule']));
+
+
+    //print_r($month_names_with_number_keys);
+
+    //print_r(array_keys($result));
+
     extract($result);
+    //print_r($budget_schedule['spreading_of_month']);
+    //print_r($month_names_with_number_keys);
 ?>
 
 <style>
@@ -61,8 +69,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan='19' style='text-align:center'>
-                            Expense account: <?=$loop_budget_items['expense_account']['expense_account_code'];?> - <?=$loop_budget_items['expense_account']['expense_account_name'];?>
+                        <th colspan='16' style='text-align:center'>
+                            <?=get_phrase('expense_account');?>: <?=$loop_budget_items['expense_account']['expense_account_code'];?> - <?=$loop_budget_items['expense_account']['expense_account_name'];?>
                         </th>
                     </tr>
                     <tr>
@@ -70,12 +78,13 @@
                         <th><?=get_phrase('description');?></th>
                         <th><?=get_phrase('total_cost');?></th>                        
                         <th><?=get_phrase('status');?></th>
+                        <?php foreach($month_names_with_number_keys as $month_name){?>
+                            <th><?=$month_name;?></th>
+                        <?php }?>
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach($loop_budget_items['expense_items'] as $loop_expense_items){
-                    $primary_key = $loop_expense_items['budget_item_id']
-                    ?>
+                <?php foreach($loop_budget_items['expense_items'] as $budget_item_id=>$loop_expense_items){?>
                     <tr>
                         <td>
                             <div class="dropdown">
@@ -84,11 +93,11 @@
                                 <span class="caret"></span></button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
                                     <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review){ ?>
-                                    <li><?=list_table_edit_action('budget_item',$primary_key);?></li>
+                                    <li><?=list_table_edit_action('budget_item',$budget_item_id);?></li>
                                     <li class="divider"></li>
                                     <?php }?>
                                     <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review){ ?>
-                                    <li><?=list_table_delete_action('budget_item',$primary_key);?></li>
+                                    <li><?=list_table_delete_action('budget_item',$budget_item_id);?></li>
                                     <?php }?>
 
                                     <?php if(
@@ -106,6 +115,9 @@
                         <td><?=$loop_expense_items['description']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
                         <td><?=$loop_expense_items['status']['status_name'];?></td>
+                        <?php foreach($month_names_with_number_keys as $month_number=>$month_name){?>
+                            <th><?=$loop_expense_items['month_spread'][$month_number]['amount'];?></th>
+                        <?php }?>
                     </tr>
                 <?php }?>
                 </tbody>
