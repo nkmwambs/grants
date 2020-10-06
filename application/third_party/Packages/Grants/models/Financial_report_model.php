@@ -149,15 +149,13 @@ class Financial_report_model extends MY_Model{
 
     function _initial_opening_account_balance($office_ids,$income_account_id, $project_ids = []){
         $account_opening_balance = 0;
-        $initial_account_opening_balance_obj = null;
+
         $balance_column = '';
         
         // Check if account is donor funder
         $this->db->select(array('income_account_is_donor_funded'));
         $income_account_is_donor_funded = $this->db->get_where('income_account',
         array('income_account_id'=>$income_account_id))->row()->income_account_is_donor_funded;
-
-        //print_r($income_account_is_donor_funded);exit;
 
         if(!$income_account_is_donor_funded && empty($project_ids)){
 
@@ -171,26 +169,23 @@ class Financial_report_model extends MY_Model{
 
         }else{
 
-            $this->db->select('opening_fund_balance_amount');
-            //$this->db->group_by(array('income_account_id'));
-            $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
-            $this->db->join('income_account','income_account.income_account_id=opening_fund_balance.fk_income_account_id');
-            $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
-            $this->db->join('project','project.project_id=project_income_account.fk_project_id');
-            $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
-            
+            $this->db->select_sum('opening_allocation_balance_amount');
+            $this->db->group_by('fk_income_account_id');
+            $this->db->join('opening_allocation_balance','opening_allocation_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=opening_allocation_balance.fk_project_allocation_id');
+            $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+
             if(count($project_ids) > 0){
                 $this->db->where_in('fk_project_id',$project_ids);
             }   
            
-            $initial_account_opening_balance_obj = $this->db->get('system_opening_balance',
-                array('income_account_id'=>$income_account_id));
+            $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
+                array('fk_income_account_id'=>$income_account_id));
 
-            $balance_column = 'opening_fund_balance_amount';
+            $balance_column = 'opening_allocation_balance_amount';
 
         }
         
-        //print_r($initial_account_opening_balance_obj->result_array());exit;
         
         if($initial_account_opening_balance_obj->num_rows() == 1){
             $account_opening_balance = $initial_account_opening_balance_obj->row()->$balance_column;
