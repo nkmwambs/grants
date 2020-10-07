@@ -336,7 +336,11 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
    * @todo - to be taken to income_accounts model. Only get used accounts in the month (Not yet done)
    */
   private function income_accounts(){
+    
+    $account_system_id = $this->journal_account_system();
+
     $this->db->select(array('income_account_id','income_account_code'));
+    $this->db->where(array('fk_account_system_id'=>$account_system_id));
     $accounts = $this->db->get('income_account')->result_array();
 
     $ids = array_column($accounts,'income_account_id');
@@ -345,11 +349,24 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array_combine($ids,$code);
   }
 
+  function journal_account_system(){
+    $this->db->where(array('journal_id'=>hash_id($this->id,'decode')));
+    $this->db->join('journal','journal.fk_office_id=office.office_id');
+    $account_system_id = $this->db->get('office')->row()->fk_account_system_id;
+
+    return $account_system_id;
+  }
+
   /**
    * @todo - to be taken to expense_accounts model. Only get used accounts in the month (Not yet done)
    */
   private function expense_accounts(){
+
+    $account_system_id = $this->journal_account_system();
+
     $this->db->select(array('expense_account_id','expense_account_code'));
+    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $this->db->where(array('fk_account_system_id'=>$account_system_id));
     $accounts =  $this->db->get('expense_account')->result_array();
 
     $ids = array_column($accounts,'expense_account_id');
