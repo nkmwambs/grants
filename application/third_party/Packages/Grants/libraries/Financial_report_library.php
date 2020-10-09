@@ -28,12 +28,12 @@ class Financial_report_library extends Grants
     return $this->CI->financial_report_model->financial_report_information($report_id, $offices_ids);
   }
 
-  function month_income_account_receipts($office_ids, $start_date_of_month,$project_ids = []){
-    return $this->CI->financial_report_model->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids);
+  function month_income_account_receipts($office_ids, $start_date_of_month,$project_ids = [],$office_bank_ids = []){
+    return $this->CI->financial_report_model->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
   }
 
-  function month_income_account_expenses($office_ids, $start_date_of_month,$project_ids = []){
-    return $this->CI->financial_report_model->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids);
+  function month_income_account_expenses($office_ids, $start_date_of_month,$project_ids = [],$office_bank_ids = []){
+    return $this->CI->financial_report_model->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids, $office_bank_ids);
   }
 
   function month_income_opening_balance($office_ids, $start_date_of_month, $project_ids = [], $office_bank_ids = []){

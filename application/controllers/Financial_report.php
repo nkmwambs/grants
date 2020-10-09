@@ -28,16 +28,16 @@ class Financial_report extends MY_Controller
     return $this->financial_report_library->income_accounts($office_ids, $project_ids);
   }
 
-  private function month_income_account_receipts($office_ids,$start_date_of_month,$project_ids = []){
-    return $this->financial_report_library->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids);
+  private function month_income_account_receipts($office_ids,$start_date_of_month,$project_ids = [],$office_bank_ids = []){
+    return $this->financial_report_library->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids, $office_bank_ids);
   }
 
-  private function month_income_account_expenses($office_ids, $start_date_of_month,$project_ids=[]){
-    return $this->financial_report_library->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids);
+  private function month_income_account_expenses($office_ids, $start_date_of_month,$project_ids=[], $office_bank_ids=[]){
+    return $this->financial_report_library->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
   }
 
-  private function month_income_opening_balance($office_ids, $start_date_of_month,$project_ids = []){
-    return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids);
+  private function month_income_opening_balance($office_ids, $start_date_of_month,$project_ids = [],$office_bank_ids = []){
+    return $this->financial_report_library->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids, $office_bank_ids);
   }
 
   private function _fund_balance_report($office_ids, $start_date_of_month, $project_ids = [], $office_bank_ids = []){
@@ -45,31 +45,31 @@ class Financial_report extends MY_Controller
     $income_accounts =  $this->financial_report_model->income_accounts($office_ids,$project_ids,$office_bank_ids);
     
     $all_accounts_month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
-    // $all_accounts_month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
-    // $all_accounts_month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
+    $all_accounts_month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
+    $all_accounts_month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
 
     // $report = array();
 
-    // foreach($income_accounts as $account){
+    foreach($income_accounts as $account){
       
-    //   $month_opening_balance = isset($all_accounts_month_opening_balance[$account['income_account_id']])?$all_accounts_month_opening_balance[$account['income_account_id']]:0;
-    //   $month_income = isset($all_accounts_month_income[$account['income_account_id']])?$all_accounts_month_income[$account['income_account_id']]:0;
-    //   $month_expense = isset($all_accounts_month_expense[$account['income_account_id']])?$all_accounts_month_expense[$account['income_account_id']]:0;
+      $month_opening_balance = isset($all_accounts_month_opening_balance[$account['income_account_id']])?$all_accounts_month_opening_balance[$account['income_account_id']]:0;
+      $month_income = isset($all_accounts_month_income[$account['income_account_id']])?$all_accounts_month_income[$account['income_account_id']]:0;
+      $month_expense = isset($all_accounts_month_expense[$account['income_account_id']])?$all_accounts_month_expense[$account['income_account_id']]:0;
 
-    //   if($month_opening_balance == 0 && $month_income == 0 && $month_expense == 0){
-    //     continue;
-    //   }
-    //    $report[] = [
-    //     'account_name'=>$account['income_account_name'],
-    //     'month_opening_balance'=>$month_opening_balance,
-    //     'month_income'=>$month_income,
-    //     'month_expense'=>$month_expense,
-    //    ]; 
-    // }  
+      if($month_opening_balance == 0 && $month_income == 0 && $month_expense == 0){
+        continue;
+      }
+
+    $report[] = [
+         'account_name'=>$account['income_account_name'],
+         'month_opening_balance'=>$month_opening_balance,
+         'month_income'=>$month_income,
+         'month_expense'=>$month_expense,
+        ]; 
+    }  
     
-    // return $report;
+    return $report;
 
-    return $income_accounts;
   }
 
   private function _proof_of_cash($office_ids,$reporting_month,$project_ids = []){
@@ -419,7 +419,7 @@ class Financial_report extends MY_Controller
       //'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
       //'multiple_offices_report'=>$multiple_offices_report,
       //'multiple_projects_report'=>$multiple_projects_report,
-      //'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
+      'financial_report_submitted'=>$this->_check_if_financial_report_is_submitted($office_ids,$reporting_month),
      // 'user_office_hierarchy' => $this->financial_report_office_hierarchy($reporting_month),
       //'office_names'=>$office_names,
       //'office_ids'=>$office_ids,
@@ -460,14 +460,14 @@ class Financial_report extends MY_Controller
     $report_id = $this->input->post('report_id');
     $reporting_month = $this->input->post('reporting_month');
 
-    $result = $this->result_array($report_id, $office_ids,$reporting_month,$project_ids, $office_bank_ids);
-    $result['result'] = $result;
+    $report_result = $this->result_array($report_id, $office_ids,$reporting_month,$project_ids, $office_bank_ids);
+    $result['result'] = $report_result;
     
-    echo json_encode($result);
+    //echo json_encode($result);
     
-    //$view_page =  $this->load->view('financial_report/ajax_view',$result,true);
+    $view_page =  $this->load->view('financial_report/ajax_view',$result,true);
 
-    //echo $view_page;
+    echo $view_page;
   }
 
   function view(){
