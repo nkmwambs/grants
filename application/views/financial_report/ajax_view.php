@@ -22,10 +22,10 @@
         </div>
     </div> -->
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('proof_of_cash');?></div>
-            <?php include "includes/include_proof_of_cash.php";?>
+            <?php //include "includes/include_proof_of_cash.php";?>
         </div>
 
         <div class="col-xs-6">
@@ -35,53 +35,53 @@
             <?php //include "includes/include_financial_ratios.php";?>
         </div>
 
-    </div>
+    </div> -->
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('bank_reconciliation');?></div>
-            <?php include "includes/include_bank_reconciliation.php";?>    
+            <?php //include "includes/include_bank_reconciliation.php";?>    
         </div>
 
         <div class="col-xs-6">
             <div class="col-xs-12 header"><?=get_phrase('bank_statements');?></div>
-            <?php include "includes/include_bank_statements.php";?>
+            <?php //include "includes/include_bank_statements.php";?>
         </div>
-    </div>
+    </div> -->
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('outstanding_cheques');?></div>
-            <?php include "includes/include_outstanding_cheques.php";?>
+            <?php //include "includes/include_outstanding_cheques.php";?>
         </div>
 
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('outstanding_cheques_cleared_effects');?></div>
-            <?php include "includes/include_cleared_outstanding_cheques.php";?>
+            <?php //include "includes/include_cleared_outstanding_cheques.php";?>
         </div>
 
-    </div>
+    </div> -->
 
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('deposit_in_transit');?></div>
-            <?php include "includes/include_deposit_in_transit.php";?>
+            <?php //include "includes/include_deposit_in_transit.php";?>
         </div>
 
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('deposit_in_transit_cleared_effects');?></div>
-            <?php include "includes/include_cleared_deposit_in_transit.php";?>
+            <?php //include "includes/include_cleared_deposit_in_transit.php";?>
         </div>
 
-    </div>
+    </div> -->
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-12">
         <div class="col-xs-12 header"><?=get_phrase('expense_report');?></div>
-            <?php include "includes/include_expense_report.php";?>
+            <?php //include "includes/include_expense_report.php";?>
         </div>
-    </div>
+    </div> -->
 
 </div>
 

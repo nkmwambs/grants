@@ -1,3 +1,6 @@
+<?php 
+extract($result);
+?>
 <table class="table table-striped" id="fund_balance_table">
         <thead>
             <tr>

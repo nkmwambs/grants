@@ -74,10 +74,18 @@
                     </select>
                 </div>
 
-                <div class='col-xs-4'>
+                <div class='col-xs-2'>
                     <select name='project_ids[]' id='project_ids' class='form-control select2' multiple ><?=get_phrase('select_projects');?>
                         <?php foreach($month_active_projects as $month_active_project){?>
                             <option value='<?=$month_active_project['project_id'];?>'><?=$month_active_project['project_name'];?></option>
+                        <?php }?>
+                    </select>
+                </div>
+
+                <div class='col-xs-2'>
+                    <select name='office_bank_ids[]' id='office_bank_ids' class='form-control select2' multiple ><?=get_phrase('select_office_banks');?>
+                        <?php foreach($office_banks as $office_bank){?>
+                            <option value='<?=$office_bank['office_bank_id'];?>'><?=$office_bank['office_bank_name'];?></option>
                         <?php }?>
                     </select>
                 </div>
@@ -96,7 +104,7 @@
 
 <div class='row'>
     <div class='col-xs-12' style='overflow-x: auto' id='financial_report_row'>
-        <?php include 'ajax_view.php';?>
+        <?php //include 'ajax_view.php';?>
     </div>
 </div>
 
@@ -105,7 +113,7 @@
 $("#submit_report").on('click',function(ev){
     var url = "<?=base_url();?>financial_report/submit_financial_report";
     var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
-
+    
     $.ajax({
         url:url,
         data:data,
@@ -132,8 +140,9 @@ $("#frm_selected_offices").on('submit',function(ev){
     var url = $(this).attr('action');
     var office_ids = $("#office_ids").val();
     var project_ids = $("#project_ids").val();
+    var office_bank_ids = $("#office_bank_ids").val();
     var data = $(this).serializeArray();
-
+    
     if(office_ids == null){
         alert('Please select atleast 1 office to proceed');
         $("#office_ids").css('border','1px red solid');

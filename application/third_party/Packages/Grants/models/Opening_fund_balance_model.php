@@ -47,6 +47,6 @@ class Opening_fund_balance_model extends MY_Model{
     }
 
     function transaction_validate_duplicates_columns(){
-        //return ['system_opening_balance','income_account'];
+        return ['fk_system_opening_balance_id','fk_income_account_id'];
     }
 }
