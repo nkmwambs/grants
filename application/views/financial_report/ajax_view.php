@@ -15,12 +15,12 @@
         </div>
     </div>
 
-    <!-- <div class='row'>
+    <div class='row'>
         <div class='col-xs-12 header'><?=get_phrase('projects_balance_report');?></div>
         <div class='col-xs-12'>
-            <?php //include "includes/include_project_balance_report.php";?>
+            <?php include "includes/include_project_balance_report.php";?>
         </div>
-    </div> -->
+    </div>
 
     <div class="row">
         <div class="col-xs-6">
