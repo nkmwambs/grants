@@ -425,7 +425,7 @@ class Financial_report extends MY_Controller
       //'office_ids'=>$office_ids,
       //'reporting_month'=>$reporting_month,
       'fund_balance_report'=>$this->_fund_balance_report($office_ids,$reporting_month,$project_ids,$office_bank_ids),
-      //'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month,$office_bank_ids),
+      'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month,$project_ids, $office_bank_ids),
       //'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month,$project_ids,$office_bank_ids),
       //'financial_ratios'=>$this->financial_ratios(),
       //'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month,$project_ids,$office_bank_ids),
@@ -482,12 +482,12 @@ class Financial_report extends MY_Controller
     return $this->grants->retrieve_file_uploads_info('financial_report',$office_ids,$reporting_month, $project_ids);
   }
 
-  function _projects_balance_report($office_ids,$reporting_month){
+  function _projects_balance_report($office_ids,$reporting_month, $project_ids = [], $office_bank_ids = []){
     $headers = [];
     $body = [];
 
 
-    $projects = $this->_office_projects($office_ids,$reporting_month);
+    $projects = $this->_office_projects($office_ids,$reporting_month, $project_ids, $office_bank_ids);
 
     foreach($projects as $project_id => $project){
       $body[$project_id]['funder'] = $project['funder_name'];
