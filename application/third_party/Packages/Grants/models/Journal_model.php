@@ -22,37 +22,14 @@ class Journal_model extends MY_Model
     $this->load->model('general_model');
   }
 
-  function delete($id = null){
-
-  }
-
-  function index(){
-
-  }
-
   public function lookup_tables(){
     return ['office'];
   }
-
-  public function detail_tables(){}
-
-  public function table_visible_columns(){}
-
-  public function table_hidden_columns(){}
-
-  public function master_table_visible_columns(){}
-
-  public function master_table_hidden_columns(){}
-
-  public function list(){
-    
-  }
+ 
 
   public function show_add_button(){
     return false;
   }
-
-  public function view(){}
 
   function get_office_banks($office_id){
     $this->db->select(array('fk_office_id'));

@@ -61,3 +61,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 .VSCodeCounter
 .vscode
+
+/application/tests/

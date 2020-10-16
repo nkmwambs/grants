@@ -1,4 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+//print_r($this->db->get('office'));
 //print_r($this->session->hierarchy_offices);
 //print_r($this->session->context_associations);
 

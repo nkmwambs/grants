@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php 
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*This autoloads all the classes in third_party folder subdirectories e.g. Output
   The third_party houses the reusable API or code systemwise
@@ -181,7 +183,7 @@ class MY_Controller extends CI_Controller
 
         if(!$this->render_data_from_model($render_model_result)){
           // Render from default API
-          $this->list_result = Output_base::load($this->action);
+          $this->list_result = \Output_base::load($this->action);
         }
 
     }else{
