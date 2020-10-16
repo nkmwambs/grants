@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Funder_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Funder_model extends MY_Model implements 
 {
   public $table = 'funder';
   public $dependant_table = "";

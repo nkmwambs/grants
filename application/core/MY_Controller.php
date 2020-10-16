@@ -8,7 +8,7 @@ require_once APPPATH."third_party".DIRECTORY_SEPARATOR."Api".DIRECTORY_SEPARATOR
 define('VALIDATION_ERROR','VALIDATION_ERROR');
 define('VALIDATION_SUCCESS','VALIDATION_SUCCESS');
 
-class MY_Controller extends CI_Controller implements CrudModelInterface
+class MY_Controller extends CI_Controller
 {
 
   private $list_result;

@@ -13,14 +13,13 @@
 	"require": {
 		"php": ">=5.3.7",
 		"aws/aws-sdk-php": "^3.142",
-		"myclabs/deep-copy": "1.8.0",
 		"hashids/hashids": "^4.0"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
 	},
 	"require-dev": {
-		"mikey179/vfsStream": "1.1.*",
-		"phpunit/phpunit": "4.* || 5.*"
+		"kenjis/ci-phpunit-test": "^0.18.0",
+		"phpunit/php-code-coverage": "^7.0"
 	}
 }

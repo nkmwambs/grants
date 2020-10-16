@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Bank_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Bank_model extends MY_Model
 {
   public $table = 'bank'; // you MUST mention the table name
   public $primary_key = 'bank_id'; // you MUST mention the primary key
@@ -22,13 +22,9 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
     $this->load->database();
   }
 
-  function index()
-  {
-  }
-
-
   function delete($id = null)
   {
+    return true;
   }
 
   function lookup_tables()
@@ -46,18 +42,6 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
     return ['bank_track_number', 'bank_name', 'bank_swift_code', 'bank_is_active', 'account_system_name'];
   }
 
-  function list()
-  {
-    // $table_columns = $this->grants->table_columns('approval',$this->hidden_columns);
-    // $this->db->select($table_columns);
-    // $this->db->join('approval_status','approval_status.approval_status_id=approval.fk_approval_status_id');
-    // $this->db->join('approveable_item','approveable_item.approveable_item_id=approval.fk_approveable_item_id');
-    //return $this->db->get('bank')->result_array();
-  }
-
-  function view()
-  {
-  }
 
   /**
    * transaction_validate_duplicates_columns
@@ -72,46 +56,11 @@ class Bank_model extends MY_Model implements CrudModelInterface, TableRelationsh
     return ['bank_swift_code'];
   }
 
-
-  // function lookup_values()
-  // {
-
-  //   $lookup_values = [];
-
-  //   if (!$this->session->system_admin) {
-  //     $results = $this->db->select(array('account_system_id', 'account_system_name'))->get_where('account_system', array('account_system_code' => $this->session->user_account_system));
-
-  //     if ($results->num_rows() > 0) {
-  //       $lookup_values['account_system'] = $results->result_array();
-  //     }
-      
-  //   } else {
-  //     $results = $this->db->select(array('account_system_id', 'account_system_name'))->get('account_system');
-  //     $lookup_values['account_system'] = $results->result_array();
-  //   }
-
-  //   return $lookup_values;
-  // }
-
-  // function render_view_page_data(){
-  //   return ['Hello'];
-  // }
-
   function list_table_where()
   {
     if (!$this->session->system_admin) {
       $this->db->where(array('account_system_code' => $this->session->user_account_system));
     }
   }
-
-  // function multi_select_field(){
-  //   return 'account_system';
-  // }
-
-  // function transaction_validate_duplicates_columns(){
-  //   return ['bank_name','bank_swift_code'];
-  // }
-
-
 
 }

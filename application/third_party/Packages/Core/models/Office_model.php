@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Office_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Office_model extends MY_Model
 {
 
   public $table = 'office'; // you MUST mention the table name

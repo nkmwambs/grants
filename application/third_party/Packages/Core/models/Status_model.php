@@ -9,7 +9,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Status_model extends MY_Model 
 {
   public $table = 'status'; // you MUST mention the table name
   public $dependant_table = '';
