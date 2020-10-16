@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approval_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Approval_model extends MY_Model
 {
   public $table = 'approval'; // you MUST mention the table name
 

@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Menu_user_order_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Menu_user_order_model extends MY_Model
 {
   public $table = 'menu_user_order'; // you MUST mention the table name
 

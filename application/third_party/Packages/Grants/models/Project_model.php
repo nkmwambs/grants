@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Project_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Project_model extends MY_Model 
 {
   public $table = 'project';
 

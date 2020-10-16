@@ -1,0 +1,56 @@
+<phpunit
+	bootstrap="./Bootstrap.php"
+	backupGlobals="true"
+	colors="true">
+	<testsuites>
+		<testsuite name="Main">
+			<directory suffix="test.php">./</directory>
+			<exclude>./_ci_phpunit_test/</exclude>
+		</testsuite>
+
+		<testsuite name="CoreModels">
+			<directory suffix="test.php">./models/core</directory>
+			<exclude>./_ci_phpunit_test/</exclude>
+		</testsuite>
+
+		<testsuite name="GrantsModels">
+			<directory suffix="test.php">./models/grants</directory>
+			<exclude>./_ci_phpunit_test/</exclude>
+		</testsuite>
+
+		<testsuite name="CoreLibraries">
+			<directory suffix="test.php">./libraries/core</directory>
+			<exclude>./_ci_phpunit_test/</exclude>
+		</testsuite>
+
+		<testsuite name="GrantsLibraries">
+			<directory suffix="test.php">./libraries/grants</directory>
+			<exclude>./_ci_phpunit_test/</exclude>
+		</testsuite>
+
+		<testsuite name="Controllers">
+			<directory suffix="test.php">./controllers</directory>
+			<exclude>./_ci_phpunit_test/</exclude>
+		</testsuite>
+		
+	</testsuites>
+	<filter>
+		<whitelist>
+			<directory suffix=".php">../controllers</directory>
+			<directory suffix=".php">../models</directory>
+			<directory suffix=".php">../third_party/Packages/Core/models</directory>
+			<directory suffix=".php">../third_party/Packages/Grants/models</directory>
+			<directory suffix=".php">../views</directory>
+			<directory suffix=".php">../libraries</directory>
+			<directory suffix=".php">../third_party/Packages/Core/libraries</directory>
+			<directory suffix=".php">../third_party/Packages/Grants/libraries</directory>
+			<directory suffix=".php">../helpers</directory>
+			<directory suffix=".php">../hooks</directory>
+		</whitelist>
+	</filter>
+	<logging>
+		<log type="coverage-html" target="build/coverage"/>
+		<log type="coverage-clover" target="build/logs/clover.xml"/>
+		<log type="junit" target="build/logs/junit.xml"/>
+	</logging>
+</phpunit>

@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Journal_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Journal_model extends MY_Model 
 {
   public $table = 'journal'; // you MUST mention the table name
   public $primary_key = 'journal_id'; // you MUST mention the primary key

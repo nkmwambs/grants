@@ -327,7 +327,7 @@ function generate_item_track_number_and_name($approveable_item){
    * @return void
    */
   function upload_attachment($record_id){
-    
+    return true;
   }
 
   function transaction_validate($validation_flags_and_failure_messages,$post_array = [] ,$header_id = 0, $approval_id = 0){
