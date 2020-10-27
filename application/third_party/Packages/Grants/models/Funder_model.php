@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Funder_model extends MY_Model implements 
+class Funder_model extends MY_Model 
 {
   public $table = 'funder';
   public $dependant_table = "";
