@@ -5,7 +5,7 @@
 //print_r($fund_balance_report);
 //print_r($expense_report);
 //$expense_account_month_expense = array_column(array_column(array_column($expense_report,'income_account'),'expense_accounts'),'month_expense');
-
+//print_r($result['office_banks']);
 ?>
 <div id="voucher_print">
     <div class="row">
@@ -33,48 +33,48 @@
         <?php //echo get_phrase('financial_ratios');?>
         </div>
             <?php //include "includes/include_financial_ratios.php";?>
-        </div>
+        </div>-->
 
-    </div> -->
+    </div>
 
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('bank_reconciliation');?></div>
-            <?php //include "includes/include_bank_reconciliation.php";?>    
+            <?php include "includes/include_bank_reconciliation.php";?>    
         </div>
 
         <div class="col-xs-6">
             <div class="col-xs-12 header"><?=get_phrase('bank_statements');?></div>
             <?php //include "includes/include_bank_statements.php";?>
         </div>
-    </div> -->
+    </div>
 
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('outstanding_cheques');?></div>
-            <?php //include "includes/include_outstanding_cheques.php";?>
+            <?php include "includes/include_outstanding_cheques.php";?>
         </div>
 
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('outstanding_cheques_cleared_effects');?></div>
-            <?php //include "includes/include_cleared_outstanding_cheques.php";?>
+            <?php include "includes/include_cleared_outstanding_cheques.php";?>
         </div>
 
-    </div> -->
+    </div>
 
 
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('deposit_in_transit');?></div>
-            <?php //include "includes/include_deposit_in_transit.php";?>
+            <?php include "includes/include_deposit_in_transit.php";?>
         </div>
 
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('deposit_in_transit_cleared_effects');?></div>
-            <?php //include "includes/include_cleared_deposit_in_transit.php";?>
+            <?php include "includes/include_cleared_deposit_in_transit.php";?>
         </div>
 
-    </div> -->
+    </div>
 
     <!-- <div class="row">
         <div class="col-xs-12">
@@ -99,6 +99,11 @@ if(!$financial_report_submitted){
 <script>
 $(document).ready(function(){
 
+    $(".total_oc").append(" <span class='label label-success'>2</span>");
+    $(".total_dt").append(" <span class='label label-danger'>3</span>");
+    $(".code_proof_of_cash").append(" <span class='label label-info'>1</span>");
+    
+
 if('<?=$financial_report_submitted?>' == 1){
     $("#bank_statement_balance").prop('disabled','disabled');
     $(".clear_btn").addClass('disabled');
@@ -119,7 +124,7 @@ let sum_month_income = parseFloat($('#total_fund_month_income').html().split(','
 let sum_month_expense = parseFloat($('#total_fund_month_expense').html().split(',').join(""));
 
 $("#total_fund_month_closing_balance").html(accounting.formatNumber((sum_opening_balance + sum_month_income - sum_month_expense),2));
-
+$("#total_fund_month_closing_balance").append(" <span class='label label-info'>1</span>");
 $(".row_total, .row_header").css('font-weight','bold');
 
 });
@@ -225,8 +230,8 @@ $(document).on('click','.clear_btn',function(){
             proof_check_message = '<span class="label label-success">Correct Proof Of Cash</span>';
         }
 
-        $('.code_proof_of_cash').css('color','brown');
-        $('.code_proof_of_cash').css('font-weight','bold');
+        // $('.code_proof_of_cash').css('color','brown');
+        // $('.code_proof_of_cash').css('font-weight','bold');
 
         $("#proof_of_cash_check").html(proof_check_message);
     });

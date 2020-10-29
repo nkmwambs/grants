@@ -17,22 +17,22 @@
                 <tr>
                     <td><?=get_phrase('bank_statement_closing_balance');?></td>
                     <td id='td_bank_reconciliation_balance'>
-                        <?php if($multiple_offices_report || $multiple_projects_report){?>
-                            <?=number_format($bank_reconciliation['bank_statement_balance'],2);?>
+                        <?php if(!$allow_mfr_reconciliation){?>
+                            <?=number_format($bank_reconciliation['bank_statement_balance'],2);?> <i class='fa fa-info-circle' style='color:red;' title='<?=get_phrase('choose_one_bank_account_to_reconcile');?>'></i>
                         <?php }else{?>
-                            <input type="text" class="form-control" id="bank_statement_balance" data-format='yyyy-mm-dd' value="<?=$bank_reconciliation['bank_statement_balance'];?>"/>
+                            <input type="text" class="form-control" id="bank_statement_balance" value="<?=$bank_reconciliation['bank_statement_balance'];?>"/>
                         <?php }?>
                     </td>
                 </tr>
                 
                 <tr>
                     <td><?=get_phrase('add');?> : <?=get_phrase('deposit_in_transit');?></td>
-                    <td id='td_deposit_in_transit'><?=number_format($bank_reconciliation['month_transit_deposit'],2);?></td>
+                    <td class='total_dt' id='td_deposit_in_transit'><?=number_format($bank_reconciliation['month_transit_deposit'],2);?></td>
                 </tr>
 
                 <tr>
                     <td><?=get_phrase('less');?> : <?=get_phrase('oustanding_cheques');?></td>
-                    <td id='td_oustanding_cheques'><?=number_format($bank_reconciliation['month_outstanding_cheques'],2);?></td>
+                    <td class='total_oc' id='td_oustanding_cheques'><?=number_format($bank_reconciliation['month_outstanding_cheques'],2);?></td>
                 </tr>
                 
                 <tr>
@@ -84,8 +84,11 @@
 
       $("#bank_statement_balance").on('change',function(){
         var url = "<?=base_url();?>financial_report/update_bank_reconciliation_balance";
+        var office_ids = $('#office_ids').val();
+        var project_ids = $('#project_ids').val();
+        var office_bank_ids = $('#office_bank_ids').val();
 
-        var data = {'reporting_month':'<?=$reporting_month;?>','office_ids':$('#office_ids').val(),'project_ids':$('#project_ids').val(),'balance':$(this).val()};
+        var data = {'reporting_month':'<?=$reporting_month;?>','office_ids':office_ids,'project_ids':project_ids,'office_bank_ids':office_bank_ids,'balance':$(this).val()};
 
         $.post(url,data,function(response){
             alert(response);
