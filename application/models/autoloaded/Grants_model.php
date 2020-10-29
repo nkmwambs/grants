@@ -1776,13 +1776,19 @@ function merge_with_history_fields(String $approve_item_name, Array $array_to_me
    return $office_has_multiple_bank_accounts;
  }
 
- function office_bank_accounts($office_id){
+ function office_bank_accounts($office_id, $office_bank_id = 0){
 
   //$this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
+  
+  $this->db->select(array('office_bank_id','office_bank_account_number','bank_name','office_bank_name'));
   $this->db->join('bank','bank.bank_id=office_bank.fk_bank_id');
-
-  $result = $this->db->select(array('office_bank_id','office_bank_account_number','bank_name','office_bank_name'))->get_where('office_bank',
-  array('fk_office_id'=>$office_id))->result_array();
+  
+  if($office_bank_id > 0){
+    $this->db->where(array('office_bank_id'=>$office_bank_id));
+  }
+  
+  $this->db->where(array('fk_office_id'=>$office_id));
+  $result = $this->db->get('office_bank')->result_array();
   
   return $result;
 }

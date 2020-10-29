@@ -22,6 +22,8 @@
 <?php
     
     extract($result);
+    
+    //print_r($month_opening_balance);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
     $role_has_journal_update_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
@@ -54,7 +56,7 @@
                     </th>
                     <th colspan="<?=$sum_of_accounts + 5 + (count($month_opening_balance['bank_balance']) * 3) + (count($month_opening_balance['cash_balance']) * 3);?>" style='text-align:center;'>
                         <?=$office_name;?></br>
-                        Cash Journal <br>
+                        <?=get_phrase('cash_journal');?> <br>
                         <?=date('F Y',strtotime($transacting_month));?>    
 
                     </th>
@@ -68,18 +70,18 @@
                     <th colspan='7'></th>
                     
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
-                        <th colspan='3' style='text-align:center;'>Bank (<?=$bank_account['account_name'];?>)</th>
+                        <th colspan='3' style='text-align:center;'><?=get_phrase('bank');?> (<?=$bank_account['account_name'];?>)</th>
                     <?php }?>
 
                     <?php foreach($month_opening_balance['cash_balance'] as $office_cash_id => $cash_account){?>
-                        <th colspan='3' style='text-align:center;'>Cash (<?=$cash_account['account_name'];?>)</th>
+                        <th colspan='3' style='text-align:center;'><?=get_phrase('cash');?> (<?=$cash_account['account_name'];?>)</th>
                     <?php }?>
                     
                     <!-- <th colspan='3' style='text-align:center;'>Cash</th> -->
                     <th colspan='<?=$sum_of_accounts;?>'></th>
                 </tr>
                 <tr>
-                    <th colspan='7'>Balance b/f</th>
+                    <th colspan='7'><?=get_phrase('balance_b/f');?></th>
                     
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
                         <th colspan='3'><?=number_format($bank_account['amount'],2);?></th>
@@ -218,7 +220,7 @@
                         <?php }?>
 
                         <?php 
-                            echo $this->journal_library->journal_spread($spread,$voucher_type_cash_account,$voucher_type_transaction_effect);
+                            echo $this->journal_library->journal_spread($office_id,$spread,$voucher_type_cash_account,$voucher_type_transaction_effect);
                         ?>
 
                      </tr>   

@@ -1,5 +1,5 @@
 <?php
-print_r($projects_balance_report);
+//print_r($projects_balance_report);
 ?>
 <table class="table table-striped" id="project_balance_table">
                 <thead>

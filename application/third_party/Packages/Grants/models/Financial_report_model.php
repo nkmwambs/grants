@@ -148,64 +148,56 @@ class Financial_report_model extends MY_Model{
         return $opening_balances;
     }
 
+    // function get_office_bank_project_allocation($office_bank_id){
+    //     $office_bank_project_allocations = $this->db->
+    //     where(array('fk_office_bank_id'=>$office_bank_id))->
+    //     get('office_bank_project_allocation')->result_array();
+    
+    //     return $office_bank_project_allocations;
+    //   }
+
     function _initial_opening_account_balance($office_ids,$income_account_id, $project_ids = [], $office_bank_ids = []){
         $account_opening_balance = 0;
+
+        $get_office_bank_project_allocation = [];
+
+        if(count($office_bank_ids) > 0){
+            $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
+        }
         
-        // Check if account is donor funder
-        // $this->db->select(array('income_account_is_donor_funded'));
-        // $income_account_is_donor_funded = $this->db->get_where('income_account',
-        // array('income_account_id'=>$income_account_id))->row()->income_account_is_donor_funded;
-
-        // if(!$income_account_is_donor_funded && empty($project_ids)){
-
-        //     $this->db->select(array('opening_fund_balance_amount'));
-        //     $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
-        //     $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
-        //     $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
-        //         array('fk_income_account_id'=>$income_account_id));
-
-        //     $balance_column = 'opening_fund_balance_amount';
-
-        // }else{
-
-        //     $this->db->select_sum('opening_allocation_balance_amount');
-        //     $this->db->group_by(array('fk_income_account_id'));
-        //     $this->db->join('opening_allocation_balance','opening_allocation_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
-        //     $this->db->join('project_allocation','project_allocation.project_allocation_id=opening_allocation_balance.fk_project_allocation_id');
-        //     $this->db->join('project','project.project_id=project_allocation.fk_project_id');
-
-        //     if(count($project_ids) > 0){
-        //         $this->db->where_in('fk_project_id',$project_ids);
-        //     }   
-           
-        //     $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
-        //         array('fk_income_account_id'=>$income_account_id));
-
-        //     $balance_column = 'opening_allocation_balance_amount';
-
-        // }
-        
-        
-        // if($initial_account_opening_balance_obj->num_rows() == 1){
-        //     $account_opening_balance = $initial_account_opening_balance_obj->row()->$balance_column;
-        // }
-
         $this->db->select(array('opening_fund_balance_amount'));
         $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+        
+        if(count($office_bank_ids) > 0){
+            $this->db->where_in('opening_fund_balance.fk_office_bank_id',$office_bank_ids);
+            //$get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
+
+            // $this->db->join('income_account','income_account.income_account_id=opening_fund_balance.fk_income_account_id');
+            // $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+            // $this->db->join('project','project.project_id=project_income_account.fk_project_id');
+
+            // $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+            // $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            
+            // $this->db->group_start();
+            //     $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
+            //     $this->db->or_where_in('office_bank_project_allocation.fk_project_allocation_id',$get_office_bank_project_allocation);
+            // $this->db->group_end();
+        }
+        
+        //echo json_encode($office_bank_ids);exit;
 
         if(count($project_ids) > 0){
             $this->db->where_in('project.project_id',$project_ids);
             $this->db->join('income_account','income_account.income_account_id=opening_fund_balance.fk_income_account_id');
             $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
             $this->db->join('project','project.project_id=project_income_account.fk_project_id');
-            
-            if(count($office_bank_ids) > 0){
-                $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
-                $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
-                $this->db->where_in('fk_office_bank_id',$office_bank_ids);
-            }
 
         }
+
+       
+        //echo json_encode($project_ids);exit;
+        
         
         $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
         $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
@@ -234,7 +226,7 @@ class Financial_report_model extends MY_Model{
 
     function _get_to_date_account_opening_balance($office_ids,$income_account_id,$start_date_of_month, $project_ids = [], $office_bank_ids = []){
         
-        $initial_account_opening_balance = $this->_initial_opening_account_balance($office_ids,$income_account_id,$project_ids);
+        $initial_account_opening_balance = $this->_initial_opening_account_balance($office_ids,$income_account_id,$project_ids,$office_bank_ids);
 
         //$account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids);
 
@@ -414,13 +406,15 @@ class Financial_report_model extends MY_Model{
             $this->db->where_in('project.project_id',$project_ids);
             $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
             $this->db->join('project','project.project_id=project_income_account.fk_project_id');
-            
-            if(count($office_bank_ids) > 0){
-                $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
-                $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
-                $this->db->where_in('fk_office_bank_id',$office_bank_ids);
-            }
+        }
 
+        if(count($office_bank_ids) > 0){
+            $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+            $this->db->join('project','project.project_id=project_income_account.fk_project_id');
+
+            $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            $this->db->where_in('fk_office_bank_id',$office_bank_ids);
         }
         
         $this->db->where_in('income_account.fk_account_system_id',array_column($office_account_system_ids,'fk_account_system_id'));
@@ -431,17 +425,21 @@ class Financial_report_model extends MY_Model{
     }
 
 
-    function system_opening_bank_balance($office_ids,Array $project_ids = []){
+    function system_opening_bank_balance($office_ids,Array $project_ids = [], $office_bank_ids = []){
 
         $this->db->select_sum('opening_bank_balance_amount');
         $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_bank_balance.fk_system_opening_balance_id');
         $this->db->join('office_bank','office_bank.office_bank_id=opening_bank_balance.fk_office_bank_id');
         $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
 
-        if(count($project_ids) > 0){
+        if(!empty($project_ids)){
             $this->db->where_in('project_allocation.fk_project_id',$project_ids);
             $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
             $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+        }
+
+        if(!empty($office_bank_ids)){
+            $this->db->where_in('opening_bank_balance.fk_office_bank_id',$office_bank_ids);
         }
 
         $opening_bank_balance_obj = $this->db->get('opening_bank_balance');
@@ -449,7 +447,7 @@ class Financial_report_model extends MY_Model{
         return $opening_bank_balance_obj->num_rows()>0?$opening_bank_balance_obj->row()->opening_bank_balance_amount:0;
     }
 
-    function system_opening_cash_balance($office_ids,$project_ids = []){
+    function system_opening_cash_balance($office_ids,$project_ids = [], $office_bank_ids = []){
         $balance = 0;
     
         $this->db->select_sum('opening_cash_balance_amount');
@@ -463,6 +461,10 @@ class Financial_report_model extends MY_Model{
             $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
         }
 
+        if(!empty($office_bank_ids)){
+            $this->db->where_in('opening_cash_balance.fk_office_bank_id',$office_bank_ids);
+        }
+
         $opening_cash_balance_obj = $this->db->get('opening_cash_balance');
         
         if($opening_cash_balance_obj->num_rows()>0){
@@ -472,8 +474,17 @@ class Financial_report_model extends MY_Model{
         return $balance;
       }
 
+      function get_office_bank_project_allocation($office_bank_ids){
+            $this->db->select(array('fk_project_allocation_id'));
+            $this->db->where_in('fk_office_bank_id',$office_bank_ids);
+            $result =  $this->db->get('office_bank_project_allocation')->result_array();
 
-    function cash_transactions_to_date($office_ids,$reporting_month, $transaction_type, $voucher_type_account, $project_ids = []){
+            return array_column($result,'fk_project_allocation_id');
+         
+      }
+
+
+    function cash_transactions_to_date($office_ids,$reporting_month, $transaction_type, $voucher_type_account, $project_ids = [], $office_bank_ids = []){
         // bank_income = voucher of voucher_type_effect_code == income or cash_contra and voucher_type_account_code == bank 
         // bank_expense = voucher of voucher_type_effect_code == expense or bank_contra and voucher_type_account_code == bank 
         // cash_income = voucher of voucher_type_effect_code == income or bank_contra and voucher_type_account_code == cash 
@@ -481,22 +492,37 @@ class Financial_report_model extends MY_Model{
         
         $voucher_detail_total_cost = 0;
         $end_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+        
+        if(!empty($office_bank_ids)){
+            
+            $get_office_bank_project_allocation = !empty($project_ids)? $project_ids :$this->get_office_bank_project_allocation($office_bank_ids);
+
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+                $this->db->or_where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
+        } 
+
+        if(count($project_ids) > 0){
+            $this->db->where_in('fk_project_id',$project_ids);
+            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        }
 
         $this->db->where(array('voucher_date<='=>$end_of_reporting_month));
 
         //$cond_string = "(voucher_type_account_code = '".$voucher_type_account."' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = '".$voucher_type_account."' AND voucher_type_effect_code = 'contra' )";
         
         if($voucher_type_account == 'bank' && $transaction_type == 'income'){
-            $cond_string = "((voucher_type_account_code = 'bank' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'cash' AND  voucher_type_effect_code = 'contra'))";
+            $cond_string = "((voucher_type_account_code = 'bank' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'cash' AND  voucher_type_effect_code = 'cash_contra'))";
             $this->db->where($cond_string);
         }elseif($voucher_type_account == 'bank' && $transaction_type == 'expense'){
-            $cond_string = "((voucher_type_account_code = 'bank' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'bank' AND  voucher_type_effect_code = 'contra'))";
+            $cond_string = "((voucher_type_account_code = 'bank' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'bank' AND  voucher_type_effect_code = 'bank_contra'))";
             $this->db->where($cond_string);
         }elseif($voucher_type_account == 'cash' && $transaction_type == 'income'){
-            $cond_string = "((voucher_type_account_code = 'cash' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'bank' AND  voucher_type_effect_code = 'contra'))";
+            $cond_string = "((voucher_type_account_code = 'cash' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'bank' AND  voucher_type_effect_code = 'bank_contra'))";
             $this->db->where($cond_string);
         }elseif($voucher_type_account == 'cash' && $transaction_type == 'expense'){
-            $cond_string = "((voucher_type_account_code = 'cash' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'cash' AND  voucher_type_effect_code = 'contra'))";
+            $cond_string = "((voucher_type_account_code = 'cash' AND  voucher_type_effect_code = '".$transaction_type."') OR (voucher_type_account_code = 'cash' AND  voucher_type_effect_code = 'cash_contra'))";
             $this->db->where($cond_string);
         }
         
@@ -508,12 +534,7 @@ class Financial_report_model extends MY_Model{
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
         $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
         $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-        $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-
-        if(count($project_ids) > 0){
-            $this->db->where_in('fk_project_id',$project_ids);
-            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
-          }
+        $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id'); 
 
         $voucher_detail_total_cost_obj = $this->db->get('voucher_detail');
     

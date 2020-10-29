@@ -41,6 +41,7 @@ class Journal_model extends MY_Model
 
 
   private function system_opening_bank_balance($office_id, $office_bank_id = 0){
+    
     $balances = [];
 
     $this->db->select(array('opening_bank_balance_amount','office_bank_id','office_bank_name'));
@@ -62,19 +63,19 @@ class Journal_model extends MY_Model
     }
 
     // Get all office banks 
-    $this->read_db->select(array('office_bank_id','office_bank_name'));
-    $office_banks_obj = $this->read_db->get_where('office_bank',array('fk_office_id'=>$office_id));
+    // $this->read_db->select(array('office_bank_id','office_bank_name'));
+    // $office_banks_obj = $this->read_db->get_where('office_bank',array('fk_office_id'=>$office_id));
 
-    if($office_banks_obj->num_rows() > 0){
-      $office_banks = $office_banks_obj->result_array();
+    // if($office_banks_obj->num_rows() > 0){
+    //   $office_banks = $office_banks_obj->result_array();
 
-      foreach($office_banks as $office_bank){
-        if(!array_key_exists($office_bank['office_bank_id'],$balances)){
-          $balances[$office_bank['office_bank_id']] = ['account_name'=>$office_bank['office_bank_name'],'amount'=>0];
-        }
-      }
+    //   foreach($office_banks as $office_bank){
+    //     if(!array_key_exists($office_bank['office_bank_id'],$balances)){
+    //       $balances[$office_bank['office_bank_id']] = ['account_name'=>$office_bank['office_bank_name'],'amount'=>0];
+    //     }
+    //   }
 
-    }
+    // }
     
     return $balances;
   }
@@ -128,6 +129,8 @@ class Journal_model extends MY_Model
     $system_opening_bank = $this->system_opening_bank_balance($office_id, $office_bank_id); 
     $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id);
 
+    //echo json_encode($system_opening_bank);exit;
+
     $bank_to_date_income = [];
     $bank_to_date_expense = [];
     $month_bank_opening = [];
@@ -152,7 +155,7 @@ class Journal_model extends MY_Model
         $month_cash_opening[$office_cash_id]['amount'] = $office_cash_balance['amount'] + ($cash_to_date_income[$office_cash_id] - $cash_to_date_expense[$office_cash_id]);
     }
 
-
+    //echo json_encode( ['bank'=>$month_bank_opening,'cash'=>$month_cash_opening]);exit;
     return ['bank'=>$month_bank_opening,'cash'=>$month_cash_opening];
   }
 
@@ -312,12 +315,12 @@ class Journal_model extends MY_Model
   /**
    * @todo - to be taken to income_accounts model. Only get used accounts in the month (Not yet done)
    */
-  private function income_accounts(){
-    
-    $account_system_id = $this->journal_account_system();
+  private function income_accounts($office_id){
 
     $this->db->select(array('income_account_id','income_account_code'));
-    $this->db->where(array('fk_account_system_id'=>$account_system_id));
+    $this->db->join('account_system','account_system.account_system_id=income_account.fk_account_system_id');
+    $this->db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $this->db->where(array('office_id'=>$office_id));
     $accounts = $this->db->get('income_account')->result_array();
 
     $ids = array_column($accounts,'income_account_id');
@@ -326,24 +329,24 @@ class Journal_model extends MY_Model
     return array_combine($ids,$code);
   }
 
-  function journal_account_system(){
-    $this->db->where(array('journal_id'=>hash_id($this->id,'decode')));
-    $this->db->join('journal','journal.fk_office_id=office.office_id');
-    $account_system_id = $this->db->get('office')->row()->fk_account_system_id;
+  // function journal_account_system(){
+  //   $this->db->where(array('journal_id'=>hash_id($this->id,'decode')));
+  //   $this->db->join('journal','journal.fk_office_id=office.office_id');
+  //   $account_system_id = $this->db->get('office')->row()->fk_account_system_id;
 
-    return $account_system_id;
-  }
+  //   return $account_system_id;
+  // }
 
   /**
    * @todo - to be taken to expense_accounts model. Only get used accounts in the month (Not yet done)
    */
-  private function expense_accounts(){
-
-    $account_system_id = $this->journal_account_system();
+  private function expense_accounts($office_id){
 
     $this->db->select(array('expense_account_id','expense_account_code'));
     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-    $this->db->where(array('fk_account_system_id'=>$account_system_id));
+    $this->db->join('account_system','account_system.account_system_id=income_account.fk_account_system_id');
+    $this->db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $this->db->where(array('office_id'=>$office_id));
     $accounts =  $this->db->get('expense_account')->result_array();
 
     $ids = array_column($accounts,'expense_account_id');
@@ -352,10 +355,10 @@ class Journal_model extends MY_Model
     return array_combine($ids,$code);
   }
 
-  function financial_accounts(){
+  function financial_accounts($office_id){
     return [
-      'income'=>$this->income_accounts(),
-      'expense'=>$this->expense_accounts(),
+      'income'=>$this->income_accounts($office_id),
+      'expense'=>$this->expense_accounts($office_id),
     ];
   }
   
@@ -371,8 +374,6 @@ class Journal_model extends MY_Model
 
       $month_start_date = date('Y-m-01',strtotime($transacting_month));
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
-
-      //print_r($month_end_date); exit;
       
       $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
@@ -383,12 +384,7 @@ class Journal_model extends MY_Model
       $this->db->select(array('voucher_type_effect_code'));
       $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id','fk_office_cash_id'));
       
-      //$this->db->select_sum('voucher_detail_total_cost');
-      
       $this->db->where(array('voucher_date >='=> $month_start_date,'voucher_date <='=> $month_end_date,'fk_office_id'=>$office_id));
-      // $this->db->where('voucher_date <=', $month_end_date);
-      // $this->db->where('fk_office_id',$office_id);
-      //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
       
       $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
       $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');

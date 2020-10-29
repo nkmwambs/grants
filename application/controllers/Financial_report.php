@@ -72,35 +72,37 @@ class Financial_report extends MY_Controller
 
   }
 
-  private function _proof_of_cash($office_ids,$reporting_month,$project_ids = []){
-    $cash_at_bank = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids);
-    $cash_at_hand = $this->_compute_cash_at_hand($office_ids,$reporting_month,$project_ids);
+  private function _proof_of_cash($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
+    $cash_at_bank = $this->_compute_cash_at_bank($office_ids,$reporting_month,$project_ids, $office_bank_ids);
+    $cash_at_hand = $this->_compute_cash_at_hand($office_ids,$reporting_month,$project_ids, $office_bank_ids);
 
     return ['cash_at_bank'=>$cash_at_bank,'cash_at_hand'=>$cash_at_hand];
   }
 
-  function _compute_cash_at_bank($office_ids,$reporting_month,$project_ids = []){
-    $opening_bank_balance = $this->_opening_cash_balance($office_ids,$project_ids)['bank'];
-    $bank_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'income','bank',$project_ids);//$this->_cash_income_to_date($office_ids,$reporting_month);
-    $bank_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','bank',$project_ids);//$this->_cash_expense_to_date($office_ids,$reporting_month);
+  function _compute_cash_at_bank($office_ids,$reporting_month,$project_ids = [],$office_bank_ids = []){
+    $opening_bank_balance = $this->_opening_cash_balance($office_ids,$project_ids,$office_bank_ids)['bank'];
+    $bank_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'income','bank',$project_ids,$office_bank_ids);//$this->_cash_income_to_date($office_ids,$reporting_month);
+    $bank_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','bank',$project_ids,$office_bank_ids);//$this->_cash_expense_to_date($office_ids,$reporting_month);
     
     return $opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
+    //return $bank_expenses_to_date;
   }
 
 
-  function _opening_cash_balance($office_ids, Array $project_ids = []){
+  function _opening_cash_balance($office_ids, Array $project_ids = [], $office_bank_ids = []){
     return [
-      'bank'=>$this->financial_report_model->system_opening_bank_balance($office_ids,$project_ids),
-      'cash'=>$this->financial_report_model->system_opening_cash_balance($office_ids,$project_ids)
+      'bank'=>$this->financial_report_model->system_opening_bank_balance($office_ids,$project_ids, $office_bank_ids),
+      'cash'=>$this->financial_report_model->system_opening_cash_balance($office_ids,$project_ids, $office_bank_ids)
     ];
   }
 
-  function _compute_cash_at_hand($office_ids,$reporting_month,$project_ids = []){
+  function _compute_cash_at_hand($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
     //return 15000;
-    $opening_cash_balance = $this->_opening_cash_balance($office_ids,$project_ids)['cash'];
-    $cash_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month, 'income','cash',$project_ids);//$this->_cash_income_to_date($office_ids,$reporting_month,'bank_contra','cash');
-    $cash_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month, 'expense','cash',$project_ids);//$this->_cash_expense_to_date($office_ids,$reporting_month,'cash_contra','cash');
+    $opening_cash_balance = $this->_opening_cash_balance($office_ids,$project_ids,$office_bank_ids)['cash'];
+    $cash_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month, 'income','cash',$project_ids, $office_bank_ids);//$this->_cash_income_to_date($office_ids,$reporting_month,'bank_contra','cash');
+    $cash_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month, 'expense','cash',$project_ids, $office_bank_ids);//$this->_cash_expense_to_date($office_ids,$reporting_month,'cash_contra','cash');
     
+    //return $cash_expenses_to_date;
     return $opening_cash_balance + $cash_income_to_date - $cash_expenses_to_date;
   }
 
@@ -426,7 +428,7 @@ class Financial_report extends MY_Controller
       //'reporting_month'=>$reporting_month,
       'fund_balance_report'=>$this->_fund_balance_report($office_ids,$reporting_month,$project_ids,$office_bank_ids),
       'projects_balance_report'=>$this->_projects_balance_report($office_ids,$reporting_month,$project_ids, $office_bank_ids),
-      //'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month,$project_ids,$office_bank_ids),
+      'proof_of_cash'=>$this->_proof_of_cash($office_ids,$reporting_month,$project_ids,$office_bank_ids),
       //'financial_ratios'=>$this->financial_ratios(),
       //'bank_statements_uploads'=>$this->_bank_statements_uploads($office_ids,$reporting_month,$project_ids,$office_bank_ids),
       //'bank_reconciliation'=>$this->_bank_reconciliation($office_ids,$reporting_month,$multiple_offices_report,$multiple_projects_report,$project_ids,$office_bank_ids),

@@ -81,4 +81,10 @@ class Office_bank_project_allocation_model extends MY_Model{
             return false;
         }
     }
+
+    // function transaction_validate_duplicates_columns(){
+    //     if(!$this->config->item('allow_project_allocation_to_multiple_bank_accounts')){
+    //         return ['fk_office_bank_id','fk_project_allocation_id'];
+    //     }
+    // }
 }

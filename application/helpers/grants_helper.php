@@ -582,4 +582,3 @@ if(!function_exists('addOrdinalNumberSuffix')){
 		return $num.'th';
 	  }
 }
-
