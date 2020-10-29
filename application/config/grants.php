@@ -11,7 +11,7 @@
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = true;
 	$config['drop_only_center'] = true;
-	$config['link_new_project_allocations_only_to_default_bank_accounts'] = false;
+	$config['link_new_project_allocations_only_to_default_bank_accounts'] = true;
 
 	$config['tables_allowing_drop_only_centers'] = ['office_bank','project_allocation','office_cash'];
 	$config['tables_with_account_system_relationship'] = ['office','user','bank','income_account','voucher_type'];
@@ -59,6 +59,9 @@
 
 	//Budget configs
 	$config['budget_review_buffer_months'] = 3;
+
+	// Journal/ MFR Config
+	$config['allow_a_bank_to_be_linked_to_many_projects'] = true;
 
 
 

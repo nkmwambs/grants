@@ -73,7 +73,8 @@
                         <?php }?>
                     </select>
                 </div>
-
+                
+                <?php if(!$this->config->item('allow_a_bank_to_be_linked_to_many_projects')){?>
                 <div class='col-xs-2'>
                     <select name='project_ids[]' id='project_ids' class='form-control select2' multiple ><?=get_phrase('select_projects');?>
                         <?php foreach($month_active_projects as $month_active_project){?>
@@ -81,6 +82,7 @@
                         <?php }?>
                     </select>
                 </div>
+                        <?php }else{?>
 
                 <div class='col-xs-2'>
                     <select name='office_bank_ids[]' id='office_bank_ids' class='form-control select2' multiple ><?=get_phrase('select_office_banks');?>
@@ -89,6 +91,7 @@
                         <?php }?>
                     </select>
                 </div>
+                <?php }?>
 
                 <div class='col-xs-2'>
                      <i class='badge badge-info'></i>               

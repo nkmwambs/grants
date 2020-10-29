@@ -558,24 +558,35 @@ class Voucher extends MY_Controller
   function create_new_journal($journal_date,$office_id){
     $new_journal = [];
 
-    $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
-    $new_journal['journal_name'] =  "Journal for the month of ". $journal_date;
-    $new_journal['journal_month'] = $journal_date;
-    $new_journal['fk_office_id'] = $office_id;
-    $new_journal['journal_created_date'] = date('Y-m-d');
-    $new_journal['journal_created_by'] = $this->session->user_id;
-    $new_journal['journal_last_modified_by'] = $this->session->user_id;
-    $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
-    $new_journal['fk_status_id'] = $this->grants_model->initial_item_status('journal');
+    // Check if a journal for the same month and FCP exists
+    $this->read_db->where(array('fk_office_id'=>$office_id,'journal_month'=>$journal_date));
+    $count_journals = $this->read_db->get_where('journal')->num_rows();
 
-    //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
+    if($count_journals == 0){
+      $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
+      $new_journal['journal_name'] =  "Journal for the month of ". $journal_date;
+      $new_journal['journal_month'] = $journal_date;
+      $new_journal['fk_office_id'] = $office_id;
+      $new_journal['journal_created_date'] = date('Y-m-d');
+      $new_journal['journal_created_by'] = $this->session->user_id;
+      $new_journal['journal_last_modified_by'] = $this->session->user_id;
+      $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
+      $new_journal['fk_status_id'] = $this->grants_model->initial_item_status('journal');
 
-    $this->write_db->insert('journal',$new_journal);
+      //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
 
+      $this->write_db->insert('journal',$new_journal);
+    }
     //return $this->write_db->insert_id();
   }
 
   function create_financial_report($financial_report_date){
+
+    // Check if a journal for the same month and FCP exists
+    $this->read_db->where(array('fk_office_id'=>$this->input->post('fk_office_id'),'financial_report_month'=>$financial_report_date));
+    $count_financial_report = $this->read_db->get_where('financial_report')->num_rows();
+
+    if($count_financial_report == 0){
       $new_mfr['financial_report_month'] = $financial_report_date;
       $new_mfr['fk_office_id'] = $this->input->post('fk_office_id');
       // $new_mfr['financial_report_statement_balance'] = 0;
@@ -585,6 +596,7 @@ class Voucher extends MY_Controller
       $new_mfr_to_insert = $this->grants_model->merge_with_history_fields('financial_report',$new_mfr);
 
       $this->write_db->insert('financial_report',$new_mfr_to_insert);
+    }
   }
 
   function insert_new_voucher(){

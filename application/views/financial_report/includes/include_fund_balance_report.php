@@ -28,7 +28,7 @@ extract($result);
                 <td class='row_total' id="total_fund_month_opening_balance"><?=number_format(array_sum(array_column($fund_balance_report,'month_opening_balance')),2);?></td>
                 <td class='row_total' id="total_fund_month_income"><?=number_format(array_sum(array_column($fund_balance_report,'month_income')),2);?></td>
                 <td class='row_total' id="total_fund_month_expense"><?=number_format(array_sum(array_column($fund_balance_report,'month_expense')),2);?></td>
-                <td class='row_total' id="total_fund_month_closing_balance">0.00</td>
+                <td class='row_total code_proof_of_cash' id="total_fund_month_closing_balance">0.00</td>
             </tr>
         </tfoot>
         </table>

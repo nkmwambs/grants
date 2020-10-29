@@ -22,13 +22,13 @@
         </div>
     </div>
 
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-xs-6">
         <div class="col-xs-12 header"><?=get_phrase('proof_of_cash');?></div>
-            <?php //include "includes/include_proof_of_cash.php";?>
+            <?php include "includes/include_proof_of_cash.php";?>
         </div>
 
-        <div class="col-xs-6">
+    <!--     <div class="col-xs-6">
         <div class="col-xs-12 header">
         <?php //echo get_phrase('financial_ratios');?>
         </div>
@@ -215,4 +215,21 @@ $(document).on('click','.clear_btn',function(){
 
 });
 
+    $(document).ready(function(){
+        var total_cash = $("#total_cash").html().replace(',','');;
+        var total_fund_month_closing_balance = $("#total_fund_month_closing_balance").html().replace(',','');
+
+        var proof_check_message = '<span class="label label-danger">Incorrect Proof Of Cash</span>';
+
+        if((parseFloat(total_cash) - parseFloat(total_fund_month_closing_balance)) == 0){
+            proof_check_message = '<span class="label label-success">Correct Proof Of Cash</span>';
+        }
+
+        $('.code_proof_of_cash').css('color','brown');
+        $('.code_proof_of_cash').css('font-weight','bold');
+
+        $("#proof_of_cash_check").html(proof_check_message);
+    });
+
+   
 </script>
