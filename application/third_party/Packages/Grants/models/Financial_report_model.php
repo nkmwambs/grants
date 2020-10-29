@@ -320,14 +320,15 @@ class Financial_report_model extends MY_Model{
         $this->db->group_by(array('fk_income_account_id'));
         $this->db->where_in('voucher.fk_office_id',$office_ids);
 
+        $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+
         if(count($project_ids) > 0){
             $this->db->where_in('project_allocation.fk_project_id',$project_ids);
-            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
-            
-            if(count($office_bank_ids) > 0){
-                $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
-                $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
-            }
+        }
+
+        if(count($office_bank_ids) > 0){
+            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
         }
 
         $month_income_obj = $this->db->get_where('voucher_detail',
@@ -370,18 +371,15 @@ class Financial_report_model extends MY_Model{
         $this->db->group_by('voucher_type_effect_code');
         $this->db->where_in('voucher.fk_office_id',$office_ids);
 
-        // if(count($project_ids) > 0){
-        //     $this->db->where_in('fk_project_id',$project_ids);
-        //     $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
-        // }
+        $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        
         if(count($project_ids) > 0){
             $this->db->where_in('project_allocation.fk_project_id',$project_ids);
-            $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
-            
-            if(count($office_bank_ids) > 0){
-                $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
-                $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
-            }
+        }
+
+        if(count($office_bank_ids) > 0){
+            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
         }
 
         $expense_income_obj = $this->db->get_where('voucher_detail',
