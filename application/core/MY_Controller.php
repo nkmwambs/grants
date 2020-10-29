@@ -351,7 +351,7 @@ class MY_Controller extends CI_Controller
    * @param String
    *@return String
    */
-  function delete($id = null):String{
+  function delete($id = null){
     $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete');
     echo "Record deleted successful";
   }
@@ -594,12 +594,12 @@ class MY_Controller extends CI_Controller
       echo json_encode($return);
     }else{
       echo $return;
-    }
-
-    function event_tracker(){
-      $this->grants_model->event_tracker();
-    }
+    }  
     
+  }
+
+  function event_tracker(){
+    $this->grants_model->event_tracker();
   }
 
 }

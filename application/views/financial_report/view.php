@@ -153,6 +153,7 @@ $("#submit_report").on('click',function(ev){
 
 
 $("#frm_selected_offices").on('submit',function(ev){
+    
     var url = $(this).attr('action');
     var office_ids = $("#office_ids").val();
     var project_ids = $("#project_ids").val();
@@ -215,53 +216,6 @@ $("#bank_statement_balance").on('change',function(){
     // });
 });
 
-$(document).on('click',".to_clear",function(){
-    var btn = $(this);
-    var id = $(this).attr('id');
-    var url = "<?=base_url();?>financial_report/clear_transactions";
-    var voucher_state = btn.hasClass('state_0')?0:1;//$(this).attr('data-state');
-    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>'};
-    var from_class = "active_effect";
-    var to_class = "cleared_effect";
-    var current_table = btn.closest('table');
-    var connector_table =  current_table.attr('id')+"_connector";
-    var from_color = 'danger';
-    var to_color = 'success';
-    var to_label = "<?=get_phrase('unclear');?>";
-
-    if(btn.hasClass('cleared_effect')){
-        from_class = 'cleared_effect';
-        to_class = "active_effect";
-        from_color = 'success';
-        to_color = 'danger';
-        to_label = "<?=get_phrase('clear');?>";
-    }
-    
-    $.ajax({
-        url:url,
-        data:data,
-        type:"POST",
-        success:function(response){
-
-            if(response){
-
-                var cloned_tr = btn.closest('tr').clone();
-            
-                var action_div = cloned_tr.find(':first-child').find('div');
-            
-                btn.closest('tr').remove();
-                        
-                action_div.removeClass(from_class).removeClass('btn-'+from_color).addClass(to_class).addClass('btn-'+to_color).html(to_label);
-                        
-                $("."+connector_table+" tbody").append(cloned_tr);
-
-            }else{
-                alert('<?=get_phrase('update_failed');?>');
-            }
-
-        }
-    });
-});
 
 // $("#drop_statements").dropzone({
 //     url: "<?=base_url()?>financial_report/upload_statements",
@@ -286,49 +240,49 @@ function PrintElem(elem)
     
 
 
-    $(document).ready(function(){
-    Dropzone.autoDiscover = false;
-});
+// $(document).ready(function(){
+//     Dropzone.autoDiscover = false;
+// });
 
-var myDropzone = new Dropzone("#drop_statements", { 
-        url: "<?=base_url()?>financial_report/upload_statements",
-        paramName: "file", // The name that will be used to transfer the file
-        params:{
-            'office_id':<?=$office_ids[0];?>,
-            'reporting_month':'<?=$reporting_month;?>',
-            'project_id': $("#project_ids").val()
-        },
-        maxFilesize: 5, // MB
-        uploadMultiple:true,
-        acceptedFiles:'image/*,application/pdf',    
-    });
+// var myDropzone = new Dropzone("#drop_statements", { 
+//         url: "<?=base_url()?>financial_report/upload_statements",
+//         paramName: "file", // The name that will be used to transfer the file
+//         params:{
+//             'office_id':<?=$office_ids[0];?>,
+//             'reporting_month':'<?=$reporting_month;?>',
+//             'project_id': $("#project_ids").val()
+//         },
+//         maxFilesize: 5, // MB
+//         uploadMultiple:true,
+//         acceptedFiles:'image/*,application/pdf',    
+//     });
 
-    // myDropzone.on("sending", function(file, xhr, formData) { 
-    // // Will sendthe filesize along with the file as POST data.
-    // formData.append("filesize", file.size);  
+//     // myDropzone.on("sending", function(file, xhr, formData) { 
+//     // // Will sendthe filesize along with the file as POST data.
+//     // formData.append("filesize", file.size);  
 
-    // });
+//     // });
 
-    myDropzone.on("complete", function(file) {
-        //myDropzone.removeFile(file);
-        myDropzone.removeAllFiles();
-        //alert(myDropzone.getAcceptedFiles());
-    }); 
+//     myDropzone.on("complete", function(file) {
+//         //myDropzone.removeFile(file);
+//         myDropzone.removeAllFiles();
+//         //alert(myDropzone.getAcceptedFiles());
+//     }); 
 
-    myDropzone.on("success", function(file,response) {
-        //alert(response);
-        if(response == 0){
-            alert('Error in uploading files');
-            return false;
-        }
-        var table_tbody = $("#tbl_list_statements tbody");
-        var obj = JSON.parse(response);
+//     myDropzone.on("success", function(file,response) {
+//         //alert(response);
+//         if(response == 0){
+//             alert('Error in uploading files');
+//             return false;
+//         }
+//         var table_tbody = $("#tbl_list_statements tbody");
+//         var obj = JSON.parse(response);
 
-        for (let i = 0; i < obj.file.name.length; i++) {
-            table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
-        }
+//         for (let i = 0; i < obj.file.name.length; i++) {
+//             table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
+//         }
 
-    });  
+//     });  
 
 
     $(document).on('click','.delete_statement',function(){
