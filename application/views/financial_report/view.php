@@ -8,9 +8,22 @@
     margin:15px;
 }
 
-.currency{
-    
+.total_oc,.total_dt,.code_proof_of_cash{
+    font-weight:bold;
 }
+
+.total_oc{
+    color:purple;  
+}
+
+.total_dt{
+    color:slateblue;
+}
+
+.code_proof_of_cash{
+    color:hotpink;
+}
+
 </style>
 
 <?php 
@@ -107,7 +120,7 @@
 
 <div class='row'>
     <div class='col-xs-12' style='overflow-x: auto' id='financial_report_row'>
-        <?php //include 'ajax_view.php';?>
+        <?php include 'ajax_view.php';?>
     </div>
 </div>
 
@@ -192,14 +205,14 @@ $("#bank_statement_balance").on('change',function(){
     $("#reconciliation_flag").removeClass(oldClass).addClass(newClass);
     $("#reconciliation_flag").html(newLabel);
 
-    $.ajax({
-        url:url,
-        type:"POST",
-        data:{'bank_statement_balance':bank_statement_balance,'reporting_month':reporting_month,'statement_date':statement_date,'office_id':office_id},
-        success:function(response){
-            alert(response);
-        }
-    });
+    // $.ajax({
+    //     url:url,
+    //     type:"POST",
+    //     data:{'bank_statement_balance':bank_statement_balance,'reporting_month':reporting_month,'statement_date':statement_date,'office_id':office_id},
+    //     success:function(response){
+    //         alert(response);
+    //     }
+    // });
 });
 
 $(document).on('click',".to_clear",function(){
