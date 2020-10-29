@@ -99,9 +99,9 @@ if(!$financial_report_submitted){
 <script>
 $(document).ready(function(){
 
-    $(".total_oc").append(" <span class='label label-success'>2</span>");
-    $(".total_dt").append(" <span class='label label-danger'>3</span>");
-    $(".code_proof_of_cash").append(" <span class='label label-info'>1</span>");
+    // $(".total_oc").append(" <span class='label label-success'>2</span>");
+    // $(".total_dt").append(" <span class='label label-danger'>3</span>");
+    // $(".code_proof_of_cash").append(" <span class='label label-info'>1</span>");
     
 
 if('<?=$financial_report_submitted?>' == 1){
@@ -124,16 +124,16 @@ let sum_month_income = parseFloat($('#total_fund_month_income').html().split(','
 let sum_month_expense = parseFloat($('#total_fund_month_expense').html().split(',').join(""));
 
 $("#total_fund_month_closing_balance").html(accounting.formatNumber((sum_opening_balance + sum_month_income - sum_month_expense),2));
-$("#total_fund_month_closing_balance").append(" <span class='label label-info'>1</span>");
+// $("#total_fund_month_closing_balance").append(" <span class='label label-info'>1</span>");
 $(".row_total, .row_header").css('font-weight','bold');
 
 });
 
 
-$(document).on('click','.clear_btn',function(){
-    var td_effects_total = $(this).closest('table').find('td.td_effects_total');
-    var td_row_amount = $(this).closest('tr').find('td.td_row_amount');
-    var table_id = $(this).closest('table').attr('id');
+function compute_reconciliation(clear_btn){
+    var td_effects_total = clear_btn.closest('table').find('td.td_effects_total');
+    var td_row_amount = clear_btn.closest('tr').find('td.td_row_amount');
+    var table_id = clear_btn.closest('table').attr('id');
 
     var drop_table_id = '';
     var effect_to_balance = 'negative';
@@ -217,7 +217,65 @@ $(document).on('click','.clear_btn',function(){
             $("#reconciliation_flag").html('<?=get_phrase('not_balanced');?>');
         }
     }
+}
 
+//$(document).on('click',".to_clear",function(){
+
+function clear_effect(btn){
+    // var btn = $(this);
+    var id = btn.attr('id');
+    var url = "<?=base_url();?>financial_report/clear_transactions";
+    var voucher_state = btn.hasClass('state_0')?0:1;//$(this).attr('data-state');
+    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>'};
+    var from_class = "active_effect";
+    var to_class = "cleared_effect";
+    var current_table = btn.closest('table');
+    var connector_table =  current_table.attr('id')+"_connector";
+    var from_color = 'danger';
+    var to_color = 'success';
+    var to_label = "<?=get_phrase('unclear');?>";
+
+    if(btn.hasClass('cleared_effect')){
+        from_class = 'cleared_effect';
+        to_class = "active_effect";
+        from_color = 'success';
+        to_color = 'danger';
+        to_label = "<?=get_phrase('clear');?>";
+    }
+    
+    $.ajax({
+        url:url,
+        data:data,
+        type:"POST",
+        success:function(response){
+
+            if(response){
+
+                var cloned_tr = btn.closest('tr').clone();
+            
+                var action_div = cloned_tr.find(':first-child').find('div');
+            
+                btn.closest('tr').remove();
+                        
+                action_div.removeClass(from_class).removeClass('btn-'+from_color).addClass(to_class).addClass('btn-'+to_color).html(to_label);
+                        
+                $("."+connector_table+" tbody").append(cloned_tr);
+
+            }else{
+                alert('<?=get_phrase('update_failed');?>');
+            }
+
+        }
+    });
+}
+
+
+$(document).on('click','.clear_btn',function(e){   
+    //console.log('Firing!!!');
+    compute_reconciliation($(this));
+    clear_effect($(this));
+    e.stopImmediatePropagation();
+    //e.preventDefault();
 });
 
     $(document).ready(function(){

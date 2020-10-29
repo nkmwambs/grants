@@ -20,7 +20,7 @@
                             if($clear_outstanding_cheque['voucher_cleared'] == 1){
                                 $clear_outstanding_cheque_state_color = "success";
                                 //$oustanding_state_disabled = "disabled";
-                                //$oustanding_state_clear_class = '';
+                                $oustanding_state_clear_class = '';
                                 $clear_outstanding_cheque_state_label = get_phrase('unclear');
                             }
                         ?>
@@ -32,7 +32,7 @@
                         <td><?=$clear_outstanding_cheque['voucher_date'];?></td>
                         <td><?=$clear_outstanding_cheque['voucher_description'];?></td>
                         <td><?=$clear_outstanding_cheque['voucher_cheque_number'];?></td>
-                        <td><?=$outstanding_cheque['office_bank_name'];?></td>
+                        <td><?=$clear_outstanding_cheque['office_bank_name'];?></td>
                         <td class='td_row_amount'><?=number_format($clear_outstanding_cheque['voucher_detail_total_cost'],2);?></td>
                     </tr>
                <?php }?>

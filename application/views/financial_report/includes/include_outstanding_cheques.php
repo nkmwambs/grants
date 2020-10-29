@@ -21,7 +21,7 @@
                             if($outstanding_cheque['voucher_cleared'] == 1){
                                 $oustanding_state_color = "success";
                                 //$oustanding_state_disabled = "disabled";
-                                //$oustanding_state_clear_class = '';
+                                $oustanding_state_clear_class = '';
                                 $oustanding_state_label = get_phrase('unclear');
                             }
                         ?>
