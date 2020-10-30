@@ -2260,12 +2260,12 @@ function feature_model_list_table_visible_columns() {
     //    return 1;
     // }
 
-    function fy_start_date($reporting_month){
-      return '2020-01-01';
-    }
+    // function fy_start_date($reporting_month){
+    //   return '2020-01-01';
+    // }
 
-    function get_fy($reporting_month){
-      return '2020';
-    }
+    // function get_fy($reporting_month){
+    //   return '2020';
+    // }
 
 }

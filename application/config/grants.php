@@ -63,6 +63,11 @@
 	// Journal/ MFR Config
 	$config['allow_a_bank_to_be_linked_to_many_projects'] = true;
 
+	// FY computation
+	//$config['start_of_fy_month'] = 7;
+	$config['fy_year_reference'] = 'next'; // Ex. prev or next
+	$config['fy_year_digits'] = 2; // Ex. 2 or 4
+
 
 
 

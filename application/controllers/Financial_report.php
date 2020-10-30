@@ -211,22 +211,22 @@ class Financial_report extends MY_Controller
     return $this->financial_report_model->list_cleared_effects($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids, $office_bank_ids);
   }
 
-  private function cleared_oustanding_cheques(){
+  // private function cleared_oustanding_cheques(){
     
-  }
+  // }
 
-  private function cleared_deposit_in_transit(){
+  // private function cleared_deposit_in_transit(){
 
-  }
+  // }
 
-  private function _expense_report($office_ids,$reporting_month,$project_ids = []){
+  private function _expense_report($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
     
     $expense_account_grid = [];
 
     $income_grouped_expense_accounts = $this->_income_grouped_expense_accounts($office_ids);
-    $month_expense = $this->financial_report_model->month_expense_by_expense_account($office_ids,$reporting_month,$project_ids);
-    $month_expense_to_date = $this->financial_report_model->expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids);
-    $budget_to_date = $this->financial_report_model->bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids);
+    $month_expense = $this->financial_report_model->month_expense_by_expense_account($office_ids,$reporting_month,$project_ids,$office_bank_ids);
+    $month_expense_to_date = $this->financial_report_model->expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids,$office_bank_ids);
+    $budget_to_date = $this->financial_report_model->bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids, $office_bank_ids);
     
     $budget_variance = $this->_budget_variance_by_expense_account($office_ids,$reporting_month);
     $budget_variance_percent = $this->_budget_variance_percent_by_expense_account($office_ids,$reporting_month);
@@ -448,7 +448,7 @@ class Financial_report extends MY_Controller
       'clear_outstanding_cheques'=>$this->_list_cleared_effects($office_ids,$reporting_month,'expense','bank_contra','bank',$project_ids,$office_bank_ids),
       'deposit_in_transit'=>$this->financial_report_model->list_oustanding_cheques_and_deposits($office_ids,$reporting_month,'income','cash_contra','bank',$project_ids,$office_bank_ids),//$this->_deposit_in_transit($office_ids,$reporting_month),
       'cleared_deposit_in_transit'=>$this->_list_cleared_effects($office_ids,$reporting_month,'income','cash_contra','bank',$project_ids,$office_bank_ids),
-      //'expense_report'=>$this->_expense_report($office_ids,$reporting_month,$project_ids,$office_bank_ids)
+      'expense_report'=>$this->_expense_report($office_ids,$reporting_month,$project_ids,$office_bank_ids)
     ];
  
   }

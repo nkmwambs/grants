@@ -473,12 +473,16 @@ class Financial_report_model extends MY_Model{
       }
 
       function get_office_bank_project_allocation($office_bank_ids){
+
+        if(!empty($office_bank_ids)){
             $this->db->select(array('fk_project_allocation_id'));
             $this->db->where_in('fk_office_bank_id',$office_bank_ids);
             $result =  $this->db->get('office_bank_project_allocation')->result_array();
 
             return array_column($result,'fk_project_allocation_id');
-         
+        }else{
+            return [];
+        }
       }
 
 
@@ -561,10 +565,11 @@ class Financial_report_model extends MY_Model{
       }
 
 
-      function month_expense_by_expense_account($office_ids,$reporting_month,$project_ids = []){
+      function month_expense_by_expense_account($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
     
         $start_date_of_reporting_month = date('Y-m-01',strtotime($reporting_month));
         $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+        $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
     
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->select(array('income_account_id','expense_account_id'));
@@ -583,6 +588,10 @@ class Financial_report_model extends MY_Model{
           $this->db->where_in('fk_project_id',$project_ids);
           $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
         }
+
+        if(!empty($office_bank_ids)){
+            $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+        }        
     
         $result = $this->db->get('voucher_detail');
     
@@ -599,10 +608,11 @@ class Financial_report_model extends MY_Model{
         return $order_array;
       }
 
-      function expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = []){
+      function expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = [],$office_bank_ids =[]){
     
-        $fy_start_date = $this->grants->fy_start_date($reporting_month);
+        $fy_start_date = fy_start_date($reporting_month);
         $end_date_of_reporting_month = date('Y-m-t',strtotime($reporting_month));
+        $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
     
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->select(array('income_account_id','expense_account_id'));
@@ -621,6 +631,10 @@ class Financial_report_model extends MY_Model{
           $this->db->where_in('fk_project_id',$project_ids);
           $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
         }
+
+        if(!empty($office_bank_ids)){
+            $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+        }
     
         $result = $this->db->get('voucher_detail');
     
@@ -637,17 +651,67 @@ class Financial_report_model extends MY_Model{
         return $order_array;
       }
 
-      function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = []){
+    //   function list_of_month_order($reporting_month){
+    //       return [1,2];
+    //   }
 
-        $financial_year = $this->grants->get_fy($reporting_month);
+      function get_budget_tag_based_on_month($reporting_month){
+        
+        $month_number = date('n',strtotime($reporting_month));
+        
+        $this->read_db->select(array('budget_tag_id','fk_month_id'));
+        $this->read_db->order_by('budget_tag_level ASC');
+        $this->read_db->where(array('fk_account_system_id'=>2));
+        $budget_tags_start_month = $this->read_db->get('budget_tag')->result_array();
+
+        $budget_tag_id_array = array_column($budget_tags_start_month,'budget_tag_id');
+        $budget_tag_based_on_month_array = array_column($budget_tags_start_month,'fk_month_id');
+
+        $budget_tag_id_based_on_month_values_array = array_combine($budget_tag_based_on_month_array,$budget_tag_id_array);
+        
+        ksort($budget_tag_id_based_on_month_values_array);
+
+        $budget_tag_id = 0;
+
+        if(array_key_exists($month_number,$budget_tag_id_based_on_month_values_array)){
+            $budget_tag_id = $budget_tag_id_based_on_month_values_array[$month_number];
+        }else{
+            $original_budget_tag_id = $budget_tag_id;
+            foreach($budget_tag_id_based_on_month_values_array as $_month_number => $_budget_tag_id){
+                if($month_number > $_month_number){
+                    $original_budget_tag_id = $_budget_tag_id;
+                }else{
+                    break;
+                }
+            }
+
+            $budget_tag_id = $original_budget_tag_id;
+        }
+
+        return $budget_tag_id;
+      }
+
+      function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
+
+        $financial_year = get_fy($reporting_month);
         $month_number = date('m',strtotime($reporting_month));
         $month_order = $this->db->get_where('month',array('month_number'=>$month_number))->row()->month_order;
-    
+        //$list_of_month_order = $this->list_of_month_order($reporting_month);
+        $get_budget_tag_based_on_month = $this->get_budget_tag_based_on_month($reporting_month);
+
+        $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
+
         $this->db->select_sum('budget_item_detail_amount');
-        $this->db->select(array('income_account.income_account_id as income_account_id','expense_account.expense_account_id as expense_account_id'));
+        $this->db->select(array('income_account.income_account_id as income_account_id',
+        'expense_account.expense_account_id as expense_account_id'));
+        
         $this->db->group_by('expense_account.expense_account_id');
         $this->db->where_in('budget.fk_office_id',$office_ids);
+        
         $this->db->where(array('month_order<='=>$month_order));
+        //$this->db->where_in('month_order',$list_of_month_order);
+        $this->db->where(array('fk_budget_tag_id'=>$get_budget_tag_based_on_month));
+
         $this->db->where(array('budget_year'=>$financial_year));
     
         $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
@@ -659,6 +723,10 @@ class Financial_report_model extends MY_Model{
         if(count($project_ids) > 0){
             $this->db->where_in('project_allocation.fk_project_id',$project_ids);
             $this->db->join('project_allocation','project_allocation.project_allocation_id=budget_item.fk_project_allocation_id');
+        }
+
+        if(!empty($office_bank_ids)){
+            $this->db->where_in('budget_item.fk_project_allocation_id',$get_office_bank_project_allocation);
         }
     
         $result = $this->db->get('budget_item_detail');
@@ -672,7 +740,7 @@ class Financial_report_model extends MY_Model{
             $order_array[$record['income_account_id']][$record['expense_account_id']] = $record['budget_item_detail_amount'];
           }
         }
-    
+        //echo json_encode($get_office_bank_project_allocation);exit;
         return $order_array;
       }
 

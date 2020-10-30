@@ -1,11 +1,7 @@
 <?php 
-//print_r($result['fund_balance_report']);
-//print_r($this->financial_report_model->_initial_opening_account_balance([1],3,[]));
-//print_r($this->financial_report_model->income_accounts([1],[]));
-//print_r($fund_balance_report);
-//print_r($expense_report);
-//$expense_account_month_expense = array_column(array_column(array_column($expense_report,'income_account'),'expense_accounts'),'month_expense');
-//print_r($result['office_banks']);
+//print_r($this->financial_report_model->bugdet_to_date_by_expense_account([6],'2020-08-01'));
+//print_r($this->financial_report_model->get_office_bank_project_allocation(1));
+
 ?>
 <div id="voucher_print">
     <div class="row">
@@ -45,7 +41,7 @@
 
         <div class="col-xs-6">
             <div class="col-xs-12 header"><?=get_phrase('bank_statements');?></div>
-            <?php //include "includes/include_bank_statements.php";?>
+            <?php include "includes/include_bank_statements.php";?>
         </div>
     </div>
 
@@ -76,12 +72,12 @@
 
     </div>
 
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-xs-12">
         <div class="col-xs-12 header"><?=get_phrase('expense_report');?></div>
-            <?php //include "includes/include_expense_report.php";?>
+            <?php include "includes/include_expense_report.php";?>
         </div>
-    </div> -->
+    </div>
 
 </div>
 
