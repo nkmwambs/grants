@@ -8,7 +8,7 @@
     margin:15px;
 }
 
-.total_oc,.total_dt,.code_proof_of_cash, .bank_reconcile{
+.total_oc,.total_dt,.code_proof_of_cash{
     font-weight:bold;
 }
 
@@ -22,10 +22,6 @@
 
 .code_proof_of_cash{
     color:hotpink;
-}
-
-.bank_reconcile{
-    color:green;
 }
 
 </style>
@@ -177,48 +173,48 @@ $("#frm_selected_offices").on('submit',function(ev){
      ev.preventDefault();
 });
 
-$("#bank_statement_balance").on('click',function(){
-    //$(this).val(null);
-});
+// $("#bank_statement_balance").on('click',function(){
+//     //$(this).val(null);
+// });
 
-$("#bank_statement_balance").on('change',function(){
-    ///alert('Hello');
-    var bank_statement_balance = $(this).val();
-    var url = "<?=base_url();?>financial_report/update_bank_statement_balance";
-    var reporting_month = "<?=$reporting_month;?>";
-    var statement_date = $('#bank_statement_date').val();
-    var book_closing_balance = '<?=$bank_reconciliation['book_closing_balance'];?>';
-    var month_outstanding_cheques = '<?=$bank_reconciliation['month_outstanding_cheques'];?>';
-    var month_transit_deposit = '<?=$bank_reconciliation['month_transit_deposit'];?>';
-    var office_id = "<?=$office_ids[0];?>";
+// $("#bank_statement_balance").on('change',function(){
+//     ///alert('Hello');
+//     var bank_statement_balance = $(this).val();
+//     var url = "<?=base_url();?>financial_report/update_bank_statement_balance";
+//     var reporting_month = "<?=$reporting_month;?>";
+//     var statement_date = $('#bank_statement_date').val();
+//     var book_closing_balance = '<?=$bank_reconciliation['book_closing_balance'];?>';
+//     var month_outstanding_cheques = '<?=$bank_reconciliation['month_outstanding_cheques'];?>';
+//     var month_transit_deposit = '<?=$bank_reconciliation['month_transit_deposit'];?>';
+//     var office_id = "<?=$office_ids[0];?>";
 
-    var reconciled_balance = parseFloat(bank_statement_balance) - parseFloat(month_outstanding_cheques) + parseFloat(month_transit_deposit);
+//     var reconciled_balance = parseFloat(bank_statement_balance) - parseFloat(month_outstanding_cheques) + parseFloat(month_transit_deposit);
 
-    $("#reconciled_bank_balance").html(reconciled_balance);
+//     $("#reconciled_bank_balance").html(reconciled_balance);
 
-    var oldClass = "label-danger";
-    var newClass = "label-success";
-    var oldLabel = "Not Balanced";
-    var newLabel = "Balanced";
+//     var oldClass = "label-danger";
+//     var newClass = "label-success";
+//     var oldLabel = "Not Balanced";
+//     var newLabel = "Balanced";
  
-    if(parseFloat(reconciled_balance) == parseFloat(book_closing_balance)){
-        newClass = "label-success";newLabel = "Balanced";
-    }else{
-        newClass = "label-danger";newLabel = "Not Balanced";
-    }
+//     if(parseFloat(reconciled_balance) == parseFloat(book_closing_balance)){
+//         newClass = "label-success";newLabel = "Balanced";
+//     }else{
+//         newClass = "label-danger";newLabel = "Not Balanced";
+//     }
         
-    $("#reconciliation_flag").removeClass(oldClass).addClass(newClass);
-    $("#reconciliation_flag").html(newLabel);
+//     $("#reconciliation_flag").removeClass(oldClass).addClass(newClass);
+//     $("#reconciliation_flag").html(newLabel);
 
-    // $.ajax({
-    //     url:url,
-    //     type:"POST",
-    //     data:{'bank_statement_balance':bank_statement_balance,'reporting_month':reporting_month,'statement_date':statement_date,'office_id':office_id},
-    //     success:function(response){
-    //         alert(response);
-    //     }
-    // });
-});
+//     $.ajax({
+//         url:url,
+//         type:"POST",
+//         data:{'bank_statement_balance':bank_statement_balance,'reporting_month':reporting_month,'statement_date':statement_date,'office_id':office_id},
+//         success:function(response){
+//             alert(response);
+//         }
+//     });
+// });
 
 
 // $("#drop_statements").dropzone({
@@ -244,66 +240,67 @@ function PrintElem(elem)
     
 
 
-$(document).ready(function(){
-    Dropzone.autoDiscover = false;
-});
+// $(document).ready(function(){
+//     Dropzone.autoDiscover = false;
+// });
 
-var myDropzone = new Dropzone("#drop_statements", { 
-        url: "<?=base_url()?>financial_report/upload_statements",
-        paramName: "file", // The name that will be used to transfer the file
-        params:{
-            'office_id':<?=$office_ids[0];?>,
-            'reporting_month':'<?=$reporting_month;?>',
-            'project_id': $("#project_ids").val()
-        },
-        maxFilesize: 5, // MB
-        uploadMultiple:true,
-        acceptedFiles:'image/*,application/pdf',    
-    });
+// var myDropzone = new Dropzone("#drop_statements", { 
+//         url: "<?=base_url()?>financial_report/upload_statements",
+//         paramName: "file", // The name that will be used to transfer the file
+//         params:{
+//             'office_id':<?=$office_ids[0];?>,
+//             'reporting_month':'<?=$reporting_month;?>',
+//             'project_id': $("#project_ids").val()?$("#project_ids").val():'[]',
+//             'office_bank_ids':$("#office_bank_ids").val()?$("#office_bank_ids").val():'[]'
+//         },
+//         maxFilesize: 5, // MB
+//         uploadMultiple:true,
+//         acceptedFiles:'image/*,application/pdf',    
+//     });
 
-    // myDropzone.on("sending", function(file, xhr, formData) { 
-    // // Will sendthe filesize along with the file as POST data.
-    // formData.append("filesize", file.size);  
+//     // myDropzone.on("sending", function(file, xhr, formData) { 
+//     // // Will sendthe filesize along with the file as POST data.
+//     // formData.append("filesize", file.size);  
 
-    // });
+//     // });
 
-    myDropzone.on("complete", function(file) {
-        //myDropzone.removeFile(file);
-        myDropzone.removeAllFiles();
-        //alert(myDropzone.getAcceptedFiles());
-    }); 
+//     myDropzone.on("complete", function(file) {
+//         //myDropzone.removeFile(file);
+//         myDropzone.removeAllFiles();
+//         //alert(myDropzone.getAcceptedFiles());
+//     }); 
 
-    myDropzone.on("success", function(file,response) {
-        //alert(response);
-        if(response == 0){
-            alert('Error in uploading files');
-            return false;
-        }
-        var table_tbody = $("#tbl_list_statements tbody");
-        var obj = JSON.parse(response);
+//     myDropzone.on("success", function(file,response) {
+//         alert(response);
+//         if(response == 0){
+//             alert('Error in uploading files');
+//             return false;
+//         }
+//         var table_tbody = $("#tbl_list_statements tbody");
+//         var obj = JSON.parse(response);
 
-        for (let i = 0; i < obj.file.name.length; i++) {
-            table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
-        }
+//         for (let i = 0; i < obj.file.name.length; i++) {
+//             table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
+//         }
 
-    });  
+//     });  
 
 
-    $(document).on('click','.delete_statement',function(){
+//     $(document).on('click','.delete_statement',function(){
  
-        var file_path = $(this).attr('id');
-        var url = "<?=base_url();?>financial_report/delete_statement";
-        var data = {'path':file_path};
+//         var file_path = $(this).attr('id');
+//         var url = "<?=base_url();?>financial_report/delete_statement";
+//         var data = {'path':file_path};
 
-        $.ajax({
-            url:url,
-            data:data,
-            type:"POST",
-            success:function(response){
-                alert(response);
-                $(".delete_statement").closest('tr').remove();
-            }
-        });
+//         $.ajax({
+//             url:url,
+//             data:data,
+//             type:"POST",
+//             success:function(response){
+//                 alert(response);
+//                 $(".delete_statement").closest('tr').remove();
+//             }
+//         });
         
-    }); 
+//     }); 
 </script>

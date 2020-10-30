@@ -123,6 +123,7 @@ class MY_Controller extends CI_Controller
     $this->load->model('approval_model');
     $this->load->model('general_model');
     $this->load->model('message_model');
+    $this->load->model('attachment_model');
 
     //Check if account system models and libraries are loaded if not load them
     //check_and_load_account_system_model_exists('As_'.$this->controller.'_library','Grants','library');

@@ -492,8 +492,27 @@ class Financial_report extends MY_Controller
     return $this->financial_report_model->check_if_financial_report_is_submitted($office_ids,$reporting_month);
   }
 
-  function _bank_statements_uploads($office_ids,$reporting_month,$project_ids = []){
-    return $this->grants->retrieve_file_uploads_info('financial_report',$office_ids,$reporting_month, $project_ids);
+  function _bank_statements_uploads($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
+
+    $this->read_db->select(array('reconciliation_id'));
+    $this->read_db->where_in('fk_office_id',$office_ids);
+    $this->read_db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
+    $this->read_db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
+    
+    if(!empty($office_bank_ids)){
+      $this->read_db->where_in('reconciliation.fk_office_bank_id',$office_bank_ids);
+    }
+
+    if(!empty($project_ids)){
+      $this->read_db->join('office_bank','office_bank.office_bank_id=reconciliation.office_bank_id');
+      $this->read_db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+      $this->read_db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+      $this->read_db->where_in('project_allocation.fk_project_id',$project_ids);
+    }
+
+    $reconciliation_ids = $this->read_db->get('reconciliation')->result_array();
+    
+    return $this->attachment_model->retrieve_file_uploads_info('reconciliation',array_column($reconciliation_ids,'reconciliation_id'));
   }
 
   function _projects_balance_report($office_ids,$reporting_month, $project_ids = [], $office_bank_ids = []){
@@ -805,21 +824,31 @@ class Financial_report extends MY_Controller
 
     $post = $this->input->post();
 
-    $financial_report_id = $this->db->get_where('financial_report',
-    array('fk_office_id'=>$post['office_id'],
-    'financial_report_month'=>$post['reporting_month']))->row()->financial_report_id;
+    $office_banks = explode(",",$post['office_bank_ids']);
 
-    $storeFolder = upload_url('financial_report',$financial_report_id,[$post['project_id']['project_ids'][0]]); 
-    
-    if(is_array($this->grants->upload_files($storeFolder)) && 
-        count($this->grants->upload_files($storeFolder))>0){
-          $report_info = ['financial_report_id'=>$financial_report_id];
-          $files_array = array_merge($this->grants->upload_files($storeFolder),$report_info);
+    $result = 0;
 
-          echo json_encode($files_array);
-    }else{
-      echo 0;
+    if(count($office_banks) == 1){
+      $this->db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
+      $this->db->where(array('reconciliation.fk_office_bank_id'=>$office_banks[0]));    
+      $reconciliation_id = $this->db->get_where('reconciliation',
+      array('fk_office_id'=>$post['office_id'],
+      'financial_report_month'=>$post['reporting_month']))->row()->reconciliation_id;
+
+      $storeFolder = upload_url('reconciliation',$reconciliation_id,[$office_banks[0]]); 
+      
+      if(is_array($this->attachment_model->upload_files($storeFolder)) && 
+          count($this->attachment_model->upload_files($storeFolder))>0){
+            $report_info = ['reconciliation_id'=>$reconciliation_id];
+            $files_array = array_merge($this->attachment_model->upload_files($storeFolder),$report_info);
+
+            $result = json_encode($files_array);
+      }
     }
+
+    echo $result;
+
+    
 }
 
 function delete_statement(){
