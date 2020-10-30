@@ -582,3 +582,61 @@ if(!function_exists('addOrdinalNumberSuffix')){
 		return $num.'th';
 	  }
 }
+
+if(!function_exists('get_fy')){
+	function get_fy($date_string,$override_fy_year_digits_config = false){
+		
+		$CI =& get_instance();
+		
+		$start_of_fy_month = $CI->read_db->get_where('month',array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
+		$fy_year_reference = $CI->config->item('fy_year_reference');
+		$fy_year_digits = $CI->config->item('fy_year_digits');
+
+		$fy_format = ($fy_year_digits == 2 && !$override_fy_year_digits_config)?'y':'Y';
+
+		$date_year = date($fy_format,strtotime($date_string));
+
+		$month_count_from_date_string_to_end_of_year = $start_of_fy_month + 11;
+
+		$list_of_months = range($start_of_fy_month,$month_count_from_date_string_to_end_of_year);
+
+		$list_of_months_with_year = [];
+
+		foreach($list_of_months as $month){
+			$_date_year = $date_year;
+
+			if($month > 12){
+				$_month = $month - 12;
+				$_date_year++;
+				$list_of_months_with_year[] = $_month.'-'.$_date_year;
+			}else{
+				$list_of_months_with_year[] = $month.'-'.$_date_year;
+			}
+			
+		}
+
+		$check_if_month_in_list_of_months = in_array(date('n-'.$fy_format,strtotime($date_string)),$list_of_months_with_year);
+
+		$fy_year = $date_year;
+
+		if($check_if_month_in_list_of_months && ($fy_year_reference == 'next' && !$override_fy_year_digits_config)){
+			$fy_year++;
+		}
+		
+		return $fy_year;
+	}
+}
+
+if(!function_exists('fy_start_date')){
+	function fy_start_date($date_string){
+		$CI =& get_instance();
+
+		$fy = get_fy($date_string,true);
+		$start_of_fy_month = $CI->read_db->get_where('month',array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
+
+		$formatted_month = strlen($start_of_fy_month) == 1?'0'.$start_of_fy_month:$start_of_fy_month;
+
+		return $fy.'-'.$formatted_month.'-01';
+
+	}
+}

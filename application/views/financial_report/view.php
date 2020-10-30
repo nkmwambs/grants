@@ -8,7 +8,7 @@
     margin:15px;
 }
 
-.total_oc,.total_dt,.code_proof_of_cash{
+.total_oc,.total_dt,.code_proof_of_cash, .bank_reconcile{
     font-weight:bold;
 }
 
@@ -22,6 +22,10 @@
 
 .code_proof_of_cash{
     color:hotpink;
+}
+
+.bank_reconcile{
+    color:green;
 }
 
 </style>
@@ -240,49 +244,49 @@ function PrintElem(elem)
     
 
 
-// $(document).ready(function(){
-//     Dropzone.autoDiscover = false;
-// });
+$(document).ready(function(){
+    Dropzone.autoDiscover = false;
+});
 
-// var myDropzone = new Dropzone("#drop_statements", { 
-//         url: "<?=base_url()?>financial_report/upload_statements",
-//         paramName: "file", // The name that will be used to transfer the file
-//         params:{
-//             'office_id':<?=$office_ids[0];?>,
-//             'reporting_month':'<?=$reporting_month;?>',
-//             'project_id': $("#project_ids").val()
-//         },
-//         maxFilesize: 5, // MB
-//         uploadMultiple:true,
-//         acceptedFiles:'image/*,application/pdf',    
-//     });
+var myDropzone = new Dropzone("#drop_statements", { 
+        url: "<?=base_url()?>financial_report/upload_statements",
+        paramName: "file", // The name that will be used to transfer the file
+        params:{
+            'office_id':<?=$office_ids[0];?>,
+            'reporting_month':'<?=$reporting_month;?>',
+            'project_id': $("#project_ids").val()
+        },
+        maxFilesize: 5, // MB
+        uploadMultiple:true,
+        acceptedFiles:'image/*,application/pdf',    
+    });
 
-//     // myDropzone.on("sending", function(file, xhr, formData) { 
-//     // // Will sendthe filesize along with the file as POST data.
-//     // formData.append("filesize", file.size);  
+    // myDropzone.on("sending", function(file, xhr, formData) { 
+    // // Will sendthe filesize along with the file as POST data.
+    // formData.append("filesize", file.size);  
 
-//     // });
+    // });
 
-//     myDropzone.on("complete", function(file) {
-//         //myDropzone.removeFile(file);
-//         myDropzone.removeAllFiles();
-//         //alert(myDropzone.getAcceptedFiles());
-//     }); 
+    myDropzone.on("complete", function(file) {
+        //myDropzone.removeFile(file);
+        myDropzone.removeAllFiles();
+        //alert(myDropzone.getAcceptedFiles());
+    }); 
 
-//     myDropzone.on("success", function(file,response) {
-//         //alert(response);
-//         if(response == 0){
-//             alert('Error in uploading files');
-//             return false;
-//         }
-//         var table_tbody = $("#tbl_list_statements tbody");
-//         var obj = JSON.parse(response);
+    myDropzone.on("success", function(file,response) {
+        //alert(response);
+        if(response == 0){
+            alert('Error in uploading files');
+            return false;
+        }
+        var table_tbody = $("#tbl_list_statements tbody");
+        var obj = JSON.parse(response);
 
-//         for (let i = 0; i < obj.file.name.length; i++) {
-//             table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
-//         }
+        for (let i = 0; i < obj.file.name.length; i++) {
+            table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
+        }
 
-//     });  
+    });  
 
 
     $(document).on('click','.delete_statement',function(){

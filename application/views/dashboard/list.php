@@ -34,6 +34,9 @@ if ($this->session->system_admin) {
       <div class='btn btn-default' id='btn_test'>Test</div>
     </div>
   </div> -->
+<?php 
+  //print_r(get_fy('2020-02-01'));
+?>  
 
 <script>
   $("#btn_test").on('click', function() {

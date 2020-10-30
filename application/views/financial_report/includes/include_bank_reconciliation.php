@@ -38,14 +38,14 @@
                 <tr>
                     <td><?=get_phrase('reconciled_bank_balance');?></td>
                     <td>
-                        <span id='reconciled_bank_balance'><?=number_format($bank_reconciliation['bank_reconciled_balance'],2);?></span>
+                        <span class='bank_reconcile' id='reconciled_bank_balance'><?=number_format($bank_reconciliation['bank_reconciled_balance'],2);?></span>
                         <span id='reconciliation_flag' class="label label-<?=$bank_reconciliation['is_book_reconciled']?'success':'danger';?>"><?=get_phrase($bank_reconciliation['is_book_reconciled']?'balanced':'not_balanced');?></span>
                     </td>
                 </tr>
 
                 <tr>
                     <td><?=get_phrase('book_closing_balance');?></td>
-                    <td id='td_book_closing_balance'><?=number_format($bank_reconciliation['book_closing_balance'],2);?></td>
+                    <td class='bank_reconcile' id='td_book_closing_balance'><?=number_format($bank_reconciliation['book_closing_balance'],2);?></td>
                 </tr>
 
             </tbody>
