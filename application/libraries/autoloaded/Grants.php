@@ -1750,6 +1750,8 @@ function initial_item_status(){
  */
 function unset_status_if_item_not_approveable($list_table_visible_columns){
 
+  $model = $this->current_model;
+
   $list_table_visible_columns = $this->$model->list_table_visible_columns();
   if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
     $columns = ['status_name','approval_name'];
