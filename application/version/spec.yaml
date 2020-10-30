@@ -1,5 +1,10 @@
 core:
   tables:
+
+    attachment:
+      lookup_tables:
+        - approve_item
+
     context_definition:
 
     event:
