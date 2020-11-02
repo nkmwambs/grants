@@ -68,6 +68,11 @@
 	$config['fy_year_reference'] = 'next'; // Ex. prev or next
 	$config['fy_year_digits'] = 2; // Ex. 2 or 4
 
+	// S3 Configuration
+	$config['upload_files_to_s3'] = true;
+	$config['s3_region'] = 'eu-west-1';
+	$config['s3_bucket_name'] = 'compassion-fcp-fms-version2';
+
 
 
 

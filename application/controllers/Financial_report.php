@@ -839,6 +839,7 @@ class Financial_report extends MY_Controller
       
       if(is_array($this->attachment_model->upload_files($storeFolder)) && 
           count($this->attachment_model->upload_files($storeFolder))>0){
+            
             $report_info = ['reconciliation_id'=>$reconciliation_id];
             $files_array = array_merge($this->attachment_model->upload_files($storeFolder),$report_info);
 
@@ -846,9 +847,7 @@ class Financial_report extends MY_Controller
       }
     }
 
-    echo $result;
-
-    
+    echo 1;
 }
 
 function delete_statement(){

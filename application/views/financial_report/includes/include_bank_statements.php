@@ -1,5 +1,9 @@
 <div class="col-xs-12" style="margin-bottom:20px;">
-    <form id="drop_statements"  class="dropzone hidden-print <?=(!$multiple_offices_report && count($office_banks) > 1)?'hidden':'';?> "></form>
+    <form id="drop_statements"  class="dropzone hidden-print <?=(!$multiple_offices_report && count($office_banks) > 1)?'hidden':'';?> ">
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+        </div>
+    </form>
 </div>
 
 <?php if(!$multiple_offices_report && count($office_banks) > 1){?>
