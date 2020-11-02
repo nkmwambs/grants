@@ -130,19 +130,22 @@ class Attachment_model extends MY_Model{
        * @return Array - Attachment Information
        */
 
-      function retrieve_file_uploads_info(String $approve_item_name,Array $item_primary_ids):Array{
+      function retrieve_file_uploads_info(String $approve_item_name,Array $item_primary_ids = []):Array{
 
-        $approve_item_id = $this->read_db->get_where('approve_item',
-        array('approve_item_name'=>$approve_item_name))->row()->approve_item_id;
+        $files_array = [];
 
-        $this->read_db->select(array('attachment_name','attachment_size',
-        'attachment_url','attachment_file_type','attachment_last_modified_date'));
+        if(!empty($item_primary_ids)){
+          $approve_item_id = $this->read_db->get_where('approve_item',
+          array('approve_item_name'=>$approve_item_name))->row()->approve_item_id;
 
-        $this->read_db->where(array('fk_approve_item_id'=>$approve_item_id));
-        $this->read_db->where_in('attachment_primary_id',$item_primary_ids);
-        
-        $files_array = $this->read_db->get('attachment')->result_array();
-    
+          $this->read_db->select(array('attachment_name','attachment_size',
+          'attachment_url','attachment_file_type','attachment_last_modified_date'));
+
+          $this->read_db->where(array('fk_approve_item_id'=>$approve_item_id));
+          $this->read_db->where_in('attachment_primary_id',$item_primary_ids);
+          
+          $files_array = $this->read_db->get('attachment')->result_array();
+        }
         return $files_array;
       }
 
