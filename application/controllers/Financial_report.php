@@ -494,6 +494,8 @@ class Financial_report extends MY_Controller
 
   function _bank_statements_uploads($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
 
+    $reconciliation_ids = [];
+
     $this->read_db->select(array('reconciliation_id'));
     $this->read_db->where_in('fk_office_id',$office_ids);
     $this->read_db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
@@ -510,7 +512,11 @@ class Financial_report extends MY_Controller
       $this->read_db->where_in('project_allocation.fk_project_id',$project_ids);
     }
 
-    $reconciliation_ids = $this->read_db->get('reconciliation')->result_array();
+    $reconciliation_ids_obj = $this->read_db->get('reconciliation');
+
+    if($reconciliation_ids_obj->num_rows() > 0){
+      $reconciliation_ids = $reconciliation_ids_obj->result_array();
+    }
     
     return $this->attachment_model->retrieve_file_uploads_info('reconciliation',array_column($reconciliation_ids,'reconciliation_id'));
   }
@@ -826,14 +832,32 @@ class Financial_report extends MY_Controller
 
     $office_banks = explode(",",$post['office_bank_ids']);
 
+    // Check if a reconciliation record exists, if not create it
+    $this->db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
+    $this->db->where(array('reconciliation.fk_office_bank_id'=>$office_banks[0]));  
+    $reconciliation_obj = $this->db->get_where('reconciliation',
+      array('fk_office_id'=>$post['office_id'],
+      'financial_report_month'=>$post['reporting_month']));
+
+    if($reconciliation_obj->num_rows() == 0){
+      // Create a reconciliation record
+      //$financial_report_id,$office_bank_id,$statement_balance = 0, $suspense_amount = 0
+
+      $financial_report_id = $this->read_db->get_where('financial_report',
+      array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']))->row()->financial_report_id;
+
+      $this->insert_reconciliation($financial_report_id,$office_banks[0]);
+    }  
+
     $result = 0;
 
     if(count($office_banks) == 1){
       $this->db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
-      $this->db->where(array('reconciliation.fk_office_bank_id'=>$office_banks[0]));    
+      $this->db->where(array('reconciliation.fk_office_bank_id'=>$office_banks[0]));  
       $reconciliation_id = $this->db->get_where('reconciliation',
-      array('fk_office_id'=>$post['office_id'],
-      'financial_report_month'=>$post['reporting_month']))->row()->reconciliation_id;
+        array('fk_office_id'=>$post['office_id'],
+        'financial_report_month'=>$post['reporting_month']))->row()->reconciliation_id;
+        
 
       $storeFolder = upload_url('reconciliation',$reconciliation_id,[$office_banks[0]]); 
       
@@ -1006,8 +1030,26 @@ function update_bank_reconciliation_balance(){
 
 
   }
-
   
+}
+
+function insert_reconciliation($financial_report_id,$office_bank_id,$statement_balance = 0, $suspense_amount = 0){
+      $data['reconciliation_track_number'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_track_number'];
+      $data['reconciliation_name'] = $this->grants_model->generate_item_track_number_and_name('reconciliation')['reconciliation_name'];
+     
+      $data['fk_financial_report_id'] = $financial_report_id;
+      $data['fk_office_bank_id'] = $office_bank_id;
+      $data['reconciliation_statement_balance'] = $statement_balance;
+      $data['reconciliation_suspense_amount'] = $suspense_amount;
+
+      $data['reconciliation_created_by'] = $this->session->user_id;
+      $data['reconciliation_created_date'] = date('Y-m-d');
+      $data['reconciliation_last_modified_by'] = $this->session->user_id;
+      
+      $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
+      $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
+
+      $this->write_db->insert('reconciliation',$data);
 }
 
 static function get_menu_list(){}
