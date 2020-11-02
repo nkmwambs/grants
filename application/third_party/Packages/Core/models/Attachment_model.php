@@ -79,7 +79,7 @@ class Attachment_model extends MY_Model{
             
             $targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
             
-            move_uploaded_file($tempFile,$targetFile);
+            move_uploaded_file($tempFile,str_replace('/',DS,$targetFile));
 
             // S3 comes in here
 
