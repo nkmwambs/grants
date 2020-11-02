@@ -24,6 +24,7 @@ class Attachment_model extends MY_Model{
     function __construct(){
         parent::__construct();
         $this->load->database();
+
     }
 
     function index(){}
@@ -38,7 +39,7 @@ class Attachment_model extends MY_Model{
 
     function upload_files($storeFolder){
       
-        $path_array = explode(DS,$storeFolder);
+        $path_array = explode("/",$storeFolder);
         
         $path = [];
 
@@ -46,31 +47,45 @@ class Attachment_model extends MY_Model{
         array('approve_item_name'=>$path_array[2]))->row()->approve_item_id;
         
         $item_id = $path_array[3];
-        
-        for ($i=0; $i < count($path_array) ; $i++) { 
-        
-          array_push($path,$path_array[$i]);
-        
-          $modified_path = implode(DS,$path);
-        
-          if(!file_exists($modified_path)){
-            mkdir($modified_path);
+
+        $targetPath = $storeFolder."/";
+
+        if($this->config->item('upload_files_to_s3')){
+
+          if(!file_exists('uploads/temps')){
+            mkdir('uploads/temps');
           }
+          
+          $targetPath = 'uploads/temps/';
+        }else{
+          for ($i=0; $i < count($path_array) ; $i++) { 
         
+            array_push($path,$path_array[$i]);
+          
+            $modified_path = implode(DS,$path);
+          
+            if(!file_exists($modified_path)){
+              mkdir($modified_path);
+            }
+          
+          }
         }
-  
+        
+        
         if (!empty($_FILES)) {
   
           for($i=0;$i<count($_FILES['file']['name']);$i++){
             $tempFile = $_FILES['file']['tmp_name'][$i];   
-              
-            $targetPath = BASEPATH .DS.'..'.DS. $storeFolder . DS; 
             
             $targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
             
-            // S3 comes in here
-            
             move_uploaded_file($tempFile,$targetFile);
+
+            // S3 comes in here
+
+            if($this->config->item('upload_files_to_s3')){
+              $this->grants_s3_lib->upload_s3_object($targetFile,$storeFolder);
+            }
 
             // Insert in Attachment table in DB
 
@@ -130,4 +145,6 @@ class Attachment_model extends MY_Model{
     
         return $files_array;
       }
+
+      
 }

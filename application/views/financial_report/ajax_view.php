@@ -321,8 +321,13 @@ var myDropzone = new Dropzone("#drop_statements", {
         //alert(myDropzone.getAcceptedFiles());
     }); 
 
+    myDropzone.on('error', function(file, response) {
+       // $(file.previewElement).find('.dz-error-message').text(response);
+       console.log(response);
+    });
+
     myDropzone.on("success", function(file,response) {
-        //alert(response);
+        console.log(response);
         if(response == 0){
             alert('Error in uploading files');
             return false;

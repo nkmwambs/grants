@@ -134,6 +134,8 @@ class MY_Controller extends CI_Controller
       redirect(base_url().'login','refresh');
     }
 
+    $this->load->library('Grants_S3_lib');
+
   }
 
 
