@@ -56,27 +56,24 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 
-// $db =& DB();
+// $uri = explode('/', $_SERVER['REQUEST_URI']);
 
-// $uri = explode('?', $_SERVER['REQUEST_URI']); //We don't want to include querystring data
-$uri = explode('/', $_SERVER['REQUEST_URI']);
+// if($uri[2] && isset($uri[3])) 
+// {
 
-if($uri[2] && isset($uri[3])) 
-{
-
-    $route[strtolower($uri[2]).'/'.$uri[3]] = ucfirst($uri[2]).'/'.$uri[3];
-    $route[strtolower($uri[2]).'/'.$uri[3].'/:any'] = ucfirst($uri[2]).'/'.$uri[3].'/$1';
+//     $route[strtolower($uri[2]).'/'.$uri[3]] = ucfirst($uri[2]).'/'.$uri[3];
+//     $route[strtolower($uri[2]).'/'.$uri[3].'/:any'] = ucfirst($uri[2]).'/'.$uri[3].'/$1';
    
-}elseif($uri[2]){
-    $route[strtolower($uri[2])] = ucfirst($uri[2]);
-}
+// }elseif($uri[2]){
+//     $route[strtolower($uri[2])] = ucfirst($uri[2]);
+// }
 
 
-spl_autoload_register(function($classname){
-    // Autoload Interfaces
+// spl_autoload_register(function($classname){
+//     // Autoload Interfaces
 
-    if( strpos($classname,'Interface') == true ){
-        require(FCPATH.'application/interfaces/'.$classname.'.php');
-    }
+//     if( strpos($classname,'Interface') == true ){
+//         require(FCPATH.'application/interfaces/'.$classname.'.php');
+//     }
 
-});
+// });

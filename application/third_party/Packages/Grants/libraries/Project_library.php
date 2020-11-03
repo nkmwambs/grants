@@ -20,5 +20,17 @@ class Project_library extends Grants
 
   function index(){}
 
+  function default_field_value(){
+    $default_field_values = [];
+
+    if(!$this->CI->session->system_admin){
+      $default_field_values['fk_funding_status_id'] = $this->CI->read_db->get_where('funding_status',
+      array('fk_account_system_id'=>$this->CI->session->user_account_system_id,
+        'funding_status_is_active'=>1,'funding_status_is_available'=>1))->row()->funding_status_id;
+    }   
+
+    return $default_field_values;
+  }
+
 
 }

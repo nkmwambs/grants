@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Voucher_model extends MY_Model implements  TableRelationshipInterface
+class Voucher_model extends MY_Model
 {
   public $table = 'voucher'; // you MUST mention the table name
   //public $primary_key = 'voucher_id'; // you MUST mention the primary key

@@ -20,7 +20,7 @@
     </div> -->
     
     <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
-        <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
+        <a href="<?=base_url();?>Budget_item/multi_form_add/<?=$this->id;?>/Budget">
             <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
         </a>
 
@@ -63,7 +63,7 @@
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
-                       <?=get_phrase('year');?> <?=$current_year;?> <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> Budget Summary (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/schedule/<?=hash_id(1);?>'>Show budget schedule</a>)
+                       <?=get_phrase('year');?> <?=$current_year;?> <?=$budget_tag;?> : <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> <?=get_phrase('budget_summary');?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/'>Show budget schedule</a>)
                     </th>
                 </tr>
                 <tr>

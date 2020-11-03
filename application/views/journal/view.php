@@ -44,7 +44,6 @@
     <?php }?>
 </div>
 
-<hr>
 
 <div class='row'>
     <div class='col-xs-12' style='overflow-x: auto' id='journal_row'>

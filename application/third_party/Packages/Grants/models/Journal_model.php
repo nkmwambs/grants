@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Journal_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Journal_model extends MY_Model 
 {
   public $table = 'journal'; // you MUST mention the table name
   public $primary_key = 'journal_id'; // you MUST mention the primary key
@@ -22,37 +22,14 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     $this->load->model('general_model');
   }
 
-  function delete($id = null){
-
-  }
-
-  function index(){
-
-  }
-
   public function lookup_tables(){
     return ['office'];
   }
-
-  public function detail_tables(){}
-
-  public function table_visible_columns(){}
-
-  public function table_hidden_columns(){}
-
-  public function master_table_visible_columns(){}
-
-  public function master_table_hidden_columns(){}
-
-  public function list(){
-    
-  }
+ 
 
   public function show_add_button(){
     return false;
   }
-
-  public function view(){}
 
   function get_office_banks($office_id){
     $this->db->select(array('fk_office_id'));
@@ -62,31 +39,9 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return $office_banks;
   }
 
-  // private function system_opening_cash_balance($office_id,$office_bank_id = 0){
-
-  //   $balance = 0;
-
-  //   //Only get balance if args project_allocation_ids and office_bank_id as supplied or none of them
-
-  //   if($office_bank_id > 0 ){
-  //       $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
-  //   }
-
-  //   $this->db->select_sum('opening_cash_balance_amount');
-  //   $this->db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_cash_balance.fk_system_opening_balance_id');
-
-  //   $opening_cash_balance_obj = $this->db->get_where('opening_cash_balance',array('fk_office_id'=>$office_id));
-    
-  //   if($opening_cash_balance_obj->num_rows()>0){
-  //      $balance = $opening_cash_balance_obj->row()->opening_cash_balance_amount; 
-  //   }
-   
-
-  //   return $balance;
-  // }
-
 
   private function system_opening_bank_balance($office_id, $office_bank_id = 0){
+    
     $balances = [];
 
     $this->db->select(array('opening_bank_balance_amount','office_bank_id','office_bank_name'));
@@ -107,6 +62,21 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       }
     }
 
+    // Get all office banks 
+    // $this->read_db->select(array('office_bank_id','office_bank_name'));
+    // $office_banks_obj = $this->read_db->get_where('office_bank',array('fk_office_id'=>$office_id));
+
+    // if($office_banks_obj->num_rows() > 0){
+    //   $office_banks = $office_banks_obj->result_array();
+
+    //   foreach($office_banks as $office_bank){
+    //     if(!array_key_exists($office_bank['office_bank_id'],$balances)){
+    //       $balances[$office_bank['office_bank_id']] = ['account_name'=>$office_bank['office_bank_name'],'amount'=>0];
+    //     }
+    //   }
+
+    // }
+    
     return $balances;
   }
 
@@ -133,19 +103,34 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       $result[$petty_cash_account['fk_office_cash_id']]['amount'] = $petty_cash_account['opening_cash_balance_amount'];
     }
 
+    // Get all office cash boxes
+    $this->read_db->select(array('office_cash_id','office_cash_name'));
+    $this->read_db->join('account_system','account_system.account_system_id=office_cash.fk_account_system_id');
+    $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $office_cash_obj = $this->read_db->get_where('office_cash',array('office_id'=>$office_id));
+
+    if($office_cash_obj->num_rows() > 0){
+      $office_cash = $office_cash_obj->result_array();
+
+      foreach($office_cash as $box){
+        if(!array_key_exists($box['office_cash_id'],$result)){
+          $result[$box['office_cash_id']]['account_name'] = $box['office_cash_name'];
+          $result[$box['office_cash_id']]['amount'] = 0;
+        }
+      }
+    }
+
     return $result;
   }
 
   
   function month_opening_bank_cash_balance($office_id,$transacting_month,$office_bank_id = 0){
 
-    
     $system_opening_bank = $this->system_opening_bank_balance($office_id, $office_bank_id); 
-    //$system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id); 
-    //$system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id);
     $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id);
 
-    //print_r($system_opening_bank); exit;
+    //echo json_encode($system_opening_bank);exit;
+
     $bank_to_date_income = [];
     $bank_to_date_expense = [];
     $month_bank_opening = [];
@@ -163,41 +148,49 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     }
 
     
-    foreach($system_opening_cash as $office_cash_id => $office_cash_balance_amount){
+    foreach($system_opening_cash as $office_cash_id => $office_cash_balance){
         $cash_to_date_income[$office_cash_id] = $this->get_cash_income_or_expense_to_date($office_id,$transacting_month,'cash','income',$office_bank_id,$office_cash_id);
         $cash_to_date_expense[$office_cash_id] = $this->get_cash_income_or_expense_to_date($office_id,$transacting_month,'cash','expense',$office_bank_id,$office_cash_id);
-        $month_cash_opening[$office_cash_id]['account_name'] = $system_opening_cash[$office_cash_id]['account_name'];
-        $month_cash_opening[$office_cash_id]['amount'] = $system_opening_cash[$office_cash_id]['amount'] + ($cash_to_date_income[$office_cash_id] - $cash_to_date_expense[$office_cash_id]);
+        $month_cash_opening[$office_cash_id]['account_name'] = $office_cash_balance['account_name'];
+        $month_cash_opening[$office_cash_id]['amount'] = $office_cash_balance['amount'] + ($cash_to_date_income[$office_cash_id] - $cash_to_date_expense[$office_cash_id]);
     }
 
-    
-    // print_r($this->get_cash_income_or_expense_to_date($office_id,$transacting_month,'cash','income',$office_bank_id,2));exit;
-    
+    //echo json_encode( ['bank'=>$month_bank_opening,'cash'=>$month_cash_opening]);exit;
     return ['bank'=>$month_bank_opening,'cash'=>$month_cash_opening];
   }
 
+  function get_office_bank_project_allocation($office_bank_id){
+    $office_bank_project_allocations = $this->db->
+    where(array('fk_office_bank_id'=>$office_bank_id))->
+    get('office_bank_project_allocation')->result_array();
+
+    return $office_bank_project_allocations;
+  }
 
   public function get_cash_income_or_expense_to_date($office_id,$transacting_month,$cash_account,$transaction_effect,$office_bank_id = 0, $office_cash_id = 0){
 
-    
+    $office_bank_project_allocations = $this->get_office_bank_project_allocation($office_bank_id);
 
     $this->db->select_sum('voucher_detail_total_cost');
-
-    //$this->db->select(array('voucher_type_account_code','voucher_detail_total_cost','voucher_type_effect_code'));
-    
-    if($office_bank_id){
-      $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
-    }
-
-    if($office_cash_id){
-      $this->db->where(array('fk_office_cash_id'=>$office_cash_id));
-    }
 
     $this->db->where('voucher_date < ',date('Y-m-01',strtotime($transacting_month)));
     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+
+
+    if($office_bank_id){
+      $this->db->group_start();
+        $allocation_ids = array_column($office_bank_project_allocations,'fk_project_allocation_id');
+        $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
+        $this->db->or_where_in('fk_project_allocation_id',$allocation_ids); 
+        $this->db->group_end();
+    }
+
+    if($office_cash_id){
+      $this->db->where(array('fk_office_cash_id'=>$office_cash_id));
+    }
 
      /*1: Cash income has [voucher_type_account_code of cash and a voucher_type_effect_code of income] 
       OR [voucher_type_account_code of  bank and a voucher_type_effect_code of contra] 
@@ -212,39 +205,39 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       OR [voucher_type_account_code of  bank and a voucher_type_effect_code of contra] 
     
     */
-
-    if(($cash_account=='cash' && $transaction_effect=='income') || ($cash_account=='bank' && $transaction_effect=='contra') ){
+    
+    if(($cash_account=='cash' && $transaction_effect=='income') || ($cash_account=='bank' && $transaction_effect=='bank_contra') ){
       $this->db->group_start();
          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'income'));
 
           $this->db->or_group_start();
-            $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'contra'));
+            $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'bank_contra'));
           $this->db->group_end();
 
       $this->db->group_end();
 
     }
 
-    elseif(($cash_account=='cash' && $transaction_effect=='expense') || ($cash_account=='cash' && $transaction_effect=='contra') ){
+    elseif(($cash_account=='cash' && $transaction_effect=='expense') || ($cash_account=='cash' && $transaction_effect=='cash_contra') ){
 
       $this->db->group_start();
         $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'expense'));
 
         $this->db->or_group_start();
-          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'contra'));
+          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'cash_contra'));
         $this->db->group_end();
 
       $this->db->group_end();
 
     }
 
-    elseif(($cash_account=='bank' && $transaction_effect=='income') || ($cash_account=='cash' && $transaction_effect=='contra') ){
+    elseif(($cash_account=='bank' && $transaction_effect=='income') || ($cash_account=='cash' && $transaction_effect=='cash_contra') ){
 
       $this->db->group_start();
         $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'income'));
 
         $this->db->or_group_start();
-          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'contra'));
+          $this->db->where(array('voucher_type_account_code'=>'cash','voucher_type_effect_code'=>'cash_contra'));
         $this->db->group_end();
 
       $this->db->group_end();       
@@ -252,26 +245,19 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
     }
 
-    elseif(($cash_account=='bank' && $transaction_effect=='expense') || ($cash_account=='bank' && $transaction_effect=='contra') ){
+    elseif(($cash_account=='bank' && $transaction_effect=='expense') || ($cash_account=='bank' && $transaction_effect=='bank_contra') ){
 
       $this->db->group_start();
         $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'expense'));
 
         $this->db->or_group_start();
-          $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'contra'));
+          $this->db->where(array('voucher_type_account_code'=>'bank','voucher_type_effect_code'=>'bank_contra'));
         $this->db->group_end();
 
       $this->db->group_end();
     }
    
-                 
-
     $this->db->group_by(array('voucher_type_account_code'));
-
-    // $total_cost= $this->db->get_where('voucher_detail',
-    // array('fk_office_id'=>$office_id,
-    // 'voucher_type_account_code'=>$cash_account,'voucher_type_effect_code'=>$transaction_effect))->row()->voucher_detail_total_cost;
-   // print_r($total_cost); exit();
 
    $total_cost=0;
    $total_cost_obj=$this->db->get('voucher_detail');
@@ -329,8 +315,12 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
   /**
    * @todo - to be taken to income_accounts model. Only get used accounts in the month (Not yet done)
    */
-  private function income_accounts(){
+  private function income_accounts($office_id){
+
     $this->db->select(array('income_account_id','income_account_code'));
+    $this->db->join('account_system','account_system.account_system_id=income_account.fk_account_system_id');
+    $this->db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $this->db->where(array('office_id'=>$office_id));
     $accounts = $this->db->get('income_account')->result_array();
 
     $ids = array_column($accounts,'income_account_id');
@@ -339,11 +329,24 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array_combine($ids,$code);
   }
 
+  // function journal_account_system(){
+  //   $this->db->where(array('journal_id'=>hash_id($this->id,'decode')));
+  //   $this->db->join('journal','journal.fk_office_id=office.office_id');
+  //   $account_system_id = $this->db->get('office')->row()->fk_account_system_id;
+
+  //   return $account_system_id;
+  // }
+
   /**
    * @todo - to be taken to expense_accounts model. Only get used accounts in the month (Not yet done)
    */
-  private function expense_accounts(){
+  private function expense_accounts($office_id){
+
     $this->db->select(array('expense_account_id','expense_account_code'));
+    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $this->db->join('account_system','account_system.account_system_id=income_account.fk_account_system_id');
+    $this->db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $this->db->where(array('office_id'=>$office_id));
     $accounts =  $this->db->get('expense_account')->result_array();
 
     $ids = array_column($accounts,'expense_account_id');
@@ -352,10 +355,10 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
     return array_combine($ids,$code);
   }
 
-  function financial_accounts(){
+  function financial_accounts($office_id){
     return [
-      'income'=>$this->income_accounts(),
-      'expense'=>$this->expense_accounts(),
+      'income'=>$this->income_accounts($office_id),
+      'expense'=>$this->expense_accounts($office_id),
     ];
   }
   
@@ -371,8 +374,6 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
       $month_start_date = date('Y-m-01',strtotime($transacting_month));
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
-
-      //print_r($month_end_date); exit;
       
       $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
@@ -383,12 +384,7 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
       $this->db->select(array('voucher_type_effect_code'));
       $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id','fk_office_cash_id'));
       
-      //$this->db->select_sum('voucher_detail_total_cost');
-      
       $this->db->where(array('voucher_date >='=> $month_start_date,'voucher_date <='=> $month_end_date,'fk_office_id'=>$office_id));
-      // $this->db->where('voucher_date <=', $month_end_date);
-      // $this->db->where('fk_office_id',$office_id);
-      //$this->db->where(array('voucher.fk_status_id'=>$this->approval_model->get_max_approval_status_id('voucher')));
       
       $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
       $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
@@ -487,10 +483,8 @@ class Journal_model extends MY_Model implements CrudModelInterface, TableRelatio
 
         if($voucher_type_effect_code == 'income'){
           $spread[$count]['account_id'] = $fk_income_account_id;
-        }elseif($voucher_type_effect_code == 'bank_contra'){
-          $spread[$count]['account_id'] = $fk_bank_contra_account_id;
-        }elseif($voucher_type_effect_code == 'cash_contra'){  
-          $spread[$count]['account_id'] = $fk_cash_contra_account_id;
+        }elseif($voucher_type_effect_code == 'bank_contra' || $voucher_type_effect_code == 'cash_contra'){
+          $spread[$count]['account_id'] = $fk_contra_account_id;
         }else{
           $spread[$count]['account_id'] = $fk_expense_account_id;
         }

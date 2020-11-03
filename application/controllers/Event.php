@@ -1,6 +1,5 @@
 <?php
 
-
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -11,16 +10,17 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-class Center_group_library extends Grants
-{
 
-  private $CI;
+class Event extends MY_Controller
+{
 
   function __construct(){
     parent::__construct();
-    $this->CI =& get_instance();
+    $this->load->library('event_library');
   }
 
   function index(){}
 
-} 
+  static function get_menu_list(){}
+
+}

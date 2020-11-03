@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Role_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Role_model extends MY_Model
 {
   public $table = 'role'; // you MUST mention the table name
   //public $dependant_table = "role_permission";

@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php 
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*This autoloads all the classes in third_party folder subdirectories e.g. Output
   The third_party houses the reusable API or code systemwise
@@ -8,7 +10,7 @@ require_once APPPATH."third_party".DIRECTORY_SEPARATOR."Api".DIRECTORY_SEPARATOR
 define('VALIDATION_ERROR','VALIDATION_ERROR');
 define('VALIDATION_SUCCESS','VALIDATION_SUCCESS');
 
-class MY_Controller extends CI_Controller implements CrudModelInterface
+class MY_Controller extends CI_Controller
 {
 
   private $list_result;
@@ -121,6 +123,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->model('approval_model');
     $this->load->model('general_model');
     $this->load->model('message_model');
+    $this->load->model('attachment_model');
 
     //Check if account system models and libraries are loaded if not load them
     //check_and_load_account_system_model_exists('As_'.$this->controller.'_library','Grants','library');
@@ -130,6 +133,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     if(!$this->session->user_id){
       redirect(base_url().'login','refresh');
     }
+
+    $this->load->library('Grants_S3_lib');
 
   }
 
@@ -181,7 +186,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
         if(!$this->render_data_from_model($render_model_result)){
           // Render from default API
-          $this->list_result = Output_base::load($this->action);
+          $this->list_result = \Output_base::load($this->action);
         }
 
     }else{
@@ -349,7 +354,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    * @param String
    *@return String
    */
-  function delete($id = null):String{
+  function delete($id = null){
     $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete');
     echo "Record deleted successful";
   }
@@ -592,8 +597,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
       echo json_encode($return);
     }else{
       echo $return;
-    }
+    }  
     
+  }
+
+  function event_tracker(){
+    $this->grants_model->event_tracker();
   }
 
 }

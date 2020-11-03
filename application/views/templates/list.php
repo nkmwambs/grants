@@ -1,9 +1,9 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
- 
-//print_r($result);
+
+//print_r(list_lookup_tables('expense_account'));
 
 extract($result);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
+
 ?>
 
 <div class="row">

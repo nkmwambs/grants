@@ -1,7 +1,15 @@
 <?php
     //print_r($result['budget_schedule'][1]['budget_items'][1]['expense_items']['month_spread']);
-    //print_r($result['budget_schedule']);
+    //print_r(array_shift($result['budget_schedule']));
+
+
+    //print_r($month_names_with_number_keys);
+
+    //print_r(array_keys($result));
+
     extract($result);
+    //print_r($budget_schedule['spreading_of_month']);
+    //print_r($month_names_with_number_keys);
 ?>
 
 <style>
@@ -23,7 +31,7 @@
     
     <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
         <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
-            <div class='btn btn-default'>Add new budget item</div>
+            <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
         </a>
 
     </div>
@@ -51,7 +59,7 @@
 <?php foreach($budget_schedule as $income_group){?>
 <div class='row'>
     <div class='col-xs-12' style='text-align:center;font-weight:bold;'>
-        <?=$income_group['income_account']['income_account_name'];?> Budget Schedule for <?=$office;?> <?=$current_year;?> (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'>Show budget summary</a>)
+        <?=ucwords($income_group['income_account']['income_account_name']);?> <?=get_phrase('budget_schedule_for');?> <?=$office;?> <?=get_phrase('FY');?><?=$current_year;?> <?=$budget_tag;?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/summary/<?=hash_id(1);?>'><?=get_phrase('show_budget_summary');?></a>)
     </div>
 </div>
 
@@ -61,24 +69,55 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan='19' style='text-align:center'>
-                            Expense account: <?=$loop_budget_items['expense_account']['expense_account_code'];?> - <?=$loop_budget_items['expense_account']['expense_account_name'];?>
+                        <th colspan='16' style='text-align:center'>
+                            <?=get_phrase('expense_account');?>: <?=$loop_budget_items['expense_account']['expense_account_code'];?> - <?=$loop_budget_items['expense_account']['expense_account_name'];?>
                         </th>
                     </tr>
                     <tr>
-                        <th>Track Number</th>
-                        <th>Description</th>
-                        <th>Total Cost</th>                        
-                        <th>Status</th>
+                        <th><?=get_phrase('action');?></th>
+                        <th><?=get_phrase('description');?></th>
+                        <th><?=get_phrase('total_cost');?></th>                        
+                        <th><?=get_phrase('status');?></th>
+                        <?php foreach($month_names_with_number_keys as $month_name){?>
+                            <th><?=$month_name;?></th>
+                        <?php }?>
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach($loop_budget_items['expense_items'] as $loop_expense_items){?>
+                <?php foreach($loop_budget_items['expense_items'] as $budget_item_id=>$loop_expense_items){?>
                     <tr>
-                        <td><?="<a href='".base_url()."budget_item/view/".hash_id($loop_expense_items['budget_item_id'],'encode')."' >".$loop_expense_items['budget_item_track_number']."</a>";?></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+                                    <?=get_phrase('action');?>
+                                <span class="caret"></span></button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review){ ?>
+                                    <li><?=list_table_edit_action('budget_item',$budget_item_id);?></li>
+                                    <li class="divider"></li>
+                                    <?php }?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review){ ?>
+                                    <li><?=list_table_delete_action('budget_item',$budget_item_id);?></li>
+                                    <?php }?>
+
+                                    <?php if(
+                                        (!$this->user_model->check_role_has_permissions('Budget_item','update') && 
+                                        !$this->user_model->check_role_has_permissions('Budget_item','delete')
+                                        ) ||  !$is_current_review
+
+                                    ){ 
+                                        echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
+                                    }?>
+
+                                </ul>
+                                </div>
+                        </td>
                         <td><?=$loop_expense_items['description']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
                         <td><?=$loop_expense_items['status']['status_name'];?></td>
+                        <?php foreach($month_names_with_number_keys as $month_number=>$month_name){?>
+                            <th><?=$loop_expense_items['month_spread'][$month_number]['amount'];?></th>
+                        <?php }?>
                     </tr>
                 <?php }?>
                 </tbody>

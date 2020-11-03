@@ -29,7 +29,7 @@ class Opening_fund_balance_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return ['system_opening_balance','income_account','status'];
+        return ['system_opening_balance','income_account','office_bank','status'];
     }
 
     public function detail_tables(){}
@@ -37,7 +37,7 @@ class Opening_fund_balance_model extends MY_Model{
     public function detail_multi_form_add_visible_columns(){}
 
     function detail_list_table_visible_columns(){
-        return ['opening_fund_balance_track_number','opening_fund_balance_name','income_account_name','opening_fund_balance_amount','status_name'];
+        return ['opening_fund_balance_track_number','opening_fund_balance_name','income_account_name','opening_fund_balance_amount','office_bank_name','status_name'];
     }
 
     function lookup_values_where(){
@@ -46,7 +46,20 @@ class Opening_fund_balance_model extends MY_Model{
         ];
     }
 
-    function transaction_validate_duplicates_columns(){
-        //return ['system_opening_balance','income_account'];
+    // function transaction_validate_duplicates_columns(){
+    //     return ['fk_system_opening_balance_id','fk_income_account_id'];
+    // }
+
+    function lookup_values()
+    {
+        $lookup_values = parent::lookup_values();
+
+        $this->read_db->select(array('office_bank_id','office_bank_name'));
+        $this->read_db->where(array('system_opening_balance_id'=>hash_id($this->id,'decode')));
+        $this->read_db->join('office','office.office_id=office_bank.fk_office_id');
+        $this->read_db->join('system_opening_balance','system_opening_balance.fk_office_id=office.office_id');
+        $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array();
+
+        return $lookup_values;
     }
 }

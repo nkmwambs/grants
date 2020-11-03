@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
- class Workplan_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+ class Workplan_model extends MY_Model 
  {
    public $table = 'workplan'; // you MUST mention the table name
 

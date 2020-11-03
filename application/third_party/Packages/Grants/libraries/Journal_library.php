@@ -43,15 +43,15 @@ class Journal_library extends Grants
     return $this->CI->journal_model->journal_navigation($office_id, $transacting_month);
   }
 
-  function financial_accounts(){
-    return $this->CI->journal_model->financial_accounts();
+  function financial_accounts($office_id){
+    return $this->CI->journal_model->financial_accounts($office_id);
   }
 
-  private function empty_journal_cells($account_type = 'income'){
+  private function empty_journal_cells($office_id, $account_type = 'income'){
     
     $spread_cells = '';
 
-    $financial_accounts = $this->CI->journal_model->financial_accounts();
+    $financial_accounts = $this->CI->journal_model->financial_accounts($office_id);
     
     for($i=0;$i<count($financial_accounts[$account_type]);$i++){
       $spread_cells .= "<td class='align-right'>0.00</td>";
@@ -60,9 +60,9 @@ class Journal_library extends Grants
     return $spread_cells; 
   }
 
-  function journal_spread($spread,$account_type = 'bank',$transaction_effect = 'income'){
+  function journal_spread($office_id, $spread,$account_type = 'bank',$transaction_effect = 'income'){
 
-    $financial_accounts = $this->CI->journal_model->financial_accounts();
+    $financial_accounts = $this->CI->journal_model->financial_accounts($office_id);
 
     $accounts = $transaction_effect == 'income'?$financial_accounts['income']:$financial_accounts['expense'];
 
@@ -73,7 +73,7 @@ class Journal_library extends Grants
       $spread_cells = "";
       
       // Fill up empty cells in spread when the account type is an expense type
-      $spread_cells .= $this->empty_journal_cells('income');
+      $spread_cells .= $this->empty_journal_cells($office_id,'income');
 
       foreach($accounts as $account_id => $account_code){
           $transacted_amount = 0;
@@ -105,12 +105,12 @@ class Journal_library extends Grants
           
       } 
        // Fill up empty cells in spread when the account type is an income type
-      $spread_cells .= $this->empty_journal_cells('expense');
-    }elseif($transaction_effect == 'contra'){
+      $spread_cells .= $this->empty_journal_cells($office_id,'expense');
+    }elseif($transaction_effect == 'cash_contra' || $transaction_effect == 'bank_contra'){
 
       $spread_cells = "";
-      $spread_cells .= $this->empty_journal_cells('income');
-      $spread_cells .= $this->empty_journal_cells('expense');
+      $spread_cells .= $this->empty_journal_cells($office_id,'income');
+      $spread_cells .= $this->empty_journal_cells($office_id,'expense');
 
     }
       

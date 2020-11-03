@@ -44,8 +44,8 @@ class Journal extends MY_Controller
     return $this->journal_library->journal_navigation($office_id, $transacting_month);
   }
 
-  function financial_accounts(){
-    return $this->journal_library->financial_accounts();
+  function financial_accounts($office_id){
+    return $this->journal_library->financial_accounts($office_id);
   }
 
 
@@ -53,7 +53,6 @@ class Journal extends MY_Controller
     if($this->action == 'view'){
       
       $journal_id = hash_id($this->id,'decode');
-
       $office_id = $this->get_office_data_from_journal($journal_id)->office_id;
       $transacting_month = $this->get_office_data_from_journal($journal_id)->journal_month;
 
@@ -65,13 +64,13 @@ class Journal extends MY_Controller
 
   private function result_array($office_id,$transacting_month,$journal_id,$office_bank_id = 0, $project_allocation_ids = []){
     $result = [
-      'office_bank_accounts'=>$this->grants_model->office_bank_accounts($office_id),
+      'office_bank_accounts'=>$this->grants_model->office_bank_accounts($office_id, $office_bank_id),
       'office_has_multiple_bank_accounts'=>$this->grants_model->office_has_multiple_bank_accounts($office_id),
       'transacting_month'=> $transacting_month,
       'office_id'=>$office_id,
       'office_name'=> $this->get_office_data_from_journal($journal_id)->office_name,
       'navigation'=>$this->journal_navigation($office_id, $transacting_month),
-      'accounts'=>$this->financial_accounts(),
+      'accounts'=>$this->financial_accounts($office_id),
       'month_opening_balance'=>$this->month_opening_bank_cash_balance($office_id,$transacting_month, $office_bank_id),
       'vouchers'=>$this->journal_records($office_id,$transacting_month,$project_allocation_ids, $office_bank_id)
      ];

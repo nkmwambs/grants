@@ -15,8 +15,9 @@ class MY_Model extends CI_Model
     }
 
     function lookup_tables(){
-      $table_name = $this->controller;
-      return $this->_derived_lookup_tables($table_name);
+      //$table_name = $this->controller;
+      //return $this->_derived_lookup_tables($table_name);
+      return list_lookup_tables();
     }
 
     function list_table_where(){
@@ -26,7 +27,28 @@ class MY_Model extends CI_Model
       // if(count($filter_where_array) > 0){
       //   $this->db->where($filter_where_array);
       // }
+
+      $this->_list_table_where_by_account_system();
       
+    }
+
+    function _list_table_where_by_account_system(){
+      $tables_with_account_system_relationship = tables_with_account_system_relationship();
+
+      $lookup_tables = $this->lookup_tables();
+
+      $account_system_table = '';
+
+      foreach($lookup_tables as $lookup_table){
+        if(in_array($lookup_table, $tables_with_account_system_relationship)){
+          $account_system_table = $lookup_table;
+          break;
+        }
+      }
+
+      if(!$this->session->system_admin && $account_system_table !== ''){
+        $this->db->where(array($account_system_table.'.fk_account_system_id'=>$this->session->user_account_system_id));
+      }
     }
 
     public function detail_tables(){
@@ -119,7 +141,11 @@ class MY_Model extends CI_Model
         if(strtolower($this->controller) !== 'account_system'){
           $this->grants->join_tables_with_account_system($lookup_table);
         }
-
+         
+        if ($this->db->field_exists($lookup_table.'_is_active', $lookup_table))
+        {
+            $this->read_db->where(array($lookup_table.'_is_active'=>1));
+        }
           $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
 
         }else{
