@@ -102,7 +102,7 @@ class Project_allocation_model extends MY_Model
     public function detail_list_table_hidden_columns(){}
 
     public function single_form_add_visible_columns(){
-      return array('project_name','office_name','project_allocation_is_active','project_allocation_amount');
+      return array('project_name','office_name','project_allocation_is_active');
     }
 
 
@@ -166,7 +166,7 @@ class Project_allocation_model extends MY_Model
    }
 
    function lookup_values(){
-    $lookup_values = [];
+    $lookup_values = parent::lookup_values();
 
     if(!$this->session->system_admin){
       $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
@@ -181,6 +181,7 @@ class Project_allocation_model extends MY_Model
       $project_id=hash_id($this->id,'decode');
       //$this->read_db->select(array('office.office_id as office_id','office.office_name as office_name'));
 
+      // Drop only centers
       if($this->config->item('drop_only_lowest_context_offices')){
         $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
         $this->read_db->where(array('context_definition_level'=>1));
