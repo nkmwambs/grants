@@ -37,7 +37,7 @@ class Opening_bank_balance_model extends MY_Model{
     public function detail_multi_form_add_visible_columns(){}
 
     function lookup_values(){
-        $lookup_values = [];
+        $lookup_values = parent::lookup_values();
         
         if($this->id !== null){
           
