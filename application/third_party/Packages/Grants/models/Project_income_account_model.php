@@ -52,4 +52,8 @@ class Project_income_account_model extends MY_Model{
     public function transaction_validate_duplicates_columns(){
         return ['fk_project_id','fk_income_account_id'];
       }
+
+    function multi_select_field(){
+        return "income_account";
+    }  
 }
