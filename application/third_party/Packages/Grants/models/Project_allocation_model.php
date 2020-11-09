@@ -23,6 +23,54 @@ class Project_allocation_model extends MY_Model
 
   function index(){}
 
+  function action_before_insert($post_array){
+    /**
+     * {"header":{"fk_project_id":"16","fk_office_id":["9"],"project_allocation_is_active":"1"}}
+     */
+
+
+
+    $office_ids = $post_array['header']['fk_office_id'];
+    $project_id = $post_array['header']['fk_project_id'];
+
+    $project_name = $this->db->get_where('project',array('project_id'=>$project_id))->row()->project_name;
+
+    if(is_array($office_ids) && !empty($office_ids)){
+      
+      $this->db->where_in('office_id',$office_ids);
+      $office_records = $this->db->get('office')->result_array();
+
+      $_office_ids = array_column($office_records,'office_id');
+      $office_names = array_column($office_records,'office_name');
+
+      $offices = array_combine($_office_ids,$office_names);
+
+
+      /**
+       * $offices = [
+       *  [1=>'ABC'],
+       *  [2=>'CDE']
+       * ];
+       */
+
+      foreach($office_ids as $office_id){
+        
+        $post_array['header']['project_allocation_name'][$office_id] = $project_name.' '.get_phrase('allocation_for').' '.$offices[$office_id];
+      }
+
+    }elseif(!is_array($office_ids)){
+
+      $this->db->where(array('office_id'=>$office_ids));
+      $office_record = $this->db->get('office')->row()->office_name;
+
+      //echo json_encode($offices);exit;
+      $post_array['header']['project_allocation_name'] = $project_name.' '.get_phrase('allocation_for').' '.$office_record;
+    }
+
+    //echo json_encode($post_array);exit;
+    return $post_array;
+  }
+
   function action_after_insert($post_array,$approval_id,$header_id){
 
     // Get the insert allocation account system id
@@ -102,7 +150,7 @@ class Project_allocation_model extends MY_Model
     public function detail_list_table_hidden_columns(){}
 
     public function single_form_add_visible_columns(){
-      return array('project_name','office_name','project_allocation_is_active');
+      return array('project_name','office_name');
     }
 
 
@@ -111,7 +159,7 @@ class Project_allocation_model extends MY_Model
         'project_name',
         'office_name',
         'project_allocation_is_active',
-        'project_allocation_amount',
+        //'project_allocation_amount',
         'project_allocation_extended_end_date'
       ];
     }
