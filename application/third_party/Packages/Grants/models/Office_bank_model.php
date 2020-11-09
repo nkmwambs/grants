@@ -54,7 +54,7 @@ class Office_bank_model extends MY_Model
 
     public function detail_list_table_visible_columns(){
       return ['office_bank_track_number','office_bank_name','office_bank_is_active',
-      'office_bank_account_number','office_name','bank_name','status_name','approval_name'];
+      'office_bank_account_number','office_name','bank_name','office_bank_is_default','status_name','approval_name'];
     }
 
     public function detail_list_table_hidden_columns(){}
