@@ -249,6 +249,7 @@ function feature_model_list_table_visible_columns(): Array {
       
         return array(
           'keys'=> $keys,
+          'fields_meta_data'=>$this->CI->grants_model->fields_meta_data_type_and_name($table),
           'table_body'=>$result,
           'table_name'=> $table,
           'has_details_table' => $this->CI->grants->check_if_table_has_detail_table($table),

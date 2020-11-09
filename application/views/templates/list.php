@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r(list_lookup_tables('expense_account'));
+//print_r($result);
 
 extract($result);
 
@@ -83,7 +83,8 @@ extract($result);
                               echo '<a href="'.base_url().$this->controller.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            //  }elseif($column !='approval_name' && $column!='status_name'){
+                            }elseif($fields_meta_data[$column] == 'int' || $fields_meta_data[$column] == 'decimal'){    
+                              echo number_format($row[$column],2);
                             }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
                             }
