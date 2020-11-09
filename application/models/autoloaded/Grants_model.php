@@ -1363,6 +1363,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
   function grants_get($table){
 
     $model = $table.'_model';
+    $library = $table.'_library';
 
     $this->load->model($model);
 
