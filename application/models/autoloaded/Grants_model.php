@@ -185,11 +185,27 @@ function generate_item_track_number_and_name($approveable_item){
   if(count($multi_select_field_values) > 0){
     
     unset($header[$multi_select_field_name]);
+
+    $onfly_created_multi_selects = [];
+
+    // Find any available on-fly multi select values from a model action_before_insert method
+    foreach($header as $column_name => $form_values){
+      if(is_array($form_values)){
+        $onfly_created_multi_selects[$column_name] = $form_values;
+      }
+    }
+
     $success = 0;
     $failed = 0;
     foreach($multi_select_field_values as $multi_select_field_value){
       
       $header[$multi_select_field_name] = $multi_select_field_value;
+
+      if(!empty($onfly_created_multi_selects)){
+        foreach($onfly_created_multi_selects as $_column_name => $_column_values){
+          $header[$_column_name] = $_column_values[$multi_select_field_value];
+        }
+      }
 
       $returned_validation_message = $this->add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail);
 
