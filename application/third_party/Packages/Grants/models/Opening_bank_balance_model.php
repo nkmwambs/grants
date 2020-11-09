@@ -41,7 +41,7 @@ class Opening_bank_balance_model extends MY_Model{
         
         if($this->id !== null){
           
-            $this->read_db->join('opening_bank_balance','opening_bank_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+            //$this->read_db->join('opening_bank_balance','opening_bank_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
             $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
             array('system_opening_balance_id'=>hash_id($this->id,'decode')))->result_array();
             
