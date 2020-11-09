@@ -499,6 +499,26 @@ function generate_item_track_number_and_name($approveable_item){
     return $this->db->table_exists($table)?$this->db->field_data($table):array();
   }
 
+  public function fields_meta_data_type_and_name($table_name){
+
+    $fields_meta_data = [];
+
+    $meta_data = $this->read_db->field_data($table_name);
+    $names = array_column($meta_data,'name');
+    $types = array_column($meta_data,'type');
+    $fields_meta_data = array_combine($names,$types);
+
+    foreach($fields_meta_data as $field_name => $field_type){
+      if(substr($field_name,0,3) =='fk_'){
+        $_field_name = substr($field_name,3,-3).'_name';
+        unset($fields_meta_data[$field_name]);
+        $fields_meta_data[$_field_name] = 'varchar';
+      }
+    }
+
+    return $fields_meta_data;
+  }
+
   /**
    * table_exists
    * 
