@@ -59,17 +59,20 @@ public $controller;
 
         // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
         // populate setup tables, add mandatory fields, create item approval flow and permissions
-        $this->system_setup_check();
+        //$this->system_setup_check();
 
         //$this->run_migrations();
         
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-             if(parse_url(base_url())['host'] == 'localhost'){
+             if(parse_url(base_url())['host'] == 'localhost' && $this->session->system_admin){
                 $this->grants->create_missing_system_files_from_yaml_setup(); 
               }
             
+              if($this->session->system_admin){
+                $this->system_setup_check();
+              }
               // Create table permissions
              //$this->grants_model->create_missing_page_access_permission();
             
