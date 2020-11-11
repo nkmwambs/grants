@@ -315,7 +315,8 @@ class Voucher extends MY_Controller
 
   function get_active_voucher_types($office_id){
     $account_system_id = $this->office_account_system($office_id)->account_system_id;
-    $voucher_types = $this->voucher_type_model->get_active_voucher_types($account_system_id);
+
+    $voucher_types = $this->voucher_type_model->get_active_voucher_types($account_system_id,$office_id);
 
     echo json_encode($voucher_types);
   }

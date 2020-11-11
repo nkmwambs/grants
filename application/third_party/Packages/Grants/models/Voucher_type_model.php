@@ -36,12 +36,20 @@ class Voucher_type_model extends MY_Model
 
   public function view(){}
 
-  function get_active_voucher_types($account_system_id){
-    $this->db->select(array('voucher_type_id','voucher_type_name','voucher_type_account_code','voucher_type_effect_code'));
-    $this->db->join('account_system','account_system.account_system_id=voucher_type.fk_account_system_id');
-    $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
-    $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
-    return $this->db->get_where('voucher_type',array('voucher_type_is_active'=>1,'fk_account_system_id'=>$account_system_id))->result_object();
+  function get_active_voucher_types($account_system_id, $office_id){
+
+    $count_office_banks = $this->read_db->get_where('office_bank',
+    array('fk_office_id'=>$office_id,'office_bank_is_active'=>1))->num_rows();
+
+    if($count_office_banks < 2){
+      $this->read_db->where_not_in('voucher_type_effect_code',['bank_to_bank_contra']);
+    }
+
+    $this->read_db->select(array('voucher_type_id','voucher_type_name','voucher_type_account_code','voucher_type_effect_code'));
+    $this->read_db->join('account_system','account_system.account_system_id=voucher_type.fk_account_system_id');
+    $this->read_db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    $this->read_db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+    return $this->read_db->get_where('voucher_type',array('voucher_type_is_active'=>1,'fk_account_system_id'=>$account_system_id))->result_object();
   }
 
   function voucher_type_requires_cheque_referencing($voucher_type_id){
