@@ -185,9 +185,20 @@
                             // Compute bank and cash running balances
                             $voucher_amount = array_sum(array_column($spread,'transacted_amount'));
 
+                            if($receiving_office_bank_id && isset($sum_bank_income[$receiving_office_bank_id])){
+                               
+                                $bank_income[$receiving_office_bank_id] = ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'bank_to_bank_contra')?$voucher_amount:0;
+                                $bank_expense[$receiving_office_bank_id] = 0;
+                               
+                                $sum_bank_income[$receiving_office_bank_id] = $sum_bank_income[$receiving_office_bank_id] + $bank_income[$receiving_office_bank_id];
+                                $sum_bank_expense[$receiving_office_bank_id] = $sum_bank_expense[$receiving_office_bank_id] + $bank_expense[$receiving_office_bank_id];
+                               
+                                $running_bank_balance[$receiving_office_bank_id] = $month_opening_balance['bank_balance'][$receiving_office_bank_id]['amount'] + ($sum_bank_income[$receiving_office_bank_id] - $sum_bank_expense[$receiving_office_bank_id]);
+                            }
+
                             if($office_bank_id && isset($sum_bank_income[$office_bank_id])){
                                 $bank_income[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
-                                $bank_expense[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'bank_contra'))?$voucher_amount:0;
+                                $bank_expense[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && ($voucher_type_transaction_effect == 'bank_contra' || $voucher_type_transaction_effect == 'bank_to_bank_contra')))?$voucher_amount:0;
                                 
                                 $sum_bank_income[$office_bank_id] = $sum_bank_income[$office_bank_id] + $bank_income[$office_bank_id];
                                 $sum_bank_expense[$office_bank_id] = $sum_bank_expense[$office_bank_id] + $bank_expense[$office_bank_id];
@@ -208,9 +219,28 @@
                        ?>
                         
                         <?php foreach($month_opening_balance['bank_balance'] as $bank_id => $bank_account){?>
-                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$bank_income[$bank_id]:0,2);?></td>
-                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$bank_expense[$bank_id]:0,2);?></td>
-                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$running_bank_balance[$bank_id]:0,2);?></td>
+                            <?php 
+                                $bank_inc = 0;
+                                $bank_exp = 0;
+                                $bank_bal = 0;    
+
+                                if($bank_id == $office_bank_id){
+                                    $bank_inc = $bank_income[$office_bank_id];
+                                    $bank_exp = $bank_expense[$office_bank_id];
+                                    $bank_bal = $running_bank_balance[$office_bank_id];
+                                }
+                                
+                                if($bank_id == $receiving_office_bank_id){
+                                    $bank_inc = $bank_income[$receiving_office_bank_id];
+                                    $bank_exp = $bank_expense[$receiving_office_bank_id];
+                                    $bank_bal = $running_bank_balance[$receiving_office_bank_id];
+                                }
+                            ?>
+
+                            <td class='align-right'><?=number_format($bank_inc,2);?></td>
+                            <td class='align-right'><?=number_format($bank_exp,2);?></td>
+                            <td class='align-right'><?=number_format($bank_bal,2);?></td>
+                        
                         <?php }?>
 
                         <?php foreach($month_opening_balance['cash_balance'] as $cash_id => $cash_account){?>
