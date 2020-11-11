@@ -5,7 +5,7 @@ $('.form-control').keydown(function(){
 });
 
 $(".save, .save_new").on('click',function(ev){
-  
+
   var elem = $(this);
 
   //Check if all required fields are filled

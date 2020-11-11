@@ -61,6 +61,12 @@ core:
 grants:
   
   tables:
+
+    cash_recipient_account:
+      lookup_tables:
+        - voucher
+        - office_bank
+        - office_cash
   
     budget_review_count:
       lookup_tables:

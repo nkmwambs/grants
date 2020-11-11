@@ -68,16 +68,18 @@
 		<?php
 			if(file_exists(VIEWPATH.$this->controller.DS.$this->session->user_account_system.DS.'js_script.php')){
 				include VIEWPATH.$this->controller.DS.$this->session->user_account_system.DS.'js_script.php';
+			}elseif(file_exists(VIEWPATH.$this->controller.DS.'js_script.php')){
+					include VIEWPATH.$this->controller.DS.'js_script.php';
 			}elseif(
 				file_exists(VIEWPATH.'templates'.DS.$this->action.'_script.php')
 				&& file_exists(VIEWPATH.$this->controller.DS.'js_script.php')
 			){
 				include VIEWPATH.'templates'.DS.$this->action.'_script.php';
 				include VIEWPATH.$this->controller.DS.'js_script.php';
-			}elseif(file_exists(VIEWPATH.'templates'.DS.$this->action.'_script.php')){
+			}
+			
+			if(file_exists(VIEWPATH.'templates'.DS.$this->action.'_script.php')){
 				include VIEWPATH.'templates'.DS.$this->action.'_script.php';
-			}elseif(file_exists(VIEWPATH.$this->controller.DS.'js_script.php')){
-				include VIEWPATH.$this->controller.DS.'js_script.php';
 			}
 		?>
 </body>
