@@ -62,20 +62,20 @@ class Journal_model extends MY_Model
       }
     }
 
-    // Get all office banks 
-    // $this->read_db->select(array('office_bank_id','office_bank_name'));
-    // $office_banks_obj = $this->read_db->get_where('office_bank',array('fk_office_id'=>$office_id));
+    // Get all office banks - Fill up banks without opening system balance
+    $this->read_db->select(array('office_bank_id','office_bank_name'));
+    $office_banks_obj = $this->read_db->get_where('office_bank',array('fk_office_id'=>$office_id));
 
-    // if($office_banks_obj->num_rows() > 0){
-    //   $office_banks = $office_banks_obj->result_array();
+    if($office_banks_obj->num_rows() > 0){
+      $office_banks = $office_banks_obj->result_array();
 
-    //   foreach($office_banks as $office_bank){
-    //     if(!array_key_exists($office_bank['office_bank_id'],$balances)){
-    //       $balances[$office_bank['office_bank_id']] = ['account_name'=>$office_bank['office_bank_name'],'amount'=>0];
-    //     }
-    //   }
+      foreach($office_banks as $office_bank){
+        if(!array_key_exists($office_bank['office_bank_id'],$balances)){
+          $balances[$office_bank['office_bank_id']] = ['account_name'=>$office_bank['office_bank_name'],'amount'=>0];
+        }
+      }
 
-    // }
+    }
     
     return $balances;
   }
