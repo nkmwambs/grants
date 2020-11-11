@@ -106,7 +106,7 @@ class Journal_library extends Grants
       } 
        // Fill up empty cells in spread when the account type is an income type
       $spread_cells .= $this->empty_journal_cells($office_id,'expense');
-    }elseif($transaction_effect == 'cash_contra' || $transaction_effect == 'bank_contra'){
+    }elseif($transaction_effect == 'cash_contra' || $transaction_effect == 'bank_contra' || $transaction_effect == 'bank_to_bank_contra'){
 
       $spread_cells = "";
       $spread_cells .= $this->empty_journal_cells($office_id,'income');

@@ -376,13 +376,27 @@ class Journal_model extends MY_Model
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
       
       $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
+      // $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
+      // 'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
+      // 'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date','voucher_is_reversed'));
+      // $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
+      // $this->db->select(array('voucher_type_account_code'));
+      // $this->db->select(array('voucher_type_effect_code'));
+      // $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id','fk_office_cash_id'));
+
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
       'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
-      'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date','voucher_is_reversed'));
+      'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date',
+      'voucher_is_reversed'));
       $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
       $this->db->select(array('voucher_type_account_code'));
       $this->db->select(array('voucher_type_effect_code'));
-      $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id','fk_contra_account_id','fk_office_bank_id','fk_office_cash_id'));
+      $this->db->select(array('voucher_detail_total_cost','fk_expense_account_id','fk_income_account_id',
+      'fk_contra_account_id','voucher.fk_office_bank_id as fk_office_bank_id',
+      'voucher.fk_office_cash_id as fk_office_cash_id',
+      'cash_recipient_account.fk_office_bank_id as receiving_office_bank_id',
+      'cash_recipient_account.fk_office_cash_id as receiving_office_cash_id'
+      ));
       
       $this->db->where(array('voucher_date >='=> $month_start_date,'voucher_date <='=> $month_end_date,'fk_office_id'=>$office_id));
       
@@ -391,14 +405,16 @@ class Journal_model extends MY_Model
       $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');  
       $this->db->join('voucher_detail','voucher_detail.fk_voucher_id=voucher.voucher_id');
       
+      $this->db->join('cash_recipient_account','cash_recipient_account.fk_voucher_id=voucher.voucher_id','LEFT');
+
       if(count($project_allocation_ids)>0 && $office_bank_id > 0){
         $this->db->group_start();
           $this->db->where_in('fk_project_allocation_id',$project_allocation_ids);
-          $this->db->or_where('fk_office_bank_id',$office_bank_id);
+          $this->db->or_where('voucher.fk_office_bank_id',$office_bank_id);
         $this->db->group_end();
         
       }elseif(count($project_allocation_ids) == 0 && $office_bank_id > 0){
-        $this->db->where('fk_office_bank_id',$office_bank_id);
+        $this->db->where('voucher.fk_office_bank_id',$office_bank_id);
       }
   
       $result = $this->db->order_by('voucher_id','ASC')->get('voucher')->result_array();
@@ -437,6 +453,8 @@ class Journal_model extends MY_Model
           'cheque_number'=>$voucher_cheque_number,
           'office_bank_id'=>$fk_office_bank_id,
           'office_cash_id'=>$fk_office_cash_id,
+          'receiving_office_bank_id'=> $receiving_office_bank_id,
+          'receiving_office_cash_id' => $receiving_office_cash_id,
           'voucher_is_reversed'=>$voucher_is_reversed,
           'spread'=>$this->get_voucher_spread($raw_array_of_vouchers,$voucher_id)
 
