@@ -345,11 +345,25 @@ $("#cash_account").on('change',function(){
     populate_cash_transfer_recipient($(this));
 });
 
-$("#bank").on("change",function(){
+// function prevent_bank_change_when_voucher_has_detail_row(){
+//     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
+//     var count_body_rows = tbl_body_rows.length;
+    
+//     if(count_body_rows > 0){
+//         alert("You can't change a bank account when voucher has detail rows");
+//         return false;
+//     }else{
+//         return true;
+//     }
+    
+// }
+
+$("#bank").on("change",function(ev){
 
     // Toogle Disable when a bank account is selected or not
     if($(this).val() != ''){
         $("#cheque_number").removeAttr('disabled');
+        $("#cheque_number").removeAttr('readonly');
     }else{
         $("#cheque_number").val("");
         $("#cheque_number").prop('disabled','disabled');
@@ -359,8 +373,6 @@ $("#bank").on("change",function(){
     if(!$("#cash_recipient_account").closest('span').hasClass('hidden')){
         populate_cash_transfer_recipient($(this));
     }
-    
-
 });
 
 function checkIfChequeIsValid(office,bank,cheque_number){
@@ -751,6 +763,18 @@ function insertRow(response_is_contra = false){
 }
 
 $(".btn-insert").on('click',function(){
+
+    
+    $('.account_fields').each(function(i,elem){
+        //$(elem).attr("style", "pointer-events: none;");
+        if($(elem).val() != ''){
+            if($(elem).is('select')){
+                $(elem).find('option:not(:selected)').prop('disabled', true);
+            }else{
+                $(elem).prop('readonly','readonly');
+            }
+        }
+    });
     
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
 
@@ -1037,8 +1061,8 @@ function saveVoucher(clicked_btn){
             type:"POST",
             data:data,
             success:function(response){
-                //alert(response);
-                console.log(response);return false;
+                alert(response);
+                //console.log(response);return false;
                 if(clicked_btn.hasClass('btn-save')){
                     location.href = document.referrer 
                 }else{

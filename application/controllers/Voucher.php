@@ -611,16 +611,16 @@ class Voucher extends MY_Controller
     }
   }
 
-  function create_cash_recipient_account_record($voucher_id,$voucher_header_record, $cash_recipient_account){
+  function create_cash_recipient_account_record($voucher_id,$post){
 
     $cash_recipient_account_data['cash_recipient_account_name'] = $this->grants_model->generate_item_track_number_and_name('cash_recipient_account')['cash_recipient_account_name'];
     $cash_recipient_account_data['cash_recipient_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('cash_recipient_account')['cash_recipient_account_track_number'];
     $cash_recipient_account_data['fk_voucher_id'] = $voucher_id;
 
-    if($voucher_header_record['fk_office_bank_id'] > 0){
-      $cash_recipient_account_data['fk_office_bank_id'] = $cash_recipient_account;
-    }elseif($voucher_header_record['fk_office_cash_id'] > 0){
-      $cash_recipient_account_data['fk_office_cash_id'] = $cash_recipient_account;
+    if($post['fk_office_bank_id'] > 0){
+      $cash_recipient_account_data['fk_office_bank_id'] = $post['cash_recipient_account'];
+    }elseif($post['fk_office_cash_id'] > 0){
+      $cash_recipient_account_data['fk_office_cash_id'] = $post['cash_recipient_account'];
     }
     
     $cash_recipient_account_data['cash_recipient_account_created_date'] = date('Y-m-d');
@@ -630,12 +630,12 @@ class Voucher extends MY_Controller
     $cash_recipient_account_data['fk_approval_id'] = $this->grants_model->insert_approval_record('cash_recipient_account');
     $cash_recipient_account_data['fk_status_id'] = $this->grants_model->initial_item_status('cash_recipient_account');
 
-    $this->read_db->insert('cash_recipient_account',$cash_recipient_account_data);
+    $this->write_db->insert('cash_recipient_account',$cash_recipient_account_data);
   }
 
   function insert_new_voucher(){
 
-    echo json_encode($this->input->post());exit;
+    //echo json_encode($this->input->post());exit;
 
     $header = [];
     $detail = [];
@@ -687,8 +687,8 @@ class Voucher extends MY_Controller
 
     $header_id = $this->write_db->insert_id();
 
-    if($this->input->post('cash_recipient_account')){
-      $this->create_cash_recipient_account_record($header_id, $header,$this->input->post('cash_recipient_account'));
+    if($this->input->post('cash_recipient_account') !== null){
+      $this->create_cash_recipient_account_record($header_id, $this->input->post());
     }
     
 
