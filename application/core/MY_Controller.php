@@ -182,7 +182,7 @@ class MY_Controller extends CI_Controller
 
     $render_model_result = 'render_'.$this->action.'_page_data';
 
-    if($this->action == 'list' || $this->action == 'view'){
+    if($this->action == 'list' || $this->action == 'view' || $this->action == 'multi_row_add'){
 
         if(!$this->render_data_from_model($render_model_result)){
           // Render from default API
@@ -347,6 +347,13 @@ class MY_Controller extends CI_Controller
     $this->id = $id;
     $this->crud_views();
   }
+
+  function multi_row_add($id = null):Void{
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create');
+    $this->id = $id;
+    $this->crud_views();
+  }
+
 /**
    * delete() 
    * This method is an entry method for delete action. It loads user 

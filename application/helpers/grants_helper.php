@@ -136,8 +136,10 @@ if( ! function_exists('list_table_decline_action')){
 }
 
 if( ! function_exists('add_record_button') ){
-	function add_record_button($table_controller,$has_details,$id = null ,$has_listing = false){
+	function add_record_button($table_controller,$has_details,$id = null ,$has_listing = false, $is_multi_row = false){
 		$add_view = $has_listing?"multi_form_add":"single_form_add";
+		$add_view = $is_multi_row?"multi_row_add":$add_view;
+		
 		$link = "";
 		$CI =& get_instance();
 
