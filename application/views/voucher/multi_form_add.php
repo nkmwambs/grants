@@ -1049,9 +1049,23 @@ function requestIdCell(value = 0){
     return "<td><input name='fk_request_detail_id[]' type='number' class='form-control body-input number-fields request_number' value='" + value + "' name='' id='' readonly='readonly'/></td>";
 }
 
+function disable_elements_in_hidden_span(){
+    var elem_in_hidden_span = $('span.hidden .account_fields');
+
+    $.each(elem_in_hidden_span,function(i,elem){
+        if(!$(elem).attr('disabled')){
+            $(elem).prop('disabled','disabled');
+        }
+    });
+}
+
 function saveVoucher(clicked_btn){
     var url = "<?=base_url();?>Voucher/insert_new_voucher";
     var data = $("#frm_voucher").serializeArray();
+
+    // Make all select or inputs in hidden span be disabled
+    disable_elements_in_hidden_span();
+
 
     if(!check_required_fields()){
         alert('Empty required fields exists');
