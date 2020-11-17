@@ -3,7 +3,7 @@
 //print_r($result);
 
 extract($result);
-
+//echo $is_multi_row;
 ?>
 
 <div class="row">
@@ -19,7 +19,7 @@ extract($result);
 
     <?php
     if($show_add_button && $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create')){
-      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
+      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing, $is_multi_row);
     }
     ?>
     <?=Widget_base::load('position','position_1');?>

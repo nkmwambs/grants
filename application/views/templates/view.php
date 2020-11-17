@@ -144,6 +144,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
     if( isset($result['detail']) && count($result['detail']) > 0){
       //print_r($result['detail']);
       foreach ($result['detail'] as $detail_table_name => $details) {
+        //print_r(array_keys($details));
         extract($details);
         //echo $detail_table_name;
         $primary_key_column = array_shift($keys);
@@ -156,7 +157,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
             
             <?php
               if($show_add_button){
-                echo add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing);
+                echo add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing, $is_multi_row);// $details['is_multi_row']
               }
             ?>
           </div>

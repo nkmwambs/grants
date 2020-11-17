@@ -11,7 +11,7 @@
 class Project_allocation_model extends MY_Model 
 {
   public $table = 'project_allocation'; // you MUST mention the table name
-
+  public $is_multi_row = true;
 
   function __construct(){
     parent::__construct();

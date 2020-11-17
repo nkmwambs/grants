@@ -553,12 +553,13 @@ function detail_list_output(String $table): Array {
         $detail_tables = $this->CI->grants->detail_tables($table);
     
         $result['detail'] = array();
-    
+        //is_multi_row
         if($has_details){
             $detail = array();
             foreach ($detail_tables as $detail_table) {
                 $detail[$detail_table] = $this->detail_list_output($detail_table);
                 $detail[$detail_table]['fields_meta_data'] = $this->CI->grants_model->fields_meta_data_type_and_name($detail_table);
+                $detail[$detail_table]['is_multi_row'] = $this->CI->grants->check_if_table_is_multi_row($detail_table);
             }
     
             $result['detail'] = $detail;

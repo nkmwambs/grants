@@ -12,6 +12,7 @@ class Budget_model extends MY_Model
 {
   public $table = 'budget'; // you MUST mention the table name
   public $dependant_table = '';
+  public $is_multi_row = false;
 
   function __construct(){
     parent::__construct();

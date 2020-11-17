@@ -816,6 +816,18 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
     return $has_detail_table;
   }
 
+  function check_if_table_is_multi_row(String $table_name = ""){
+
+    $table = $table_name == ""?$this->controller:$table_name;
+    $model = $this->load_detail_model($table_name);
+
+    if(property_exists($this->CI->$model,'is_multi_row')){
+      return $this->CI->$model->is_multi_row;
+    }else{
+      return false;
+    }
+  }
+
   /**
    * check_if_table_has_detail_listing
    * 
