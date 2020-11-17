@@ -113,21 +113,21 @@
                     <div class='form-group'>
                         <label class='col-xs-1'><?=get_phrase('payee/_vendor');?></label>
                         <div class='col-xs-11'>
-                            <input type='text' name='voucher_vendor' class='form-control required' />
+                            <input type='text' id='voucher_vendor' name='voucher_vendor' class='form-control required' />
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <label class='col-xs-1'><?=get_phrase('address');?></label>
                         <div class='col-xs-11'>
-                            <input type='text' name='voucher_vendor_address' class='form-control required' />
+                            <input type='text' id='voucher_vendor_address' name='voucher_vendor_address' class='form-control required' />
                         </div>
                     </div>
 
                     <div class='form-group'>
                         <label class='col-xs-1'><?=get_phrase('description');?></label>
                         <div class='col-xs-11'>
-                            <input type='text' name='voucher_description' class='form-control required' />
+                            <input type='text' id='voucher_description' name='voucher_description' class='form-control required' />
                         </div>
                     </div>
 
@@ -466,19 +466,20 @@ function computeCurrentTransactingDate(office_id){
 }
 
 $("#office").on('change',function(){
-    resetVoucher();
+    var clear_office_selector = false;
+    resetVoucher(clear_office_selector);
+
+    //console.log($(this).val());
 
      if($(this).val() == "") {
          return false;
      }
     
     if($(".split_screen").hasClass('col-xs-6')) load_approved_requests();
-    //alert('Hello');
+
     computeNextVoucherNumber($(this).val());
 
     computeCurrentTransactingDate($(this).val());
-
-    //getOfficeBanks($(this).val());
 
     getActiveVoucherTypes();
 });
@@ -677,36 +678,39 @@ function remove_voucher_detail_rows(min_rows = 0){
     }
 }
 
-function resetVoucher(){
-    remove_voucher_detail_rows();
-    // var tbl_body_rows = $("#tbl_voucher_body tbody tr");
+function reset_account_fields(){
+    $('.account_fields').each(function(i,elem){
+        $(elem).val('');
+        $(elem).prop('disabled','disabled');
+        $(elem).closest('span').addClass('hidden');
+    });
+}
 
-    // // Remove extra rows
-    // var count_body_rows = tbl_body_rows.length;
-    
-    // //alert(count_body_rows);
-    
-    // if(count_body_rows > 1){
-    //     $.each(tbl_body_rows,function(i,el){
-    //        // if(i != 0){
-    //             $(el).remove();
-    //         //}
-    //     });
-    // }
-
-    // Empty the cells
-    $(".body-input").val(null);
-    $(".number-fields").val(0);
-    $("#bank").html('<option value="">Select a bank</option>');
-
+function reset_particulars_fields(){
     $("#voucher_vendor").val("");
     $("#voucher_vendor_address").val("");
     $("#voucher_description").val("");
-    $("#transaction_date").val("");
-    $("#voucher_number").val("");
+}
 
-    $("#voucher_type").val("");
-    $("#voucher_type").prop('disabled','disabled');;    
+function reset_voucher_identity_fields(clear_office_selector){
+    //console.log($("#office").val());
+    if(clear_office_selector){
+        $("#transaction_date").val("");
+        $("#voucher_number").val('');
+        $("#office").val('');
+        $("#voucher_type").val("");
+        $("#voucher_type").prop('disabled','disabled'); 
+    }
+      
+}
+
+function resetVoucher(clear_office_selector = true){
+    remove_voucher_detail_rows();
+    reset_account_fields();
+    reset_particulars_fields();
+    reset_voucher_identity_fields(clear_office_selector);
+    hide_buttons();
+    
 }
 
 $(".btn-reset").on('click',function(){
