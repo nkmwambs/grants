@@ -22,11 +22,11 @@ class Bank_library extends Grants
 
   }
 
-  // function change_field_type(){
-  //   return [
-  //     'bank_is_active'=>['field_type'=>'text']
-  //   ];
-  // }
+  function change_field_type(){
+    return [
+      'budget_year'=>['field_type'=>'text']
+    ];
+  }
 
   
 }

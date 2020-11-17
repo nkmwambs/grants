@@ -84,7 +84,8 @@ extract($result);
                             }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
                             }elseif($fields_meta_data[$column] == 'int' || $fields_meta_data[$column] == 'decimal'){    
-                              echo number_format($row[$column],2);
+                              // Defense code to ignore non numeric values when lookup values method changes value type from numeric to non numeric
+                              echo is_numeric($row[$column])?number_format($row[$column],2):$row[$column];
                             }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
                             }

@@ -503,6 +503,8 @@ function generate_item_track_number_and_name($approveable_item){
 
     $fields_meta_data = [];
 
+    $feature_library = $table_name.'_library';
+
     $meta_data = $this->read_db->field_data($table_name);
     $names = array_column($meta_data,'name');
     $types = array_column($meta_data,'type');
@@ -513,6 +515,12 @@ function generate_item_track_number_and_name($approveable_item){
         $_field_name = substr($field_name,3,-3).'_name';
         unset($fields_meta_data[$field_name]);
         $fields_meta_data[$_field_name] = 'varchar';
+      }
+
+      if( method_exists($this->{$feature_library},'change_field_type') && 
+      array_key_exists($field_name,$this->{$feature_library}->change_field_type()))
+      {
+        $fields_meta_data[$field_name] = $this->{$feature_library}->change_field_type()[$field_name]['field_type'];
       }
     }
 
