@@ -1099,7 +1099,7 @@ $(".btn-save").on('click',function(){
 $(".btn-save-new").on('click',function(){
     saveVoucher($(this));
 
-    window.location.reload();
+    //window.location.reload();
 });
 
 function check_required_fields(){
