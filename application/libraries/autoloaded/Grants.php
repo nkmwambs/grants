@@ -1378,7 +1378,37 @@ function single_form_add_output($parent_record_id = ""){
 
 }
 
+function multi_row_add_output(){
+  //Parent record happens to be present when adding a record in reference to another e.g. add opening cash balance in reference to system opening balance
+  //Find out why the argument $table_name carries a value of 0 from MY_Controller result method: Answer is on line 145 in MY_Controller [ $this->$lib->$action($this->id);]
+  $table = $this->controller;
+  
+  // Insert appove item, approval  flow and status record if either in not existing
+  $this->table_setup(strtolower($table));
 
+  if($this->CI->input->post()){
+
+    $model = $this->current_model;
+
+    if(method_exists($this->CI->$model,'add')){
+       echo $this->CI->$model->add();
+     }else{
+      echo $this->CI->grants_model->add();
+    }
+
+  }else{
+    // Adds mandatory fields if not present in the current table
+    $this->CI->grants_model->mandatory_fields($table);
+
+    $visible_columns = $this->CI->grants_model->single_form_add_visible_columns();
+    $fields = $this->add_form_fields($visible_columns);//$this->single_form_add_query();
+
+    return array(
+      'fields'=> $fields
+    );
+  }
+
+}
 
 function table_setup($table){
   $this->CI->grants_model->mandatory_fields($table);
