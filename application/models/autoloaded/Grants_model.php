@@ -229,6 +229,12 @@ function generate_item_track_number_and_name($approveable_item){
 
 
   function add_inserts($header_record_requires_approval,$detail_records_require_approval,$post_has_detail,$header,$detail = []){
+    
+    $initial_status = $this->initial_item_status($this->controller);
+    
+    // Create the approval ticket if required by the header record
+    $approval_id  = $this->insert_approval_record(strtolower($this->controller));
+
     $this->write_db->trans_begin();
     
     $approval = array();
@@ -242,9 +248,6 @@ function generate_item_track_number_and_name($approveable_item){
         array($this->session->master_table.'_id'=>$decoded_hash_id))->row()->fk_approval_id;
 
     }
-
-    // Create the approval ticket if required by the header record
-    $approval_id  = $this->insert_approval_record(strtolower($this->controller));
 
     // This array will hold the array with values for header record insert
     $header_columns = array();
@@ -262,7 +265,7 @@ function generate_item_track_number_and_name($approveable_item){
       $header_columns['fk_'.strtolower($this->session->master_table).'_id'] = hash_id($this->id,'decode');
     }
 
-    $header_columns['fk_status_id'] = $this->initial_item_status($this->controller);
+    $header_columns['fk_status_id'] = $initial_status;
 
     $header_columns['fk_approval_id'] = $approval_id;
 
@@ -1640,6 +1643,8 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   function initial_item_status($table_name = ""){
 
+    //$this->db->reset_query();
+    
     $table = $table_name == "" ? $this->controller : $table_name;
 
     $approveable_item = $this->db->get_where('approve_item',
@@ -1650,8 +1655,9 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
     if($approveable_item->num_rows() > 0 ){
       $approveable_item_id = $approveable_item->row()->approve_item_id;
       $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+      //$this->db->join('account_system','account_system.account_system_id=approval_flow.fk_account_system_id');
       $initial_status = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id,
-      'status_approval_sequence'=>1));
+      'status_approval_sequence'=>1));//,'fk_account_system_id'=>$this->session->user_account_system_id
 
       if($initial_status->num_rows() > 0 ){
           $status_id = $initial_status->row()->status_id;

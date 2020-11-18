@@ -476,7 +476,8 @@ function get_max_approval_status_id(String $approveable_item):Int{
     //print_r($max_status_approval_sequence); exit();
 
     $max_status_id = $this->db->get_where('status',
-    array('status_approval_sequence'=>$max_status_approval_sequence,'approve_item_name'=>$approveable_item))->row()->status_id;
+    array('status_approval_sequence'=>$max_status_approval_sequence,
+    'approve_item_name'=>$approveable_item))->row()->status_id;//'fk_account_system_id'=>$this->session->user_account_system_id
   
   }elseif(in_array($approveable_item,$this->config->item('table_that_dont_require_history_fields'))){
     // Nothing to do
@@ -510,6 +511,58 @@ function is_max_approval_status_id(String $approveable_item,Int $status_id):Bool
   }
 
   return $is_max_status_id;
+}
+
+function get_min_approval_status_id(String $approveable_item):Int{
+  $min_status_id = 0;
+
+  //https://codeigniter.com/userguide3/database/query_builder.html
+  $this->db->reset_query();
+  //Get the maximum status_approval_sequence of an approveable item
+  $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+  $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
+  
+  $min_status_approval_sequence_obj = $this->db->select_min('status_approval_sequence')
+  ->get_where('status',array('approve_item_name'=>$approveable_item));
+
+  if($min_status_approval_sequence_obj->num_rows() >0 && 
+    $min_status_approval_sequence_obj->row()->status_approval_sequence > 0
+    ){
+    // Get the status_id
+    $min_status_approval_sequence = $min_status_approval_sequence_obj->row()->status_approval_sequence;
+    $this->db->select('status_id');
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+    //$this->db->join('account_system','account_system.account_system=approval_flow.fk_account_system_id');
+    $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
+
+    //print_r($max_status_approval_sequence); exit();
+
+    $min_status_id = $this->db->get_where('status',
+    array('status_approval_sequence'=>$min_status_approval_sequence,
+    'approve_item_name'=>$approveable_item))->row()->status_id;//'fk_account_system_id'=>$this->session->user_account_system_id
+  
+  }elseif(in_array($approveable_item,$this->config->item('table_that_dont_require_history_fields'))){
+    // Nothing to do
+  }else{
+    $message = "You have no initial status set for the feature ".$approveable_item.". Please check if all approval workflow related tables are correctly set</br>";
+
+    show_error($message,500,'An Error was Encountered');
+  }
+  //print_r($max_status_id);exit;
+  return $min_status_id;
+ 
+}
+
+function is_min_approval_status_id(String $approveable_item,Int $status_id):Bool{
+  $is_min_status_id = false;
+  
+  $min_status_id = $this->get_min_approval_status_id($approveable_item);
+
+  if($status_id == $min_status_id){
+    $is_min_status_id = true;
+  }
+
+  return $is_min_status_id;
 }
 
 /**

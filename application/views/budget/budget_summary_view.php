@@ -1,4 +1,8 @@
 <?php
+    //print_r($this->general_model->is_min_approval_status_id('budget',176));
+    //print_r($result);
+    //print_r($this->grants_model->initial_item_status('budget'));
+    //echo $this->session->user_account_system_id;
     extract($result);
 ?>
 

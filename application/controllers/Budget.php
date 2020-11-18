@@ -56,7 +56,8 @@ class Budget extends MY_Controller
   }
 
   function budget_office(){
-    $this->db->select(array('office_id','office_name','office_code','budget_year','budget_tag_id','budget_tag_name'));
+    $this->db->select(array('office_id','office_name','office_code','budget_year',
+    'budget_tag_id','budget_tag_name','budget.fk_status_id as status_id'));
     $this->db->join('office','office.office_id=budget.fk_office_id'); 
     $this->db->join('budget_tag','budget_tag.budget_tag_id=budget.fk_budget_tag_id');
     $budget_office = $this->db->get_where('budget',
@@ -73,12 +74,14 @@ class Budget extends MY_Controller
     $office_id = 0;
     $office_name = "";
     $budget_tag_name = "";
+    $budget_status_id = 0;
     
     if(isset($budget_office->office_id)){
       $office_id = $budget_office->office_id;
       $budget_year = $budget_office->budget_year;
       $office_name = $budget_office->office_name;
       $budget_tag_name = $budget_office->budget_tag_name;
+      $budget_status_id = $budget_office->status_id;
     }
 
     $this->db->select(array('funder_id','funder_name','project_allocation_id','project_allocation_name'));
@@ -99,6 +102,8 @@ class Budget extends MY_Controller
     $data['current_year'] = $budget_year;
     $data['office'] = $office_name;
     $data['budget_tag'] = $budget_tag_name;
+    $data['status_id'] = $budget_status_id;
+    
 
     return $data;
   }
