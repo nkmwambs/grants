@@ -58,7 +58,9 @@
 	$config['submit_mfr_without_controls']=true;
 
 	//Budget configs
-	$config['budget_review_buffer_months'] = 3;
+	$config['size_in_months_of_a_budget_review_period'] = 3;
+	$config['number_of_month_to_start_budget_review_before_close_of_review_period'] = 1; // Should not exceed $config['size_in_months_of_a_budget_review_period']
+	$config['maximum_review_count'] = 4;
 
 	// Journal/ MFR Config
 	$config['allow_a_bank_to_be_linked_to_many_projects'] = true;

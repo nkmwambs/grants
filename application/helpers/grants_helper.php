@@ -550,12 +550,13 @@ if(!function_exists('financial_year_quarter_months')){
 	}
 }
 
-if(!function_exists('budget_review_buffer_month')){
-	function budget_review_buffer_month($current_month){
+//Formerly as budget_review_buffer_month
+if(!function_exists('month_after_adding_size_of_budget_review_period')){
+	function month_after_adding_size_of_budget_review_period($current_month){
 
 		$CI =& get_instance();
 
-		$current_month_with_buffer = $current_month + $CI->config->item('budget_review_buffer_months');
+		$current_month_with_buffer = $current_month + $CI->config->item('size_in_months_of_a_budget_review_period');
 
 		if($current_month_with_buffer > 12){
 
