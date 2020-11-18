@@ -11,7 +11,7 @@
 class Project_allocation_model extends MY_Model 
 {
   public $table = 'project_allocation'; // you MUST mention the table name
-  public $is_multi_row = true;
+  public $is_multi_row = false;
 
   function __construct(){
     parent::__construct();
@@ -150,7 +150,7 @@ class Project_allocation_model extends MY_Model
     public function detail_list_table_hidden_columns(){}
 
     public function single_form_add_visible_columns(){
-      return array('project_name','office_name');
+      return array('project_name','office_name');//project_allocation_amount
     }
 
 
