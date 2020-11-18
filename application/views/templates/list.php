@@ -7,8 +7,8 @@ $current_month = 9;
 //$a = financial_year_quarter_months(month_after_adding_size_of_budget_review_period($current_month));
 //print_r(end($a['months_in_quarter']));
 
-$lookup_values = $this->budget_model->lookup_values();
-print_r($lookup_values['budget_tag']);
+// $lookup_values = $this->budget_model->lookup_values();
+// print_r($lookup_values['budget_tag']);
 
 extract($result);
 //echo $is_multi_row;
