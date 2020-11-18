@@ -535,8 +535,6 @@ function get_min_approval_status_id(String $approveable_item):Int{
     //$this->db->join('account_system','account_system.account_system=approval_flow.fk_account_system_id');
     $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
 
-    //print_r($max_status_approval_sequence); exit();
-
     $min_status_id = $this->db->get_where('status',
     array('status_approval_sequence'=>$min_status_approval_sequence,
     'approve_item_name'=>$approveable_item))->row()->status_id;//'fk_account_system_id'=>$this->session->user_account_system_id
