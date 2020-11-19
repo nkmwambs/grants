@@ -43,7 +43,7 @@ class Budget extends MY_Controller
     
     foreach($result_raw as $detail){
       
-      $result[$detail->income_account_id]['income_account'] = ['income_account_name'=>$detail->income_account_name,'income_account_code'=>$detail->income_account_code];
+      $result[$detail->income_account_id]['income_account'] = ['income_account_id'=>$detail->income_account_id,'income_account_name'=>$detail->income_account_name,'income_account_code'=>$detail->income_account_code];
       $result[$detail->income_account_id]['spread_expense_account'][$detail->expense_account_id]['expense_account'] = ['account_name'=>$detail->expense_account_name,'account_code'=>$detail->expense_account_code];        
       $result[$detail->income_account_id]['spread_expense_account'][$detail->expense_account_id]['spread'][$detail->month_name] = $detail->budget_item_detail_amount;
       
@@ -109,7 +109,7 @@ class Budget extends MY_Controller
   }
 
   //function budget_schedule_result($office_id,$year,$income_account,$funder_id){
-  function budget_schedule_result(){  
+  function budget_schedule_result($income_account_id){  
     $result = [];
 
     $budget_office = $this->budget_office();
@@ -120,6 +120,8 @@ class Budget extends MY_Controller
     'month_id','month_name','month_number','fk_office_id','budget_year','income_account_name',
     'income_account_id','income_account_code','expense_account_id','expense_account_name',
     'expense_account_code'));
+
+    $this->db->where(array('income_account_id'=>$income_account_id));
 
     $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
     $this->db->join('budget','budget.budget_id=budget_item.fk_budget_id');
@@ -177,6 +179,9 @@ class Budget extends MY_Controller
         $budget_summary = $this->budget_summary_result();
         $result = array_merge($budget_header,$budget_summary);
       }else{
+
+        $income_account_id = hash_id($this->uri->segment(5),'decode');
+
         $this->read_db->select(array('month_number','month_name'));
         $this->read_db->order_by('month_order ASC');
         $month_array = $this->read_db->get('month')->result_array();
@@ -185,7 +190,7 @@ class Budget extends MY_Controller
         $month_names = array_column($month_array,'month_name');
     
         $budget_schedule['month_names_with_number_keys'] = array_combine($month_numbers,$month_names);
-        $budget_schedule['budget_schedule'] = $this->budget_schedule_result();
+        $budget_schedule['budget_schedule'] = $this->budget_schedule_result($income_account_id);
         $is_current_review['is_current_review'] = $this->check_if_current_review();
         $result = array_merge($budget_header,$budget_schedule,$is_current_review);
       }
