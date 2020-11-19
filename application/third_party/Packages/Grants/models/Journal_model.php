@@ -168,8 +168,13 @@ class Journal_model extends MY_Model
   }
 
   public function get_cash_income_or_expense_to_date($office_id,$transacting_month,$cash_account,$transaction_effect,$office_bank_id = 0, $office_cash_id = 0){
-
+    
     $office_bank_project_allocations = $this->get_office_bank_project_allocation($office_bank_id);
+
+    //print_r($office_bank_project_allocations);exit;
+
+    $office_bank_ids = array_unique(array_column($office_bank_project_allocations,'fk_office_bank_id'));
+ 
 
     $this->db->select_sum('voucher_detail_total_cost');
 
@@ -182,9 +187,14 @@ class Journal_model extends MY_Model
 
     if($office_bank_id){
       $this->db->group_start();
-        $allocation_ids = array_column($office_bank_project_allocations,'fk_project_allocation_id');
         $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
-        $this->db->or_where_in('fk_project_allocation_id',$allocation_ids); 
+        
+        $allocation_ids = array_column($office_bank_project_allocations,'fk_project_allocation_id');
+        
+        if(in_array($office_bank_id,$office_bank_ids)){  
+          $this->db->or_where_in('fk_project_allocation_id',$allocation_ids);
+        }
+
         $this->db->group_end();
     }
 
