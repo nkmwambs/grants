@@ -86,7 +86,10 @@
                         <span class='hidden'>
                             <label class='control-label col-xs-1'><?=get_phrase('cheque_number');?></label>
                             <div class='col-xs-2'>
-                                <input type='text' name='voucher_cheque_number' id='cheque_number' disabled='disabled' class='form-control required account_fields' />
+                                <!-- <input type='text' name='voucher_cheque_number' id='cheque_number' disabled='disabled' class='form-control required account_fields' /> -->
+                                <select class='form-control required account_fields' name='voucher_cheque_number' id='cheque_number' disabled='disabled'>
+                                    <option value=''><?=get_phrase('select_cheque_number');?></option>
+                                </select>
                             </div>
                         </span>
 
@@ -373,18 +376,18 @@ $("#bank").on("change",function(ev){
     if(!$("#cash_recipient_account").closest('span').hasClass('hidden')){
         populate_cash_transfer_recipient($(this));
     }
-});
 
-function checkIfChequeIsValid(office,bank,cheque_number){
-    
-    var url = "<?=base_url();?>voucher/check_cheque_validity";
-    var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
+    var office = $('#office').val();
+    var bank = $(this).val();
 
-    if($("#bank").val() == ""){
-        alert("Choose a valid bank account");
-        $('#cheque_number').val('');
-        return false;
-    }
+    var url = "<?=base_url();?>Voucher/check_cheque_validity";
+    var data = {'office_id':office,'bank_id':bank};
+
+    // if($("#bank").val() == ""){
+    //     alert("Choose a valid bank account");
+    //     $('#cheque_number').val('');
+    //     return false;
+    // }
 
     $.ajax({
         url:url,
@@ -394,23 +397,68 @@ function checkIfChequeIsValid(office,bank,cheque_number){
 
         },
         success:function(response){
-            if(!response){
-                alert("The cheque number given ("+ cheque_number +") is not valid");
-                $("#cheque_number").val("");
+            //console.log(response);
+
+            var options = 'option value=""><?=get_phrase('select_cheque_number');?></option>';
+
+            if(response == 0){
+                alert('The bank account selected lacks a cheque book');
+            }else{
+                var obj = JSON.parse(response);
+            
+                $.each(obj,function(i,elem){
+                    options += "<option value='"+elem.cheque_number+"'>"+elem.cheque_number+"</option>";
+                });
             }
+
+            $("#cheque_number").html(options);
+        
         },
         error:function(){
             alert("Error occurred!");
         }
     });
-}
+});
+
+// function checkIfChequeIsValid(office,bank,cheque_number){
+    
+//     var url = "<?=base_url();?>voucher/check_cheque_validity";
+//     var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
+
+//     if($("#bank").val() == ""){
+//         alert("Choose a valid bank account");
+//         $('#cheque_number').val('');
+//         return false;
+//     }
+
+//     $.ajax({
+//         url:url,
+//         data:data,
+//         type:"POST",
+//         beforeSend:function(){
+
+//         },
+//         success:function(response){
+     
+//             // if(!response){
+//             //     alert("The cheque number given ("+ cheque_number +") is not valid");
+//             //     $("#cheque_number").val("");
+//             // }
+//         },
+//         error:function(){
+//             alert("Error occurred!");
+//         }
+//     });
+// }
 
 $("#cheque_number").on('change',function(){
     var office = $("#office").val();
     var bank = $("#bank").val();
     var cheque_number = $("#cheque_number").val();
 
-    checkIfChequeIsValid(office,bank,cheque_number);
+    //console.log(cheque_number);
+
+    //checkIfChequeIsValid(office,bank,cheque_number);
 });
 
 function computeNextVoucherNumber(office_id){
@@ -825,7 +873,7 @@ function updateAccountAndAllocationField(){
 
         },
         success:function(response){
-            console.log(response);
+            //console.log(response);
             var account_select_option = "<option value=''>Select an account</option>";
 
             var allocation_select_option = "<option value=''>Select an allocation code</option>";
