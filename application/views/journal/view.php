@@ -1,4 +1,6 @@
 <?php
+
+    //print_r($this->general_model->max_status_id_where_condition_by_created_date('voucher','2020-08-01'));
     extract($result);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 

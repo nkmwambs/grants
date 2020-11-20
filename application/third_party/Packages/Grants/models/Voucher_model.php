@@ -31,7 +31,8 @@ class Voucher_model extends MY_Model
   function index(){}
 
   public function lookup_tables(){
-    return array('voucher_type','office','office_bank','office_cash','approval','status');
+    // Do not put the Office Bank and Office Cash Tables here since only contra transaction will be listed
+    return array('voucher_type','office','approval','status');
   }
 
   public function detail_tables(){
@@ -67,8 +68,8 @@ class Voucher_model extends MY_Model
 
   public function list_table_visible_columns(){
 
-    // return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    // 'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
+    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
   
   }
 
@@ -595,10 +596,10 @@ class Voucher_model extends MY_Model
   }
 
   function list_table_where(){
-
+    
     $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
+
     // Only list vouchers without not yet in the cash journal 
-   
     $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
  
   }

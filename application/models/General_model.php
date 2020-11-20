@@ -461,24 +461,19 @@ function get_max_approval_status_id(String $approveable_item):Int{
   $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
   $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
   
-  $max_status_approval_sequence_obj = $this->db->select_max('status_approval_sequence')
-  ->get_where('status',array('approve_item_name'=>$approveable_item));
+  $max_status_approval_sequence_obj = $this->db->select(array('status_id','status_approval_sequence'))
+  ->order_by('status_approval_sequence DESC')
+  ->get_where('status',array('approve_item_name'=>$approveable_item,
+  'fk_account_system_id'=>$this->session->user_account_system_id));
+
+  //print_r($max_status_approval_sequence_obj->row());exit;
 
   if($max_status_approval_sequence_obj->num_rows() >0 && 
     $max_status_approval_sequence_obj->row()->status_approval_sequence > 0
     ){
     // Get the status_id
-    $max_status_approval_sequence = $max_status_approval_sequence_obj->row()->status_approval_sequence;
-    $this->db->select('status_id');
-    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-    $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
+    $max_status_id = $max_status_approval_sequence_obj->row()->status_id;
 
-    //print_r($max_status_approval_sequence); exit();
-
-    $max_status_id = $this->db->get_where('status',
-    array('status_approval_sequence'=>$max_status_approval_sequence,
-    'approve_item_name'=>$approveable_item))->row()->status_id;//'fk_account_system_id'=>$this->session->user_account_system_id
-  
   }elseif(in_array($approveable_item,$this->config->item('table_that_dont_require_history_fields'))){
     // Nothing to do
   }else{
@@ -487,6 +482,7 @@ function get_max_approval_status_id(String $approveable_item):Int{
     show_error($message,500,'An Error was Encountered');
   }
   //print_r($max_status_id);exit;
+  
   return $max_status_id;
  
 }
@@ -645,14 +641,16 @@ function get_item_max_status_by_created_date(String $item,String $item_created_d
     get_where('status',
     array('fk_approve_item_id'=>$approveable_item->approve_item_id,
     'status_approval_direction'=>1,
-    'status_created_date <= '=>$item_created_date))->row();
+    'status_created_date <= '=>$item_created_date,
+    'fk_account_system_id'=>$this->session->user_account_system_id))->row();
 
     if(!empty($max_status_approval_sequence->status_approval_sequence)){
       
       $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       $max_status_id = $this->db->get_where('status',
       array('status_approval_sequence'=>$max_status_approval_sequence->status_approval_sequence,
-      'fk_approve_item_id'=>$approveable_item->approve_item_id))->row()->status_id;
+      'fk_approve_item_id'=>$approveable_item->approve_item_id,
+      'fk_account_system_id'=>$this->session->user_account_system_id))->row()->status_id;
     }else{
       $max_status_id = $this->get_max_approval_status_id('voucher');
     }  

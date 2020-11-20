@@ -97,8 +97,8 @@ function check_item_requires_approval($approveable_item){
 }
 
 function insert_approval_record($approveable_item){
-
-  $is_approveable_item = $this->approveable_item($approveable_item);
+  $this->db->reset_query();
+  //$is_approveable_item = $this->approveable_item($approveable_item);
   $insert_id = 0;
 
  // if($is_approveable_item){
@@ -1244,9 +1244,9 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
   }
   
 
-  // if(method_exists($this->$model,$model_where_method)){
-  //   $this->$model->$model_where_method();
-  // }
+  if(method_exists($this->$model,$model_where_method)){
+    $this->$model->$model_where_method();
+  }
 
   if(is_array($lookup_tables) && count($lookup_tables) > 0 ){
     foreach ($lookup_tables as $lookup_table) {
@@ -1260,9 +1260,9 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
     }
   }
 
-  if(method_exists($this->$model,$model_where_method)){
-    $this->$model->$model_where_method();
-  }
+  // if(method_exists($this->$model,$model_where_method)){
+  //   $this->$model->$model_where_method();
+  // }
 
   //View OUTPUT API defined condition array
   if(is_array($filter_where_array) && count($filter_where_array) > 0){
@@ -1643,7 +1643,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
   function initial_item_status($table_name = ""){
 
-    //$this->db->reset_query();
+    $this->db->reset_query();
     
     $table = $table_name == "" ? $this->controller : $table_name;
 
@@ -1657,7 +1657,7 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
       $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
       //$this->db->join('account_system','account_system.account_system_id=approval_flow.fk_account_system_id');
       $initial_status = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id,
-      'status_approval_sequence'=>1));//,'fk_account_system_id'=>$this->session->user_account_system_id
+      'status_approval_sequence'=>1,'fk_account_system_id'=>$this->session->user_account_system_id));//,'fk_account_system_id'=>$this->session->user_account_system_id
 
       if($initial_status->num_rows() > 0 ){
           $status_id = $initial_status->row()->status_id;
