@@ -37,6 +37,10 @@ class Attachment_model extends MY_Model{
 
     public function detail_multi_form_add_visible_columns(){}
 
+    /**
+     * upload_files
+     */
+
     function upload_files($storeFolder){
       
         $path_array = explode("/",$storeFolder);
