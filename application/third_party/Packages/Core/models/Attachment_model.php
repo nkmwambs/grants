@@ -52,30 +52,30 @@ class Attachment_model extends MY_Model{
         
         $item_id = $path_array[3];
 
-        $targetPath = $storeFolder."/";
+        //$targetPath = $storeFolder."/";
 
 
         // Create require local folders
-        if($this->config->item('upload_files_to_s3')){
+        // if($this->config->item('upload_files_to_s3')){
 
-          if(!file_exists('uploads/temps')){
-            mkdir('uploads/temps');
-          }
+        //   if(!file_exists('uploads/temps')){
+        //     mkdir('uploads/temps');
+        //   }
           
-          $targetPath = 'uploads/temps/';
-        }else{
-          for ($i=0; $i < count($path_array) ; $i++) { 
+        //   $targetPath = 'uploads/temps/';
+        // }else{
+        //   for ($i=0; $i < count($path_array) ; $i++) { 
         
-            array_push($path,$path_array[$i]);
+        //     array_push($path,$path_array[$i]);
           
-            $modified_path = implode(DS,$path);
+        //     $modified_path = implode(DS,$path);
           
-            if(!file_exists($modified_path)){
-              mkdir($modified_path);
-            }
+        //     if(!file_exists($modified_path)){
+        //       mkdir($modified_path);
+        //     }
           
-          }
-        }
+        //   }
+        // }
         
         // Uploading of files
         if (!empty($_FILES)) {
@@ -83,21 +83,21 @@ class Attachment_model extends MY_Model{
           for($i=0;$i<count($_FILES['file']['name']);$i++){
             $tempFile = $_FILES['file']['tmp_name'][$i];   
             
-            $targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
+            //$targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
             
-            move_uploaded_file($tempFile,str_replace('/',DS,$targetFile));
+            //move_uploaded_file($tempFile,str_replace('/',DS,$targetFile));
 
             // S3 comes in here
 
             if($this->config->item('upload_files_to_s3')){
-              $this->grants_s3_lib->upload_s3_object($targetFile,$storeFolder);
+              $this->grants_s3_lib->upload_s3_object($tempFile,$storeFolder.'/'.$_FILES['file']['name'][$i]);
             }
 
             // Insert in Attachment table in DB
 
             // Check if files exists for the same approve item and record id. Prevent record creation if exists
 
-            $file_exists = $this->db->get_where('attachment',
+            $file_exists = $this->read_db->get_where('attachment',
             array('attachment_name'=>$_FILES['file']['name'][$i],
             'fk_approve_item_id'=>$approve_item_id,'attachment_primary_id'=>$item_id))->num_rows();
 
