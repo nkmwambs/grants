@@ -50,6 +50,8 @@ class Attachment_model extends MY_Model{
 
         $targetPath = $storeFolder."/";
 
+
+        // Create require local folders
         if($this->config->item('upload_files_to_s3')){
 
           if(!file_exists('uploads/temps')){
@@ -71,7 +73,7 @@ class Attachment_model extends MY_Model{
           }
         }
         
-        
+        // Uploading of files
         if (!empty($_FILES)) {
   
           for($i=0;$i<count($_FILES['file']['name']);$i++){

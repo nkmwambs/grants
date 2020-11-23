@@ -21,6 +21,25 @@ class Attachment extends MY_Controller
 
   function index(){}
 
+  function unlink_old_files_in_filesystem(){
+
+    $path = FCPATH.'uploads'.DIRECTORY_SEPARATOR.'temps'.DIRECTORY_SEPARATOR;
+    if ($handle = opendir($path)) {
+
+        while (false !== ($file = readdir($handle))) { 
+            $filelastmodified = filemtime($path . $file);
+            //24 hours in a day * 3600 seconds per hour
+            if((time() - $filelastmodified) > $this->config->item('temp_files_deletion_limit_hours') * 3600 && $file !='..')
+            {
+              unlink($path . $file);
+            }
+
+        }
+
+        closedir($handle); 
+    }
+  }
+
   static function get_menu_list(){}
 
 }

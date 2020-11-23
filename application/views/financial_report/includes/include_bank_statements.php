@@ -25,7 +25,11 @@
                     ?>
                     <tr>
                 <td><?php if(count($office_banks) == 1){?><a href="#" class="fa fa-trash-o delete_statement" id="<?=$bank_statements_upload['attachment_url'];?>"></a><?php }?></td>
-                        <td><a target='__blank' href='<?=base_url();?><?=$bank_statements_upload['attachment_url'].DS.$bank_statements_upload['attachment_name'];?>'><?=$bank_statements_upload['attachment_name'];?></a></td>
+            
+                        <?php 
+                            $objectKey = $bank_statements_upload['attachment_url'].'/'.$bank_statements_upload['attachment_name'];
+                        ?>
+                        <td><a target='__blank' href='<?=$this->grants_s3_lib->s3_preassigned_url($objectKey);?>'><?=$bank_statements_upload['attachment_name'];?></a></td>
                         <td><?=formatBytes($bank_statements_upload['attachment_size']);?></td>
                         <td><?=$bank_statements_upload['attachment_last_modified_date'];?></td>
                     </tr>

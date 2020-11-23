@@ -849,7 +849,7 @@ class Financial_report extends MY_Controller
       $this->insert_reconciliation($financial_report_id,$office_banks[0]);
     }  
 
-    $result = 0;
+    $result = [];
 
     if(count($office_banks) == 1){
       $this->db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
@@ -867,11 +867,12 @@ class Financial_report extends MY_Controller
             $report_info = ['reconciliation_id'=>$reconciliation_id];
             $files_array = array_merge($this->attachment_model->upload_files($storeFolder),$report_info);
 
-            $result = json_encode($files_array);
+            $result = $files_array;
       }
     }
 
-    echo 1;
+    
+    echo json_encode($result);
 }
 
 function delete_statement(){
