@@ -61,7 +61,6 @@ function upload_s3_object($SourceFile,$s3_path = ''){
 
 }
 
-
 function s3_preassigned_url($object_key){
         $cmd = $this->s3Client->getCommand('GetObject', [
             'Bucket' => $this->CI->config->item('s3_bucket_name'),
