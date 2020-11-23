@@ -41,7 +41,7 @@ function upload_s3_object($SourceFile,$s3_path = ''){
 			'Key' => $key,// Where the file will be placed in S3
 			'Bucket' => $this->CI->config->item('s3_bucket_name'),
             //'ACL' => 'public-read',
-            'SourceFile'=> $SourceFile // Where the file originate in the local machine
+            'SourceFile'=> str_replace('/',DIRECTORY_SEPARATOR,$SourceFile) // Where the file originate in the local machine
         ]);
         
 		//Remove the temp files after gabbage collection for the S3 guzzlehttp to release resources 
