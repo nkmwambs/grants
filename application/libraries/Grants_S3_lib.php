@@ -29,31 +29,48 @@ function s3_setup(){
 function upload_s3_object($SourceFile,$s3_path = ''){
 
     $key = $SourceFile;
+    //$result = '';
 
     if($s3_path != ''){
         $key = $s3_path."/".basename($SourceFile);
     }
     
     try {
-		$this->s3Client->putObject([
+        
+		$result = $this->s3Client->putObject([
 			'Key' => $key,// Where the file will be placed in S3
 			'Bucket' => $this->CI->config->item('s3_bucket_name'),
-            'ACL' => 'public-read',
+            //'ACL' => 'public-read',
             'SourceFile'=> $SourceFile // Where the file originate in the local machine
         ]);
         
 		//Remove the temp files after gabbage collection for the S3 guzzlehttp to release resources 
 		
-		gc_collect_cycles();
-		unlink($SourceFile);
+        gc_collect_cycles();
+        
+        //unlink($SourceFile);
+		
 		
 	} catch (S3Exception $s3Ex) {
 
 		die("An exception occured. {$s3Ex}");
     }
     
-    return [$SourceFile];
+    //return [$SourceFile];
+    
 
 }
+
+function s3_preassigned_url($object_key){
+        $cmd = $this->s3Client->getCommand('GetObject', [
+            'Bucket' => $this->CI->config->item('s3_bucket_name'),
+            'Key' => $object_key
+        ]);
+        $request = $this->s3Client->createPresignedRequest($cmd, '+20 minutes');
+        
+        $presignedUrl = (string)$request->getUri();
+
+        return $presignedUrl;
+    }
 
 }
