@@ -136,6 +136,16 @@ class MY_Controller extends CI_Controller
 
     $this->load->library('Grants_S3_lib');
 
+    if(is_cli()){
+      $this->cli_session();
+    }
+
+  }
+
+  function cli_session(){
+    $account_system = $this->db->get_where('account_system',array('account_system_id'=>1))->row();    
+    $this->session->set_userdata('user_account_system',$account_system->account_system_code); 
+    $this->session->set_userdata('user_account_system_id',1);  
   }
 
 
