@@ -21,6 +21,13 @@ class Attachment extends MY_Controller
 
   function index(){}
 
+  /**
+   * unlink_old_files_in_filesystem
+   *
+   * This method is run by a cron job to delete old temps uploads
+   * 
+   * @return void
+   */
   function unlink_old_files_in_filesystem(){
 
     $path = FCPATH.'uploads'.DIRECTORY_SEPARATOR.'temps'.DIRECTORY_SEPARATOR;
