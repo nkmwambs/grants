@@ -58,7 +58,7 @@ $autoload['packages'] = array('Request_pkg');
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('autoloaded/Menu_library','autoloaded/Access','Session','autoloaded/Grants','autoloaded/GrantsException','fields/Element','fields/Input_element');
+$autoload['libraries'] = array('autoloaded/Menu_library','autoloaded/Access','Session','autoloaded/Grants','autoloaded/GrantsException','fields/Element','fields/Input_element','Attachment_library');
 
 /*
 | -------------------------------------------------------------------
@@ -132,7 +132,7 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('email_model','autoloaded/Grants_model','autoloaded/user_model','autoloaded/menu_model');
+$autoload['model'] = array('email_model','autoloaded/Grants_model','autoloaded/user_model','autoloaded/menu_model','Attachment_model');
 
 // spl_autoload_register(function($classname){
 //     if( strpos($classname,'Interface') !== false ){
