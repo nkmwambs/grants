@@ -20,7 +20,7 @@ class Attachment_library extends Grants
     parent::__construct();
     $this->CI =& get_instance();
 
-    $this->CI->load->library('grants_s3_lib');
+    $this->CI->load->library('Grants_S3_lib');
   }
 
   function index(){}
