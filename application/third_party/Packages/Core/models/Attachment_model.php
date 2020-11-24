@@ -79,6 +79,8 @@ class Attachment_model extends MY_Model{
         
         // Uploading of files
         if (!empty($_FILES)) {
+
+          $preassigned_urls = [];
   
           for($i=0;$i<count($_FILES['file']['name']);$i++){
             $tempFile = $_FILES['file']['tmp_name'][$i];   
@@ -119,9 +121,16 @@ class Attachment_model extends MY_Model{
 
                 $this->write_db->insert('attachment',$attachment_data_to_insert);
             }
+
+            //foreach($preassigned_urls as $attachment_record){
+              //if(!in_array($_FILES['file']['name'][$i],$attachment_record)){
+                $preassigned_urls[$_FILES['file']['name'][$i]] = $this->attachment_library->attachment_record_with_s3_preassigned_url('reconciliation',$item_id,$_FILES['file']['name'][$i]);
+              //}
+            //}
+           
           }
   
-          return $_FILES;
+          return $preassigned_urls;//$this->attachment_library->attachment_record_with_s3_preassigned_url('reconciliation',$item_id,$file_name);//$_FILES;
         }
       }
 
