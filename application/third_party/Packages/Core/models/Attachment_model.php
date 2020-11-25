@@ -52,18 +52,8 @@ class Attachment_model extends MY_Model{
         
         $item_id = $path_array[3];
 
-        $targetPath = $storeFolder."/";
-
-
         // Create require local folders
-        if($this->config->item('upload_files_to_s3')){
-
-          if(!file_exists('uploads/temps')){
-            mkdir('uploads/temps');
-          }
-          
-          $targetPath = 'uploads/temps/';
-        }else{
+        if(!$this->config->item('upload_files_to_s3')){
           for ($i=0; $i < count($path_array) ; $i++) { 
         
             array_push($path,$path_array[$i]);
@@ -85,14 +75,12 @@ class Attachment_model extends MY_Model{
           for($i=0;$i<count($_FILES['file']['name']);$i++){
             $tempFile = $_FILES['file']['tmp_name'][$i];   
             
-            $targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
-            
-            move_uploaded_file($tempFile,str_replace('/',DS,$targetFile));
-
             // S3 comes in here
 
             if($this->config->item('upload_files_to_s3')){
-              $this->grants_s3_lib->upload_s3_object($targetFile,$storeFolder);
+              $this->grants_s3_lib->upload_s3_object($tempFile,$storeFolder, $_FILES['file']['name'][$i]);
+            }else{
+              move_uploaded_file($tempFile,str_replace('/',DS,$storeFolder).DS.$_FILES['file']['name'][$i]);
             }
 
             // Insert in Attachment table in DB
@@ -111,6 +99,7 @@ class Attachment_model extends MY_Model{
                 $attachment_data['attachment_url'] = $storeFolder;
                 $attachment_data['fk_approve_item_id'] = $approve_item_id;
                 $attachment_data['attachment_primary_id'] = $item_id;
+                $attachment_data['attachment_is_s3_upload'] = $this->config->item('upload_files_to_s3')?1:0;
                 $attachment_data['attachment_created_date'] = date('Y-m-t');
                 $attachment_data['attachment_created_by'] = $this->session->user_id;
                 $attachment_data['attachment_last_modified_by'] = $this->session->user_id;
@@ -130,7 +119,7 @@ class Attachment_model extends MY_Model{
            
           }
   
-          return $preassigned_urls;//$this->attachment_library->attachment_record_with_s3_preassigned_url('reconciliation',$item_id,$file_name);//$_FILES;
+          return $preassigned_urls;
         }
       }
 
@@ -158,6 +147,12 @@ class Attachment_model extends MY_Model{
 
           $this->read_db->where(array('fk_approve_item_id'=>$approve_item_id));
           $this->read_db->where_in('attachment_primary_id',$item_primary_ids);
+
+          if($this->config->item('upload_files_to_s3')){
+            $this->read_db->where(array('attachment_is_s3_upload'=>1));
+          }else{
+            $this->read_db->where(array('attachment_is_s3_upload'=>0));
+          }
           
           $files_array = $this->read_db->get('attachment')->result_array();
         }

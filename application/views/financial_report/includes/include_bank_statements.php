@@ -28,8 +28,9 @@
             
                         <?php 
                             $objectKey = $bank_statements_upload['attachment_url'].'/'.$bank_statements_upload['attachment_name'];
+                            $url = $this->config->item('upload_files_to_s3')?$this->grants_s3_lib->s3_preassigned_url($objectKey):$this->attachment_library->get_local_filesystem_attachment_url($objectKey);
                         ?>
-                        <td><a target='__blank' href='<?=$this->grants_s3_lib->s3_preassigned_url($objectKey);?>'><?=$bank_statements_upload['attachment_name'];?></a></td>
+                        <td><a target='__blank' href='<?=$url;?>'><?=$bank_statements_upload['attachment_name'];?></a></td>
                         <td><?=formatBytes($bank_statements_upload['attachment_size']);?></td>
                         <td><?=$bank_statements_upload['attachment_last_modified_date'];?></td>
                     </tr>

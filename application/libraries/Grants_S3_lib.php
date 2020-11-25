@@ -26,29 +26,21 @@ function s3_setup(){
 }
 
 
-function upload_s3_object($SourceFile,$s3_path = ''){
+function upload_s3_object($SourceFile,$s3_path, $file_name){
 
-    $key = $SourceFile;
-    //$result = '';
-
-    if($s3_path != ''){
-        $key = $s3_path."/".basename($SourceFile);
-    }
-    
+    $key = $s3_path.'/'.$file_name;
+        
     try {
         
-		$result = $this->s3Client->putObject([
+		$this->s3Client->putObject([
 			'Key' => $key,// Where the file will be placed in S3
 			'Bucket' => $this->CI->config->item('s3_bucket_name'),
-            //'ACL' => 'public-read',
-            'SourceFile'=> str_replace('/',DIRECTORY_SEPARATOR,$SourceFile) // Where the file originate in the local machine
+            'SourceFile'=> $SourceFile // Where the file originate in the local machine
         ]);
         
 		//Remove the temp files after gabbage collection for the S3 guzzlehttp to release resources 
 		
         gc_collect_cycles();
-        
-        //unlink($SourceFile);
 		
 		
 	} catch (S3Exception $s3Ex) {

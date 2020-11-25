@@ -1,10 +1,11 @@
--- Adminer 4.6.3 MySQL dump
+-- Adminer 4.7.7 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+DROP TABLE IF EXISTS `account_system`;
 CREATE TABLE `account_system` (
   `account_system_id` int(100) NOT NULL AUTO_INCREMENT,
   `account_system_track_number` varchar(100) NOT NULL,
@@ -23,6 +24,7 @@ CREATE TABLE `account_system` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `approval`;
 CREATE TABLE `approval` (
   `approval_id` int(11) NOT NULL AUTO_INCREMENT,
   `approval_track_number` varchar(100) NOT NULL,
@@ -39,6 +41,7 @@ CREATE TABLE `approval` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `approval_flow`;
 CREATE TABLE `approval_flow` (
   `approval_flow_id` int(100) NOT NULL AUTO_INCREMENT,
   `approval_flow_name` varchar(100) NOT NULL,
@@ -59,6 +62,7 @@ CREATE TABLE `approval_flow` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `approve_item`;
 CREATE TABLE `approve_item` (
   `approve_item_id` int(100) NOT NULL AUTO_INCREMENT,
   `approve_item_track_number` varchar(100) NOT NULL,
@@ -75,13 +79,37 @@ CREATE TABLE `approve_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `attachment`;
+CREATE TABLE `attachment` (
+  `attachment_id` int(100) NOT NULL AUTO_INCREMENT,
+  `attachment_name` varchar(100) NOT NULL,
+  `attachment_track_number` varchar(100) NOT NULL,
+  `attachment_size` int(100) NOT NULL,
+  `attachment_file_type` varchar(100) NOT NULL,
+  `attachment_url` longtext NOT NULL,
+  `fk_approve_item_id` int(100) NOT NULL,
+  `attachment_primary_id` int(100) NOT NULL,
+  `attachment_is_s3_upload` int(5) NOT NULL DEFAULT '0',
+  `attachment_created_date` date NOT NULL,
+  `attachment_created_by` int(100) NOT NULL,
+  `attachment_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `attachment_last_modified_by` int(100) NOT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`attachment_id`),
+  KEY `fk_approve_item_id` (`fk_approve_item_id`),
+  CONSTRAINT `attachment_ibfk_1` FOREIGN KEY (`fk_approve_item_id`) REFERENCES `approve_item` (`approve_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `bank`;
 CREATE TABLE `bank` (
   `bank_id` int(100) NOT NULL AUTO_INCREMENT,
   `bank_track_number` varchar(100) DEFAULT NULL,
   `bank_name` varchar(45) DEFAULT NULL,
   `bank_swift_code` varchar(45) DEFAULT NULL,
   `bank_is_active` int(5) NOT NULL DEFAULT '1',
-  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',  
+  `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `bank_created_date` date DEFAULT NULL,
   `bank_created_by` int(100) DEFAULT NULL,
   `bank_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -92,11 +120,13 @@ CREATE TABLE `bank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the banks for centers';
 
 
+DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
   `budget_id` int(100) NOT NULL AUTO_INCREMENT,
   `budget_track_number` varchar(45) DEFAULT NULL,
   `budget_name` varchar(100) DEFAULT NULL,
   `fk_office_id` int(100) DEFAULT NULL,
+  `fk_budget_tag_id` int(100) DEFAULT NULL,
   `fk_approval_id` int(11) DEFAULT '0',
   `fk_status_id` int(11) DEFAULT '0',
   `budget_year` int(5) DEFAULT NULL,
@@ -106,10 +136,13 @@ CREATE TABLE `budget` (
   `budget_last_modified_date` date DEFAULT NULL,
   PRIMARY KEY (`budget_id`),
   KEY `fk_budget_center1_idx` (`fk_office_id`),
-  CONSTRAINT `budget_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
+  KEY `fk_budget_tag_id` (`fk_budget_tag_id`),
+  CONSTRAINT `budget_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `budget_ibfk_2` FOREIGN KEY (`fk_budget_tag_id`) REFERENCES `budget_tag` (`budget_tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the budget items by activity';
 
 
+DROP TABLE IF EXISTS `budget_item`;
 CREATE TABLE `budget_item` (
   `budget_item_id` int(100) NOT NULL AUTO_INCREMENT,
   `budget_item_track_number` varchar(100) DEFAULT NULL,
@@ -138,27 +171,8 @@ CREATE TABLE `budget_item` (
   CONSTRAINT `fk_budget_detail_id_expense_account_id` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This hold activties and their budgeted cost';
 
-CREATE TABLE `budget_tag` (
-  `budget_tag_id` int(100) NOT NULL AUTO_INCREMENT,
-  `budget_tag_track_number` varchar(100) NOT NULL,
-  `budget_tag_name` varchar(100) NOT NULL,
-  `fk_month_id` int(11) NOT NULL,
-  `budget_tag_level` int(5) NOT NULL,
-  `budget_tag_is_active` int(5) NOT NULL DEFAULT '1',
-  `fk_account_system_id` int(100) NOT NULL,
-  `budget_tag_created_date` date NOT NULL,
-  `budget_tag_created_by` int(100) NOT NULL,
-  `budget_tag_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `budget_tag_last_modified_by` int(1) NOT NULL,
-  `fk_approval_id` int(11) DEFAULT NULL,
-  `fk_status_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`budget_tag_id`),
-  KEY `fk_account_system_id` (`fk_account_system_id`),
-  KEY `fk_month_id` (`fk_month_id`),
-  CONSTRAINT `budget_tag_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
-  CONSTRAINT `budget_tag_ibfk_2` FOREIGN KEY (`fk_month_id`) REFERENCES `month` (`month_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `budget_item_detail`;
 CREATE TABLE `budget_item_detail` (
   `budget_item_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `budget_item_detail_track_number` varchar(100) DEFAULT NULL,
@@ -181,6 +195,69 @@ CREATE TABLE `budget_item_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
 
+DROP TABLE IF EXISTS `budget_review_count`;
+CREATE TABLE `budget_review_count` (
+  `budget_review_count_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_review_count_track_number` varchar(100) NOT NULL,
+  `budget_review_count_name` varchar(100) NOT NULL,
+  `budget_review_count_number` int(5) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `budget_review_count_created_date` date NOT NULL,
+  `budget_review_count_created_by` int(100) NOT NULL,
+  `budget_review_count_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `budget_review_count_last_modified_by` int(100) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  `fk_approval_id` int(11) NOT NULL,
+  PRIMARY KEY (`budget_review_count_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `budget_review_count_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `budget_tag`;
+CREATE TABLE `budget_tag` (
+  `budget_tag_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_tag_track_number` varchar(100) NOT NULL,
+  `budget_tag_name` varchar(100) NOT NULL,
+  `fk_month_id` int(11) NOT NULL,
+  `budget_tag_level` int(5) NOT NULL,
+  `budget_tag_is_active` int(5) NOT NULL DEFAULT '1',
+  `fk_account_system_id` int(100) NOT NULL,
+  `budget_tag_created_date` date NOT NULL,
+  `budget_tag_created_by` int(100) NOT NULL,
+  `budget_tag_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `budget_tag_last_modified_by` int(1) NOT NULL,
+  `fk_approval_id` int(11) DEFAULT NULL,
+  `fk_status_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`budget_tag_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  KEY `fk_month_id` (`fk_month_id`),
+  CONSTRAINT `budget_tag_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
+  CONSTRAINT `budget_tag_ibfk_2` FOREIGN KEY (`fk_month_id`) REFERENCES `month` (`month_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `cash_recipient_account`;
+CREATE TABLE `cash_recipient_account` (
+  `cash_recipient_account_id` int(100) NOT NULL AUTO_INCREMENT,
+  `cash_recipient_account_name` varchar(100) NOT NULL,
+  `cash_recipient_account_track_number` varchar(100) NOT NULL,
+  `fk_voucher_id` int(100) NOT NULL,
+  `fk_office_bank_id` int(11) NOT NULL,
+  `fk_office_cash_id` int(11) NOT NULL,
+  `cash_recipient_account_created_date` date DEFAULT NULL,
+  `cash_recipient_account_created_by` int(100) DEFAULT NULL,
+  `cash_recipient_account_last_modified_by` int(100) DEFAULT NULL,
+  `cash_recipient_account_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`cash_recipient_account_id`),
+  KEY `fk_voucher_id` (`fk_voucher_id`),
+  CONSTRAINT `cash_recipient_account_ibfk_1` FOREIGN KEY (`fk_voucher_id`) REFERENCES `voucher` (`voucher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `cheque_book`;
 CREATE TABLE `cheque_book` (
   `cheque_book_id` int(11) NOT NULL AUTO_INCREMENT,
   `cheque_book_track_number` varchar(100) NOT NULL,
@@ -202,6 +279,7 @@ CREATE TABLE `cheque_book` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `ci_sessions`;
 CREATE TABLE `ci_sessions` (
   `id` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `ip_address` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
@@ -218,6 +296,7 @@ CREATE TABLE `ci_sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+DROP TABLE IF EXISTS `context_center`;
 CREATE TABLE `context_center` (
   `context_center_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_center_track_number` varchar(100) DEFAULT NULL,
@@ -236,6 +315,7 @@ CREATE TABLE `context_center` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_center_user`;
 CREATE TABLE `context_center_user` (
   `context_center_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_center_user_track_number` varchar(100) DEFAULT NULL,
@@ -254,6 +334,7 @@ CREATE TABLE `context_center_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cluster`;
 CREATE TABLE `context_cluster` (
   `context_cluster_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cluster_track_number` varchar(100) DEFAULT NULL,
@@ -272,6 +353,7 @@ CREATE TABLE `context_cluster` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cluster_user`;
 CREATE TABLE `context_cluster_user` (
   `context_cluster_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cluster_user_track_number` varchar(100) DEFAULT NULL,
@@ -290,6 +372,7 @@ CREATE TABLE `context_cluster_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cohort`;
 CREATE TABLE `context_cohort` (
   `context_cohort_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cohort_track_number` varchar(100) DEFAULT NULL,
@@ -308,6 +391,7 @@ CREATE TABLE `context_cohort` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_cohort_user`;
 CREATE TABLE `context_cohort_user` (
   `context_cohort_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_cohort_user_track_number` varchar(100) DEFAULT NULL,
@@ -326,6 +410,7 @@ CREATE TABLE `context_cohort_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_country`;
 CREATE TABLE `context_country` (
   `context_country_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_country_track_number` varchar(100) DEFAULT NULL,
@@ -344,6 +429,7 @@ CREATE TABLE `context_country` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_country_user`;
 CREATE TABLE `context_country_user` (
   `context_country_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_country_user_track_number` varchar(100) DEFAULT NULL,
@@ -362,6 +448,7 @@ CREATE TABLE `context_country_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_definition`;
 CREATE TABLE `context_definition` (
   `context_definition_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_definition_track_number` varchar(100) DEFAULT NULL,
@@ -385,6 +472,7 @@ CREATE TABLE `context_definition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `context_global`;
 CREATE TABLE `context_global` (
   `context_global_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_global_track_number` varchar(100) NOT NULL,
@@ -402,6 +490,7 @@ CREATE TABLE `context_global` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `context_global_user`;
 CREATE TABLE `context_global_user` (
   `context_global_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_global_user_track_number` varchar(100) NOT NULL,
@@ -420,6 +509,7 @@ CREATE TABLE `context_global_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `context_region`;
 CREATE TABLE `context_region` (
   `context_region_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_region_track_number` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
@@ -438,6 +528,7 @@ CREATE TABLE `context_region` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `context_region_user`;
 CREATE TABLE `context_region_user` (
   `context_region_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `context_region_user_track_number` varchar(100) DEFAULT NULL,
@@ -456,6 +547,7 @@ CREATE TABLE `context_region_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `contra_account`;
 CREATE TABLE `contra_account` (
   `contra_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `contra_account_track_number` varchar(100) NOT NULL,
@@ -463,6 +555,7 @@ CREATE TABLE `contra_account` (
   `contra_account_code` varchar(20) NOT NULL,
   `contra_account_description` varchar(100) NOT NULL,
   `fk_voucher_type_account_id` int(100) NOT NULL,
+  `fk_voucher_type_effect_id` int(100) NOT NULL,
   `fk_office_bank_id` int(100) NOT NULL,
   `fk_account_system_id` int(100) NOT NULL,
   `contra_account_created_date` date DEFAULT NULL,
@@ -475,12 +568,15 @@ CREATE TABLE `contra_account` (
   KEY `fk_account_system_id` (`fk_account_system_id`),
   KEY `fk_voucher_type_account_id` (`fk_voucher_type_account_id`),
   KEY `fk_office_bank_id` (`fk_office_bank_id`),
+  KEY `fk_voucher_type_effect_id` (`fk_voucher_type_effect_id`),
+  CONSTRAINT `contra_account_ibfk_4` FOREIGN KEY (`fk_voucher_type_effect_id`) REFERENCES `voucher_type_effect` (`voucher_type_effect_id`),
   CONSTRAINT `contra_account_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
   CONSTRAINT `contra_account_ibfk_2` FOREIGN KEY (`fk_voucher_type_account_id`) REFERENCES `voucher_type_account` (`voucher_type_account_id`),
   CONSTRAINT `contra_account_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `country_currency`;
 CREATE TABLE `country_currency` (
   `country_currency_id` int(100) NOT NULL AUTO_INCREMENT,
   `country_currency_name` varchar(100) NOT NULL,
@@ -497,6 +593,7 @@ CREATE TABLE `country_currency` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `currency_conversion`;
 CREATE TABLE `currency_conversion` (
   `currency_conversion_id` int(100) NOT NULL AUTO_INCREMENT,
   `currency_conversion_name` varchar(100) NOT NULL,
@@ -512,6 +609,7 @@ CREATE TABLE `currency_conversion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `currency_conversion_detail`;
 CREATE TABLE `currency_conversion_detail` (
   `currency_conversion_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `currency_conversion_detail_name` varchar(100) NOT NULL,
@@ -529,6 +627,7 @@ CREATE TABLE `currency_conversion_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `dashboard`;
 CREATE TABLE `dashboard` (
   `dashboard_id` int(100) NOT NULL AUTO_INCREMENT,
   `dashboard_name` varchar(100) DEFAULT NULL,
@@ -542,6 +641,7 @@ CREATE TABLE `dashboard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department` (
   `department_id` int(100) NOT NULL AUTO_INCREMENT,
   `department_track_number` varchar(100) NOT NULL,
@@ -562,6 +662,7 @@ CREATE TABLE `department` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `department_user`;
 CREATE TABLE `department_user` (
   `department_user_id` int(100) NOT NULL AUTO_INCREMENT,
   `department_user_track_number` varchar(100) NOT NULL,
@@ -578,6 +679,7 @@ CREATE TABLE `department_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `designation`;
 CREATE TABLE `designation` (
   `designation_id` int(100) NOT NULL AUTO_INCREMENT,
   `designation_track_number` varchar(100) NOT NULL,
@@ -599,27 +701,7 @@ CREATE TABLE `designation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `expense_account` (
-  `expense_account_id` int(100) NOT NULL AUTO_INCREMENT,
-  `expense_account_track_number` varchar(100) DEFAULT NULL,
-  `expense_account_name` varchar(100) DEFAULT NULL,
-  `expense_account_description` varchar(100) DEFAULT NULL,
-  `expense_account_code` varchar(10) DEFAULT NULL,
-  `expense_account_is_admin` int(5) DEFAULT NULL,
-  `expense_account_is_active` int(5) DEFAULT NULL,
-  `expense_account_is_budgeted` int(5) DEFAULT NULL,
-  `fk_income_account_id` int(100) DEFAULT NULL,
-  `fk_approval_id` int(100) DEFAULT NULL,
-  `fk_status_id` int(100) DEFAULT NULL,
-  `expense_account_created_date` date DEFAULT NULL,
-  `expense_account_last_modified_date` date DEFAULT NULL,
-  `expense_account_created_by` int(100) DEFAULT NULL,
-  `expense_account_last_modified_by` int(100) DEFAULT NULL,
-  PRIMARY KEY (`expense_account_id`),
-  KEY `fk_expense_account_income_account_idx` (`fk_income_account_id`),
-  CONSTRAINT `fk_expense_account_income_account` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the expense accounts';
-
+DROP TABLE IF EXISTS `event`;
 CREATE TABLE `event` (
   `event_id` int(100) NOT NULL AUTO_INCREMENT,
   `event_track_number` varchar(100) NOT NULL,
@@ -641,6 +723,31 @@ CREATE TABLE `event` (
   CONSTRAINT `event_ibfk_2` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+DROP TABLE IF EXISTS `expense_account`;
+CREATE TABLE `expense_account` (
+  `expense_account_id` int(100) NOT NULL AUTO_INCREMENT,
+  `expense_account_track_number` varchar(100) DEFAULT NULL,
+  `expense_account_name` varchar(100) DEFAULT NULL,
+  `expense_account_description` varchar(100) DEFAULT NULL,
+  `expense_account_code` varchar(10) DEFAULT NULL,
+  `expense_account_is_admin` int(5) DEFAULT NULL,
+  `expense_account_is_active` int(5) DEFAULT NULL,
+  `expense_account_is_budgeted` int(5) DEFAULT NULL,
+  `fk_income_account_id` int(100) DEFAULT NULL,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  `expense_account_created_date` date DEFAULT NULL,
+  `expense_account_last_modified_date` date DEFAULT NULL,
+  `expense_account_created_by` int(100) DEFAULT NULL,
+  `expense_account_last_modified_by` int(100) DEFAULT NULL,
+  PRIMARY KEY (`expense_account_id`),
+  KEY `fk_expense_account_income_account_idx` (`fk_income_account_id`),
+  CONSTRAINT `fk_expense_account_income_account` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the expense accounts';
+
+
+DROP TABLE IF EXISTS `financial_report`;
 CREATE TABLE `financial_report` (
   `financial_report_id` int(100) NOT NULL AUTO_INCREMENT,
   `financial_report_track_number` varchar(100) NOT NULL,
@@ -659,6 +766,7 @@ CREATE TABLE `financial_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `funder`;
 CREATE TABLE `funder` (
   `funder_id` int(100) NOT NULL AUTO_INCREMENT,
   `funder_track_number` varchar(100) DEFAULT NULL,
@@ -676,6 +784,7 @@ CREATE TABLE `funder` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds donor (funders) bio-information';
 
 
+DROP TABLE IF EXISTS `funding_status`;
 CREATE TABLE `funding_status` (
   `funding_status_id` int(100) NOT NULL AUTO_INCREMENT,
   `funding_status_track_number` varchar(100) DEFAULT NULL,
@@ -693,6 +802,7 @@ CREATE TABLE `funding_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history` (
   `history_id` int(100) NOT NULL AUTO_INCREMENT,
   `reference_table` varchar(45) DEFAULT NULL,
@@ -708,6 +818,7 @@ CREATE TABLE `history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `income_account`;
 CREATE TABLE `income_account` (
   `income_account_id` int(11) NOT NULL AUTO_INCREMENT,
   `income_account_track_number` varchar(100) NOT NULL,
@@ -730,6 +841,7 @@ CREATE TABLE `income_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table contains the income accounts. ';
 
 
+DROP TABLE IF EXISTS `journal`;
 CREATE TABLE `journal` (
   `journal_id` int(11) NOT NULL AUTO_INCREMENT,
   `journal_track_number` varchar(100) NOT NULL,
@@ -746,6 +858,7 @@ CREATE TABLE `journal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
   `language_id` int(100) NOT NULL AUTO_INCREMENT,
   `language_track_number` varchar(100) NOT NULL,
@@ -762,6 +875,7 @@ CREATE TABLE `language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `language_phrase`;
 CREATE TABLE `language_phrase` (
   `language_phrase_id` int(11) NOT NULL AUTO_INCREMENT,
   `phrase` longtext,
@@ -780,6 +894,7 @@ CREATE TABLE `language_phrase` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(100) NOT NULL AUTO_INCREMENT,
   `menu_name` varchar(100) DEFAULT NULL,
@@ -796,7 +911,7 @@ CREATE TABLE `menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-
+DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
   `menu_user_order_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_user_id` int(100) NOT NULL,
@@ -818,6 +933,7 @@ CREATE TABLE `menu_user_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `message_id` int(100) NOT NULL AUTO_INCREMENT,
   `message_track_number` varchar(100) DEFAULT NULL,
@@ -838,6 +954,7 @@ CREATE TABLE `message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `message_detail`;
 CREATE TABLE `message_detail` (
   `message_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `message_detail_track_number` varchar(100) NOT NULL,
@@ -860,6 +977,7 @@ CREATE TABLE `message_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `month`;
 CREATE TABLE `month` (
   `month_id` int(11) NOT NULL AUTO_INCREMENT,
   `month_track_number` varchar(100) NOT NULL,
@@ -878,6 +996,7 @@ CREATE TABLE `month` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `office`;
 CREATE TABLE `office` (
   `office_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_track_number` varchar(100) DEFAULT NULL,
@@ -887,7 +1006,7 @@ CREATE TABLE `office` (
   `fk_context_definition_id` int(100) NOT NULL,
   `office_start_date` date NOT NULL,
   `office_end_date` date DEFAULT '0000-00-00',
-  `office_is_active` int(5) NOT NULL DEFAULT '0',
+  `office_is_active` int(5) NOT NULL DEFAULT '1',
   `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `fk_country_currency_id` int(100) NOT NULL,
   `office_created_by` int(100) NOT NULL,
@@ -899,14 +1018,15 @@ CREATE TABLE `office` (
   PRIMARY KEY (`office_id`),
   UNIQUE KEY `office_code` (`office_code`),
   KEY `fk_context_definition_id` (`fk_context_definition_id`),
-  KEY `fk_country_currency_id` (`fk_country_currency_id`),
   KEY `fk_account_system_id` (`fk_account_system_id`),
+  KEY `fk_country_currency_id` (`fk_country_currency_id`),
   CONSTRAINT `office_ibfk_1` FOREIGN KEY (`fk_context_definition_id`) REFERENCES `context_definition` (`context_definition_id`),
-  CONSTRAINT `office_ibfk_2` FOREIGN KEY (`fk_country_currency_id`) REFERENCES `country_currency` (`country_currency_id`),
-  CONSTRAINT `office_ibfk_3` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+  CONSTRAINT `office_ibfk_2` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
+  CONSTRAINT `office_ibfk_3` FOREIGN KEY (`fk_country_currency_id`) REFERENCES `country_currency` (`country_currency_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table list all the remote sites for the organization';
 
 
+DROP TABLE IF EXISTS `office_bank`;
 CREATE TABLE `office_bank` (
   `office_bank_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_bank_track_number` varchar(100) DEFAULT NULL,
@@ -930,6 +1050,7 @@ CREATE TABLE `office_bank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `office_bank_project_allocation`;
 CREATE TABLE `office_bank_project_allocation` (
   `office_bank_project_allocation_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_bank_project_allocation_name` varchar(100) NOT NULL,
@@ -946,6 +1067,7 @@ CREATE TABLE `office_bank_project_allocation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `office_cash`;
 CREATE TABLE `office_cash` (
   `office_cash_id` int(100) NOT NULL AUTO_INCREMENT,
   `office_cash_name` varchar(100) NOT NULL,
@@ -962,6 +1084,7 @@ CREATE TABLE `office_cash` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_allocation_balance`;
 CREATE TABLE `opening_allocation_balance` (
   `opening_allocation_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_system_opening_balance_id` int(100) NOT NULL,
@@ -983,12 +1106,13 @@ CREATE TABLE `opening_allocation_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_bank_balance`;
 CREATE TABLE `opening_bank_balance` (
   `opening_bank_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_system_opening_balance_id` int(100) NOT NULL,
   `opening_bank_balance_track_number` varchar(100) NOT NULL,
   `opening_bank_balance_name` varchar(100) NOT NULL,
-  `opening_bank_balance_amount` int(100) NOT NULL,
+  `opening_bank_balance_amount` decimal(10,2) NOT NULL,
   `fk_office_bank_id` int(100) NOT NULL,
   `opening_bank_balance_created_date` date NOT NULL,
   `opening_bank_balance_created_by` int(100) NOT NULL,
@@ -1000,6 +1124,7 @@ CREATE TABLE `opening_bank_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_cash_balance`;
 CREATE TABLE `opening_cash_balance` (
   `opening_cash_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `opening_cash_balance_track_number` varchar(100) NOT NULL,
@@ -1024,6 +1149,7 @@ CREATE TABLE `opening_cash_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_deposit_transit`;
 CREATE TABLE `opening_deposit_transit` (
   `opening_deposit_transit_id` int(100) NOT NULL AUTO_INCREMENT,
   `opening_deposit_transit_track_number` varchar(100) NOT NULL,
@@ -1034,7 +1160,7 @@ CREATE TABLE `opening_deposit_transit` (
   `opening_deposit_transit_description` longtext NOT NULL,
   `opening_deposit_transit_amount` decimal(10,2) NOT NULL,
   `opening_deposit_transit_is_cleared` int(5) NOT NULL DEFAULT '0',
-  `opening_deposit_transit_cleared_date` date NOT NULL DEFAULT '0000-00-00',
+  `opening_deposit_transit_cleared_date` date NOT NULL,
   `opening_deposit_transit_created_date` date DEFAULT NULL,
   `opening_deposit_transit_created_by` int(100) DEFAULT NULL,
   `opening_deposit_transit_last_modified_by` int(100) DEFAULT NULL,
@@ -1047,12 +1173,14 @@ CREATE TABLE `opening_deposit_transit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_fund_balance`;
 CREATE TABLE `opening_fund_balance` (
   `opening_fund_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_system_opening_balance_id` int(100) NOT NULL,
   `opening_fund_balance_track_number` varchar(100) NOT NULL,
   `opening_fund_balance_name` varchar(100) NOT NULL,
   `fk_income_account_id` int(11) NOT NULL,
+  `fk_office_bank_id` int(11) NOT NULL,
   `opening_fund_balance_amount` decimal(10,2) NOT NULL,
   `opening_fund_balance_created_date` date DEFAULT NULL,
   `opening_fund_balance_created_by` int(100) DEFAULT NULL,
@@ -1068,6 +1196,7 @@ CREATE TABLE `opening_fund_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `opening_outstanding_cheque`;
 CREATE TABLE `opening_outstanding_cheque` (
   `opening_outstanding_cheque_id` int(100) NOT NULL AUTO_INCREMENT,
   `opening_outstanding_cheque_name` varchar(100) NOT NULL,
@@ -1093,6 +1222,7 @@ CREATE TABLE `opening_outstanding_cheque` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `page_view`;
 CREATE TABLE `page_view` (
   `page_view_id` int(100) NOT NULL AUTO_INCREMENT,
   `page_view_track_number` varchar(100) NOT NULL,
@@ -1116,6 +1246,7 @@ CREATE TABLE `page_view` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `page_view_condition`;
 CREATE TABLE `page_view_condition` (
   `page_view_condition_id` int(100) NOT NULL AUTO_INCREMENT,
   `page_view_condition_track_number` varchar(100) NOT NULL,
@@ -1138,6 +1269,7 @@ CREATE TABLE `page_view_condition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `page_view_role`;
 CREATE TABLE `page_view_role` (
   `page_view_role_id` int(100) NOT NULL AUTO_INCREMENT,
   `page_view_role_track_number` varchar(100) NOT NULL,
@@ -1163,6 +1295,7 @@ CREATE TABLE `page_view_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
   `permission_id` int(11) NOT NULL AUTO_INCREMENT,
   `permission_track_number` varchar(100) NOT NULL,
@@ -1184,6 +1317,7 @@ CREATE TABLE `permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
   `permission_label_id` int(100) NOT NULL AUTO_INCREMENT,
   `permission_label_track_number` varchar(100) NOT NULL,
@@ -1200,6 +1334,7 @@ CREATE TABLE `permission_label` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `project_id` int(100) NOT NULL AUTO_INCREMENT,
   `project_track_number` varchar(100) DEFAULT NULL,
@@ -1211,6 +1346,7 @@ CREATE TABLE `project` (
   `fk_funder_id` int(100) NOT NULL,
   `project_cost` double(10,2) DEFAULT '0.00',
   `fk_funding_status_id` int(100) DEFAULT NULL,
+  `project_is_default` int(5) DEFAULT '0',
   `project_created_by` int(100) NOT NULL,
   `project_last_modified_by` int(100) NOT NULL,
   `project_created_date` date NOT NULL,
@@ -1225,6 +1361,7 @@ CREATE TABLE `project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A project is a single funded proposal that need to be implemented and reported as a unit. It''s related to single funder ';
 
 
+DROP TABLE IF EXISTS `project_allocation`;
 CREATE TABLE `project_allocation` (
   `project_allocation_id` int(100) NOT NULL AUTO_INCREMENT,
   `project_allocation_track_number` varchar(100) DEFAULT NULL,
@@ -1248,6 +1385,7 @@ CREATE TABLE `project_allocation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project_allocation_detail`;
 CREATE TABLE `project_allocation_detail` (
   `project_allocation_detail_id` int(11) NOT NULL,
   `project_allocation_detail_track_number` varchar(100) NOT NULL,
@@ -1266,6 +1404,7 @@ CREATE TABLE `project_allocation_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project_cost_proportion`;
 CREATE TABLE `project_cost_proportion` (
   `project_cost_proportion_id` int(11) NOT NULL,
   `voucher_detail_id` int(100) DEFAULT NULL,
@@ -1286,6 +1425,8 @@ CREATE TABLE `project_cost_proportion` (
   CONSTRAINT `project_cost_proportion_ibfk_1` FOREIGN KEY (`voucher_detail_id`) REFERENCES `voucher_detail` (`voucher_detail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+DROP TABLE IF EXISTS `project_income_account`;
 CREATE TABLE `project_income_account` (
   `project_income_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `project_income_account_name` varchar(100) NOT NULL,
@@ -1305,6 +1446,8 @@ CREATE TABLE `project_income_account` (
   CONSTRAINT `project_income_account_ibfk_2` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+DROP TABLE IF EXISTS `reconciliation`;
 CREATE TABLE `reconciliation` (
   `reconciliation_id` int(100) NOT NULL AUTO_INCREMENT,
   `reconciliation_track_number` varchar(100) DEFAULT NULL,
@@ -1327,6 +1470,7 @@ CREATE TABLE `reconciliation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request`;
 CREATE TABLE `request` (
   `request_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_track_number` varchar(100) DEFAULT NULL,
@@ -1347,6 +1491,7 @@ CREATE TABLE `request` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_conversion`;
 CREATE TABLE `request_conversion` (
   `request_conversion_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_conversion_name` varchar(100) NOT NULL,
@@ -1367,6 +1512,7 @@ CREATE TABLE `request_conversion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_detail`;
 CREATE TABLE `request_detail` (
   `request_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `request_detail_track_number` varchar(100) DEFAULT NULL,
@@ -1394,6 +1540,7 @@ CREATE TABLE `request_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_type`;
 CREATE TABLE `request_type` (
   `request_type_id` int(11) NOT NULL AUTO_INCREMENT,
   `request_type_track_number` varchar(100) NOT NULL,
@@ -1412,6 +1559,7 @@ CREATE TABLE `request_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `role_id` int(100) NOT NULL AUTO_INCREMENT,
   `role_track_number` varchar(100) DEFAULT NULL,
@@ -1432,6 +1580,7 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission` (
   `role_permission_id` int(100) NOT NULL AUTO_INCREMENT,
   `role_permission_track_number` varchar(100) NOT NULL,
@@ -1453,6 +1602,7 @@ CREATE TABLE `role_permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(100) DEFAULT NULL,
@@ -1467,6 +1617,7 @@ CREATE TABLE `setting` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `status`;
 CREATE TABLE `status` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,
   `status_track_number` varchar(100) NOT NULL,
@@ -1486,6 +1637,7 @@ CREATE TABLE `status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
   `status_role_id` int(100) NOT NULL AUTO_INCREMENT,
   `status_role_track_number` varchar(100) NOT NULL,
@@ -1504,6 +1656,7 @@ CREATE TABLE `status_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `system_opening_balance`;
 CREATE TABLE `system_opening_balance` (
   `system_opening_balance_id` int(100) NOT NULL AUTO_INCREMENT,
   `system_opening_balance_track_number` varchar(100) NOT NULL,
@@ -1522,6 +1675,7 @@ CREATE TABLE `system_opening_balance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `translation`;
 CREATE TABLE `translation` (
   `translation_id` int(100) NOT NULL AUTO_INCREMENT,
   `language_phrase_id` int(100) DEFAULT NULL,
@@ -1546,6 +1700,7 @@ CREATE TABLE `translation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(100) NOT NULL AUTO_INCREMENT,
   `user_track_number` varchar(100) NOT NULL,
@@ -1573,6 +1728,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `variance_note`;
 CREATE TABLE `variance_note` (
   `variance_note_id` int(100) NOT NULL AUTO_INCREMENT,
   `reconciliation_id` int(100) DEFAULT NULL,
@@ -1596,6 +1752,7 @@ CREATE TABLE `variance_note` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher`;
 CREATE TABLE `voucher` (
   `voucher_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_track_number` varchar(50) DEFAULT NULL,
@@ -1630,6 +1787,7 @@ CREATE TABLE `voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds transactions ';
 
 
+DROP TABLE IF EXISTS `voucher_detail`;
 CREATE TABLE `voucher_detail` (
   `voucher_detail_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_detail_track_number` varchar(100) DEFAULT NULL,
@@ -1657,6 +1815,7 @@ CREATE TABLE `voucher_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_track_number` varchar(100) NOT NULL,
@@ -1683,6 +1842,7 @@ CREATE TABLE `voucher_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_type_account`;
 CREATE TABLE `voucher_type_account` (
   `voucher_type_account_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_account_track_number` varchar(100) NOT NULL,
@@ -1698,6 +1858,7 @@ CREATE TABLE `voucher_type_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_type_effect`;
 CREATE TABLE `voucher_type_effect` (
   `voucher_type_effect_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_effect_track_number` varchar(100) NOT NULL,
@@ -1713,6 +1874,7 @@ CREATE TABLE `voucher_type_effect` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
   `workplan_id` int(100) NOT NULL,
   `workplan_track_number` varchar(100) DEFAULT NULL,
@@ -1731,6 +1893,7 @@ CREATE TABLE `workplan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `workplan_task`;
 CREATE TABLE `workplan_task` (
   `workplan_task_id` int(100) NOT NULL AUTO_INCREMENT,
   `fk_workplan_id` int(100) NOT NULL,
@@ -1756,4 +1919,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-08-03 05:11:40
+-- 2020-11-25 08:39:59
