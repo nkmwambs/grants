@@ -143,23 +143,29 @@ class Request_model extends MY_Model
     
   }
 
-  function get_request_detail_accounts($office_id){ 
+  function get_request_detail_accounts($office_id,$project_allocation_id){ 
 
-    $account_system_id = $this->db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
+    $account_system_id = $this->read_db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
 
-    $this->db->select(array('expense_account_id','expense_account_name'));
-    $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-    $result = $this->db->get_where('expense_account',array('expense_account_is_active'=>1,'fk_account_system_id'=>$account_system_id));
+    $this->read_db->select(array('expense_account_id','expense_account_name'));
+    $this->read_db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $this->read_db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+    $this->read_db->join('project','project.project_id=project_income_account.fk_project_id');
+    $this->read_db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+    $this->read_db->where(array('project_allocation_id'=>$project_allocation_id));
+    $result = $this->read_db->get_where('expense_account',array('expense_account_is_active'=>1,'fk_account_system_id'=>$account_system_id));
     
     return $result->result_array();
   }
 
-  function get_request_detail_project_allocation($office_id,$request_date){
-    $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$request_date."' OR  project_allocation_extended_end_date >= '".$request_date."')";
-    $this->db->select(array('project_allocation_id','project_allocation_name'));
-    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
-    $this->db->where($query_condition);
-    $project_allocation = $this->db->get('project_allocation')->result_object();
+  function get_request_detail_project_allocation($office_id,$request_date,$request_type_id){
+    $query_condition = "project_allocation.fk_office_id = ".$office_id." AND (project_end_date >= '".$request_date."' OR  project_allocation_extended_end_date >= '".$request_date."')";
+    $this->read_db->select(array('project_allocation_id','project_name as project_allocation_name'));
+    $this->read_db->join('project','project.project_id=project_allocation.fk_project_id');
+    $this->read_db->join('project_request_type','project_request_type.fk_project_id=project.project_id');
+    $this->read_db->where(array('project_request_type.fk_request_type_id'=>$request_type_id));
+    $this->read_db->where($query_condition);
+    $project_allocation = $this->read_db->get('project_allocation')->result_object();
 
     return $project_allocation;
   }
