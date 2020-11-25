@@ -915,6 +915,7 @@ function removeRow(rowCellButton){
 
     if(count_body_rows > 1){
         row.remove();
+        updateTotalCost();
     }else{
         alert('You can\'t remove all rows');
     }
@@ -956,6 +957,10 @@ function computeTotalCost(numberField){
 
     $("#voucher_total").val(sumVoucherDetailTotalCost());
         
+}
+
+function updateTotalCost(){
+    $("#voucher_total").val(sumVoucherDetailTotalCost());
 }
 
 function sumVoucherDetailTotalCost(){

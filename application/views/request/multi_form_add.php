@@ -37,7 +37,7 @@
                         <label class='control-label col-xs-2'><?=get_phrase('office');?></label>
                         <div class='col-xs-3'>
                             <select class='form-control' id='office' name='fk_office_id'>
-                                <option><?=get_phrase('select_office');?></option>
+                                <option value=''><?=get_phrase('select_office');?></option>
                                 <?php foreach($this->session->hierarchy_offices as $office){?>
                                         <option value="<?=$office['office_id'];?>"><?=$office['office_name'];?></option>
                                 <?php }?>
@@ -171,7 +171,13 @@ $("#request_type_id").on('change',function(){
     });
 });
 
-$("#office").on('change',function(){
+$("#office").on('change',function(ev){
+    
+    if(!$(this).val()){
+        alert('Select a valid office');        
+        return false;
+    }
+
     let url = "<?=base_url();?>Request/get_request_type";
     $.post(url,{'office_id':$(this).val()},function(response){
         
@@ -197,7 +203,7 @@ $(".btn-insert").on('click',function(){
     var tbl_body_rows = $("#tbl_request_body tbody tr");
     //alert(tbl_body_rows.length);
     if(tbl_body_rows.length == 0){
-        insertRow();
+        
         updateAllocationField();
         disabled_account_fields();
     }else{
@@ -228,6 +234,7 @@ function removeRow(rowCellButton){
 
     if(count_body_rows > 1){
         row.remove();
+        updateTotalCost();
     }else{
         alert('You can\'t remove all rows');
     }
@@ -239,9 +246,8 @@ function removeRow(rowCellButton){
 $(document).on('change','.allocation',function(){
     var office_id = $("#office").val();
     var allocation_id = $(this).val();
-
     var data = {'office_id':office_id,'allocation_id':allocation_id};
-
+    var row = $(this).closest('tr');
     var url = "<?=base_url();?>Request/get_request_accounts";
 
     $.post(url,data,function(response){
@@ -254,7 +260,8 @@ $(document).on('change','.allocation',function(){
             });
         }
 
-         $(".account").html(account_select_option);
+         //$(".account").html(account_select_option);
+         row.find(".account").html(account_select_option);
 
     });
 });
@@ -273,6 +280,8 @@ function updateAllocationField(expense_account_id = "", project_allocation_id = 
 
         var response_allocation = JSON.parse(response);
 
+        insertRow();
+
         if(response_allocation.length > 0){
             $.each(response_allocation,function(i,el){
                 allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
@@ -281,33 +290,17 @@ function updateAllocationField(expense_account_id = "", project_allocation_id = 
 
         $(".allocation").html(allocation_select_option);
     });
-    
-    // $.ajax({
-    //     url:url,
-    //     type:"POST",
-    //     beforeSend:function(){
 
-    //     },
-    //     success:function(response){
-
-    //         var allocation_select_option = "<option value=''>Select an allocation code</option>";
-
-    //         var response_allocation = JSON.parse(response);
-
-    //         if(response_allocation.length > 0){
-    //             $.each(response_allocation,function(i,el){
-    //                 allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
-    //             });
-    //         }
-
-    //         $(".allocation").html(allocation_select_option);
-
-    //     },
-    //     error:function(){
-    //         alert('Error occurred');
-    //     }
-    // });
 }
+
+// function copyRow(){
+    
+//     var tbl_body = $("#tbl_request_body tbody");
+
+//     var original_row = tbl_body.find('tr').clone()[0];
+
+//     tbl_body.append(original_row);
+// }
 
 function copyRow(){
     
@@ -316,6 +309,23 @@ function copyRow(){
     var original_row = tbl_body.find('tr').clone()[0];
 
     tbl_body.append(original_row);
+
+    $.each(tbl_body.find("tr:last").find('input'),function(i,el){
+        let resatable_fields = ['quantity','description','unitcost'];
+        var elem = $(el);
+
+        resatable_fields.forEach(function(fieldClass,index){
+            if(elem.hasClass(fieldClass)){
+                elem.removeAttr('readonly');
+            }
+            
+            if(elem.hasClass('number-fields')){
+                elem.val(0);
+            }else{
+                elem.val("");
+            }
+        });
+    });
 }
 
 function insertRow(){
@@ -371,6 +381,10 @@ function computeTotalCost(numberField){
         
 }
 
+function updateTotalCost(){
+    $("#request_total").val(sumRequestDetailTotalCost());
+}
+
 function sumRequestDetailTotalCost(){
    
    var sum = 0;
@@ -412,6 +426,7 @@ function resetRequest(){
     $("#department_id").html('<option value="">Select a department</option>');
     $("#request_description").val(null);
     $("#request_total").val(0);
+    $("#office").val('');
     
 }
 
