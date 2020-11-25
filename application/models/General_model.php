@@ -479,7 +479,13 @@ function get_max_approval_status_id(String $approveable_item):Int{
   }else{
     $message = "You have no initial status set for the feature ".$approveable_item.". Please check if all approval workflow related tables are correctly set</br>";
 
-    show_error($message,500,'An Error was Encountered');
+    // Attempt creating approve item if not present then followed by approval work flow and status
+    // Attempt creating an approval work flow record if missing and create its initial status
+    
+    if(!$this->grants_model->insert_status_if_missing($approveable_item)){
+      show_error($message,500,'An Error was Encountered');
+    }
+    
   }
   //print_r($max_status_id);exit;
   

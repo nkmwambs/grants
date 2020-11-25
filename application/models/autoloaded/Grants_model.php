@@ -781,7 +781,7 @@ function generate_item_track_number_and_name($approveable_item){
     if(strlen($approve_item_name) > 2){
       $this->write_db->trans_start();
       
-      $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;
+      $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;// User Id 1 is created by setup
 
     // Check if the table is in the approveable items table if not create it
      $approve_item_id = $this->insert_missing_approveable_item($approve_item_name);
@@ -859,12 +859,6 @@ function generate_item_track_number_and_name($approveable_item){
     $status_data['status_approval_direction'] = 1;
     $status_data['status_is_requiring_approver_action'] = 0;
     $status_data['status_backflow_sequence'] = 0;
-              
-    // Get the new_status_role_id if set otherwise use the logged in user role id
-    $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
-    $role_id = $new_status_default_role->num_rows() > 0 ? $new_status_default_role->row()->role_id : 1;
-             
-    //$status_data['fk_role_id'] = $role_id;
     $status_data['status_created_date'] =  date('Y-m-d');
     $status_data['status_created_by'] = $user_id;
     $status_data['status_last_modified_by']  = $user_id;
@@ -872,6 +866,10 @@ function generate_item_track_number_and_name($approveable_item){
     $this->write_db->insert('status',$status_data); 
     
     $status_id = $this->write_db->insert_id();
+
+    // Get the new_status_role_id if set otherwise use the logged in user role id
+    $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
+    $role_id = $new_status_default_role->num_rows() > 0 ? $new_status_default_role->row()->role_id : 1;
 
     // $status_role_data['status_role_track_number'] =  $this->generate_item_track_number_and_name('status_role')['status_role_number'];
     // $status_role_data['status_role_name']  =  $this->generate_item_track_number_and_name('status_role')['status_role_name'];
@@ -924,13 +922,15 @@ function insert_missing_approveable_item($table){
 
   $approve_item_id = 0;
 
+  $user_id = $this->session->userdata('user_id')?$this->session->user_id:1;// User Id 1 is created by setup
+
   if($approve_items->num_rows() == 0){
     $data['approve_item_track_number'] = $this->generate_item_track_number_and_name('approve_item')['approve_item_track_number'];
     $data['approve_item_name'] = $table;
     $data['approve_item_is_active'] = 0;
     $data['approve_item_created_date'] = date('Y-m-d');
-    $data['approve_item_created_by'] = 1;//$this->session->user_id;
-    $data['approve_item_last_modified_by'] = 1;//$this->session->user_id;
+    $data['approve_item_created_by'] = $user_id;//$this->session->user_id;
+    $data['approve_item_last_modified_by'] = $user_id;//$this->session->user_id;
 
     //$approve_item_data_to_insert = $this->merge_with_history_fields('approve_item',$data,false);
     $this->write_db->insert('approve_item',$data);
