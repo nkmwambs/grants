@@ -28,7 +28,7 @@ class Project_model extends MY_Model
     }
 
     function detail_tables(){
-      return array('project_allocation','project_income_account');
+      return array('project_allocation','project_income_account','project_request_type');
     }
     
 
