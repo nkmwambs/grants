@@ -778,6 +778,7 @@ function generate_item_track_number_and_name($approveable_item){
 
   function insert_status_for_approveable_item($approve_item_name){
     //$approve_item_name = "country_currency";
+    
     if(strlen($approve_item_name) > 2){
       $this->write_db->trans_start();
       
@@ -786,7 +787,7 @@ function generate_item_track_number_and_name($approveable_item){
     // Check if the table is in the approveable items table if not create it
      $approve_item_id = $this->insert_missing_approveable_item($approve_item_name);
     
-      $account_systems_obj = $this->db->get('account_system');
+      $account_systems_obj = $this->write_db->get('account_system');
 
       if($account_systems_obj->num_rows() > 0){
 
@@ -794,7 +795,7 @@ function generate_item_track_number_and_name($approveable_item){
 
         foreach($account_systems as $account_system){
 
-          $approval_flow_obj = $this->db->get_where('approval_flow',
+          $approval_flow_obj = $this->write_db->get_where('approval_flow',
             array('fk_approve_item_id'=>$approve_item_id,
             'fk_account_system_id'=>$account_system['account_system_id']));
 
@@ -808,7 +809,7 @@ function generate_item_track_number_and_name($approveable_item){
 
             // Insert the new status
            
-            $status = $this->db->get_where('status',array('fk_approval_flow_id'=>$approval_flow_id,'status_approval_sequence'=>1));
+            $status = $this->write_db->get_where('status',array('fk_approval_flow_id'=>$approval_flow_id,'status_approval_sequence'=>1));
             
             if($status->num_rows() == 0){
 
@@ -824,11 +825,14 @@ function generate_item_track_number_and_name($approveable_item){
       if($this->write_db->trans_status() == false){
         $message = "Error occurred when creating missing status";
         show_error($message,500,'An Error As Encountered');
+        //echo 0;
         return false;
       }else{
+        //echo 1;
         return true;
       }
     }else{
+      //echo 2;
       return false;
     }
     
@@ -889,7 +893,7 @@ function generate_item_track_number_and_name($approveable_item){
 
   function insert_status_if_missing($approve_item_name){
 
-    $this->insert_status_for_approveable_item($approve_item_name);
+    $res = $this->insert_status_for_approveable_item($approve_item_name);
     
     // Check if has dependant table
 
@@ -898,6 +902,7 @@ function generate_item_track_number_and_name($approveable_item){
       $this->insert_status_for_approveable_item($this->grants->dependant_table($approve_item_name));    
     }
 
+    return $res;
 }
 
 
