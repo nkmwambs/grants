@@ -934,7 +934,7 @@ function _check_if_month_vouchers_are_approved($office_id,$reporting_month){
 
 function _check_if_bank_statements_are_uploaded($office_id,$reporting_month){
   //return false;
-  $statements_uploaded = $this->grants->retrieve_file_uploads_info('financial_report',[$office_id],$reporting_month);
+  $statements_uploaded = $this->attachment_model->retrieve_file_uploads_info('financial_report',[$office_id],$reporting_month);
 
   return count($statements_uploaded) > 0? true : false;
 

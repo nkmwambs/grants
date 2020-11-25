@@ -36,13 +36,19 @@ class Attachment_library extends Grants
     $attachment_name = $attachment_obj->attachment_name;
     $objectKey = $attachment_url.'/'.$attachment_name;
 
+    $s3_preassigned_url = $this->CI->config->item('upload_files_to_s3')?$this->CI->grants_s3_lib->s3_preassigned_url($objectKey):$this->get_local_filesystem_attachment_url($objectKey);
+
     return [
       'attachment_name'=>$attachment_name,
       'attachment_size'=>formatBytes($attachment_obj->attachment_size),
       'attachment_last_modified_date'=>$attachment_obj->attachment_last_modified_date,
       'attachment_file_type'=>$attachment_obj->attachment_file_type,
-      's3_preassigned_url'=>$this->CI->grants_s3_lib->s3_preassigned_url($objectKey)
+      's3_preassigned_url'=> $s3_preassigned_url
     ];
+  }
+
+  function get_local_filesystem_attachment_url($objectKey){
+    return base_url().$objectKey;
   }
 
 } 
