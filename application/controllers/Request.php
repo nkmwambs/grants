@@ -54,11 +54,27 @@ function get_request_department(){
   echo json_encode($department);
 }
 
-function get_request_accounts_and_allocation($office_id, $request_date){
-  
-  $result['accounts'] = $this->request_model->get_request_detail_accounts($office_id);
+function get_request_accounts(){
+  $post = $this->input->post();
 
-  $result['project_allocation'] = $this->request_model->get_request_detail_project_allocation($office_id, $request_date);
+  $office_id = $post['office_id'];
+  $allocation_id = $post['allocation_id'];
+
+  $result = $this->request_model->get_request_detail_accounts($office_id,$allocation_id);
+
+  echo json_encode($result);
+
+}
+
+function get_request_allocation(){
+
+  $post = $this->input->post();
+
+  $office_id = $post['office_id'];
+  $request_date = $post['request_date'];
+  $request_type_id = $post['request_type_id'];
+
+  $result = $this->request_model->get_request_detail_project_allocation($office_id, $request_date, $request_type_id);
 
   echo json_encode($result);
 }

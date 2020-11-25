@@ -54,7 +54,7 @@
                     <div class='form-group'>
                         <label class='control-label col-xs-2'><?=get_phrase('request_type');?></label>
                         <div class='col-xs-3'>
-                            <select class='form-control' name='fk_request_type_id' id='request_type_id'>
+                            <select class='form-control account_fields' name='fk_request_type_id' id='request_type_id'>
                                 <option value=""><?=get_phrase('select_request_type');?></option>
                                 
                             </select>
@@ -63,7 +63,7 @@
 
                         <label class='control-label col-xs-2'><?=get_phrase('department');?></label>
                         <div class='col-xs-3'>
-                            <select class="form-control" name='fk_department_id' id='department_id'>
+                            <select class="form-control account_fields" name='fk_department_id' id='department_id'>
                                     <option value=""><?=get_phrase('select_department');?></option>
                             </select>
                         </div>
@@ -96,8 +96,8 @@
                                         <th><?=get_phrase('description');?></th>
                                         <th><?=get_phrase('unit_cost');?></th>
                                         <th><?=get_phrase('total_cost');?></th>
-                                        <th><?=get_phrase('account');?></th>
                                         <th><?=get_phrase('allocation_code');?></th>
+                                        <th><?=get_phrase('account');?></th>
 
                                     </tr>
                                 </thead>
@@ -198,11 +198,25 @@ $(".btn-insert").on('click',function(){
     //alert(tbl_body_rows.length);
     if(tbl_body_rows.length == 0){
         insertRow();
-        updateAccountAndAllocationField();
+        updateAllocationField();
+        disabled_account_fields();
     }else{
         copyRow();   
     } 
 });
+
+function disabled_account_fields(){
+    $('.account_fields').each(function(i,elem){
+        //$(elem).attr("style", "pointer-events: none;");
+        if($(elem).val() != ''){
+            if($(elem).is('select')){
+                $(elem).find('option:not(:selected)').prop('disabled', true);
+            }else{
+                $(elem).prop('readonly','readonly');
+            }
+        }
+    });
+}
 
 function removeRow(rowCellButton){
     var row = $(rowCellButton).closest('tr');
@@ -221,54 +235,78 @@ function removeRow(rowCellButton){
 
 }
 
-function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
+
+$(document).on('change','.allocation',function(){
+    var office_id = $("#office").val();
+    var allocation_id = $(this).val();
+
+    var data = {'office_id':office_id,'allocation_id':allocation_id};
+
+    var url = "<?=base_url();?>Request/get_request_accounts";
+
+    $.post(url,data,function(response){
+        var account_select_option = "<option value=''>Select an account</option>";
+        var response_accounts = JSON.parse(response);
+
+         if(response_accounts.length > 0){
+            $.each(response_accounts,function(i,el){
+                account_select_option += "<option value='" + response_accounts[i].expense_account_id + "'>" + response_accounts[i].expense_account_name + "</option>";
+            });
+        }
+
+         $(".account").html(account_select_option);
+
+    });
+});
+
+function updateAllocationField(expense_account_id = "", project_allocation_id = ""){
     
     var office_id = $("#office").val();
-
     var request_date = $("#request_date").val();
+    var request_type_id = $("#request_type_id").val();
+    var data = {'office_id':office_id,'request_date':request_date,'request_type_id':request_type_id};
 
-    var url = "<?=base_url();?>Request/get_request_accounts_and_allocation/" + office_id + "/" + request_date;
-    
-    $.ajax({
-        url:url,
-        type:"POST",
-        beforeSend:function(){
+    var url = "<?=base_url();?>Request/get_request_allocation";
 
-        },
-        success:function(response){
-            var account_select_option = "<option value=''>Select an account</option>";
+    $.post(url,data,function(response){
+        var allocation_select_option = "<option value=''>Select an allocation code</option>";
 
-            var allocation_select_option = "<option value=''>Select an allocation code</option>";
+        var response_allocation = JSON.parse(response);
 
-            //alert(response);
-
-            var response_objects = JSON.parse(response);
-
-            var response_accounts = response_objects['accounts'];
-            
-            var response_allocation = response_objects['project_allocation'];
-
-            if(response_accounts.length > 0){
-                $.each(response_accounts,function(i,el){
-                    account_select_option += "<option value='" + response_accounts[i].expense_account_id + "'>" + response_accounts[i].expense_account_name + "</option>";
-                });
-            }
-
-            if(response_allocation.length > 0){
-                $.each(response_allocation,function(i,el){
-                    allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
-                });
-            }
-
-            $(".allocation").html(allocation_select_option);
-
-            $(".account").html(account_select_option);
-
-        },
-        error:function(){
-            alert('Error occurred');
+        if(response_allocation.length > 0){
+            $.each(response_allocation,function(i,el){
+                allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
+            });
         }
+
+        $(".allocation").html(allocation_select_option);
     });
+    
+    // $.ajax({
+    //     url:url,
+    //     type:"POST",
+    //     beforeSend:function(){
+
+    //     },
+    //     success:function(response){
+
+    //         var allocation_select_option = "<option value=''>Select an allocation code</option>";
+
+    //         var response_allocation = JSON.parse(response);
+
+    //         if(response_allocation.length > 0){
+    //             $.each(response_allocation,function(i,el){
+    //                 allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
+    //             });
+    //         }
+
+    //         $(".allocation").html(allocation_select_option);
+
+    //     },
+    //     error:function(){
+    //         alert('Error occurred');
+    //     }
+    // });
 }
 
 function copyRow(){
@@ -287,9 +325,9 @@ function insertRow(){
     cell += quantityCell(); 
     cell += descriptionCell();
     cell += unitCostCell(); 
-    cell += totalCostCell(); 
+    cell += totalCostCell();
+    cell += allocatioCodeCell();  
     cell += accountCell(); 
-    cell += allocatioCodeCell(); 
 
     tbl_body.append("<tr>"+cell+"</tr>");
 }

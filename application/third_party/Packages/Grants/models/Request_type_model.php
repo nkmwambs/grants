@@ -38,9 +38,9 @@ class Request_type_model extends MY_Model{
 
     public function detail_multi_form_add_visible_columns(){}
 
-    public function list_table_visible_columns()
-    {
-        return ['request_type_track_number','request_type_name','request_type_is_active','request_type_last_modified_date'];
-    }
+    // public function list_table_visible_columns()
+    // {
+    //     return ['request_type_track_number','request_type_name','request_type_is_active','request_type_last_modified_date'];
+    // }
 
 }
