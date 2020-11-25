@@ -647,7 +647,7 @@ CREATE TABLE `department` (
   `department_track_number` varchar(100) NOT NULL,
   `department_name` varchar(100) NOT NULL,
   `department_description` longtext NOT NULL,
-  `department_is_active` int(5) NOT NULL,
+  `department_is_active` int(5) NOT NULL DEFAULT '1',
   `department_created_date` date NOT NULL,
   `department_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `department_created_by` int(100) NOT NULL,
@@ -1559,6 +1559,27 @@ CREATE TABLE `request_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `request_type_department`;
+CREATE TABLE `request_type_department` (
+  `request_type_department_id` int(100) NOT NULL AUTO_INCREMENT,
+  `request_type_department_track_number` varchar(100) NOT NULL,
+  `request_type_department_name` varchar(100) NOT NULL,
+  `fk_request_type_id` int(11) NOT NULL,
+  `fk_department_id` int(100) NOT NULL,
+  `request_type_department_created_by` int(100) NOT NULL,
+  `request_type_department_created_date` date NOT NULL,
+  `request_type_department_last_modified_by` int(100) NOT NULL,
+  `request_type_department_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_status_id` int(11) NOT NULL,
+  `fk_approval_id` int(11) NOT NULL,
+  PRIMARY KEY (`request_type_department_id`),
+  KEY `fk_request_type_id` (`fk_request_type_id`),
+  KEY `fk_department_id` (`fk_department_id`),
+  CONSTRAINT `request_type_department_ibfk_1` FOREIGN KEY (`fk_request_type_id`) REFERENCES `request_type` (`request_type_id`),
+  CONSTRAINT `request_type_department_ibfk_2` FOREIGN KEY (`fk_department_id`) REFERENCES `department` (`department_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `role_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -1919,4 +1940,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-11-25 08:39:59
+-- 2020-11-25 11:56:24
