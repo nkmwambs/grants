@@ -33,7 +33,7 @@ class Request_type_model extends MY_Model{
     }
 
     public function detail_tables(){
-        return array('request');
+        return array('request_type_department');
     }
 
     public function detail_multi_form_add_visible_columns(){}
