@@ -66,6 +66,11 @@ grants:
       lookup_tables:
         - request_type
         - department
+    
+    project_request_type:
+      lookup_tables:
+        - request_type
+        - project
 
     cash_recipient_account:
       lookup_tables:

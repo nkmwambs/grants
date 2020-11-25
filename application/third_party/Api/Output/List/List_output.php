@@ -204,7 +204,7 @@ function feature_model_list_table_visible_columns(): Array {
     // Get result from grants model if feature model list returns empty
     $query_result = $this->list_internal_query_results($lookup_tables); // System generated query result
     
-    if(method_exists($this->CI->$model,'list')){
+    if(method_exists($this->CI->$model,'list') && !empty($this->CI->$model->list())){
       $feature_model_list_result = $this->CI->$model->list();
       if(is_array($feature_model_list_result)){
         // Allows empty result set
