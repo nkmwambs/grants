@@ -52,18 +52,8 @@ class Attachment_model extends MY_Model{
         
         $item_id = $path_array[3];
 
-        //$targetPath = $storeFolder."/";
-
-
         // Create require local folders
-        if($this->config->item('upload_files_to_s3')){
-
-          if(!file_exists('uploads/temps')){
-            mkdir('uploads/temps');
-          }
-          
-          $targetPath = 'uploads/temps/';
-        }else{
+        if(!$this->config->item('upload_files_to_s3')){
           for ($i=0; $i < count($path_array) ; $i++) { 
         
             array_push($path,$path_array[$i]);
@@ -85,10 +75,6 @@ class Attachment_model extends MY_Model{
           for($i=0;$i<count($_FILES['file']['name']);$i++){
             $tempFile = $_FILES['file']['tmp_name'][$i];   
             
-            //$targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
-            
-            //move_uploaded_file($tempFile,str_replace('/',DS,$targetFile));
-
             // S3 comes in here
 
             if($this->config->item('upload_files_to_s3')){
@@ -133,7 +119,7 @@ class Attachment_model extends MY_Model{
            
           }
   
-          return $preassigned_urls;//$this->attachment_library->attachment_record_with_s3_preassigned_url('reconciliation',$item_id,$file_name);//$_FILES;
+          return $preassigned_urls;
         }
       }
 
