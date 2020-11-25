@@ -1293,15 +1293,17 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
     
 
     //$this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
-
+    //$this->db->get($table)->result_array();
     if(!$this->db->get($table)){
       $error = $this->db->error();
-      $message = 'You have a database error code '.$error['code'].'. '.$error['message'];
+      //print_r($error);
+      $message = 'The table '.$this->controller.' has no relationship with '.$table.'. Check the '.$this->controller.'_model detail_tables method';
       show_error($message,500,'An Error Was Encountered');
     }else{
       $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
-      //print_r($lookup_tables);exit;
-      return $this->db->get($table)->result_array();
+    
+      return  $this->db->get($table)->result_array();
+      
     }
     
 } 
