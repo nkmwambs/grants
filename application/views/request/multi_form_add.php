@@ -54,7 +54,7 @@
                     <div class='form-group'>
                         <label class='control-label col-xs-2'><?=get_phrase('request_type');?></label>
                         <div class='col-xs-3'>
-                            <select class='form-control' name='fk_request_type_id' id='request_type_id' onchange="getAccountsByVoucherType(this);">
+                            <select class='form-control' name='fk_request_type_id' id='request_type_id'>
                                 <option value=""><?=get_phrase('select_request_type');?></option>
                                 
                             </select>
@@ -152,18 +152,32 @@ function unhide_all_hidden_button(){
     $('.btn-save-new').show()
 }
 
+$("#request_type_id").on('change',function(){
+    let url = "<?=base_url();?>Request/get_request_department";
+    let data  = {'request_type_id':$(this).val()};
+
+    $.post(url,data,function(response){
+        var department = JSON.parse(response); 
+
+        var select_department_option = "<option value=''><?=get_phrase('select_department');?></option>";
+
+             if(department.length > 0){
+                 $.each(department,function(i,el){
+                     select_department_option += "<option value='" + department[i].department_id + "'>" + department[i].department_name +"</option>";
+                 });
+             }
+
+        $("#department_id").html(select_department_option);
+    });
+});
+
 $("#office").on('change',function(){
     let url = "<?=base_url();?>Request/get_request_type";
     $.post(url,{'office_id':$(this).val()},function(response){
         
         unhide_all_hidden_button();
         
-        var response_obj = JSON.parse(response);
-
-        var request_type = response_obj['request_type'];
-        var department = response_obj['department'];  
-
-        //alert(department[1].department_name);
+        var request_type = JSON.parse(response);        
 
         var select_option = "<option value=''><?=get_phrase('select_request_type');?></option>";
 
@@ -173,15 +187,7 @@ $("#office").on('change',function(){
                 });
             }
 
-        var select_department_option = "<option value=''><?=get_phrase('select_department');?></option>";
 
-            if(department.length > 0){
-                $.each(department,function(i,el){
-                    select_department_option += "<option value='" + department[i].department_id + "'>" + department[i].department_name +"</option>";
-                });
-            }
-
-        $("#department_id").html(select_department_option);
 
         $("#request_type_id").html(select_option);
     });

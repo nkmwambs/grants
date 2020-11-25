@@ -37,10 +37,21 @@ function get_request_type(){
 
   $account_system_id = $this->db->get_where('office',array('office_id'=>$office_id))->row()->fk_account_system_id;
 
-  $result['request_type'] = $this->Request_model->get_request_types($account_system_id);
-  $result['department'] = $this->Request_model->get_user_departments();
+  $result = $this->Request_model->get_request_types($account_system_id);
+  //$result['department'] = $this->Request_model->get_user_departments();
 
   echo json_encode($result);
+}
+
+function get_request_department(){
+  $request_type_id = $this->input->post('request_type_id');
+
+  $this->read_db->select(array('department_id','department_name'));
+  $this->read_db->where(array('request_type_department.fk_request_type_id'=>$request_type_id));
+  $this->read_db->join('department','department.department_id=request_type_department.fk_department_id');
+  $department = $this->read_db->get('request_type_department')->result_array();
+
+  echo json_encode($department);
 }
 
 function get_request_accounts_and_allocation($office_id, $request_date){

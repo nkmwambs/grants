@@ -62,6 +62,11 @@ grants:
   
   tables:
 
+    request_type_department:
+      lookup_tables:
+        - request_type
+        - department
+
     cash_recipient_account:
       lookup_tables:
         - voucher
