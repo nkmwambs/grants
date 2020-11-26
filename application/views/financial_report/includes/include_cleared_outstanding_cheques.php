@@ -15,12 +15,12 @@
                             $clear_outstanding_cheque_state_color = "danger";
                             //$oustanding_state_disabled = "";
                             $clear_outstanding_cheque_state_clear_class = 'to_clear';
-                            $clear_outstanding_cheque_state_label = get_phrase('clear');
+                            $clear_outstanding_cheque_state_label = get_phrase('unclear');
                             if($clear_outstanding_cheque['voucher_cleared'] == 1){
                                 $clear_outstanding_cheque_state_color = "success";
                                 //$oustanding_state_disabled = "disabled";
                                 //$oustanding_state_clear_class = '';
-                                $clear_outstanding_cheque_state_label = get_phrase('unclear');
+                                //$clear_outstanding_cheque_state_label = get_phrase('unclear');
                             }
                         ?>
                         <td>
