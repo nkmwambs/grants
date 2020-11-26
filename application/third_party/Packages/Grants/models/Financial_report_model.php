@@ -703,7 +703,7 @@ class Financial_report_model extends MY_Model{
         $this->db->where_in('voucher.fk_office_id',$office_ids);
         $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
         $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));
-        $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month'=>date('Y-m-t',strtotime($reporting_month))));
+        $this->db->where(array('voucher_cleared'=>1,'voucher_date<='=>date('Y-m-t',strtotime($reporting_month)),'voucher_cleared_month'=>date('Y-m-t',strtotime($reporting_month))));
 
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
         $this->db->join('office','office.office_id=voucher.fk_office_id');
