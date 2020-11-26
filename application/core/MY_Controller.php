@@ -431,7 +431,8 @@ class MY_Controller extends CI_Controller
     if(!$is_max_approval_status_id){
        // Get status of current id - to be taken to grants_model
        $master_action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
-
+       
+      //print_r($master_action_labels);exit;
        //Update master record
        $data['fk_status_id'] = $master_action_labels['next_approval_status'];
        if($change_type == 'decline'){
@@ -441,41 +442,41 @@ class MY_Controller extends CI_Controller
        $this->write_db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
        $this->write_db->update(strtolower($this->controller),$data);
        
-       $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
+       //$is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,$data['fk_status_id']);
 
        $item_approval_id = $this->db->get_where($this->controller,
          array($this->controller.'_id'=>hash_id($this->id,'decode')))->row()->fk_approval_id;
          
-       if($is_max_approval_status_id){
          
          $this->write_db->where(array('approval_id'=>$item_approval_id));
-         $this->write_db->update('approval',array('fk_status_id'=>103));
-       
-       }else{
-         $this->write_db->where(array('approval_id'=>$item_approval_id));
-         $this->write_db->update('approval',array('fk_status_id'=>102));
-       }
+         $this->write_db->update('approval',array('fk_status_id'=>$data['fk_status_id']));
+      
 
-       //Update detail record
-       $detail_record = $this->grants->dependant_table($this->controller);
+      //  //Update detail record
+      //  $detail_record = $this->grants->dependant_table($this->controller);
    
-       //Get id of detail table
-       $detail_id = $detail_record.'_id';
-       $primary_table_id = 'fk_'.$this->controller.'_id';
+      //  //Get id of detail table
+      //  $detail_id = $detail_record.'_id';
+      //  $primary_table_id = 'fk_'.$this->controller.'_id';
        
-       $detail_key = $this->db->get_where($detail_record,
-       array($primary_table_id=>hash_id($this->id,'decode')))->row()->$detail_id;
-   
-       $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
-       
-       $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+      //  $detail_obj = $this->db->get_where($detail_record,
+      //  array($primary_table_id=>hash_id($this->id,'decode')))->result_array();//->row()->$detail_id;
 
-       if($change_type == 'decline'){
-         $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
-       }
-       
-       $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
-       $this->write_db->update($detail_record,$detail_data);
+      //  foreach($detail_obj as $detail){
+      //     $detail_key = $detail[$detail_id];
+
+      //     $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
+        
+      //     $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+  
+      //     if($change_type == 'decline'){
+      //       $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
+      //     }
+          
+      //     $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
+      //     $this->write_db->update($detail_record,$detail_data);
+      //  }
+   
     }    
        
     
