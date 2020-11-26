@@ -28,6 +28,7 @@
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
+                            <!-- <input type="submit" class='btn btn-default btn-save' value="<?=get_phrase('save');?>" /> -->
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                         </div>
@@ -80,6 +81,7 @@
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
+                            <!-- <input type="submit" class='btn btn-default btn-save' value="<?=get_phrase('save');?>" /> -->
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                            
@@ -98,6 +100,7 @@
                                         <th><?=get_phrase('total_cost');?></th>
                                         <th><?=get_phrase('allocation_code');?></th>
                                         <th><?=get_phrase('account');?></th>
+                                        <th><?=get_phrase('attachments');?></th>
 
                                     </tr>
                                 </thead>
@@ -105,7 +108,7 @@
                                 </tbody>  
                                 <tfoot>
                                     <tr>
-                                        <td colspan='6'><?=get_phrase('total');?></td>
+                                        <td colspan='7'><?=get_phrase('total');?></td>
                                         <td><input type='text' id='request_total' class='form-control' readonly /></td>
                                     </tr>
                                 </tfoot>      
@@ -117,6 +120,7 @@
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
+                            <!-- <input type="submit" class='btn btn-default btn-save' value="<?=get_phrase('save');?>" /> -->
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                            
@@ -338,6 +342,7 @@ function insertRow(){
     cell += totalCostCell();
     cell += allocatioCodeCell();  
     cell += accountCell(); 
+    cell += fileUploadCell();
 
     tbl_body.append("<tr>"+cell+"</tr>");
 }
@@ -458,9 +463,16 @@ function allocatioCodeCell(value = 0){
     return "<td><select name='fk_project_allocation_id[]' class='form-control body-input allocation' id=''></select></td>";
 }
 
+function fileUploadCell(value = 0){
+    return "<td><input name='file_upload[]' class='form-control body-input file_upload' type='file' /></td>";
+}
+
 function saveRequest(){
     var url = "<?=base_url();?>Request/insert_new_request";
     var data = $("#frm_request").serializeArray();
+    //var files = $('.file_upload');
+    //var form = $("#frm_request");
+    //var data = new FormData(form);
 
     $.ajax({
         url:url,
