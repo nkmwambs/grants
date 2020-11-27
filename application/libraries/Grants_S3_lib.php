@@ -18,11 +18,17 @@ function __construct(){
 }
     
 function s3_setup(){
-    $this->s3Client = new S3Client([
-        //'profile' => 'default',
+    $s3ClientCredentials = [
         'region' => $this->CI->config->item('s3_region'),
         'version' => '2006-03-01'
-       ]);
+       ];
+
+    if($_SERVER['HTTP_HOST'] == 'localhost'){
+        $s3ClientCredentials['profile'] = 'default';
+    }
+
+    $this->s3Client = new S3Client($s3ClientCredentials);
+    
 }
 
 
