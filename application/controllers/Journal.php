@@ -113,28 +113,22 @@ class Journal extends MY_Controller
     parent::view();
   }
 
-  function reverse_voucher($voucher_id){
-     
-    $message = "Reversal Completed";
-
-    // Get the voucher and voucher details
-    $voucher = $this->db->get_where('voucher',
-    array('voucher_id'=>$voucher_id))->row_array();
-
+  function insert_voucher_reversal_record($voucher){
+    
     //Unset the primary key field
-    unset($voucher['voucher_id']);
+    $voucher_id =array_shift($voucher);
 
     $voucher_details = $this->db->get_where('voucher_detail',
     array('fk_voucher_id'=>$voucher_id))->result_array();
 
     // Get next voucher number
     $next_voucher_number = $this->voucher_model->get_voucher_number($voucher['fk_office_id']);
+    $next_voucher_date = $this->voucher_model->get_voucher_date($voucher['fk_office_id']);
 
     // Replace the voucher number in selected voucher with the next voucher number
     $voucher_description = '<strike>'.$voucher['voucher_description'].'</strike> [Reversal of voucher number '.$voucher['voucher_number'].']';
-    $voucher = array_replace($voucher,['voucher_vendor'=>'<strike>'.$voucher['voucher_vendor'].'<strike>','voucher_is_reversed'=>1,'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
-
-    $this->write_db->trans_start();
+    $voucher = array_replace($voucher,['voucher_vendor'=>'<strike>'.$voucher['voucher_vendor'].'<strike>','voucher_is_reversed'=>1,'voucher_cleared'=>1,'voucher_date'=>$next_voucher_date,'voucher_cleared_month'=>date('Y-m-t',strtotime($next_voucher_date)),'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
+  
     //Insert the next voucher record and get the insert id
     $this->write_db->insert('voucher',$voucher);
 
@@ -154,13 +148,68 @@ class Journal extends MY_Controller
     // Update the original voucher record by flagging it reversed
     $this->write_db->where(array('voucher_id'=>$voucher_id));
     $update_data['voucher_is_reversed'] = 1;
+    $update_data['voucher_cleared'] = 1;
+    $update_data['voucher_cleared_month'] = date('Y-m-t',strtotime($next_voucher_date));
     $update_data['voucher_cheque_number'] = $voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number'];
     $this->write_db->update('voucher',$update_data);
+
+    return $new_voucher_id;
+  }
+
+  function update_cash_recipient_account($new_voucher_id,$voucher){
+
+    $voucher_id = array_shift($voucher);
+    // Insert a cash_recipient_account record if reversing voucher is bank to bank contra
+
+    $this->read_db->where(array('voucher_type_id'=>$voucher['fk_voucher_type_id']));
+    $this->read_db->join('voucher_type','voucher_type.fk_voucher_type_effect_id=voucher_type_effect.voucher_type_effect_id');
+    $voucher_type_effect_code = $this->read_db->get('voucher_type_effect')->row()->voucher_type_effect_code;
+
+    if($voucher_type_effect_code == 'bank_to_bank_contra'){
+
+      $this->read_db->where(array('fk_voucher_id'=>$voucher_id));
+      $original_cash_recipient_account = $this->read_db->get('cash_recipient_account')->row_array();
+
+      $cash_recipient_account_data['cash_recipient_account_name'] = $this->grants_model->generate_item_track_number_and_name('cash_recipient_account')['cash_recipient_account_name'];
+      $cash_recipient_account_data['cash_recipient_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('cash_recipient_account')['cash_recipient_account_track_number'];
+      $cash_recipient_account_data['fk_voucher_id'] = $new_voucher_id;
+
+      if($voucher['fk_office_bank_id'] > 0){
+        $cash_recipient_account_data['fk_office_bank_id'] = $original_cash_recipient_account['fk_office_bank_id'];
+      }elseif($voucher['fk_office_cash_id'] > 0){
+        $cash_recipient_account_data['fk_office_cash_id'] = $original_cash_recipient_account['fk_office_cash_id'];
+      }
+
+      $cash_recipient_account_data['cash_recipient_account_created_date'] = date('Y-m-d');
+      $cash_recipient_account_data['cash_recipient_account_created_by'] = $this->session->user_id;
+      $cash_recipient_account_data['cash_recipient_account_last_modified_by'] = $this->session->user_id;
+
+      $cash_recipient_account_data['fk_approval_id'] = $this->grants_model->insert_approval_record('cash_recipient_account');
+      $cash_recipient_account_data['fk_status_id'] = $this->grants_model->initial_item_status('cash_recipient_account');
+
+      $this->write_db->insert('cash_recipient_account',$cash_recipient_account_data);
+    }
+
+  }
+
+  function reverse_voucher($voucher_id){
+     
+    $message = get_phrase("reversal_completed");
+
+    // Get the voucher and voucher details
+    $voucher = $this->db->get_where('voucher',
+    array('voucher_id'=>$voucher_id))->row_array();
+
+    $this->write_db->trans_start();
+
+    $new_voucher_id = $this->insert_voucher_reversal_record($voucher);
+
+    $this->update_cash_recipient_account($new_voucher_id,$voucher);
 
     $this->write_db->trans_complete();
 
     if($this->write_db->trans_status() == false){
-      $message = "Reversal failed";
+      $message = get_phrase("reversal_failed");
     }
 
     echo $message;

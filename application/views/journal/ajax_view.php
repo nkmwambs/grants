@@ -149,7 +149,7 @@
                      <tr>
                         <td>
                             
-                            <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?>' >
+                            <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
                                 <i class='fa fa-undo' style='cursor:pointer;'></i>
                                 <?=get_phrase('reverse');?>
                             </div>
