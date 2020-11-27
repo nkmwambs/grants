@@ -115,7 +115,7 @@ class Journal extends MY_Controller
 
   function reverse_voucher($voucher_id){
      
-    $message = "Reversal Completed";
+    $message = get_phrase("reversal_completed");
 
     // Get the voucher and voucher details
     $voucher = $this->db->get_where('voucher',
