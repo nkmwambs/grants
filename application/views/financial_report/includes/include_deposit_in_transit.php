@@ -20,7 +20,7 @@
                                 $deposit_in_transit_state_color = "success";
                                 //$oustanding_state_disabled = "disabled";
                                 //$oustanding_state_clear_class = '';
-                                $deposit_in_transit_state_label = get_phrase('unclear');
+                                //$deposit_in_transit_state_label = get_phrase('unclear');
                             }
                         ?>
                         <td>

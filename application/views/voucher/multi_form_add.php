@@ -655,6 +655,7 @@ function get_bank_cash_information(voucherTypeSelect){
 
         if(voucher_type_id){
             $(".btn-insert").show();
+            $(".btn-retrieve-request").show();
         }else{
             hide_buttons();
         }
