@@ -19,7 +19,7 @@ function __construct(){
     
 function s3_setup(){
     $this->s3Client = new S3Client([
-        'profile' => 'default',
+        //'profile' => 'default',
         'region' => $this->CI->config->item('s3_region'),
         'version' => '2006-03-01'
        ]);
