@@ -21,7 +21,6 @@
                                 $clear_outstanding_cheque_state_color = "success";
                                 //$oustanding_state_disabled = "disabled";
                                 $oustanding_state_clear_class = '';
-                                //$clear_outstanding_cheque_state_label = get_phrase('unclear');
                             }
                         ?>
                         <td>
