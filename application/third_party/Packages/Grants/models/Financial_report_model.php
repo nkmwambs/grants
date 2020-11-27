@@ -841,7 +841,8 @@ class Financial_report_model extends MY_Model{
         //$cleared_condition = " `voucher_cleared` = 1 AND `voucher_cleared_month` = '".date('Y-m-t',strtotime($reporting_month))."' ";
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number','voucher_description',
-        'voucher_cleared','office_code','office_name','voucher_date','voucher_cleared','office_bank_id','office_bank_name'));
+        'voucher_cleared','office_code','office_name','voucher_date','voucher_cleared',
+        'office_bank_id','office_bank_name','voucher_is_reversed'));
         $this->db->group_by('voucher_id');
         $this->db->where_in('voucher.fk_office_id',$office_ids);
         //$this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
