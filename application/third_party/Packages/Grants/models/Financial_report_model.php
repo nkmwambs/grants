@@ -783,10 +783,23 @@ class Financial_report_model extends MY_Model{
         }
        
         
+        // $this->db->group_start();
+        //     $this->db->where(array('voucher_cleared'=>0));
+        //     $this->db->or_group_start();
+        //         $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
+        //     $this->db->group_end();
+        // $this->db->group_end();
+
         $this->db->group_start();
-            $this->db->where(array('voucher_cleared'=>0));
+            $this->db->where(array('voucher_cleared'=>0,
+            'voucher_date >='=>date('Y-m-01',strtotime($reporting_month)),
+            'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))    
+            ));
             $this->db->or_group_start();
-                $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
+                $this->db->where(array('voucher_cleared'=>1,
+                'voucher_date >='=>date('Y-m-01',strtotime($reporting_month)),
+                'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
+                'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
             $this->db->group_end();
         $this->db->group_end();
         
@@ -853,9 +866,10 @@ class Financial_report_model extends MY_Model{
             $this->db->where($cond_string);
         }
         
-        $this->db->where(array('voucher_cleared'=>1,
-        'voucher_cleared_month'=>date('Y-m-t',strtotime($reporting_month))));
-
+        // $this->db->where(array('voucher_cleared'=>1,
+        // 'voucher_cleared_month'=>date('Y-m-t',strtotime($reporting_month))));
+        $this->db->where(array('voucher_cleared'=>1,'voucher_date<='=>date('Y-m-t',strtotime($reporting_month)),'voucher_cleared_month'=>date('Y-m-t',strtotime($reporting_month))));
+        
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
         $this->db->join('office','office.office_id=voucher.fk_office_id');
         $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
