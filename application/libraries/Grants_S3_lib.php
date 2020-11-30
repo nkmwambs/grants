@@ -18,11 +18,13 @@ function __construct(){
 }
     
 function s3_setup(){
+    // Array for server credentials
     $s3ClientCredentials = [
         'region' => $this->CI->config->item('s3_region'),
         'version' => '2006-03-01'
        ];
-
+    
+    // Array for localhost
     if($_SERVER['HTTP_HOST'] == 'localhost'){
         $s3ClientCredentials['profile'] = 'default';
     }
