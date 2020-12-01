@@ -5,7 +5,7 @@ $('.form-control').keydown(function(){
 });
 
 $(".save, .save_new").on('click',function(ev){
-  
+
   var elem = $(this);
 
   //Check if all required fields are filled
@@ -15,7 +15,7 @@ $(".save, .save_new").on('click',function(ev){
     if($(el).hasClass('select2')){
       // To be completed later. Check if select2 is empty
     }else{
-      if($(el).val() == ''){
+      if($(el).val() == '' && $(el).attr('required')){
         $(el).css('border','1px solid red');
         empty_fields_count++;
       }

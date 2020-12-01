@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php 
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*This autoloads all the classes in third_party folder subdirectories e.g. Output
   The third_party houses the reusable API or code systemwise
@@ -8,7 +10,7 @@ require_once APPPATH."third_party".DIRECTORY_SEPARATOR."Api".DIRECTORY_SEPARATOR
 define('VALIDATION_ERROR','VALIDATION_ERROR');
 define('VALIDATION_SUCCESS','VALIDATION_SUCCESS');
 
-class MY_Controller extends CI_Controller implements CrudModelInterface
+class MY_Controller extends CI_Controller
 {
 
   private $list_result;
@@ -121,6 +123,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->load->model('approval_model');
     $this->load->model('general_model');
     $this->load->model('message_model');
+    $this->load->model('attachment_model');
 
     //Check if account system models and libraries are loaded if not load them
     //check_and_load_account_system_model_exists('As_'.$this->controller.'_library','Grants','library');
@@ -130,6 +133,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     if(!$this->session->user_id){
       redirect(base_url().'login','refresh');
     }
+
+    $this->load->library('Grants_S3_lib');
 
   }
 
@@ -177,11 +182,11 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
 
     $render_model_result = 'render_'.$this->action.'_page_data';
 
-    if($this->action == 'list' || $this->action == 'view'){
+    if($this->action == 'list' || $this->action == 'view' || $this->action == 'multi_row_add'){
 
         if(!$this->render_data_from_model($render_model_result)){
           // Render from default API
-          $this->list_result = Output_base::load($this->action);
+          $this->list_result = \Output_base::load($this->action);
         }
 
     }else{
@@ -342,6 +347,13 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     $this->id = $id;
     $this->crud_views();
   }
+
+  function multi_row_add($id = null):Void{
+    $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create');
+    $this->id = $id;
+    $this->crud_views();
+  }
+
 /**
    * delete() 
    * This method is an entry method for delete action. It loads user 
@@ -349,7 +361,7 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
    * @param String
    *@return String
    */
-  function delete($id = null):String{
+  function delete($id = null){
     $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete');
     echo "Record deleted successful";
   }
@@ -419,7 +431,8 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
     if(!$is_max_approval_status_id){
        // Get status of current id - to be taken to grants_model
        $master_action_labels = $this->grants->action_labels($this->controller,hash_id($this->id,'decode'));
-
+       
+      //print_r($master_action_labels);exit;
        //Update master record
        $data['fk_status_id'] = $master_action_labels['next_approval_status'];
        if($change_type == 'decline'){
@@ -429,41 +442,41 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
        $this->write_db->where(array(strtolower($this->controller).'_id'=>hash_id($this->id,'decode')));
        $this->write_db->update(strtolower($this->controller),$data);
        
-       $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,hash_id($this->id,'decode'));
+       //$is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,$data['fk_status_id']);
 
        $item_approval_id = $this->db->get_where($this->controller,
          array($this->controller.'_id'=>hash_id($this->id,'decode')))->row()->fk_approval_id;
          
-       if($is_max_approval_status_id){
          
          $this->write_db->where(array('approval_id'=>$item_approval_id));
-         $this->write_db->update('approval',array('fk_status_id'=>103));
-       
-       }else{
-         $this->write_db->where(array('approval_id'=>$item_approval_id));
-         $this->write_db->update('approval',array('fk_status_id'=>102));
-       }
+         $this->write_db->update('approval',array('fk_status_id'=>$data['fk_status_id']));
+      
 
-       //Update detail record
-       $detail_record = $this->grants->dependant_table($this->controller);
+      //  //Update detail record
+      //  $detail_record = $this->grants->dependant_table($this->controller);
    
-       //Get id of detail table
-       $detail_id = $detail_record.'_id';
-       $primary_table_id = 'fk_'.$this->controller.'_id';
+      //  //Get id of detail table
+      //  $detail_id = $detail_record.'_id';
+      //  $primary_table_id = 'fk_'.$this->controller.'_id';
        
-       $detail_key = $this->db->get_where($detail_record,
-       array($primary_table_id=>hash_id($this->id,'decode')))->row()->$detail_id;
-   
-       $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
-       
-       $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+      //  $detail_obj = $this->db->get_where($detail_record,
+      //  array($primary_table_id=>hash_id($this->id,'decode')))->result_array();//->row()->$detail_id;
 
-       if($change_type == 'decline'){
-         $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
-       }
-       
-       $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
-       $this->write_db->update($detail_record,$detail_data);
+      //  foreach($detail_obj as $detail){
+      //     $detail_key = $detail[$detail_id];
+
+      //     $detail_action_labels = $this->grants->action_labels($detail_record ,$detail_key);    
+        
+      //     $detail_data['fk_status_id'] = $detail_action_labels['next_approval_status'];
+  
+      //     if($change_type == 'decline'){
+      //       $detail_data['fk_status_id'] = $detail_action_labels['next_decline_status'];
+      //     }
+          
+      //     $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
+      //     $this->write_db->update($detail_record,$detail_data);
+      //  }
+   
     }    
        
     
@@ -592,8 +605,12 @@ class MY_Controller extends CI_Controller implements CrudModelInterface
       echo json_encode($return);
     }else{
       echo $return;
-    }
+    }  
     
+  }
+
+  function event_tracker(){
+    $this->grants_model->event_tracker();
   }
 
 }

@@ -101,7 +101,7 @@ var baseurl = '<?php echo base_url();?>';
 							}
 						?>
 
-						<input type="text" value="<?=$setup_email;?>" class="form-control" name="email" id="email" placeholder="Your Work Email" autocomplete="off" data-mask="email" />
+						<input type="text" value="" class="form-control" name="email" id="email" placeholder="<?=get_phrase('your_email');?>" autocomplete="off" data-mask="email" />
 					</div>
 
 				</div>
@@ -113,7 +113,7 @@ var baseurl = '<?php echo base_url();?>';
 							<i class="entypo-key"></i>
 						</div>
 
-						<input type="password" class="form-control" name="password" id="password" placeholder="Password" autocomplete="off" />
+						<input type="password" class="form-control" name="password" id="password" placeholder="<?=get_phrase('password');?>" autocomplete="off" />
 					</div>
 
 				</div>

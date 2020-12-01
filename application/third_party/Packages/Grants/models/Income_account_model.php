@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Income_account_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Income_account_model extends MY_Model 
 {
   public $table = 'income_account'; // you MUST mention the table name
   public $primary_key = 'income_account_id'; // you MUST mention the primary key

@@ -1,9 +1,17 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
- 
+
 //print_r($result);
 
+$current_month = 9;
+//echo month_after_adding_size_of_budget_review_period($current_month);
+//$a = financial_year_quarter_months(month_after_adding_size_of_budget_review_period($current_month));
+//print_r(end($a['months_in_quarter']));
+
+// $lookup_values = $this->budget_model->lookup_values();
+// print_r($lookup_values['budget_tag']);
+
 extract($result);
-//echo isset($this->session->master_table)?$this->session->master_table:"Not set";
+//echo $is_multi_row;
 ?>
 
 <div class="row">
@@ -19,7 +27,7 @@ extract($result);
 
     <?php
     if($show_add_button && $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create')){
-      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing);
+      echo add_record_button($this->controller, $has_details_table,null,$has_details_listing, $is_multi_row);
     }
     ?>
     <?=Widget_base::load('position','position_1');?>
@@ -83,7 +91,9 @@ extract($result);
                               echo '<a href="'.base_url().$this->controller.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            //  }elseif($column !='approval_name' && $column!='status_name'){
+                            }elseif($fields_meta_data[$column] == 'int' || $fields_meta_data[$column] == 'decimal'){    
+                              // Defense code to ignore non numeric values when lookup values method changes value type from numeric to non numeric
+                              echo is_numeric($row[$column])?number_format($row[$column],2):$row[$column];
                             }else{
                               echo ucfirst(str_replace("_"," ",$row[$column]));
                             }

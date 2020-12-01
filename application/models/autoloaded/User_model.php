@@ -656,7 +656,7 @@ class User_model extends MY_Model
 
       // Get role permissions for the role
       $this->db->select(array('menu_derivative_controller','permission_type','permission_label_name',
-      'permission_field','permission_name'));
+      'permission_field','permission_name','permission_label_depth'));
       //$this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));    
       
       $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
@@ -664,24 +664,34 @@ class User_model extends MY_Model
       $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
   
       $role_permissions_object = $this->db->get_where('role_permission',
-      array('fk_role_id'=>$role_id,'role_permission_is_active'=>1));
+      array('fk_role_id'=>$role_id,'role_permission_is_active'=>1,'permission_is_active'=>1));
   
       // Build the $role_permission_array if $role_permissions_object is not empty
+      //return $role_permissions_object->result_object();
   
         if($role_permissions_object->num_rows() > 0){
   
           $role_permissions = $role_permissions_object->result_object();
-  
+          
+          $cnt = 0;
+
           foreach($role_permissions as $row){   
               if($row->permission_type == 1){
-                $role_permission_array[$row->menu_derivative_controller][$row->permission_type][$row->permission_label_name][] = $row->permission_name;  
-              
+
+                $highest_used_permission_label_depth = isset($role_permission_array[$row->menu_derivative_controller][$row->permission_type]) ? max(array_values($role_permission_array[$row->menu_derivative_controller][$row->permission_type])) : 1;
+           
                 //Update the role_permission_array based on the permissible depth of the label $row->permission_label_name
-                $role_permission_array = $this->update_permitted_permission_labels_based_on_depth($role_permission_array,$row->menu_derivative_controller,$row->permission_label_name);
-              
+           
+                if($row->permission_label_depth >= $highest_used_permission_label_depth){
+                  $role_permission_array[$row->menu_derivative_controller][$row->permission_type][$row->permission_label_name] = $row->permission_label_depth;  
+                }
+               
+                
               }elseif($row->permission_type == 2){
                 $role_permission_array[$row->menu_derivative_controller][$row->permission_type][$row->permission_label_name][$row->permission_field] = $row->permission_name;
               }
+
+              $cnt ++;
               
           }
         
@@ -693,6 +703,12 @@ class User_model extends MY_Model
             !in_array('read',$role_permission_array)
           ){
           $role_permission_array[$this->config->item('default_launch_page')][1]['read'][] = "show_dashboard";
+        }
+
+        foreach($role_permission_array as $perm_controller => $role_permission){
+         foreach($role_permission[1] as $permission_label => $permission_label_depth ){
+          $role_permission_array = $this->update_permitted_permission_labels_based_on_depth($role_permission_array,$perm_controller,$permission_label);
+         }
         }
         
         return $role_permission_array;
@@ -735,7 +751,7 @@ class User_model extends MY_Model
   function permission_label_depth($permission_label){
 
     //Get permission labels by order of their depth. Remove non-applicable permission labels
-    $this->db->select(array('permission_label_name'));
+    $this->db->select(array('permission_label_name','permission_label_depth'));
     $permission_labels = $this->db->order_by('permission_label_depth','ASC')
     ->get('permission_label')->result_array();
 
@@ -750,6 +766,10 @@ class User_model extends MY_Model
     }
 
     $permission_label_depth = array_column($applicable_permission_labels,'permission_label_name');
+
+    if(sizeof($permission_label_depth) == 0){
+      $permission_label_depth = [$this->db->get_where('permission_label',array('permission_label_depth'=>1))->row()->permission_label_name];
+    }
 
     return $permission_label_depth;
   }
@@ -766,7 +786,7 @@ class User_model extends MY_Model
    * 
    * @return void - Resets the role_permissions session
    */
-  function update_permitted_permission_labels_based_on_depth($permissions, $active_controller, $permission_label, $permission_type = 1){
+  function update_permitted_permission_labels_based_on_depth(&$permissions, $active_controller, $permission_label, $permission_type = 1){
     $permission_label_depth = $this->permission_label_depth($permission_label);
     //$permissions = $this->session->role_permissions;
 
@@ -780,7 +800,7 @@ class User_model extends MY_Model
       if( $controller == $active_controller && array_key_exists($permission_type,$permissions[$controller]) 
       ){
         
-        $updated_permissions[$controller][$permission_type][$permission_label][] = $permission_label."_".strtolower($controller);
+        $updated_permissions[$controller][$permission_type][$permission_label] = $permission_label."_".strtolower($controller);
         
         // Only add a applicable_permission_label if the permission_label_depth has something
         if(count($permission_label_depth) > 0 ){
@@ -788,7 +808,7 @@ class User_model extends MY_Model
             foreach($permission_label_depth as $applicable_permission_label){
               //Prevents re-adding the applicable_permission_label if already exists
               //if(!array_key_exists($applicable_permission_label,$permissions[$controller][$permission_type])){
-                $updated_permissions[$controller][$permission_type][$applicable_permission_label][] = $applicable_permission_label.'_'.strtolower($controller);
+                $updated_permissions[$controller][$permission_type][$applicable_permission_label] = $applicable_permission_label.'_'.strtolower($controller);
               //}
             }
           }
@@ -814,16 +834,16 @@ class User_model extends MY_Model
    * 
    * @return Boolean
    */
-  function check_role_has_permissions(String $active_controller,String $permission_label,int $permission_type = 1): bool {
+  function check_role_has_permissions(String $active_controller,String $permission_label,int $permission_type = 1):bool {
       $has_permission = false;
 
       $active_controller = ucfirst($active_controller);
 
       $permission = $this->session->role_permissions;
 
-      //if(isset($permission[$active_controller][$permission_type]) && array_key_exists($permission_label,$permission[$active_controller][$permission_type])){
-        //$this->update_permitted_permission_labels_based_on_depth($active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
-      //}
+      // if(isset($permission[$active_controller][$permission_type]) && array_key_exists($permission_label,$permission[$active_controller][$permission_type])){
+      //   $permission = $this->update_permitted_permission_labels_based_on_depth($permission,$active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
+      // }
 
       $lookup_tables = $this->grants->lookup_tables($this->controller);
 
@@ -846,33 +866,7 @@ class User_model extends MY_Model
        return $has_permission; 
   }
 
-//   function check_role_has_permissions_test(String $active_controller,String $permission_label,int $permission_type = 1) {
-      
-//     $this->update_permitted_permission_labels_based_on_depth($active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
-//     $permission = $this->session->role_permissions;
 
-//     $has_permission = false;
-
-//     $active_controller = ucfirst($active_controller);
-
-//     //$lookup_tables = $this->grants->lookup_tables($this->controller);
-
-//     if( 
-//         ( array_key_exists($active_controller,$permission) 
-//           && array_key_exists($permission_type,$permission[$active_controller]) 
-//           && array_key_exists($permission_label,$permission[$active_controller][$permission_type]) 
-//           && count($this->get_user_context_association($this->session->user_id)) > 0 
-//           && $this->check_if_user_has_office_data_view_edit_permission() 
-//           && count($this->session->departments) > 0
-//         ) 
-//           || $this->session->system_admin
-//       )
-//       {
-//         $has_permission = true;
-//       } 
-
-//      return $has_permission; 
-// }
 
   /**
    * check_role_has_field_permission

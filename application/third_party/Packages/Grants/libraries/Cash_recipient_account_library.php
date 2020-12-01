@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-class Center_group_library extends Grants
+class Cash_recipient_account_library extends Grants
 {
 
   private $CI;

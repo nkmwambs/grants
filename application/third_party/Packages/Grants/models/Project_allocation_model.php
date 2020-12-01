@@ -8,10 +8,10 @@
  *	NKarisa@ke.ci.org
  */
 
-class Project_allocation_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Project_allocation_model extends MY_Model 
 {
   public $table = 'project_allocation'; // you MUST mention the table name
-
+  public $is_multi_row = false;
 
   function __construct(){
     parent::__construct();
@@ -22,6 +22,99 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
   }
 
   function index(){}
+
+  function action_before_insert($post_array){
+    /**
+     * {"header":{"fk_project_id":"16","fk_office_id":["9"],"project_allocation_is_active":"1"}}
+     */
+
+
+
+    $office_ids = $post_array['header']['fk_office_id'];
+    $project_id = $post_array['header']['fk_project_id'];
+
+    $project_name = $this->db->get_where('project',array('project_id'=>$project_id))->row()->project_name;
+
+    if(is_array($office_ids) && !empty($office_ids)){
+      
+      $this->db->where_in('office_id',$office_ids);
+      $office_records = $this->db->get('office')->result_array();
+
+      $_office_ids = array_column($office_records,'office_id');
+      $office_names = array_column($office_records,'office_name');
+
+      $offices = array_combine($_office_ids,$office_names);
+
+
+      /**
+       * $offices = [
+       *  [1=>'ABC'],
+       *  [2=>'CDE']
+       * ];
+       */
+
+      foreach($office_ids as $office_id){
+        
+        $post_array['header']['project_allocation_name'][$office_id] = $project_name.' '.get_phrase('allocation_for').' '.$offices[$office_id];
+      }
+
+    }elseif(!is_array($office_ids)){
+
+      $this->db->where(array('office_id'=>$office_ids));
+      $office_record = $this->db->get('office')->row()->office_name;
+
+      //echo json_encode($offices);exit;
+      $post_array['header']['project_allocation_name'] = $project_name.' '.get_phrase('allocation_for').' '.$office_record;
+    }
+
+    //echo json_encode($post_array);exit;
+    return $post_array;
+  }
+
+  function action_after_insert($post_array,$approval_id,$header_id){
+
+    // Get the insert allocation account system id
+    $this->write_db->join('project','project.fk_funder_id=funder.funder_id');
+    $this->write_db->where(array('project_id'=>$post_array['fk_project_id']));
+    $account_system_id = $this->write_db->get('funder')->row()->fk_account_system_id;
+
+    // Get all active default bank accounts for an account system
+    $this->write_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
+    $this->write_db->where(array('fk_account_system_id'=>$account_system_id,
+    'fk_office_id'=>$post_array['fk_office_id']));
+    
+    if($this->config->item('link_new_project_allocations_only_to_default_bank_accounts')){
+      $this->write_db->where(array('office_bank_is_default'=>1));
+    }
+
+    $account_system_office_banks = $this->write_db->get('office_bank')->result_array();
+
+    //echo json_encode($account_system_id);exit;
+
+    $this->write_db->trans_start();
+
+    // Insert office_bank_project_allocation table
+    foreach($account_system_office_banks as $account_system_office_bank){
+      $office_bank_project_allocation_data['office_bank_project_allocation_name'] = $this->grants_model->generate_item_track_number_and_name('office_bank_project_allocation')['office_bank_project_allocation_name'];
+      $office_bank_project_allocation_data['office_bank_project_allocation_track_number'] = $this->grants_model->generate_item_track_number_and_name('office_bank_project_allocation')['office_bank_project_allocation_track_number'];
+      $office_bank_project_allocation_data['fk_office_bank_id'] = $account_system_office_bank['office_bank_id'];
+      $office_bank_project_allocation_data['fk_project_allocation_id'] = $header_id;
+      
+      $office_bank_project_allocation_data_to_insert = $this->grants_model->merge_with_history_fields('office_bank_project_allocation',$office_bank_project_allocation_data,false);
+      $this->write_db->insert('office_bank_project_allocation',$office_bank_project_allocation_data_to_insert);
+
+    }
+
+    $this->write_db->trans_complete();
+
+    if ($this->write_db->trans_status() === FALSE)
+      {
+        return false;
+      }else{
+        return true;
+      }
+    
+  }
 
   public function lookup_tables(){
     return array('office','project');
@@ -42,16 +135,33 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
 
     public function list_table_hidden_columns(){}
 
-    public function detail_list_table_visible_columns(){}
+    public function detail_list_table_visible_columns(){
+      return [
+        'project_allocation_track_number',
+        'project_name',
+        'office_name',
+        'project_allocation_is_active',
+        'project_allocation_amount',
+        'project_allocation_extended_end_date',
+        'project_allocation_created_date'
+    ];
+    }
 
     public function detail_list_table_hidden_columns(){}
 
     public function single_form_add_visible_columns(){
-      return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','office_name','project_name');
+      return array('project_name','office_name');//project_allocation_amount
     }
 
+
     public function edit_visible_columns(){
-     return array('project_allocation_name','project_allocation_is_active','project_allocation_amount','project_allocation_extended_end_date');
+      return [
+        'project_name',
+        'office_name',
+        'project_allocation_is_active',
+        //'project_allocation_amount',
+        'project_allocation_extended_end_date'
+      ];
     }
 
     public function single_form_add_hidden_columns(){}
@@ -102,4 +212,44 @@ class Project_allocation_model extends MY_Model implements CrudModelInterface, T
    function multi_select_field(){
      return "office";
    }
+
+   function lookup_values(){
+    $lookup_values = parent::lookup_values();
+
+    if(!$this->session->system_admin){
+      $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+      $this->read_db->join('funder','funder.funder_id=project.fk_funder_id');
+      $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
+    }else{
+      $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
+    }
+
+    if($this->sub_action != null){
+
+      $project_id=hash_id($this->id,'decode');
+      //$this->read_db->select(array('office.office_id as office_id','office.office_name as office_name'));
+
+      // Drop only centers
+      if($this->config->item('drop_only_lowest_context_offices')){
+        $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+        $this->read_db->where(array('context_definition_level'=>1));
+      }
+
+      $this->read_db->order_by('office_name');
+      $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id AND fk_project_id='.$project_id.')', '', FALSE);
+      $this->read_db->where(array('office_bank_is_active'=>1));
+      $this->read_db->join('office_bank','office_bank.fk_office_id=office.office_id'); 
+
+      if(!$this->session->system_admin){
+        $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));       
+        $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      }else{
+        $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      }
+      
+    }
+
+    return $lookup_values;
+   }
+   
 }

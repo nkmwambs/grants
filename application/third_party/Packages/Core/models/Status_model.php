@@ -9,7 +9,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Status_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Status_model extends MY_Model 
 {
   public $table = 'status'; // you MUST mention the table name
   public $dependant_table = '';
@@ -50,10 +50,6 @@ public function master_table_hidden_columns(){}
 public function list(){}
 
 public function view(){}
-
-public function single_form_add_visible_columns(){
-  return ['status_name','approval_flow_name','status_approval_sequence','status_approval_direction','status_backflow_sequence','status_is_requiring_approver_action'];
-}
 
 function transaction_validate_duplicates_columns(){
   return ['approval_flow_name','status_approval_sequence','status_approval_direction'];
@@ -98,5 +94,120 @@ function action_after_insert($post_array, $approval_id, $header_id){
   }
 
 }
+
+function status_approval_sequencies($change_field_type_sequencies){
+  $lookup_values = [];
+
+  if($this->id != null){
+    $this->read_db->select(array('status_approval_sequence'));
+    $this->read_db->where(array('approval_flow_id'=>hash_id($this->id,'decode')));
+    $this->read_db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+    $status_approval_sequence_obj = $this->read_db->get('status');
+
+    if($status_approval_sequence_obj->num_rows() > 0){
+      $status_approval_sequence = array_flip(array_column($status_approval_sequence_obj->result_array(),'status_approval_sequence'));
+      
+      $all_status_approval_sequence = $change_field_type_sequencies;//$this->change_field_type()['status_approval_sequence'];
+
+      foreach($status_approval_sequence as $status_approval_sequence_id => $status_approval_sequence_label){
+        if(array_key_exists($status_approval_sequence_id,$all_status_approval_sequence)){
+          unset($all_status_approval_sequence[$status_approval_sequence_id]);
+        }
+      }
+    }
+
+    $lookup_values =  $all_status_approval_sequence;
+  }
+
+  return $lookup_values;
+}
+
+function add(){
+  $post = $this->input->post()['header'];
+  $post_status_role = $this->input->post()['detail_header']['status_role'];
+
+  $jumps = [1,0,-1];
+  
+  $data = [];
+
+  $message = get_phrase('insert_successful');
+
+  $this->write_db->trans_start();
+
+  foreach($jumps as $jump){
+
+    $status_name = $post['status_name'];
+
+    if($jump == 0){
+      $status_name = 'Reinstated to '.$status_name;
+    }elseif($jump == -1){
+      $status_name = 'Declined from '.$status_name;
+    }
+
+    $data['status_track_number'] = $this->grants_model->generate_item_track_number_and_name('status')['status_track_number'];;
+    $data['status_name'] = $status_name;
+    $data['fk_approval_flow_id'] = $post['fk_approval_flow_id'];
+    $data['status_approval_sequence'] = $post['status_approval_sequence'];
+    $data['status_backflow_sequence'] = $jump == -1 ? 1 : 0;// Return to the original creator
+    $data['status_approval_direction'] = $jump;
+    $data['status_is_requiring_approver_action'] = $post['status_is_requiring_approver_action'];
+
+    $data['status_created_date'] = date('Y-m-d');
+    $data['status_created_by'] = $this->session->user_id;
+    $data['status_last_modified_by'] = $this->session->user_id;
+
+    //$row_count++;
+
+    $this->write_db->insert('status',$data);
+
+    $status_id = $this->write_db->insert_id();
+
+    // Insert status Role
+  if(is_array($post_status_role['fk_role_id'])){
+    foreach($post_status_role['fk_role_id'] as $role_id){
+      $this->insert_status_role($post_status_role,$role_id,$status_id,$status_name);     
+    }
+  }else{
+    $this->insert_status_role($post_status_role,$post_status_role['fk_role_id'],$status_id,$status_name);
+  }  
+  } 
+
+  $this->write_db->trans_complete();
+
+  if(!$this->write_db->trans_status()){
+    $message = get_phrase('insert_failed');
+  }
+
+  return $message;
+
+}
+
+function insert_status_role($post_status_role,$role_id,$status_id,$status_name){
+  $status_role_data['status_role_track_number'] = $this->grants_model->generate_item_track_number_and_name('status_role')['status_role_track_number'];
+  $status_role_data['status_role_name'] = $status_name.' ['.$this->read_db->get_where('role',array('role_id'=>$role_id))->row()->role_name.']';
+  $status_role_data['fk_role_id'] = $role_id;
+  $status_role_data['status_role_status_id'] = $status_id;
+
+  $status_role_data['status_role_created_by'] = $this->session->user_id;
+  $status_role_data['status_role_created_date'] = date('Y-m-d');
+  $status_role_data['status_role_last_modified_by'] = $this->session->user_id;
+
+  $status_role_data['fk_approval_id'] = $this->grants_model->insert_approval_record('status_role');
+  $status_role_data['fk_status_id'] = $this->grants_model->initial_item_status('status_role');
+
+  $this->write_db->insert('status_role',$status_role_data);
+}
+
+function detail_tables_single_form_add_visible_columns(){
+  return ['status_role'];
+}
+
+public function single_form_add_visible_columns(){
+  return ['status_name','approval_flow_name','status_approval_sequence','status_is_requiring_approver_action'];
+}
+
+// function multi_select_field(){
+//   return 'approval_flow';
+// }
 
 }

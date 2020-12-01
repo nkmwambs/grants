@@ -22,5 +22,11 @@ class Bank_library extends Grants
 
   }
 
+  function change_field_type(){
+    return [
+      'budget_year'=>['field_type'=>'text']
+    ];
+  }
+
   
 }

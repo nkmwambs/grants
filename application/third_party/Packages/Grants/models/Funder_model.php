@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Funder_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Funder_model extends MY_Model 
 {
   public $table = 'funder';
   public $dependant_table = "";
@@ -70,7 +70,10 @@ class Funder_model extends MY_Model implements CrudModelInterface, TableRelation
 
     function master_view(){}
 
-    public function list(){}
+    public function list(){
+      // $this->read_db->join('account_system','account_system.account_system_id=funder.fk_account_system_id');
+      // return $this->read_db->get('funder')->result_array();
+    }
 
     public function view(){}
 
@@ -78,7 +81,7 @@ class Funder_model extends MY_Model implements CrudModelInterface, TableRelation
 
       if(!$this->session->system_admin){
         
-        $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+        $this->db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
       }
   
     }

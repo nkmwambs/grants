@@ -66,4 +66,10 @@ class Approval_flow_model extends MY_Model{
       function multi_select_field(){
           return "approve_item";
       }
+
+      function list_table_where(){
+          if(!$this->session->system_admin){
+            $this->db->where(array('fk_account_system_id'=>$this->session->user_account_system_id,'approve_item_is_active'=>1));
+          }
+        }
 }

@@ -31,18 +31,25 @@ class Budget_item extends MY_Controller
   }
 
   function result($id = ''){
-    if($this->action == 'multi_form_add'){
+    if($this->action == 'multi_form_add' || $this->action == 'edit'){
   
     $result = [];
     
-    $this->db->select(array('month_id','month_name'));
-    $this->db->order_by('month_number ASC');
+    $this->db->select(array('month_id','month_number','month_name'));
+    $this->db->order_by('month_order ASC');
     $months = $this->db->get('month')->result_object();
     
     $this->db->select(array('office_id','office_name','office_code','budget_year','fk_account_system_id'));
     $this->db->join('budget','budget.fk_office_id=office.office_id');
-    $office = $this->db->get_where('office',
-    array('budget_id'=>hash_id($this->id,'decode')))->row();
+    
+    if($this->action == 'multi_form_add'){
+      $this->db->where(array('budget_id'=>hash_id($this->id,'decode')));
+    }else{
+      $this->db->join('budget_item','budget_item.fk_budget_id=budget.budget_id');
+      $this->db->where(array('budget_item_id'=>hash_id($this->id,'decode')));
+    }
+
+    $office = $this->db->get('office')->row();
 
     
     $this->db->select(array('expense_account_id','expense_account_name','expense_account_code'));
@@ -64,9 +71,69 @@ class Budget_item extends MY_Controller
     $result['months'] = $months;
     $result['office'] = $office;
 
+    if($this->action == 'edit'){
+      $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
+      $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+      $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
+      $this->db->where(array('budget_item_id'=>hash_id($this->id,'decode')));
+      $budget_item_details = $this->db->get('budget_item_detail')->result_array();
+      
+      $result['budget_item_details'] = [];
+      foreach($budget_item_details as $budget_item_detail){
+        $result['budget_item_details'][$budget_item_detail['month_number']] = $budget_item_detail;
+      }
+
+      //$result['budget_item_details'] = $this->db->get('budget_item_detail')->result_array();
+    }
+
     return $result;
     }else{
       return parent::result($id = '');
+    }
+  }
+
+  function update_budget_item($budget_item_id){
+    $post = $this->input->post();
+
+    //echo $budget_item_id;exit;
+
+    $this->write_db->trans_start();
+
+    $header = [];
+
+    // Update budget item record
+    /**
+     * {"budget_item_description":"Secondary School fees for 2020",
+     * "fk_expense_account_id":"1",
+     * "fk_month_id":{"7":["2500000.00"],"8":["0.00"],"9":["0.00"],
+     * "10":["0.00"],"11":["0.00"],"12":["0.00"],"1":["2000000.00"],"2":["0.00"],
+     * "3":["0.00"],"4":["0.00"],"5":["0.00"],"6":["0.00"]},"budget_item_total_cost":"4500000",
+     * "fk_budget_id":"1"}
+     */
+
+    $header['budget_item_total_cost'] = $post['budget_item_total_cost'];
+    $header['budget_item_description'] = $post['budget_item_description'];
+
+    $this->write_db->where(array('budget_item_id'=>$budget_item_id));
+    $this->write_db->update('budget_item',$header);
+
+    // Update budget item detail
+    
+    foreach($post['fk_month_id'] as $month_id => $month_amount){
+
+      $body['budget_item_detail_amount'] = $month_amount[0];
+    
+      $this->write_db->where(array('fk_budget_item_id'=>$budget_item_id,'fk_month_id'=>$month_id));
+      $this->write_db->update('budget_item_detail',$body);
+    }
+
+    $this->write_db->trans_complete();
+
+    if ($this->write_db->trans_status() === FALSE)
+    {
+      echo "Budget Item Update failed";
+    }else{
+      echo "Budget Item Updated successfully";
     }
   }
 
@@ -128,6 +195,19 @@ class Budget_item extends MY_Controller
       echo "Budget Item posted successfully";
     }
 
+  }
+
+  function project_budgetable_expense_accounts($project_allocation_id){
+    
+    $this->read_db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    $this->read_db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+    $this->read_db->join('project','project.project_id=project_income_account.fk_project_id');
+    $this->read_db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+    $this->read_db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_budgeted'=>1));
+    $this->read_db->select(array('expense_account_id','expense_account_name'));
+    $accounts = $this->read_db->get('expense_account')->result_array();
+
+    echo json_encode($accounts);
   }
 
   static function get_menu_list(){}

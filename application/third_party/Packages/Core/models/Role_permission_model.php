@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Role_permission_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Role_permission_model extends MY_Model
 {
   public $table = 'role_permission'; // you MUST mention the table name
 
@@ -27,9 +27,14 @@ class Role_permission_model extends MY_Model implements CrudModelInterface, Tabl
 
   }
 
-  // function single_form_add_visible_columns(){
-  //   return array('role_permission_name','fk_role_id','fk_permission_id');
-  // }
+  function single_form_add_visible_columns(){
+    return array('role_name','permission_name');
+  }
+
+  function edit_visible_columns(){
+    return array('role_name','permission_name','role_permission_is_active');
+  }
+
 
 
   function list(){
@@ -69,5 +74,14 @@ class Role_permission_model extends MY_Model implements CrudModelInterface, Tabl
   function multi_select_field(){
     return 'permission';
   }
+
+  // function lookup_values()
+  // {
+  //   $lookup_values = parent::lookup_values();
+
+  //   $lookup_values = array_merge($lookup_values,[['pemission_id'=>1,'pemission_name'=>'Create Status'],['permission_id'=>2,'permission_name'=>'Update Status']]);
+    
+  //   return $lookup_values;
+  // }
   
 }

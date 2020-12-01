@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Permission_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Permission_model extends MY_Model
 {
   public $table = 'permission'; // you MUST mention the table name
 

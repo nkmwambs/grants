@@ -1,4 +1,14 @@
 <?php
+    //print_r($this->general_model->is_min_approval_status_id('budget',176));
+    //print_r($result);
+    //print_r($this->grants_model->initial_item_status('budget'));
+    //echo $this->session->user_account_system_id;
+   
+
+    // $lookup_values = $this->budget_model->lookup_values();
+    // print_r($lookup_values);
+
+
     extract($result);
 ?>
 
@@ -20,7 +30,7 @@
     </div> -->
     
     <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
-        <a href="<?=base_url();?>budget_item/multi_form_add/<?=$this->id;?>/budget">
+        <a href="<?=base_url();?>Budget_item/multi_form_add/<?=$this->id;?>/Budget">
             <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
         </a>
 
@@ -63,7 +73,7 @@
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
-                       <?=get_phrase('year');?> <?=$current_year;?> <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> Budget Summary (<a href='<?=base_url();?>budget/view/<?=$this->id;?>/schedule/<?=hash_id(1);?>'>Show budget schedule</a>)
+                       <?=get_phrase('year');?> <?=$current_year;?> <?=$budget_tag;?> : <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> <?=get_phrase('budget_summary');?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/<?=hash_id($income_account['income_account_id'],'encode');?>'><?=get_phrase('show_budget_schedule');?></a>) &nbsp; <div class='btn btn-success'><?=get_phrase('submit_budget');?></div>
                     </th>
                 </tr>
                 <tr>

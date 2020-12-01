@@ -43,6 +43,15 @@ class Office_bank_project_allocation_model extends MY_Model{
         return $result;
     }
 
+    public function detail_list_table_visible_columns(){
+        return [
+            'office_bank_project_allocation_track_number',
+            'office_bank_name',
+            'project_allocation_name',
+            'office_bank_project_allocation_created_date'
+        ];
+    }
+
     // public function lookup_values_where(){
     //     return [
     //         'project_allocation'=>['fk_office_id'=>$this->office_bank_project_allocation_office_id()]
@@ -53,9 +62,29 @@ class Office_bank_project_allocation_model extends MY_Model{
         return ['office_bank_name','project_allocation_name'];
     }
 
-    // function lookup_values(){
-    //     $lookup_values['office_bank'] = $this->db->get_where('office_bank',array('office_bank_id'=>hash_id($this->id,'decode')))->result_array();
-  
-    //     return $lookup_values;
-    //   }
+    function lookup_values(){
+
+        $lookup_values = [];
+
+        if($this->id !== null){
+            $office_bank = $this->read_db->get_where('office_bank',array('office_bank_id'=>hash_id($this->id,'decode')));
+            $lookup_values['office_bank'] = $office_bank->result_array();
+            $lookup_values['project_allocation']  = $this->read_db->get_where('project_allocation',array('fk_office_id'=>$office_bank->row_array()['fk_office_id']))->result_array(); 
+        }
+        return $lookup_values;
+      }
+
+    function show_add_button(){
+        if($this->config->item('link_new_project_allocations_only_to_default_bank_accounts') || $this->session->system_admin){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    // function transaction_validate_duplicates_columns(){
+    //     if(!$this->config->item('allow_project_allocation_to_multiple_bank_accounts')){
+    //         return ['fk_office_bank_id','fk_project_allocation_id'];
+    //     }
+    // }
 }

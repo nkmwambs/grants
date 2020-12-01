@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Approve_item_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Approve_item_model extends MY_Model
 {
   public $table = 'approve_item'; // you MUST mention the table name
   //public $dependant_table = "status";

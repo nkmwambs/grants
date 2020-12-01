@@ -1,6 +1,16 @@
 core:
   tables:
+
+    attachment:
+      lookup_tables:
+        - approve_item
+
     context_definition:
+
+    event:
+      lookup_tables:
+        - user
+        - approve_item
 
     language:
 
@@ -51,6 +61,30 @@ core:
 grants:
   
   tables:
+
+    request_type_department:
+      lookup_tables:
+        - request_type
+        - department
+    
+    project_request_type:
+      lookup_tables:
+        - request_type
+        - project
+
+    cash_recipient_account:
+      lookup_tables:
+        - voucher
+        - office_bank
+        - office_cash
+  
+    budget_review_count:
+      lookup_tables:
+        - account_system
+
+    budget_tag:
+      lookup_tables:
+        - account_system
     
     project_income_account:
       lookup_tables:

@@ -204,7 +204,7 @@ function feature_model_list_table_visible_columns(): Array {
     // Get result from grants model if feature model list returns empty
     $query_result = $this->list_internal_query_results($lookup_tables); // System generated query result
     
-    if(method_exists($this->CI->$model,'list')){
+    if(method_exists($this->CI->$model,'list') && !empty($this->CI->$model->list())){
       $feature_model_list_result = $this->CI->$model->list();
       if(is_array($feature_model_list_result)){
         // Allows empty result set
@@ -249,8 +249,10 @@ function feature_model_list_table_visible_columns(): Array {
       
         return array(
           'keys'=> $keys,
+          'fields_meta_data'=>$this->CI->grants_model->fields_meta_data_type_and_name($table),
           'table_body'=>$result,
           'table_name'=> $table,
+          'is_multi_row'=>$this->CI->grants->check_if_table_is_multi_row(),
           'has_details_table' => $this->CI->grants->check_if_table_has_detail_table($table),
           'has_details_listing' => $this->CI->grants->check_if_table_has_detail_listing($table),
           'show_add_button'=>$show_add_button

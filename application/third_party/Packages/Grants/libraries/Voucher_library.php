@@ -112,8 +112,17 @@ function form_field_text($label, $default_value = '', $classes = [], $id = '', $
 //   return $change_field_type;
 // }
 
-function default_field_value(){
-  return ['fk_office_id'=>29];
+// function default_field_value(){
+//   return ['fk_office_id'=>29];
+// }
+
+function change_field_type(){
+  $change_field_type = array();
+
+  $change_field_type['voucher_number']['field_type'] = 'text';
+  $change_field_type['voucher_cheque_number']['field_type'] = 'text';
+
+  return $change_field_type;
 }
 
 }

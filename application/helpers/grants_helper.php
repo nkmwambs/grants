@@ -136,8 +136,10 @@ if( ! function_exists('list_table_decline_action')){
 }
 
 if( ! function_exists('add_record_button') ){
-	function add_record_button($table_controller,$has_details,$id = null ,$has_listing = false){
+	function add_record_button($table_controller,$has_details,$id = null ,$has_listing = false, $is_multi_row = false){
 		$add_view = $has_listing?"multi_form_add":"single_form_add";
+		$add_view = $is_multi_row?"multi_row_add":$add_view;
+		
 		$link = "";
 		$CI =& get_instance();
 
@@ -163,7 +165,9 @@ if( ! function_exists('create_breadcrumb') ){
 		$string = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
 
 		foreach ($breadcrumb_list as $menuItem) {
-		
+			if($CI->read_db->get_where('menu',
+			array('menu_name'=>$menuItem,'menu_is_active'=>0))->num_rows() > 0) continue;
+			
 			$string .= '<li class="breadcrumb-item"><a href="'.base_url().$menuItem.'/list">'.get_phrase($menuItem).'</a></li>';
 		}
 
@@ -319,7 +323,8 @@ if(!function_exists('human_filesize')){
 
 if(!function_exists('upload_url')){
 	function upload_url($controller,$record_id,$extra_keys = []) {
-		return "uploads".DS."attachments".DS.$controller.DS.$record_id.DS.implode(DS,$extra_keys);
+		//return "uploads".DS."attachments".DS.$controller.DS.$record_id.DS.implode(DS,$extra_keys);
+		return "uploads/attachments/".$controller."/".$record_id."/".implode("/",$extra_keys);
 	  }
 }
 
@@ -443,3 +448,215 @@ if(!function_exists('sanitize_characters')){
 }
 
 
+if(!function_exists('list_detail_tables')){
+	function list_detail_tables($master_table = ''){
+
+		$CI =& get_instance();
+		
+		if($master_table == ''){
+			$master_table = strtolower($CI->controller);
+		}
+		
+		$tables = $CI->read_db->list_tables();
+
+        foreach($tables as $row_id => $table){
+            if(!in_array('fk_'.$master_table.'_id',$CI->read_db->list_fields($table))){
+                unset($tables[$row_id]);
+            }
+        }
+
+        return $tables;
+	}
+}
+
+if(!function_exists('tables_with_account_system_relationship')){
+	function tables_with_account_system_relationship(){
+		
+		$CI =& get_instance();
+
+		$tables = $CI->read_db->list_tables();
+		
+		$tables_with_account_system_relationship = [];
+
+		foreach($tables as $table){
+			$table_fields = $CI->read_db->list_fields($table);
+
+			foreach($table_fields as $table_field){
+				if($table_field == 'fk_account_system_id'){
+					$tables_with_account_system_relationship[] = $table;
+				}
+			}
+		}
+
+		return $tables_with_account_system_relationship;
+	}
+}	
+
+if(!function_exists('list_lookup_tables')){
+	function list_lookup_tables($table_name = ''){
+		
+		$CI =& get_instance();
+
+		$table_name = $table_name == '' ? $CI->controller : $table_name;
+
+		$table_fields = $CI->read_db->list_fields($table_name);
+
+		$list_lookup_tables = [];
+
+		foreach($table_fields as $table_field){
+			if(substr($table_field,0,3) =='fk_'){
+				$list_lookup_tables[] = substr($table_field,3,-3);
+			}
+		}
+
+		return $list_lookup_tables;
+	}
+}
+
+if(!function_exists('financial_year_quarter_months')){
+	function financial_year_quarter_months($month_number){
+		
+		$CI =& get_instance();
+
+		$CI->read_db->select(array('month_number'));
+      	$CI->read_db->order_by('month_order ASC');
+      	$months = $CI->read_db->get('month')->result_array();
+
+      	$month_mumbers = array_column($months,'month_number');
+
+		$count_of_reviews_in_year = $CI->read_db->get_where('budget_review_count',array('fk_account_system_id'=>$CI->session->user_account_system_id))->row()->budget_review_count_number;
+		$count_of_months_in_period = count($month_mumbers)/$count_of_reviews_in_year;
+		/**
+		 * 1 - 12 
+		 * 2 - 6  
+		 * 3 - 4
+		 * 4 - 3
+		 */
+		$range_of_reviews = range(1,$count_of_reviews_in_year);// [1,2,3,4] - Assume the $count_of_reviews_in_year = 4
+		$month_arrays_in_period = array_chunk($month_mumbers,$count_of_months_in_period);//[[7,8,9],[10,11,12],[1,2,3],[4,5,6]]
+
+      	$months_in_quarters = array_combine($range_of_reviews,$month_arrays_in_period);
+
+      	$current_quarter_months = [];
+
+      	foreach($months_in_quarters as $quarter_number => $months_in_quarter){
+        	if(in_array($month_number,$months_in_quarter)){
+          	$current_quarter_months['quarter_number'] = $quarter_number;
+          	$current_quarter_months['months_in_quarter'] = $months_in_quarter;
+        	}
+		  }
+		  
+		return $current_quarter_months;
+	}
+}
+
+//Formerly as budget_review_buffer_month
+if(!function_exists('month_after_adding_size_of_budget_review_period')){
+	function month_after_adding_size_of_budget_review_period($current_month){
+
+		$CI =& get_instance();
+
+		$current_month_with_buffer = $current_month + $CI->config->item('size_in_months_of_a_budget_review_period');
+
+		if($current_month_with_buffer > 12){
+
+			if($current_month_with_buffer > 24){
+				$current_month_with_buffer = $current_month_with_buffer % 12;
+			}else{
+				$current_month_with_buffer = $current_month_with_buffer - 12;
+			}
+
+		}
+
+		return $current_month_with_buffer;
+	}
+}
+
+
+if(!function_exists('addOrdinalNumberSuffix')){
+	function addOrdinalNumberSuffix($num) {
+		if (!in_array(($num % 100),array(11,12,13))){
+		  switch ($num % 10) {
+			// Handle 1st, 2nd, 3rd
+			case 1:  return $num.'st';
+			case 2:  return $num.'nd';
+			case 3:  return $num.'rd';
+		  }
+		}
+		return $num.'th';
+	  }
+}
+
+if(!function_exists('get_fy')){
+	function get_fy($date_string,$override_fy_year_digits_config = false){
+		
+		$CI =& get_instance();
+		
+		$start_of_fy_month = $CI->read_db->get_where('month',array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
+		$fy_year_reference = $CI->config->item('fy_year_reference');
+		$fy_year_digits = $CI->config->item('fy_year_digits');
+
+		$fy_format = ($fy_year_digits == 2 && !$override_fy_year_digits_config)?'y':'Y';
+
+		$date_year = date($fy_format,strtotime($date_string));
+
+		$month_count_from_date_string_to_end_of_year = $start_of_fy_month + 11;
+
+		$list_of_months = range($start_of_fy_month,$month_count_from_date_string_to_end_of_year);
+
+		$list_of_months_with_year = [];
+
+		foreach($list_of_months as $month){
+			$_date_year = $date_year;
+
+			if($month > 12){
+				$_month = $month - 12;
+				$_date_year++;
+				$list_of_months_with_year[] = $_month.'-'.$_date_year;
+			}else{
+				$list_of_months_with_year[] = $month.'-'.$_date_year;
+			}
+			
+		}
+
+		$check_if_month_in_list_of_months = in_array(date('n-'.$fy_format,strtotime($date_string)),$list_of_months_with_year);
+
+		$fy_year = $date_year;
+
+		if($check_if_month_in_list_of_months && ($fy_year_reference == 'next' && !$override_fy_year_digits_config)){
+			$fy_year++;
+		}
+		
+		return $fy_year;
+	}
+}
+
+if(!function_exists('fy_start_date')){
+	function fy_start_date($date_string){
+		$CI =& get_instance();
+
+		$fy = get_fy($date_string,true);
+		$start_of_fy_month = $CI->read_db->get_where('month',array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
+
+		$formatted_month = strlen($start_of_fy_month) == 1?'0'.$start_of_fy_month:$start_of_fy_month;
+
+		return $fy.'-'.$formatted_month.'-01';
+
+	}
+}
+
+if(!function_exists('formatBytes')){
+	function formatBytes($bytes, $precision = 2) { 
+		$units = array('B', 'KB', 'MB', 'GB', 'TB'); 
+	
+		$bytes = max($bytes, 0); 
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
+		$pow = min($pow, count($units) - 1); 
+	
+		// Uncomment one of the following alternatives
+		$bytes /= pow(1024, $pow);
+		// $bytes /= (1 << (10 * $pow)); 
+	
+		return round($bytes, $precision) . ' ' . $units[$pow]; 
+	} 
+}
