@@ -74,5 +74,14 @@ class Role_permission_model extends MY_Model
   function multi_select_field(){
     return 'permission';
   }
+
+  // function lookup_values()
+  // {
+  //   $lookup_values = parent::lookup_values();
+
+  //   $lookup_values = array_merge($lookup_values,[['pemission_id'=>1,'pemission_name'=>'Create Status'],['permission_id'=>2,'permission_name'=>'Update Status']]);
+    
+  //   return $lookup_values;
+  // }
   
 }

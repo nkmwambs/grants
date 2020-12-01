@@ -104,6 +104,10 @@ class Status_role_model extends MY_Model{
     function detail_list_table_visible_columns(){
         return ['status_role_track_number','role_name'];
     }
+
+    function multi_select_field(){
+        return 'role';
+    }
     
 
 }
