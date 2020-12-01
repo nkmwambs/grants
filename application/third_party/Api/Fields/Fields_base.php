@@ -14,8 +14,10 @@ class Fields_base{
   private $default_field_value = null;
 
   private $is_field_required = true;
+
+  private $is_detail_header = false;
   
-  function __construct($column, $table, $is_header = false){
+  function __construct($column, $table, $is_header = false, $is_detail_header = false){
 
     $this->CI =& get_instance();
 
@@ -24,6 +26,14 @@ class Fields_base{
     $this->table = strtolower($table);
 
     $this->is_header = $is_header;
+
+    $this->is_detail_header = $is_detail_header;
+
+    // Prevent $this->is_header and  $this->is_detail_header to be true at the same time
+    if($is_header == true && $is_detail_header == true){
+      $this->is_header = true;
+      $this->is_detail_header = false;
+    }
 
     $this->set_default_field_value();
 
@@ -117,6 +127,10 @@ class Fields_base{
     if($this->is_header){
       $id = $this->column;
       $name = 'header['.$this->column.']';
+      $master_class = 'master';
+    }elseif($this->is_detail_header){
+      $id = $this->column;
+      $name = 'detail_header['.$this->table.']['.$this->column.']';
       $master_class = 'master';
     }
 
@@ -257,6 +271,16 @@ class Fields_base{
         $name = 'header['.$this->column.'][]';
       }
 
+    }elseif($this->is_detail_header){
+      $id = $this->column;
+      $name = 'detail_header['.$this->table.']['.$this->column.']';
+      $master_class = 'master';
+
+      if($multi_select_field != "" && 'fk_'.$multi_select_field.'_id' == $this->column){
+        $multiple = "multiple='multiple'";
+        $hide_select_label = "hidden";
+        $name = 'detail_header['.$this->table.']['.$this->column.'][]';
+      }
     }
 
     $this->set_default_field_value();

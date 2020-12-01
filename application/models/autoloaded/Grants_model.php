@@ -1505,6 +1505,28 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
     return $controlled_visible_column;
   }
 
+  function detail_tables_single_form_add_visible_columns(){
+    $detail_single_form_add_visible_columns = [];
+
+    $model = $this->controller.'_model';
+
+    if(method_exists($this->$model,'detail_tables_single_form_add_visible_columns') && !empty($this->$model->detail_tables_single_form_add_visible_columns())){
+      
+      $detail_tables = $this->$model->detail_tables_single_form_add_visible_columns();
+
+      foreach($detail_tables as $detail_table){
+        
+        $detail_model = $this->grants->load_detail_model($detail_table);
+
+        if(method_exists($this->$detail_model,'single_form_add_visible_columns') && !empty($this->$detail_model->single_form_add_visible_columns())){
+          $detail_single_form_add_visible_columns[$detail_table] = $this->$detail_model->single_form_add_visible_columns();
+        }
+      }
+    }
+
+    return $detail_single_form_add_visible_columns;
+  }
+
   function edit_visible_columns(){
         
         $table = $this->controller;

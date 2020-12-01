@@ -66,6 +66,11 @@ class MY_Model extends CI_Model
     public function detail_list_table_hidden_columns(){}
   
     public function single_form_add_visible_columns(){}
+
+    // Lists/ Array of detail tables of the current controller that you would like to use their 
+    // single_form_add_visible_columns in the current controller's single form add forms
+
+    public function detail_tables_single_form_add_visible_columns(){}
   
     public function single_form_add_hidden_columns(){}
   

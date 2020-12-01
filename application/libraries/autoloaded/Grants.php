@@ -984,9 +984,13 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    * @return String
    */
     
-  function header_row_field(String $column, String $field_value = "", bool $show_only_selected_value = false): String {
+  function header_row_field(String $column, String $field_value = "", bool $show_only_selected_value = false, $detail_table = ''): String {
       
       $f = new Fields_base($column,$this->controller,true);
+
+      if($detail_table != ''){
+        $f = new Fields_base($column,$detail_table,false,true);
+      }
 
       $this->set_change_field_type();
       
@@ -994,7 +998,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
       $field = $field_type."_field";
 
-      $lib = strtolower($this->current_library);
+      //$lib = strtolower($this->current_library);
       
       if(array_key_exists($column,$this->set_field_type)){
 
@@ -1002,7 +1006,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         $field = $field_type."_field";
 
         if($field_type == 'select' && count($this->set_field_type[$column]['options']) > 0){
-          return $f->select_field($this->set_field_type[$column]['options'], $field_value,false,'',$this->multi_select_field());
+          return $f->select_field($this->set_field_type[$column]['options'], $field_value,false,'',$this->multi_select_field($detail_table));
         }else{
           return $f->$field($field_value);
         }
@@ -1012,7 +1016,7 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
         // The column should be in the name format and not id e.g. fk_user_id be user_name
         $lookup_table = strtolower(substr($column,0,-5));
         //echo $lookup_table;
-        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value,'',$this->multi_select_field());
+        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value,'',$this->multi_select_field($detail_table));
      
       }elseif(strrpos($column,'_is_') == true ){
         
@@ -1038,19 +1042,38 @@ function add_form_fields(Array $visible_columns_array): Array {
 
   $fields = array();
 
-  foreach ($visible_columns_array as $column) {
-    
-    // Used to set the default select value in a single_form_add name fields if the form has been opened from a 
-    // parent record
+  //$detail_tables_visible_columns
+
+  foreach ($visible_columns_array as $table_name=>$column) {// Some table names can be 0, 1, 3 for single_form_add_visible_columns or defined names for detail_tables_single_form_add_visible_columns
     $field_value = '';
     $show_only_selected_value = false;
 
-    if($this->CI->id != null  && hash_id($this->CI->id,'decode')>0 && $column == $this->CI->sub_action.'_name'){
-      $field_value = hash_id($this->CI->id,'decode');
-      $show_only_selected_value = true;
-    }
+    if(!is_array($column)){
+      // Used to set the default select value in a single_form_add name fields if the form has been opened from a 
+      // parent record
+      
+
+      if($this->CI->id != null  && hash_id($this->CI->id,'decode')>0 && $column == $this->CI->sub_action.'_name'){
+        $field_value = hash_id($this->CI->id,'decode');
+        $show_only_selected_value = true;
+      }
+    
     
     $fields[$column] = $this->header_row_field($column,$field_value,$show_only_selected_value);
+  }else{
+
+    $detail_table = '';
+
+    if(!is_numeric($table_name)){
+      $detail_table = $table_name;
+    }
+
+    foreach($column as $detail_column){
+      $fields[$detail_column] = $this->header_row_field($detail_column,$field_value,$show_only_selected_value,$detail_table);
+    }
+  
+  }
+
   }
 
   return $fields;  
@@ -1369,6 +1392,8 @@ function single_form_add_output($parent_record_id = ""){
     $this->CI->grants_model->mandatory_fields($table);
 
     $visible_columns = $this->CI->grants_model->single_form_add_visible_columns();
+    $visible_columns = array_merge($visible_columns,$this->CI->grants_model->detail_tables_single_form_add_visible_columns());
+    
     $fields = $this->add_form_fields($visible_columns);//$this->single_form_add_query();
 
     return array(
