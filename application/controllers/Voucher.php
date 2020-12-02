@@ -124,22 +124,25 @@ class Voucher extends MY_Controller
   }
 
 
-  function get_request_detail($request_detail_id){
+  function get_request_detail(){
+    $post = $this->input->post();
 
     //Update the request detail record by the id that has been passed in the arg
-    $data['request_detail_voucher_number'] = $this->input->post('voucher_number');
-    $this->db->where(array('request_detail_id'=>$request_detail_id));
-    $this->db->update('request_detail',$data);
+    
+    // $data['request_detail_voucher_number'] = $post['voucher_number'];
+    // $this->db->where(array('request_detail_id'=>$post['request_detail_id']));
+    // $this->db->update('request_detail',$data);
 
     // To be done from request detail model
     $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
     $this->db->select(array('request_detail_description','request_detail_quantity',
-    'request_detail_unit_cost','request_detail_total_cost','expense_account_id',
-    'project_allocation_id','request_detail_id'));
+    'request_detail_unit_cost','request_detail_total_cost','expense_account_id','expense_account_name',
+    'project_allocation_id','project_allocation_name','request_detail_id'));
     
+    $this->db->where(array('request_detail_id'=>$post['request_detail_id']));
 
-    $request_detail = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row();
+    $request_detail = $this->db->get('request_detail')->row();
 
     $array = [
       'request_detail_id'=> $request_detail->request_detail_id,
@@ -148,7 +151,9 @@ class Voucher extends MY_Controller
       'voucher_detail_unit_cost' => $request_detail->request_detail_unit_cost,
       'voucher_detail_total_cost' => $request_detail->request_detail_total_cost,
       'expense_account_id' => $request_detail->expense_account_id,
-      'project_allocation_id' => $request_detail->project_allocation_id
+      'project_allocation_id' => $request_detail->project_allocation_id,
+      'expense_account_name' => $request_detail->expense_account_name,
+      'project_allocation_name' => $request_detail->project_allocation_name
     ];
 
     echo json_encode($array);
@@ -794,7 +799,7 @@ class Voucher extends MY_Controller
        
         // Check if all request detail items in the request has the last status and update the request to last status too
         
-        //$this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
+        $this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
        
 
       }
@@ -875,20 +880,20 @@ class Voucher extends MY_Controller
 
         // Update the request detail record
         $this->db->where(array('request_detail_id'=>$request_detail_id));
-        $this->db->update('request_detail',array('request_detail_voucher_number'=>$voucher_id));
+        $this->db->update('request_detail',array('fk_voucher_id'=>$voucher_id));
   }
 
   function update_request_on_paying_all_details($request_detail_id){
     $request_id = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row()->fk_request_id;
-    $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_status_id<>'=>7))->num_rows();
+    $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_voucher_id'=>0))->num_rows();
     
-    $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request'))->row()->approve_item_id;
-    $item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
+    //$approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request'))->row()->approve_item_id;
+    //$item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
 
 
     if($unpaid_request_details == 0){
       $this->db->where(array('request_id'=>$request_id));
-      $this->db->update('request',array('fk_status_id'=>$item_last_status));
+      $this->db->update('request',array('request_is_fully_vouched'=>1));
     }
   }
   

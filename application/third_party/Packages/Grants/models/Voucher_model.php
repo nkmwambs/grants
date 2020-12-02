@@ -492,7 +492,7 @@ class Voucher_model extends MY_Model
 
     $max_approval_status_id = $this->general_model->get_max_approval_status_id('request');
 
-    $this->db->select(array('request_detail_id','request_detail_description','request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_name'));
+    $this->db->select(array('request_detail_id','request_track_number','request_detail_description','request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_name'));
 
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
     $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
@@ -500,7 +500,7 @@ class Voucher_model extends MY_Model
     $this->db->join('request','request.request_id=request_detail.fk_request_id'); 
     $this->db->join('status','status.status_id=request.fk_status_id');
 
-    $this->db->where(array('request_detail_voucher_number'=>0,'request.fk_status_id'=>$max_approval_status_id));
+    $this->db->where(array('fk_voucher_id'=>0,'request.fk_status_id'=>$max_approval_status_id));
     return $this->db->get('request_detail')->result_array();
   }
 

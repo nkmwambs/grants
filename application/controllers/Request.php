@@ -114,7 +114,7 @@ function insert_new_request(){
     $detail['request_detail_total_cost'] = $this->input->post('request_detail_total_cost')[$i];
     $detail['fk_expense_account_id'] = $this->input->post('fk_expense_account_id')[$i];
     $detail['request_detail_conversion_set'] = 0;
-    $detail['request_detail_voucher_number'] = 0;
+    $detail['fk_voucher_id'] = 0;
     
     $detail['fk_project_allocation_id'] = $this->input->post('fk_project_allocation_id')[$i];
 
