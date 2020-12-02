@@ -42,20 +42,20 @@ class Request_model extends MY_Model
   function list_table_visible_columns(){
     return ['request_track_number','request_type_name',
     'request_description','request_date','request_created_date','office_name',
-    'department_name','status_name','approval_name'];
+    'department_name','status_name','request_is_fully_vouched','approval_name'];
   }
 
 
-  public function list(){
+  // public function list(){
       
-    // $this->grants->where_condition('centers');
+  //   // $this->grants->where_condition('centers');
     
-    // $this->grants->where_condition('page_view','request');
+  //   // $this->grants->where_condition('page_view','request');
 
-    // $this->grants->create_table_join_statement($this->controller, $this->lookup_tables());
+  //   // $this->grants->create_table_join_statement($this->controller, $this->lookup_tables());
 
-    // return $this->db->get('request')->result_array();
-  }
+  //   // return $this->db->get('request')->result_array();
+  // }
 
   public function view(){}
 

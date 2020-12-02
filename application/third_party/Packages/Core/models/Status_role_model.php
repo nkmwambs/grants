@@ -42,7 +42,7 @@ class Status_role_model extends MY_Model{
     }
 
     function edit_visible_columns(){
-        return ['role_name'];
+        return ['role_name','status_role_is_active'];
     }
     
 

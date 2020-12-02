@@ -13,7 +13,7 @@
 </style>
 
 <?php 
-    //print_r($this->session->hierarchy_offices);
+    //print_r($this->general_model->get_max_approval_status_id('request'));
 ?>
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
@@ -274,6 +274,8 @@ $(".btn-retrieve-request").on('click',function(){
         
 
     }
+
+    $('.btn-save, .btn-save-new').show();
 });
 
 function remove_request_derived_voucher_details(){
@@ -697,6 +699,7 @@ function create_accounts_select_options(response_accounts){
 }
 
 function create_allocation_select_options(response_allocation){
+    var tbl_body = $("#tbl_voucher_body tbody");
     var allocation_select_option = "<option value=''>Select an allocation code</option>";
 
     if(response_allocation.length > 0){
@@ -708,7 +711,7 @@ function create_allocation_select_options(response_allocation){
         });
     }
 
-    $(".allocation").html(allocation_select_option);
+    tbl_body.find(':last-child').find(".allocation").html(allocation_select_option);
 
 }
 
@@ -815,9 +818,24 @@ function insertRow(response_is_contra = false){
     tbl_body.append("<tr>"+cell+"</tr>");
 }
 
+function voucher_has_request_details_inserted(){
+    var request_number = $('.request_number'); 
+    var voucher_has_request_details_inserted = false;
+
+
+    $.each(request_number,function(i,elem){
+        if($(elem).val() > 0){
+            voucher_has_request_details_inserted = true;
+            return false;
+        }
+    });
+
+    return voucher_has_request_details_inserted;
+
+}
+
 $(".btn-insert").on('click',function(){
 
-    
     $('.account_fields').each(function(i,elem){
         //$(elem).attr("style", "pointer-events: none;");
         if($(elem).val() != ''){
@@ -831,7 +849,7 @@ $(".btn-insert").on('click',function(){
     
     var tbl_body_rows = $("#tbl_voucher_body tbody tr");
 
-    if(tbl_body_rows.length == 0){
+    if(tbl_body_rows.length == 0 || voucher_has_request_details_inserted()){
         
         var count_account_fields = 0;
 

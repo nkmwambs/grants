@@ -17,7 +17,7 @@
         <table class="table table-striped" id='approved_request_table'>
             <thead>
                 <tr>
-                    <th colspan='11'>
+                    <th colspan='<?=count($fields);?>'>
                         <div class='btn btn-default' id='insert_all_request'><?=get_phrase('insert_all_to_voucher');?></div>
                     </th>
                 </tr>
@@ -92,27 +92,17 @@ function update_request_details_count_on_badge(){
 
 }
 
-function get_request_details_for_voucher(req_id){
+function get_request_details_for_voucher(request_detail_id){
 
-    let data = {'voucher_number':$("#voucher_number").val()}
-    let url = '<?=base_url();?>Voucher/get_request_detail/'+ req_id;
+    let data = {'voucher_number':$("#voucher_number").val(),'request_detail_id':request_detail_id}
+    let url = '<?=base_url();?>Voucher/get_request_detail';
 
-    $.ajax({
-        url:url,
-        data:data,
-        beforeSend:function(){
-        },
-        success:function(response){
-
-            var obj = JSON.parse(response);
-            
-            insertRowFromRequest(obj);
-
-            update_request_details_count_on_badge();
-        },
-        error:function(){
-            alert('Error Occurred');
-        }
+    $.post(url,data,function(response){
+        var obj = JSON.parse(response);
+        insertRowFromRequest(obj);
+        //updateAccountAndAllocationField();
+        update_request_details_count_on_badge();
+        console.log(response);
     });
 }
 
@@ -126,6 +116,8 @@ function insertRowFromRequest(obj){
     var expense_account_id = obj['expense_account_id'];
     var project_allocation_id = obj['project_allocation_id'];
     var request_detail_id = obj['request_detail_id'];
+    var project_allocation_name = obj['project_allocation_name'];
+    var expense_account_name = obj['expense_account_name'];
 
 
     var cell = actionCell(); 
@@ -133,21 +125,28 @@ function insertRowFromRequest(obj){
     cell += descriptionCell(description);
     cell += unitCostCell(unitcost); 
     cell += totalCostCell(totalcost); 
-    cell += accountCell(expense_account_id); 
-    cell += allocatioCodeCell(project_allocation_id); 
+    cell += build_allocation_code_select(project_allocation_id,project_allocation_name); 
+    cell += build_account_select(expense_account_id,expense_account_name); 
     cell += requestIdCell(request_detail_id); 
-    
 
     tbl_body.append("<tr>"+cell+"</tr>");
 
     $('.body-input').prop('readonly','readonly');
 
-    updateAccountAndAllocationField(expense_account_id, project_allocation_id);
+    //updateAccountAndAllocationField(expense_account_id, project_allocation_id);
     
     $("#voucher_total").val(sumVoucherDetailTotalCost());
 }
 
+function build_allocation_code_select(project_allocation_id,project_allocation_name){
+    var option = '<option value="'+project_allocation_id+'">'+project_allocation_name+'</option>';
+    return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''>"+option+"</select></td>";
+}
 
+function build_account_select(expense_account_id,expense_account_name){
+    var option = '<option value="'+expense_account_id+'">'+expense_account_name+'</option>';
+    return "<td><select name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''>"+option+"</select></td>";
+}
 
 function run_detail_row(obj){
 
