@@ -1455,6 +1455,7 @@ function multi_form_add_output($table_name = ""){
   $table = $table_name == ""?$this->controller:$table_name;
 
   //$this->mandatory_fields($table);
+  $this->table_setup(strtolower($table));
 
   if($this->CI->input->post()){
     $model = $this->current_model;
