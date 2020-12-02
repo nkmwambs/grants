@@ -35,6 +35,7 @@ class Status_role_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+    
 
     function single_form_add_visible_columns(){
         return ['role_name'];
@@ -102,7 +103,7 @@ class Status_role_model extends MY_Model{
     }
 
     function detail_list_table_visible_columns(){
-        return ['status_role_track_number','role_name'];
+        return ['status_role_track_number','role_name','status_role_is_active'];
     }
 
     function multi_select_field(){
