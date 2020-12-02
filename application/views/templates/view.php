@@ -231,7 +231,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                             if(strpos($column,'track_number') == true && $has_details_table == 1 ){
                               echo '<a href="'.base_url().$detail_table_name.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_') == true){
-                                echo $row[$column];// == 1?"Yes":"No";
+                                echo $row[$column] == 1?"Yes":"No";
                             }elseif($fields_meta_data[$column] == 'int' || $fields_meta_data[$column] == 'decimal'){
                                echo number_format($row[$column],2);
                             }elseif($column_key > 0){ 

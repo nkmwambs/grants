@@ -1713,10 +1713,21 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
     if($approveable_item->num_rows() > 0 ){
       $approveable_item_id = $approveable_item->row()->approve_item_id;
+      $approveable_item_is_active = $approveable_item->row()->approve_item_is_active;
+
+      // Condition for Initial status
+      $condition_array = array('fk_approve_item_id'=>$approveable_item_id,
+        'status_approval_sequence'=>1,'fk_account_system_id'=>$this->session->user_account_system_id);
+
+      if(!$approveable_item_is_active){
+        // Condition for fully approved status
+        $condition_array = array('fk_approve_item_id'=>$approveable_item_id,
+        'status_is_requiring_approver_action'=>0,
+        'fk_account_system_id'=>$this->session->user_account_system_id);
+      }
+
       $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-      //$this->db->join('account_system','account_system.account_system_id=approval_flow.fk_account_system_id');
-      $initial_status = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id,
-      'status_approval_sequence'=>1,'fk_account_system_id'=>$this->session->user_account_system_id));//,'fk_account_system_id'=>$this->session->user_account_system_id
+      $initial_status = $this->db->get_where('status',$condition_array);
 
       if($initial_status->num_rows() > 0 ){
           $status_id = $initial_status->row()->status_id;
