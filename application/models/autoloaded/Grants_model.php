@@ -1975,6 +1975,12 @@ function overwrite_field_value_on_post(Array $post_array, String $insert_table,S
   return $post_array;
 }
 
+function not_exists_sub_query($lookup_table){
+  $sql = "NOT EXISTS (SELECT * FROM ".$this->controller." WHERE ".$this->controller.".fk_".$lookup_table."_id=".$lookup_table.".".$lookup_table."_id)";
+
+  return $sql;
+}
+
 function event_tracker(){
   // $event = $this->input->post();
 
