@@ -121,29 +121,33 @@ function next_approval_actor($item_status){
   //$next_status_record = array();
 
   $next_approval_actor_role_ids = [$this->default_role_id()];
-
+  //echo $range_of_status_approval_sequence;exit;
   if($next_possible_sequence_number <= $range_of_status_approval_sequence){
            
       if($status_approval_direction == 1){    
         $this->db->select(array('status_role.fk_role_id as fk_role_id'));
         $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
         $this->db->join('status_role','status_role.status_role_status_id=status.status_id');
-        $next_status_record_obj = $this->db->get_where('status',
-        array('status_approval_sequence'=>$next_possible_sequence_number,
-        'fk_approve_item_id'=>$approveable_item_id));
+        $this->db->where(array('status_approval_sequence'=>$next_possible_sequence_number,
+        'fk_approve_item_id'=>$approveable_item_id,'approval_flow.fk_account_system_id'=>$this->session->user_account_system_id));
+        $next_status_record_obj = $this->db->get('status');
 
-        $next_approval_actor_role_ids = $next_status_record_obj->num_rows() > 0 ? array_column($next_status_record_obj->result_array(),'fk_role_id'):[$this->default_role_id()];
+        $next_approval_actor_role_ids = $next_status_record_obj->num_rows() > 0 ? array_unique(array_column($next_status_record_obj->result_array(),'fk_role_id')):[$this->default_role_id()];
         
 
       }elseif($status_approval_direction == -1){
         $this->db->select(array('status_role.fk_role_id as fk_role_id'));
         $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
         $this->db->join('status_role','status_role.status_role_status_id=status.status_id');
-        $next_status_record_obj = $this->db->get_where('status',
-        array('status_approval_sequence'=>$previous_possible_sequence_number,
-        'fk_approve_item_id'=>$approveable_item_id));
 
-        $next_approval_actor_role_ids = $next_status_record_obj->num_rows() > 0 ? array_column($next_status_record_obj->result_array(),'fk_role_id'):[$this->default_role_id()];
+        $this->db->where(array('status_approval_sequence'=>$status_record->status_approval_sequence,
+        'fk_approve_item_id'=>$approveable_item_id,
+        'approval_flow.fk_account_system_id'=>$this->session->user_account_system_id,
+        'status_role_status_id'=>$item_status));
+
+        $next_status_record_obj = $this->db->get('status');
+
+        $next_approval_actor_role_ids = $next_status_record_obj->num_rows() > 0 ? array_unique(array_column($next_status_record_obj->result_array(),'fk_role_id')):[$this->default_role_id()];
       }  
       
   }
@@ -301,7 +305,7 @@ function show_decline_button($item_status){
 }
 
 function next_status($item_status){
-
+  
   $next_status_id = 0;
   
   $approve_item_name = $this->get_approve_item_name_by_status($item_status);
@@ -325,9 +329,9 @@ function next_status($item_status){
     $next_approval_seq = $status_approval_sequence + 1;
     
     $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-    $next_status_id_obj = $this->db->get_where('status',
-    array('status_approval_sequence'=>$next_approval_seq,
-    'fk_approve_item_id'=>$approveable_item_id));
+    $this->db->where(array('status_approval_sequence'=>$next_approval_seq,
+    'fk_approve_item_id'=>$approveable_item_id,'approval_flow.fk_account_system_id'=>$this->session->user_account_system_id));
+    $next_status_id_obj = $this->db->get('status');
 
     if($next_status_id_obj->num_rows() > 0){
       $next_status_id = $next_status_id_obj->row()->status_id;
@@ -426,10 +430,6 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
 
 }
 
-// function get_count_of_approval_workflow_levels($approveable_item_id){
-//   $number_of_levels = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id))->num_rows();
-// }
-
 function display_approver_status_action($logged_role_id,$table,$primary_key){
   /**
    * Given the status find the following:
@@ -496,9 +496,10 @@ function get_max_approval_status_id(String $approveable_item):Int{
   
   $max_status_approval_sequence_obj = $this->db->select(array('status_id','status_approval_sequence'))
   ->order_by('status_approval_sequence DESC')
-  ->get_where('status',array('approve_item_name'=>$approveable_item,
+  ->where(array('approve_item_name'=>$approveable_item,
   'fk_account_system_id'=>$this->session->user_account_system_id,
-  'status_backflow_sequence'=>0,'status_approval_direction'=>1));
+  'status_backflow_sequence'=>0))
+  ->get('status');
 
   //print_r($max_status_approval_sequence_obj->row());exit;
 
@@ -541,7 +542,7 @@ function is_max_approval_status_id(String $approveable_item,Int $status_id):Bool
   $is_max_status_id = false;
   
   $max_status_id = $this->get_max_approval_status_id($approveable_item);
-
+  //echo $status_id;exit;
   if($status_id == $max_status_id){
     $is_max_status_id = true;
   }
