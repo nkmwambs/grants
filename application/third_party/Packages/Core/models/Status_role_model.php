@@ -96,11 +96,21 @@ class Status_role_model extends MY_Model{
     function lookup_values()
     {
         $lookup_values = parent::lookup_values();
+        
+        // $this->read_db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+        // $approve_item_id = $this->read_db->get_where('status',
+        // array('status_id'=>hash_id($this->id,'decode')))->row()->fk_approve_item_id;
+
+        // $this->read_db->select(array('fk_role_id'));
+        // $this->read_db->join('status','status.status_id=status_role.status_role_status_id');
+        // $this->read_db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+        // $this->read_db->where(array('fk_approve_item_id'=>$approve_item_id));
+        // $not_exists_sql = $this->read_db->get_compiled_select('status_role',false);
 
         $this->read_db->select(array('role_id','role_name'));
-        //$this->read_db->where('NOT EXISTS (SELECT * FROM status_role WHERE status_role.fk_role_id=role.role_id)', '', FALSE);
-        //echo $this->grants_model->not_exists_sub_query('role');exit;
-        $this->read_db->where($this->grants_model->not_exists_sub_query('role'),NULL,FALSE);
+        $this->read_db->where('NOT EXISTS (SELECT * FROM status_role WHERE status_role.fk_role_id=role.role_id AND status_role_status_id='.hash_id($this->id,'decode').')', '', FALSE);
+        //$this->read_db->where($this->grants_model->not_exists_sub_query('role'),NULL,FALSE);
+        // $this->read_db->where('NOT EXISTS('.$not_exists_sql.')',NULL,FALSE);
         $lookup_values['role'] = $this->read_db->get('role')->result_array();
 
         return $lookup_values;
