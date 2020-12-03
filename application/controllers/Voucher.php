@@ -720,7 +720,7 @@ class Voucher extends MY_Controller
       $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
       $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
       $accounts = $this->db->get('expense_account')->result_array();
-    }elseif($voucher_type_effect == 'expense'){
+    }elseif($voucher_type_effect == 'income'){
       $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
       $this->db->join('project','project.fk_income_account_id=income_account.income_account_id');
       $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
