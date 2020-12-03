@@ -809,13 +809,15 @@ function generate_item_track_number_and_name($approveable_item){
 
             // Insert the new status
            
-            $status = $this->write_db->get_where('status',array('fk_approval_flow_id'=>$approval_flow_id,'status_approval_sequence'=>1));
+            $status = $this->write_db->get_where('status',
+            array('fk_approval_flow_id'=>$approval_flow_id)); //,'status_approval_sequence'=>1
             
-            if($status->num_rows() == 0){
+            if($status->num_rows() < 2){
 
-              $this->insert_new_status($approval_flow_id,$user_id);  
+              $this->insert_initial_and_final_status($approval_flow_id,$user_id); 
             
             }
+
         }
         
       }
@@ -854,22 +856,49 @@ function generate_item_track_number_and_name($approveable_item){
     return $this->write_db->insert_id();
   }
 
-  function insert_new_status($approval_flow_id,$user_id){
+  function insert_status($user_id,$status_name,$approval_flow_id,$status_approval_sequence,$status_backflow_sequence,$status_approval_direction,$status_is_requiring_approver_action){
     
-    $status_data['status_track_number'] = $this->generate_item_track_number_and_name('status')['status_track_number'];
-    $status_data['fk_approval_flow_id'] = $approval_flow_id;
-    $status_data['status_name'] = get_phrase('ready_to_submit');
-    $status_data['status_approval_sequence'] = 1;
-    $status_data['status_approval_direction'] = 1;
-    $status_data['status_is_requiring_approver_action'] = 0;
-    $status_data['status_backflow_sequence'] = 0;
-    $status_data['status_created_date'] =  date('Y-m-d');
-    $status_data['status_created_by'] = $user_id;
-    $status_data['status_last_modified_by']  = $user_id;
-              
-    $this->write_db->insert('status',$status_data); 
+    $status_id = 0;
+
+    $insert_status = $this->read_db->get_where('status',
+    array('fk_approval_flow_id'=>$approval_flow_id,
+    'status_approval_sequence'=>$status_approval_sequence,
+    'status_backflow_sequence'=>$status_backflow_sequence,
+    'status_approval_direction'=>$status_approval_direction,
+    'status_is_requiring_approver_action'=>$status_is_requiring_approver_action));
+
+    if($insert_status->num_rows() == 0){
+      $data['status_track_number'] = $this->grants_model->generate_item_track_number_and_name('status')['status_track_number'];;
+      $data['status_name'] = $status_name;
+      $data['fk_approval_flow_id'] = $approval_flow_id;
+      $data['status_approval_sequence'] = $status_approval_sequence;
+      $data['status_backflow_sequence'] = $status_backflow_sequence;
+      $data['status_approval_direction'] = $status_approval_direction;
+      $data['status_is_requiring_approver_action'] = $status_is_requiring_approver_action;
+  
+      $data['status_created_date'] = date('Y-m-d');
+      $data['status_created_by'] = $user_id;
+      $data['status_last_modified_by'] = $user_id;
+  
+      $this->write_db->insert('status',$data);
+  
+      $status_id = $this->write_db->insert_id();
+    }else{
+      $status_id = $insert_status->row()->status_id;
+    }
     
-    $status_id = $this->write_db->insert_id();
+    return $status_id;
+    
+}
+
+  function insert_initial_and_final_status($approval_flow_id,$user_id){
+
+    // Insert initial status record
+    $initial_status_id = $this->insert_status($user_id,get_phrase('ready_to_submit'),$approval_flow_id,1,0,1,1);
+
+    // Insert fully approved status
+    $fully_approved_status_id = $this->insert_status($user_id,get_phrase('fully_approved'),$approval_flow_id,2,0,0,0);
+
 
     // Get the new_status_role_id if set otherwise use the logged in user role id
     $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
@@ -888,7 +917,7 @@ function generate_item_track_number_and_name($approveable_item){
 
     // $this->write_db->insert('status_role',$status_role_data);
 
-    return $status_id;
+    return $fully_approved_status_id;
   }
 
   function insert_status_if_missing($approve_item_name){
@@ -1265,9 +1294,11 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
     }
   }
 
-  // if(method_exists($this->$model,$model_where_method)){
-  //   $this->$model->$model_where_method();
-  // }
+  if(method_exists($this->$model,'order_list_page')){
+    $this->db->order_by($this->$model->order_list_page());
+  }else{
+    $this->db->order_by($table.'_created_date DESC');
+  }
 
   //View OUTPUT API defined condition array
   if(is_array($filter_where_array) && count($filter_where_array) > 0){
@@ -1291,7 +1322,6 @@ $model_where_method = "list_table_where", $filter_where_array = array() ){
 public function run_list_query($table, $selected_columns, $lookup_tables, 
   $model_where_method = "list_table_where", $filter_where_array = array() ): Array {
     
-
     //$this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
     //$this->db->get($table)->result_array();
     if(!$this->db->get($table)){
@@ -1683,10 +1713,21 @@ function run_master_view_query($table,$selected_columns,$lookup_tables){
 
     if($approveable_item->num_rows() > 0 ){
       $approveable_item_id = $approveable_item->row()->approve_item_id;
+      $approveable_item_is_active = $approveable_item->row()->approve_item_is_active;
+
+      // Condition for Initial status
+      $condition_array = array('fk_approve_item_id'=>$approveable_item_id,
+        'status_approval_sequence'=>1,'fk_account_system_id'=>$this->session->user_account_system_id);
+
+      if(!$approveable_item_is_active){
+        // Condition for fully approved status
+        $condition_array = array('fk_approve_item_id'=>$approveable_item_id,
+        'status_is_requiring_approver_action'=>0,
+        'fk_account_system_id'=>$this->session->user_account_system_id);
+      }
+
       $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
-      //$this->db->join('account_system','account_system.account_system_id=approval_flow.fk_account_system_id');
-      $initial_status = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id,
-      'status_approval_sequence'=>1,'fk_account_system_id'=>$this->session->user_account_system_id));//,'fk_account_system_id'=>$this->session->user_account_system_id
+      $initial_status = $this->db->get_where('status',$condition_array);
 
       if($initial_status->num_rows() > 0 ){
           $status_id = $initial_status->row()->status_id;
@@ -1932,6 +1973,12 @@ function overwrite_field_value_on_post(Array $post_array, String $insert_table,S
   }
 
   return $post_array;
+}
+
+function not_exists_sub_query($lookup_table){
+  $sql = "NOT EXISTS (SELECT * FROM ".$this->controller." WHERE ".$this->controller.".fk_".$lookup_table."_id=".$lookup_table.".".$lookup_table."_id)";
+
+  return $sql;
 }
 
 function event_tracker(){

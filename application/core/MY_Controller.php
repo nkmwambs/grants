@@ -426,7 +426,7 @@ class MY_Controller extends CI_Controller
 
     $status_id =$this->general_model->get_status_id($this->controller,hash_id($this->id,'decode'));
     $is_max_approval_status_id = $this->general_model->is_max_approval_status_id($this->controller,$status_id);
-    
+    //echo $is_max_approval_status_id;exit;
     // Prevent update of status when max status id is reached
     if(!$is_max_approval_status_id){
        // Get status of current id - to be taken to grants_model
