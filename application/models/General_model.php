@@ -430,10 +430,6 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
 
 }
 
-// function get_count_of_approval_workflow_levels($approveable_item_id){
-//   $number_of_levels = $this->db->get_where('status',array('fk_approve_item_id'=>$approveable_item_id))->num_rows();
-// }
-
 function display_approver_status_action($logged_role_id,$table,$primary_key){
   /**
    * Given the status find the following:
