@@ -13,7 +13,7 @@
 </style>
 
 <?php 
-    //print_r($this->general_model->get_max_approval_status_id('request'));
+    //print_r($request);
 ?>
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
@@ -221,6 +221,15 @@ $(document).ready(function(){
     
 });
 
+// function update_request_details_count_on_badge(){
+//     var badges = $(".requests_badge");
+//     var request_rows = $(".map_request_to_voucher_row");
+
+//     var current_count = request_rows.length;
+
+//     badges.html(current_count);
+
+// }
 function load_approved_requests(){
         var office = $("#office").val();
         var url = "<?=base_url();?>Voucher/get_approve_request_details/" + office;
@@ -249,6 +258,21 @@ function load_approved_requests(){
             }
         });
 }
+
+$(document).on('change', '#voucher_type',function(){
+
+ var office=$('#office').val();
+
+ var url=  "<?=base_url();?>Voucher/get_count_of_unvouched_request/"+ office;
+
+ $.get(url,office,function(response){
+     var badges = $(".requests_badge");
+     badges.html(response);
+
+ })
+
+});
+
 
 $(".btn-retrieve-request").on('click',function(){
     
@@ -656,6 +680,7 @@ function get_bank_cash_information(voucherTypeSelect){
         }
 
         if(voucher_type_id){
+            //update_request_details_count_on_badge();
             $(".btn-insert").show();
             $(".btn-retrieve-request").show();
         }else{

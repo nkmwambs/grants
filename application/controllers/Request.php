@@ -43,6 +43,8 @@ function get_request_type(){
   echo json_encode($result);
 }
 
+
+
 function get_request_department(){
   $request_type_id = $this->input->post('request_type_id');
 

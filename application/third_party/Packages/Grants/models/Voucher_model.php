@@ -529,6 +529,28 @@ class Voucher_model extends MY_Model
     );
   }
 
+  
+  /**
+   * get_count_of_request
+   * @param 
+   * @return Integer
+   * @author: Onduso
+   * @Date: 4/12/2020
+   */
+  function get_count_of_unvouched_request($office_id):int{
+
+    //$office_id = $this->input->post('office_id');
+  
+    $this->read_db->join('request_detail','request.request_id=request_detail.fk_request_id');
+    $this->read_db->where(array('fk_office_id'=>$office_id));
+    $this->read_db->where(array('request_is_fully_vouched'=>0));
+    $this->read_db->where(array('fk_voucher_id'=>0));
+    
+    $unvouched_request=$this->read_db->get('request')->num_rows();
+  
+    return $unvouched_request; 
+  }
+
   function get_voucher_type_effect($voucher_type_id){
       //return (object)['voucher_type_effect_id'=>1,'voucher_type_effect_name'=>'income'];
       $this->db->select(array('voucher_type_effect_code','voucher_type_id','voucher_type_effect_id'));
