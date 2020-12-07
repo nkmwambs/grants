@@ -696,6 +696,23 @@ class Voucher extends MY_Controller
     $this->write_db->insert('cash_recipient_account',$cash_recipient_account_data);
   }
 
+ 
+
+
+    /**
+   * get_count_of_request
+   * @param 
+   * @return Integer
+   * @author: Onduso
+   * @Date: 4/12/2020
+   */
+  function get_count_of_unvouched_request($office_id){
+
+  
+    echo $this->voucher_model->get_count_of_unvouched_request($office_id);
+    
+  }
+
   function insert_new_voucher(){
 
     //echo json_encode($this->input->post());exit;
