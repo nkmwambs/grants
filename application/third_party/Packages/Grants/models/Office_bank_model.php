@@ -263,10 +263,19 @@ class Office_bank_model extends MY_Model
       
     // }
 
+    function get_office_banks($office_id){
+
+      $this->read_db->select(array('office_bank_id','office_bank_name'));
+      $this->read_db->where(array('fk_office_id'=>$office_id));
+      $office_banks = $this->read_db->get('office_bank')->result_array();
+
+      return $office_banks;
+    }
+
     function master_view(){}
 
     public function list(){}
 
     public function view(){}
-
+    
 }

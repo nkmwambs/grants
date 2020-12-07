@@ -48,11 +48,17 @@ class Financial_report_library extends Grants
     return $this->CI->financial_report_model->get_month_active_projects($office_ids,$reporting_month);
   }
 
+  // function page_position(){
+
+  //   $widget['position_1'][] = Widget_base::load('button','Show Combined Report',base_url().'financial_report/view/');
+
+  //   return $widget;
+  // }
   function page_position(){
-
-    //$widget['position_1'][] = Widget_base::load('button','Show Combined Report',base_url().'financial_report/view/');
-
-    //return $widget;
+    
+    $widget['position_1']['view'][] = $this->CI->grants_package_library->list_project_allocation_without_office_bank_linkage();
+    
+    return $widget;
   }
 
 } 

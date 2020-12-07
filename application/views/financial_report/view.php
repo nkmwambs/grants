@@ -37,12 +37,14 @@
 </div>
 
 <div class="row">
+  <div class="col-xs-12">
+      <?=Widget_base::load('position','position_1');?>
+  </div>
+</div>
+
+<div class="row">
     <div class='col-xs-12'>
         <div onclick="PrintElem('#voucher_print')" class="btn btn-default"><?=get_phrase('print');?></div>
-            <?php 
-                // echo approval_action_buttons($logged_role_id,$table,$primary_key);
-            ?>
-        </div>
     </div>
 </div>    
 

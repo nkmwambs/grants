@@ -234,6 +234,8 @@ public $controller;
 
 	function create_user_session ($row,$first_login_attempt = false){
 
+        $this->session->set_userdata('package', 'Grants'); // To be changed when changing Apps
+
 		$this->session->set_userdata('user_login', '1');
 		$this->session->set_userdata('user_id', $row->user_id);
 		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
