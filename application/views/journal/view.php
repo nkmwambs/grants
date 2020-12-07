@@ -24,6 +24,12 @@
 </div>
 
 <div class="row">
+  <div class="col-xs-12">
+      <?=Widget_base::load('position','position_1');?>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-xs-3 <?=!$role_has_voucher_create_permission? 'hidden' :'';?>">
       <a href='<?=base_url();?>voucher/multi_form_add' class='btn btn-default'><?=get_phrase('add_voucher');?></a>
   </div>

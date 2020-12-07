@@ -58,12 +58,11 @@ class Voucher_library extends Grants
   }
 
   function page_position(){
-
-    //$widget['position_5'][] = $this->approved_unvouched_request_details();
-
-    //return $widget;
+    
+    $widget['position_1']['multi_form_add'][] = $this->CI->grants_package_library->list_project_allocation_without_office_bank_linkage();
+    
+    return $widget;
   }
-
 
   // Below is the code for a voucher object
 

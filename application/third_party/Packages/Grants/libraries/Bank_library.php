@@ -28,5 +28,10 @@ class Bank_library extends Grants
     ];
   }
 
-  
+  // function page_position(){
+
+  //   $widget['position_1']['view][] = 'Hey 1';
+
+  //   return $widget;
+  // }
 }
