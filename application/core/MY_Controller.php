@@ -89,6 +89,10 @@ class MY_Controller extends CI_Controller
 
     $this->load->library($this->current_library);
     $this->load->model($this->current_model);
+
+    $this->load->helper($this->session->package.'_package');
+    $this->load->library($this->session->package.'_package_library');
+    $this->load->model($this->session->package.'_package_model');
 	
 	
     //Setting the session of master table. For view action always the master table= the controler u are in.

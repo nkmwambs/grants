@@ -21,6 +21,10 @@ class Office_bank_project_allocation extends MY_Controller
 
   function index(){}
 
+  function insert_office_bank_project_allocation(){
+    echo $this->office_bank_project_allocation_model->add();
+  }
+
   static function get_menu_list(){}
 
 }

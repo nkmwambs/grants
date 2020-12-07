@@ -12,9 +12,13 @@
 
 </style>
 
-<?php 
-    //print_r($request);
-?>
+
+<div class="row">
+    <div class="col-xs-12">
+        <?=Widget_base::load('position','position_1');?>
+    </div>
+</div>
+
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
         <div class="panel panel-default" data-collapsed="0">
