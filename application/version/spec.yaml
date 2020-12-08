@@ -1,9 +1,23 @@
 core:
   tables:
 
+    role_group:
+      lookup_tables:
+        - account_system
+
+    permission_template:
+      lookup_tables:
+        - role_group
+        - permission
+
     attachment:
       lookup_tables:
         - approve_item
+    
+    role_group_association:
+      lookup_tables:
+        - role
+        - role_group
 
     context_definition:
 
