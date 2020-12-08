@@ -1113,28 +1113,28 @@ function actionCell(){
 }
 
 function quantityCell(value = 0){
-    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' name='' id=''/></td>";
+    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' /></td>";
 }
 
 function descriptionCell(value = ''){
-    return "<td><input  name='voucher_detail_description[]' type='text' class='form-control required body-input description' value='" + value + "' name='' id=''/></td>"; 
+    return "<td><input  name='voucher_detail_description[]' type='text' class='form-control required body-input description' value='" + value + "' /></td>"; 
 }
 
 function unitCostCell(value = 0){
-    return "<td><input  name='voucher_detail_unit_cost[]' type='number' class='form-control required body-input number-fields unitcost' onclick='replaceValue(this);' onchange='computeTotalCost(this);'  value='" + value + "' name='' id=''/></td>";
+    return "<td><input  name='voucher_detail_unit_cost[]' type='number' class='form-control required body-input number-fields unitcost' onclick='replaceValue(this);' onchange='computeTotalCost(this);'  value='" + value + "' /></td>";
 }
 
 function totalCostCell(value = 0){
-    return "<td><input name='voucher_detail_total_cost[]' type='number' class='form-control required body-input number-fields totalcost' value='" + value + "' name='' id='' readonly='readonly'/></td>";
+    return "<td><input name='voucher_detail_total_cost[]' type='number' class='form-control required body-input number-fields totalcost' value='" + value + "' readonly='readonly'/></td>";
 }
 
 function accountCell(value = 0){
     //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
     
     if(toggle_accounts_by_allocation){
-        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
+        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control required body-input account' ></select></td>";
     }else{
-        return "<td><select name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
+        return "<td><select name='voucher_detail_account[]' class='form-control required body-input account' ></select></td>";
     }
     
 }
@@ -1143,15 +1143,15 @@ function allocationCodeCell(value = 0){
     //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
     if(toggle_accounts_by_allocation){
-        return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
+        return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation'></select></td>";
     }else{
-        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
+        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control required body-input allocation'></select></td>";
     }
     
 }
 
 function requestIdCell(value = 0){
-    return "<td><input name='fk_request_detail_id[]' type='number' class='form-control body-input number-fields request_number' value='" + value + "' name='' id='' readonly='readonly'/></td>";
+    return "<td><input name='fk_request_detail_id[]' type='number' class='form-control body-input number-fields request_number' value='" + value + "' readonly='readonly'/></td>";
 }
 
 function disable_elements_in_hidden_span(){
