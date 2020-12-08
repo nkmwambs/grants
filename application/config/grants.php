@@ -11,7 +11,7 @@
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = true;
 	$config['drop_only_center'] = true;
-	$config['method_to_attach_permission_to_role'] = 'role_group'; // direct, role_group, both
+	$config['method_to_attach_permission_to_role'] = 'both'; // direct, role_group, both
 	$config['link_new_project_allocations_only_to_default_bank_accounts'] = true;
 
 	$config['tables_allowing_drop_only_centers'] = ['office_bank','project_allocation','office_cash'];
