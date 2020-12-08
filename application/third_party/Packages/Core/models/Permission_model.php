@@ -75,6 +75,7 @@ class Permission_model extends MY_Model
         $permission_data['fk_permission_label_id'] = $crud_operation->permission_label_id;
         $permission_data['permission_type'] = 1;// 1 = Page Access, 2 = Field Access
         $permission_data['permission_field'] = '';
+        $permission_data['permission_is_global'] = 1;
         $permission_data['fk_menu_id'] = $data_array['menu_id'];//$menu_obj->row()->menu_id;
         
         $permission_data_to_insert = $this->grants_model->merge_with_history_fields('permission',$permission_data,false);
