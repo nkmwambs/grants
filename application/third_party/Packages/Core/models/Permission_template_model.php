@@ -60,6 +60,7 @@ class Permission_template_model extends MY_Model{
         if(!$this->session->system_admin){
             $this->read_db->select(array('permission_id','permission_name'));
             $this->read_db->where(array('permission_is_global'=>0));
+            $this->read_db->where('NOT EXISTS (SELECT * FROM permission_template WHERE permission_template.fk_permission_id=permission.permission_id AND fk_role_group_id = '.hash_id($this->id,'decode').')','',FALSE);
             $lookup_values['permission'] = $this->read_db->get('permission')->result_array();
         }
 
