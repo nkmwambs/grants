@@ -649,6 +649,10 @@ class User_model extends MY_Model
     $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
     $this->db->join('permission_label','permission_label.permission_label_id=permission.fk_permission_label_id');
     $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+
+    if(!$this->session->system_admin && $this->config->item('prevent_using_global_permissions_by_non_admins')){
+      $this->db->where(array('permission_is_global'=>0));// Only get non global/ non system level permissions
+    }
       
     $role_permissions_object = $this->db->get_where('role_permission',
     array('fk_role_id'=>$role_id,'role_permission_is_active'=>1,'permission_is_active'=>1));
@@ -666,6 +670,10 @@ class User_model extends MY_Model
     $this->db->join('role_group_association','role_group_association.fk_role_group_id=role_group.role_group_id');
     $this->db->join('permission_label','permission_label.permission_label_id=permission.fk_permission_label_id');
     $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+
+    if(!$this->session->system_admin && $this->config->item('prevent_using_global_permissions_by_non_admins')){
+      $this->db->where(array('permission_is_global'=>0));// Only get non global/ non system level permissions
+    }
 
     $role_group_permissions_object = $this->db->get_where('permission_template',
     array('fk_role_id'=>$role_id,'role_group_is_active'=>1,'permission_is_active'=>1));
@@ -697,7 +705,8 @@ class User_model extends MY_Model
       // Build the $role_permission_array if $role_permissions_object is not empty
   
         if($role_permissions_object->num_rows() > 0 || $role_group_permissions_object->num_rows() > 0){
-          
+        //if($role_permissions_object->num_rows() > 0 ){
+
           // Switch methods to attach permissions to a role
           if($this->config->item('method_to_attach_permission_to_role') == 'both'){
             $role_permissions = $role_permissions_object->result_object();

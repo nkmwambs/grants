@@ -52,4 +52,17 @@ class Permission_template_model extends MY_Model{
     function multi_select_field(){
         return 'permission';
     }
+
+    function lookup_values()
+    {
+        $lookup_values = parent::lookup_values();
+
+        if(!$this->session->system_admin){
+            $this->read_db->select(array('permission_id','permission_name'));
+            $this->read_db->where(array('permission_is_global'=>0));
+            $lookup_values['permission'] = $this->read_db->get('permission')->result_array();
+        }
+
+        return $lookup_values;
+    }
 }
