@@ -641,6 +641,38 @@ class User_model extends MY_Model
 
   }
 
+  function permission_directly_assigned_to_roles($role_id){
+    // Get role permissions for the role
+    $this->db->select(array('menu_derivative_controller','permission_type','permission_label_name',
+    'permission_field','permission_name','permission_label_depth'));    
+          
+    $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
+    $this->db->join('permission_label','permission_label.permission_label_id=permission.fk_permission_label_id');
+    $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+      
+    $role_permissions_object = $this->db->get_where('role_permission',
+    array('fk_role_id'=>$role_id,'role_permission_is_active'=>1,'permission_is_active'=>1));
+
+    return $role_permissions_object;
+  }
+
+  function permission_directly_assigned_through_role_group($role_id){
+    // Get role group permissions for the role
+    $this->db->select(array('menu_derivative_controller','permission_type','permission_label_name',
+    'permission_field','permission_name','permission_label_depth'));    
+
+    $this->db->join('permission','permission.permission_id=permission_template.fk_permission_id');
+    $this->db->join('role_group','role_group.role_group_id=permission_template.fk_role_group_id');
+    $this->db->join('role_group_association','role_group_association.fk_role_group_id=role_group.role_group_id');
+    $this->db->join('permission_label','permission_label.permission_label_id=permission.fk_permission_label_id');
+    $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
+
+    $role_group_permissions_object = $this->db->get_where('permission_template',
+    array('fk_role_id'=>$role_id,'role_group_is_active'=>1,'permission_is_active'=>1));
+
+    return $role_group_permissions_object;
+  }
+
   /**
    * get_user_permissions
    * 
@@ -654,25 +686,32 @@ class User_model extends MY_Model
  
       $role_permission_array = array();
 
-      // Get role permissions for the role
-      $this->db->select(array('menu_derivative_controller','permission_type','permission_label_name',
-      'permission_field','permission_name','permission_label_depth'));
-      //$this->db->select(array('menu_derivative_controller','permission_label_name','permission_name'));    
-      
-      $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
-      $this->db->join('permission_label','permission_label.permission_label_id=permission.fk_permission_label_id');
-      $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
-  
-      $role_permissions_object = $this->db->get_where('role_permission',
-      array('fk_role_id'=>$role_id,'role_permission_is_active'=>1,'permission_is_active'=>1));
+      $role_permissions = [];
+
+      $role_group_permissions = [];
+
+      $role_permissions_object = $this->permission_directly_assigned_to_roles($role_id);
+
+      $role_group_permissions_object = $this->permission_directly_assigned_through_role_group($role_id);
   
       // Build the $role_permission_array if $role_permissions_object is not empty
-      //return $role_permissions_object->result_object();
   
-        if($role_permissions_object->num_rows() > 0){
-  
-          $role_permissions = $role_permissions_object->result_object();
+        if($role_permissions_object->num_rows() > 0 || $role_group_permissions_object->num_rows() > 0){
           
+          // Switch methods to attach permissions to a role
+          if($this->config->item('method_to_attach_permission_to_role') == 'both'){
+            $role_permissions = $role_permissions_object->result_object();
+            $role_group_permissions = $role_group_permissions_object->result_object();
+          }elseif($this->config->item('method_to_attach_permission_to_role') == 'direct'){
+            $role_permissions = $role_permissions_object->result_object();
+          }elseif($this->config->item('method_to_attach_permission_to_role') == 'role_group'){
+            $role_group_permissions = $role_group_permissions_object->result_object();
+          }else{
+            $role_permissions = $role_permissions_object->result_object();
+          }
+          
+          $role_permissions = array_merge($role_permissions,$role_group_permissions);
+
           $cnt = 0;
 
           foreach($role_permissions as $row){   
@@ -840,12 +879,6 @@ class User_model extends MY_Model
       $active_controller = ucfirst($active_controller);
 
       $permission = $this->session->role_permissions;
-
-      // if(isset($permission[$active_controller][$permission_type]) && array_key_exists($permission_label,$permission[$active_controller][$permission_type])){
-      //   $permission = $this->update_permitted_permission_labels_based_on_depth($permission,$active_controller,$permission_label,$permission_type);//$this->session->role_permissions;
-      // }
-
-      $lookup_tables = $this->grants->lookup_tables($this->controller);
 
       if( 
           ( is_array($permission) && array_key_exists($active_controller,$permission) 
