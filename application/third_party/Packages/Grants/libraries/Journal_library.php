@@ -125,4 +125,10 @@ class Journal_library extends Grants
   //   return $this->CI->approval_model->get_max_approval_status_id('voucher');
   // }
 
+   function page_position(){
+    
+    $widget['position_1']['view'][] = $this->CI->grants_package_library->list_project_allocation_without_office_bank_linkage();
+    
+    return $widget;
+  }
 }

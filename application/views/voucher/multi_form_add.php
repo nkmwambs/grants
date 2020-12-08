@@ -12,9 +12,13 @@
 
 </style>
 
-<?php 
-    //print_r($this->general_model->get_max_approval_status_id('request'));
-?>
+
+<div class="row">
+    <div class="col-xs-12">
+        <?=Widget_base::load('position','position_1');?>
+    </div>
+</div>
+
   <div class='row' id="main_row">  
     <div class='col-xs-12 split_screen'>
         <div class="panel panel-default" data-collapsed="0">
@@ -221,6 +225,15 @@ $(document).ready(function(){
     
 });
 
+// function update_request_details_count_on_badge(){
+//     var badges = $(".requests_badge");
+//     var request_rows = $(".map_request_to_voucher_row");
+
+//     var current_count = request_rows.length;
+
+//     badges.html(current_count);
+
+// }
 function load_approved_requests(){
         var office = $("#office").val();
         var url = "<?=base_url();?>Voucher/get_approve_request_details/" + office;
@@ -249,6 +262,21 @@ function load_approved_requests(){
             }
         });
 }
+
+$(document).on('change', '#voucher_type',function(){
+
+ var office=$('#office').val();
+
+ var url=  "<?=base_url();?>Voucher/get_count_of_unvouched_request/"+ office;
+
+ $.get(url,office,function(response){
+     var badges = $(".requests_badge");
+     badges.html(response);
+
+ })
+
+});
+
 
 $(".btn-retrieve-request").on('click',function(){
     
@@ -656,6 +684,7 @@ function get_bank_cash_information(voucherTypeSelect){
         }
 
         if(voucher_type_id){
+            //update_request_details_count_on_badge();
             $(".btn-insert").show();
             $(".btn-retrieve-request").show();
         }else{
@@ -1084,28 +1113,28 @@ function actionCell(){
 }
 
 function quantityCell(value = 0){
-    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' name='' id=''/></td>";
+    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' /></td>";
 }
 
 function descriptionCell(value = ''){
-    return "<td><input  name='voucher_detail_description[]' type='text' class='form-control required body-input description' value='" + value + "' name='' id=''/></td>"; 
+    return "<td><input  name='voucher_detail_description[]' type='text' class='form-control required body-input description' value='" + value + "' /></td>"; 
 }
 
 function unitCostCell(value = 0){
-    return "<td><input  name='voucher_detail_unit_cost[]' type='number' class='form-control required body-input number-fields unitcost' onclick='replaceValue(this);' onchange='computeTotalCost(this);'  value='" + value + "' name='' id=''/></td>";
+    return "<td><input  name='voucher_detail_unit_cost[]' type='number' class='form-control required body-input number-fields unitcost' onclick='replaceValue(this);' onchange='computeTotalCost(this);'  value='" + value + "' /></td>";
 }
 
 function totalCostCell(value = 0){
-    return "<td><input name='voucher_detail_total_cost[]' type='number' class='form-control required body-input number-fields totalcost' value='" + value + "' name='' id='' readonly='readonly'/></td>";
+    return "<td><input name='voucher_detail_total_cost[]' type='number' class='form-control required body-input number-fields totalcost' value='" + value + "' readonly='readonly'/></td>";
 }
 
 function accountCell(value = 0){
     //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
     
     if(toggle_accounts_by_allocation){
-        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
+        return "<td><select disabled='disabled' name='voucher_detail_account[]' class='form-control required body-input account' ></select></td>";
     }else{
-        return "<td><select name='voucher_detail_account[]' class='form-control required body-input account' name='' id=''></select></td>";
+        return "<td><select name='voucher_detail_account[]' class='form-control required body-input account' ></select></td>";
     }
     
 }
@@ -1114,15 +1143,15 @@ function allocationCodeCell(value = 0){
     //var toggle_accounts_by_allocation = '<?=$this->config->item("toggle_accounts_by_allocation");?>';
 
     if(toggle_accounts_by_allocation){
-        return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
+        return "<td><select name='fk_project_allocation_id[]' class='form-control required body-input allocation'></select></td>";
     }else{
-        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control required body-input allocation' name='' id=''></select></td>";
+        return "<td><select disabled='disabled' name='fk_project_allocation_id[]' class='form-control required body-input allocation'></select></td>";
     }
     
 }
 
 function requestIdCell(value = 0){
-    return "<td><input name='fk_request_detail_id[]' type='number' class='form-control body-input number-fields request_number' value='" + value + "' name='' id='' readonly='readonly'/></td>";
+    return "<td><input name='fk_request_detail_id[]' type='number' class='form-control body-input number-fields request_number' value='" + value + "' readonly='readonly'/></td>";
 }
 
 function disable_elements_in_hidden_span(){

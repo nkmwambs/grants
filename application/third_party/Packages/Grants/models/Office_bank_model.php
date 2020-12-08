@@ -59,7 +59,15 @@ class Office_bank_model extends MY_Model
 
     public function detail_list_table_hidden_columns(){}
 
-    public function single_form_add_visible_columns(){}
+    public function single_form_add_visible_columns(){
+      return [
+        'office_bank_name',
+        'office_name',
+        'bank_name',
+        'office_bank_account_number',
+        'office_bank_is_default'
+      ];
+    }
 
     public function single_form_add_hidden_columns(){}
 
@@ -76,8 +84,11 @@ class Office_bank_model extends MY_Model
       $count_of_existing_default_bank_account = $this->read_db->get_where('office_bank',
       array('fk_office_id'=>$office_id,'office_bank_is_default'=>1,'office_bank_is_active'=>1))->num_rows();
 
+      // Disallow having 2 default banks per office
       if($office_bank_is_default == 1 && $count_of_existing_default_bank_account > 0){
         $post_array['header']['office_bank_is_default'] = 0;
+      }elseif($office_bank_is_default == 0 && $count_of_existing_default_bank_account == 0){
+        $post_array['header']['office_bank_is_default'] = 1;
       }
 
       return $post_array;
@@ -263,10 +274,19 @@ class Office_bank_model extends MY_Model
       
     // }
 
+    function get_office_banks($office_id){
+
+      $this->read_db->select(array('office_bank_id','office_bank_name'));
+      $this->read_db->where(array('fk_office_id'=>$office_id));
+      $office_banks = $this->read_db->get('office_bank')->result_array();
+
+      return $office_banks;
+    }
+
     function master_view(){}
 
     public function list(){}
 
     public function view(){}
-
+    
 }

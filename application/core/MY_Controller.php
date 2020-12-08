@@ -73,7 +73,7 @@ class MY_Controller extends CI_Controller
     $this->read_db = $this->grants_model->read_database_connection();
 
     $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Core');
-    $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.'Grants');
+    $this->load->add_package_path(APPPATH.'third_party'.DIRECTORY_SEPARATOR.'Packages'.DIRECTORY_SEPARATOR.$this->session->package);
     $this->load->model('general_model');
 
     $segment = $this->uri->segment(1, 'dashboard');
@@ -89,6 +89,11 @@ class MY_Controller extends CI_Controller
 
     $this->load->library($this->current_library);
     $this->load->model($this->current_model);
+
+    // Load package library, helper and model
+    $this->load->helper($this->session->package.'_package');
+    $this->load->library($this->session->package.'_package_library');
+    $this->load->model($this->session->package.'_package_model');
 	
 	
     //Setting the session of master table. For view action always the master table= the controler u are in.
