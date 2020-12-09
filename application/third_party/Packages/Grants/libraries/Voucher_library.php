@@ -58,12 +58,11 @@ class Voucher_library extends Grants
   }
 
   function page_position(){
-
-    //$widget['position_5'][] = $this->approved_unvouched_request_details();
-
-    //return $widget;
+    
+    $widget['position_1']['multi_form_add'][] = $this->CI->grants_package_library->list_project_allocation_without_office_bank_linkage();
+    
+    return $widget;
   }
-
 
   // Below is the code for a voucher object
 
@@ -112,8 +111,17 @@ function form_field_text($label, $default_value = '', $classes = [], $id = '', $
 //   return $change_field_type;
 // }
 
-function default_field_value(){
-  return ['fk_office_id'=>29];
+// function default_field_value(){
+//   return ['fk_office_id'=>29];
+// }
+
+function change_field_type(){
+  $change_field_type = array();
+
+  $change_field_type['voucher_number']['field_type'] = 'text';
+  $change_field_type['voucher_cheque_number']['field_type'] = 'text';
+
+  return $change_field_type;
 }
 
 }

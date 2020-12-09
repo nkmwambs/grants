@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Role_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Role_model extends MY_Model
 {
   public $table = 'role'; // you MUST mention the table name
   //public $dependant_table = "role_permission";
@@ -34,11 +34,11 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
   }
 
   function lookup_tables(){
-    return array('status','approval');
+    return array('status','approval','account_system');
   }
 
   function detail_tables(){
-    return ['role_permission','user','page_view_role'];
+    return ['role_permission','role_group_association','user','page_view_role'];
   }
 
   function view(){
@@ -63,6 +63,14 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
     return $lookup_values;
 }
 
+public function list_table_where()
+    {
+        if(!$this->session->system_admin){
+            $this->db->where('fk_account_system_id',$this->session->user_account_system_id);
+        }
+    }
+
+
   function intialize_table(Array $foreign_keys_values = []){  
 
     $role_data['role_track_number'] = $this->grants_model->generate_item_track_number_and_name('role')['role_track_number'];
@@ -72,8 +80,8 @@ class Role_model extends MY_Model implements CrudModelInterface, TableRelationsh
     $role_data['role_is_active'] = 1;
     $role_data['role_is_new_status_default'] = 1;
     $role_data['role_is_department_strict'] = 0;
+    $role_data['fk_account_system_id'] = 1;
 
-        
     $role_data_to_insert = $this->grants_model->merge_with_history_fields('role',$role_data,false);
     $this->write_db->insert('role',$role_data_to_insert);
 

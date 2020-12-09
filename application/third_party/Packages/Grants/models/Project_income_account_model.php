@@ -32,11 +32,28 @@ class Project_income_account_model extends MY_Model{
         return array('project','income_account');
     }
 
-    // function single_form_add_visible_columns(){
-    //     return ['project_name','income_account_name'];
-    // }
+    function single_form_add_visible_columns(){
+        return ['project_name','income_account_name'];
+    }
 
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    public function detail_list_table_visible_columns(){
+        return [
+            'project_income_account_track_number',
+            'income_account_name',
+            'project_name',
+            'project_income_account_created_date'
+        ];
+    }
+
+    public function transaction_validate_duplicates_columns(){
+        return ['fk_project_id','fk_income_account_id'];
+      }
+
+    function multi_select_field(){
+        return "income_account";
+    }  
 }

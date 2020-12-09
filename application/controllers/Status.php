@@ -21,6 +21,15 @@ class Status extends MY_Controller
 
   function index(){}
 
-  // static function get_menu_list(){}
+  function get_status_roles(){
+
+    $this->read_db->select(array('role_id','role_name'));
+    $this->read_db->where(array('role_is_new_status_default'=>0));
+    $status_roles = $this->read_db->get('role')->result_array();
+
+    echo json_encode($status_roles);
+  }
+
+  static function get_menu_list(){}
 
 }

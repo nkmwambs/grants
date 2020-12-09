@@ -47,7 +47,24 @@ class Funding_status_model extends MY_Model{
     
     }
 
-    // function show_add_button(){
-    //     return false;
-    // }
+    function action_before_insert($post_array){
+
+        $account_system_id = $post_array['header']['fk_account_system_id'];
+        
+        return $this->grants_model->overwrite_field_value_on_post(
+            $post_array,
+            'funding_status',
+            'funding_status_is_available',
+            1,
+            0,
+            [
+                'fk_account_system_id'=>$account_system_id,
+                'funding_status_is_available'=>1,
+                'funding_status_is_active'=>1
+            ]
+        );
+      }
+
+      
+  
 }

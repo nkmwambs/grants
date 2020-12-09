@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Office_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Office_model extends MY_Model
 {
 
   public $table = 'office'; // you MUST mention the table name
@@ -37,7 +37,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   }
   public function detail_tables(){
     $context_definition_name = $this->context_definition_name_by_office_id(hash_id($this->id,'decode'));
-    //return array('context_'.strtolower($context_definition_name),'budget','financial_report','office_bank','project_allocation','request','system_opening_balance','office_bank');
+   
     return array('context_'.strtolower($context_definition_name),'budget','financial_report','office_bank','project_allocation','system_opening_balance','office_bank');
   }
 
@@ -51,7 +51,7 @@ class Office_model extends MY_Model implements CrudModelInterface, TableRelation
   public function master_table_hidden_columns(){}
 
   public function list_table_visible_columns(){
-      return ['office_track_number','office_code','office_name','context_definition_name','office_start_date','status_name'];
+      return ['office_track_number','office_code','office_name','account_system_name','context_definition_name','office_start_date','status_name'];
   }
   public function list_table_where(){
 

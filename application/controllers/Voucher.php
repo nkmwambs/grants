@@ -124,22 +124,25 @@ class Voucher extends MY_Controller
   }
 
 
-  function get_request_detail($request_detail_id){
+  function get_request_detail(){
+    $post = $this->input->post();
 
     //Update the request detail record by the id that has been passed in the arg
-    $data['request_detail_voucher_number'] = $this->input->post('voucher_number');
-    $this->db->where(array('request_detail_id'=>$request_detail_id));
-    $this->db->update('request_detail',$data);
+    
+    // $data['request_detail_voucher_number'] = $post['voucher_number'];
+    // $this->db->where(array('request_detail_id'=>$post['request_detail_id']));
+    // $this->db->update('request_detail',$data);
 
     // To be done from request detail model
     $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
     $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
     $this->db->select(array('request_detail_description','request_detail_quantity',
-    'request_detail_unit_cost','request_detail_total_cost','expense_account_id',
-    'project_allocation_id','request_detail_id'));
+    'request_detail_unit_cost','request_detail_total_cost','expense_account_id','expense_account_name',
+    'project_allocation_id','project_allocation_name','request_detail_id'));
     
+    $this->db->where(array('request_detail_id'=>$post['request_detail_id']));
 
-    $request_detail = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row();
+    $request_detail = $this->db->get('request_detail')->row();
 
     $array = [
       'request_detail_id'=> $request_detail->request_detail_id,
@@ -148,7 +151,9 @@ class Voucher extends MY_Controller
       'voucher_detail_unit_cost' => $request_detail->request_detail_unit_cost,
       'voucher_detail_total_cost' => $request_detail->request_detail_total_cost,
       'expense_account_id' => $request_detail->expense_account_id,
-      'project_allocation_id' => $request_detail->project_allocation_id
+      'project_allocation_id' => $request_detail->project_allocation_id,
+      'expense_account_name' => $request_detail->expense_account_name,
+      'project_allocation_name' => $request_detail->project_allocation_name
     ];
 
     echo json_encode($array);
@@ -315,25 +320,57 @@ class Voucher extends MY_Controller
 
   function get_active_voucher_types($office_id){
     $account_system_id = $this->office_account_system($office_id)->account_system_id;
-    $voucher_types = $this->voucher_type_model->get_active_voucher_types($account_system_id);
+
+    $voucher_types = $this->voucher_type_model->get_active_voucher_types($account_system_id,$office_id);
 
     echo json_encode($voucher_types);
+  }
+
+  function check_voucher_type_affects_bank($office_id, $voucher_type_id){
+
+    $response['is_transfer_contra'] = false;
+    $response['office_banks'] = [];
+    $response['office_cash'] = [];
+    $response['is_bank_payment'] = false;
+
+    $response['voucher_type_requires_cheque_referencing'] = $this->voucher_type_model->voucher_type_requires_cheque_referencing($voucher_type_id);
+
+    $voucher_type_effect_and_code = $this->voucher_type_effect_and_code($voucher_type_id);
+
+    $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
+    $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
+
+    $office_accounting_system = $this->office_account_system($office_id);
+    
+    if($voucher_type_account == 'cash' || $voucher_type_effect == 'bank_contra' || $voucher_type_effect == 'cash_to_cash_contra'){
+      $response['office_cash'] = $this->db->select(array('office_cash_id as item_id','office_cash_name as item_name'))->get_where('office_cash',
+      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
+    }
+
+    if($voucher_type_account == 'bank' || $voucher_type_effect == 'cash_contra' || $voucher_type_effect == 'bank_to_bank_contra'){
+      $response['office_banks']= $this->get_office_banks($office_id);
+    }
+
+    if($voucher_type_effect == 'bank_to_bank_contra' || $voucher_type_effect == 'cash_to_cash_contra'){
+      $response['is_transfer_contra'] = true;
+    }
+
+    if($voucher_type_effect == 'bank_to_bank_contra' || $voucher_type_effect == 'bank_contra' || ($voucher_type_account == 'bank' && $voucher_type_effect == 'expense')){
+      $response['is_bank_payment'] = true;
+    }
+
+
+    echo json_encode($response);
   }
 
   function get_voucher_accounts_and_allocation($office_id, $voucher_type_id,$transaction_date,$office_bank_id = 0){
 
     $response = [];
-    $response['is_bank_payment'] = false;
-    $response['is_contra'] = false;
-    $response['is_expense'] = false;
-    $response['is_transaction_affecting_bank'] = false;
     $response['approved_requests'] = 0;
     $response['project_allocation'] = [];
-    $response['office_cash'] = [];
-    $response['is_cash_payment'] = false;
-
-    //Check if voucher type requires cheque referencing
-    $response['voucher_type_requires_cheque_referencing'] = $this->voucher_type_model->voucher_type_requires_cheque_referencing($voucher_type_id);
+    $response['is_contra'] = false;
+    $response['project_allocation'] = [];
+    //$response['accounts'] = [];
 
     $office_accounting_system = $this->office_account_system($office_id);
 
@@ -343,8 +380,9 @@ class Voucher extends MY_Controller
         !$office_accounting_system->account_system_is_allocation_linked_to_account || 
         $this->config->item("toggle_accounts_by_allocation")){
         
-        $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."')";
-        $this->db->select(array('project_allocation_id','project_allocation_name'));
+        // $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."' OR (project_end_date = '0000-00-00' AND project_start_date <= '".$transaction_date."'))";
+        $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."' OR project_end_date = '0000-00-00') AND project_start_date <= '".$transaction_date."'";
+        $this->db->select(array('project_allocation_id','project_name as project_allocation_name'));
         $this->db->join('project','project.project_id=project_allocation.fk_project_id');
 
         if($this->input->post('office_bank_id')){
@@ -361,71 +399,14 @@ class Voucher extends MY_Controller
     $voucher_type_effect = $voucher_type_effect_and_code->voucher_type_effect_code;
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
-    // Check if the voucher type is a bank payment
-    if($voucher_type_account == 'bank' && ($voucher_type_effect == 'expense' || $voucher_type_effect == 'contra') ){
-      $response['is_bank_payment'] = true;
-      
-    }elseif($voucher_type_account == 'cash'){
-      $response['is_cash_payment'] = true;
-      $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
-      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
-    }
+    $response['project_allocation'] = $project_allocation;
 
-    if($voucher_type_effect == 'contra'){
-      $response['project_allocation'] = $project_allocation;
+    if($voucher_type_effect == 'bank_contra' || $voucher_type_effect == 'cash_contra'){
       $response['is_contra'] = true;
-      $response['office_cash'] = $this->db->select(array('office_cash_id','office_cash_name'))->get_where('office_cash',
-      array('fk_account_system_id'=>$office_accounting_system->account_system_id,'office_cash_is_active'=>1))->result_array();
     }
 
-    if($voucher_type_account == 'bank'){
-      $response['is_transaction_affecting_bank'] = true;
-    }
-
-    if($voucher_type_effect == 'income'){
-      //echo "Hey";exit;
-      $response['project_allocation'] = $project_allocation;
-      
-      $this->db->select(array('income_account_id as account_id','income_account_name as account_name','income_account_code as account_code'));
-      $response['accounts'] = $this->db->get_where('income_account',
-      array('income_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system->fk_account_system_id))->result_object();
-    
-    }elseif($voucher_type_effect == 'expense'){
-      $response['is_expense'] = true;
-      $response['project_allocation'] = $project_allocation;
+    if($voucher_type_effect == 'expense'){
       $response['approved_requests'] = count($this->voucher_model->get_approved_unvouched_request_details($office_id));
-      
-      $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name','expense_account_code as account_code'));
-      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-      $response['accounts'] = $this->db->get_where('expense_account',
-      array('expense_account_is_active'=>1,'fk_account_system_id'=>$office_accounting_system->fk_account_system_id))->result_object();
-    
-    }elseif($voucher_type_account == 'cash' && $voucher_type_effect == 'contra'){
-
-      $response['is_transaction_affecting_bank'] = true;
-
-      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
-      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
-      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
-      $response['accounts'] = $this->db->get_where('contra_account',
-      array('voucher_type_account_code'=>'cash',
-      'fk_account_system_id'=>$office_accounting_system->account_system_id,
-      'office_bank_is_active'=>1,
-      'office_bank_id'=>$office_bank_id))->result_object();
-
-    }elseif($voucher_type_account == 'bank' && $voucher_type_effect == 'contra'){
-
-      $response['is_transaction_affecting_bank'] = true;
-    
-      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
-      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
-      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
-      $response['accounts'] = $this->db->get_where('contra_account',
-      array('voucher_type_account_code'=>'bank',
-      'fk_account_system_id'=>$office_accounting_system->account_system_id,
-      'office_bank_is_active'=>1,
-      'office_bank_id'=>$office_bank_id))->result_object();
-    
     }
     
 
@@ -466,22 +447,61 @@ class Voucher extends MY_Controller
       $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
       $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
       $accounts = $this->db->get('income_account')->result_array();
-    }else{// Only contra effect enters here
-      $this->db->where(array('fk_office_bank_id'=>$office_bank_id,'voucher_type_account_code'=>$voucher_type_account));
-      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name'));
-      $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=contra_account.fk_voucher_type_account_id');
-      $accounts = $this->db->get_where('contra_account')->result_array();
+    }elseif($voucher_type_effect == 'cash_contra'){
+
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $accounts = $this->db->get_where('contra_account',
+      array('voucher_type_effect_code'=>'cash_contra',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1,
+      'office_bank_id'=>$office_bank_id))->result_object();
+
+    }elseif($voucher_type_effect == 'bank_contra'){
+    
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $accounts = $this->db->get_where('contra_account',
+      array('voucher_type_effect_code'=>'bank_contra',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1,
+      'office_bank_id'=>$office_bank_id))->result_object();
+    
+    }elseif($voucher_type_effect == 'bank_to_bank_contra'){
+    
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $accounts = $this->db->get_where('contra_account',
+      array('voucher_type_effect_code'=>'bank_to_bank_contra',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1,
+      'office_bank_id'=>$office_bank_id))->result_object();
+    
+    }elseif($voucher_type_effect == 'cash_to_cash_contra'){
+    
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $accounts = $this->db->get_where('contra_account',
+      array('voucher_type_effect_code'=>'cash_to_cash_contra',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1,
+      'office_bank_id'=>$office_bank_id))->result_object();
+    
     }  
     
     echo json_encode($accounts);
   }
 
-  function get_office_banks(){
+  function get_office_banks($office_id){
 
-    $office_id = $this->input->post('office_id');
+    //$office_id = $this->input->post('office_id');
     
     //echo $office_id;
-    $this->db->select(array('office_bank_id','bank_name','office_bank_name','office_bank_account_number '));
+    $this->db->select(array('office_bank_id as item_id','bank_name','office_bank_name as item_name','office_bank_account_number '));
   
     //$this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
     $this->db->join('bank','bank.bank_id=office_bank.fk_bank_id');
@@ -491,44 +511,101 @@ class Voucher extends MY_Controller
     $office_banks = $this->db->get_where('office_bank',
     array('fk_office_id'=>$office_id,'office_bank_is_active'=>1))->result_object();
 
-    echo json_encode($office_banks);
+    return $office_banks;
   }
+
+  // function check_cheque_validity(){
+  //   $post = $this->input->post();
+  //   $is_valid_cheque = true;
+  //   $cheque_number_greater_than_last_leaf_serial = false;
+  //   $no_active_cheque_book = false;
+
+  //   $bank_id = $post['bank_id'];
+  //   $office_id = $post['office_id'];
+  //   $cheque_number = $post['cheque_number'];
+
+  //   // Validity based on vouched cheques
+  //   $used_cheque_in_vouchers = $this->db->get_where('voucher',
+  //   array('fk_office_id'=>$office_id,
+  //   'fk_office_bank_id'=>$bank_id,'voucher_cheque_number'=>$cheque_number,'voucher_is_reversed'=>0))->num_rows();
+
+  //   // Validity based on cheque book serial numbers
+  //   $active_cheque_book = $this->db->get_where("cheque_book",
+  //   array('fk_office_bank_id'=>$bank_id,'cheque_book_is_active'=>1));
+
+  //   if($active_cheque_book->num_rows() > 0){
+  //     $start_serial = $active_cheque_book->row()->cheque_book_start_serial_number;
+  //     $no_of_leaves = $active_cheque_book->row()->cheque_book_count_of_leaves;
+  //     $last_serial = $start_serial + ($no_of_leaves - 1);
+
+  //     if($cheque_number > $last_serial){
+  //       $cheque_number_greater_than_last_leaf_serial = true;
+  //     }
+  //   }else{
+  //     $no_active_cheque_book = true;
+  //   }
+
+  //    $is_valid_cheque = ($no_active_cheque_book || $used_cheque_in_vouchers > 0 || $cheque_number_greater_than_last_leaf_serial)?false:true;
+
+  //   //  echo json_encode([
+  //   //   ['cheque_number'=>1],
+  //   //   ['cheque_number'=>2]
+  //   // ]);
+
+  //    echo $is_valid_cheque;
+
+    
+  // }
 
   function check_cheque_validity(){
     $post = $this->input->post();
-    $is_valid_cheque = true;
-    $cheque_number_greater_than_last_leaf_serial = false;
-    $no_active_cheque_book = false;
 
-    $bank_id = $post['bank_id'];
-    $office_id = $post['office_id'];
-    $cheque_number = $post['cheque_number'];
+    //$office_id = $post['office_id'];
+    $office_bank_id = $post['bank_id'];
 
-    // Validity based on vouched cheques
-    $used_cheque_in_vouchers = $this->db->get_where('voucher',
-    array('fk_office_id'=>$office_id,
-    'fk_office_bank_id'=>$bank_id,'voucher_cheque_number'=>$cheque_number,'voucher_is_reversed'=>0))->num_rows();
+    $this->read_db->select(array('voucher_cheque_number'));
+    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
+    $used_cheque_leaves_obj = $this->read_db->get('voucher');
+    
 
-    // Validity based on cheque book serial numbers
-    $active_cheque_book = $this->db->get_where("cheque_book",
-    array('fk_office_bank_id'=>$bank_id,'cheque_book_is_active'=>1));
+    $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
+    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1));
+    $cheque_book = $this->read_db->get('cheque_book');
 
-    if($active_cheque_book->num_rows() > 0){
-      $start_serial = $active_cheque_book->row()->cheque_book_start_serial_number;
-      $no_of_leaves = $active_cheque_book->row()->cheque_book_count_of_leaves;
-      $last_serial = $start_serial + ($no_of_leaves - 1);
+    if($cheque_book->num_rows() > 0){
+      $cheque_book_start_serial_number = $cheque_book->row()->cheque_book_start_serial_number;
+      $cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
+  
+      $last_leaf = $cheque_book_start_serial_number + ($cheque_book_count_of_leaves - 1);
+      $all_cheque_leaves = range($cheque_book_start_serial_number, $last_leaf);
+      
+      $used_cheque_leaves = [];
 
-      if($cheque_number > $last_serial){
-        $cheque_number_greater_than_last_leaf_serial = true;
+      if($used_cheque_leaves_obj->num_rows() > 0){
+        $used_cheque_leaves = array_column($used_cheque_leaves_obj->result_array(),'voucher_cheque_number');
+        //$all_cheque_leaves = array_diff($used_cheque_leaves,$all_cheque_leaves);
       }
+
+      foreach($all_cheque_leaves as $cheque_number){
+       if(in_array($cheque_number,$used_cheque_leaves)){
+          unset($all_cheque_leaves[array_search($cheque_number,$all_cheque_leaves)]);
+       } 
+      }
+  
+      $keyed_cheque_leaves = [];
+  
+      foreach($all_cheque_leaves as $cheque_leaf){
+        $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
+      }
+  
+      echo json_encode($keyed_cheque_leaves);//json_encode($keyed_cheque_leaves);
     }else{
-      $no_active_cheque_book = true;
+      echo 0;
     }
-
-     $is_valid_cheque = ($no_active_cheque_book || $used_cheque_in_vouchers > 0 || $cheque_number_greater_than_last_leaf_serial)?false:true;
-
-     echo $is_valid_cheque;
+   
   }
+
+
 
 
   function compute_next_voucher_number(){
@@ -556,24 +633,35 @@ class Voucher extends MY_Controller
   function create_new_journal($journal_date,$office_id){
     $new_journal = [];
 
-    $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
-    $new_journal['journal_name'] =  "Journal for the month of ". $journal_date;
-    $new_journal['journal_month'] = $journal_date;
-    $new_journal['fk_office_id'] = $office_id;
-    $new_journal['journal_created_date'] = date('Y-m-d');
-    $new_journal['journal_created_by'] = $this->session->user_id;
-    $new_journal['journal_last_modified_by'] = $this->session->user_id;
-    $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
-    $new_journal['fk_status_id'] = $this->grants_model->initial_item_status('journal');
+    // Check if a journal for the same month and FCP exists
+    $this->read_db->where(array('fk_office_id'=>$office_id,'journal_month'=>$journal_date));
+    $count_journals = $this->read_db->get_where('journal')->num_rows();
 
-    //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
+    if($count_journals == 0){
+      $new_journal['journal_track_number'] = $this->grants_model->generate_item_track_number_and_name('journal')['journal_track_number'];
+      $new_journal['journal_name'] =  "Journal for the month of ". $journal_date;
+      $new_journal['journal_month'] = $journal_date;
+      $new_journal['fk_office_id'] = $office_id;
+      $new_journal['journal_created_date'] = date('Y-m-d');
+      $new_journal['journal_created_by'] = $this->session->user_id;
+      $new_journal['journal_last_modified_by'] = $this->session->user_id;
+      $new_journal['fk_approval_id'] = $this->grants_model->insert_approval_record('journal');
+      $new_journal['fk_status_id'] = $this->grants_model->initial_item_status('journal');
 
-    $this->write_db->insert('journal',$new_journal);
+      //$new_journal = $this->grants_model->merge_with_history_fields('financial_report',$new_journal,false);
 
+      $this->write_db->insert('journal',$new_journal);
+    }
     //return $this->write_db->insert_id();
   }
 
   function create_financial_report($financial_report_date){
+
+    // Check if a journal for the same month and FCP exists
+    $this->read_db->where(array('fk_office_id'=>$this->input->post('fk_office_id'),'financial_report_month'=>$financial_report_date));
+    $count_financial_report = $this->read_db->get_where('financial_report')->num_rows();
+
+    if($count_financial_report == 0){
       $new_mfr['financial_report_month'] = $financial_report_date;
       $new_mfr['fk_office_id'] = $this->input->post('fk_office_id');
       // $new_mfr['financial_report_statement_balance'] = 0;
@@ -583,9 +671,51 @@ class Voucher extends MY_Controller
       $new_mfr_to_insert = $this->grants_model->merge_with_history_fields('financial_report',$new_mfr);
 
       $this->write_db->insert('financial_report',$new_mfr_to_insert);
+    }
+  }
+
+  function create_cash_recipient_account_record($voucher_id,$post){
+
+    $cash_recipient_account_data['cash_recipient_account_name'] = $this->grants_model->generate_item_track_number_and_name('cash_recipient_account')['cash_recipient_account_name'];
+    $cash_recipient_account_data['cash_recipient_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('cash_recipient_account')['cash_recipient_account_track_number'];
+    $cash_recipient_account_data['fk_voucher_id'] = $voucher_id;
+
+    if($post['fk_office_bank_id'] > 0){
+      $cash_recipient_account_data['fk_office_bank_id'] = $post['cash_recipient_account'];
+    }elseif($post['fk_office_cash_id'] > 0){
+      $cash_recipient_account_data['fk_office_cash_id'] = $post['cash_recipient_account'];
+    }
+    
+    $cash_recipient_account_data['cash_recipient_account_created_date'] = date('Y-m-d');
+    $cash_recipient_account_data['cash_recipient_account_created_by'] = $this->session->user_id;
+    $cash_recipient_account_data['cash_recipient_account_last_modified_by'] = $this->session->user_id;
+
+    $cash_recipient_account_data['fk_approval_id'] = $this->grants_model->insert_approval_record('cash_recipient_account');
+    $cash_recipient_account_data['fk_status_id'] = $this->grants_model->initial_item_status('cash_recipient_account');
+
+    $this->write_db->insert('cash_recipient_account',$cash_recipient_account_data);
+  }
+
+ 
+
+
+    /**
+   * get_count_of_request
+   * @param 
+   * @return Integer
+   * @author: Onduso
+   * @Date: 4/12/2020
+   */
+  function get_count_of_unvouched_request($office_id){
+
+  
+    echo $this->voucher_model->get_count_of_unvouched_request($office_id);
+    
   }
 
   function insert_new_voucher(){
+
+    //echo json_encode($this->input->post());exit;
 
     $header = [];
     $detail = [];
@@ -637,6 +767,11 @@ class Voucher extends MY_Controller
 
     $header_id = $this->write_db->insert_id();
 
+    if($this->input->post('cash_recipient_account') !== null){
+      $this->create_cash_recipient_account_record($header_id, $this->input->post());
+    }
+    
+
     for ($i=0; $i < sizeof($this->input->post('voucher_detail_quantity')); $i++) { 
       
       $detail['fk_voucher_id'] = $header_id;
@@ -656,7 +791,7 @@ class Voucher extends MY_Controller
         $detail['fk_expense_account_id'] = 0; 
         $detail['fk_income_account_id'] = $this->input->post('voucher_detail_account')[$i]; 
         $detail['fk_contra_account_id'] = 0;    
-      }elseif($voucher_type_effect_code == 'contra'){
+      }elseif($voucher_type_effect_code == 'bank_contra' || $voucher_type_effect_code == 'cash_contra'){
         $detail['fk_expense_account_id'] = 0; 
         $detail['fk_income_account_id'] = 0; 
         $detail['fk_contra_account_id'] = $this->input->post('voucher_detail_account')[$i];    
@@ -681,7 +816,7 @@ class Voucher extends MY_Controller
        
         // Check if all request detail items in the request has the last status and update the request to last status too
         
-        //$this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
+        $this->update_request_on_paying_all_details($this->input->post('fk_request_detail_id')[$i]);   
        
 
       }
@@ -762,20 +897,20 @@ class Voucher extends MY_Controller
 
         // Update the request detail record
         $this->db->where(array('request_detail_id'=>$request_detail_id));
-        $this->db->update('request_detail',array('request_detail_voucher_number'=>$voucher_id));
+        $this->db->update('request_detail',array('fk_voucher_id'=>$voucher_id));
   }
 
   function update_request_on_paying_all_details($request_detail_id){
     $request_id = $this->db->get_where('request_detail',array('request_detail_id'=>$request_detail_id))->row()->fk_request_id;
-    $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_status_id<>'=>7))->num_rows();
+    $unpaid_request_details = $this->db->get_where('request_detail',array('fk_request_id'=>$request_id,'fk_voucher_id'=>0))->num_rows();
     
-    $approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request'))->row()->approve_item_id;
-    $item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
+    //$approve_item_id = $this->db->get_where('approve_item',array('approve_item_name'=>'request'))->row()->approve_item_id;
+    //$item_last_status = $this->voucher_model->get_approveable_item_last_status($approve_item_id);
 
 
     if($unpaid_request_details == 0){
       $this->db->where(array('request_id'=>$request_id));
-      $this->db->update('request',array('fk_status_id'=>$item_last_status));
+      $this->db->update('request',array('request_is_fully_vouched'=>1));
     }
   }
   

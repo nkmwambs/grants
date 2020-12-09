@@ -36,6 +36,10 @@ class Contra_account_model extends MY_Model{
 
     }
 
+    // function list_table_visible_columns(){
+    //     return ['contra_account_track_number','contra_account_name','contra_account_code','contra_account_description','voucher_type_account_name'];
+    // }
+
     // function lookup_values(){
 
     //     // $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array(); 
@@ -63,5 +67,13 @@ class Contra_account_model extends MY_Model{
     // function transaction_validate_duplicates_columns(){
     //     return ['voucher_type_account','office_bank'];
     // }
+
+    function show_add_button(){
+        if(!$this->session->system_admin){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 }

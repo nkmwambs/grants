@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Voucher_detail_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Voucher_detail_model extends MY_Model 
 {
   public $table = 'voucher_detail'; // you MUST mention the table name
   public $name_field = "voucher_detail_name";

@@ -28,6 +28,7 @@
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
+                            <!-- <input type="submit" class='btn btn-default btn-save' value="<?=get_phrase('save');?>" /> -->
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                         </div>
@@ -37,7 +38,7 @@
                         <label class='control-label col-xs-2'><?=get_phrase('office');?></label>
                         <div class='col-xs-3'>
                             <select class='form-control' id='office' name='fk_office_id'>
-                                <option><?=get_phrase('select_office');?></option>
+                                <option value=''><?=get_phrase('select_office');?></option>
                                 <?php foreach($this->session->hierarchy_offices as $office){?>
                                         <option value="<?=$office['office_id'];?>"><?=$office['office_name'];?></option>
                                 <?php }?>
@@ -54,7 +55,7 @@
                     <div class='form-group'>
                         <label class='control-label col-xs-2'><?=get_phrase('request_type');?></label>
                         <div class='col-xs-3'>
-                            <select class='form-control' name='fk_request_type_id' id='request_type_id' onchange="getAccountsByVoucherType(this);">
+                            <select class='form-control account_fields' name='fk_request_type_id' id='request_type_id'>
                                 <option value=""><?=get_phrase('select_request_type');?></option>
                                 
                             </select>
@@ -63,7 +64,7 @@
 
                         <label class='control-label col-xs-2'><?=get_phrase('department');?></label>
                         <div class='col-xs-3'>
-                            <select class="form-control" name='fk_department_id' id='department_id'>
+                            <select class="form-control account_fields" name='fk_department_id' id='department_id'>
                                     <option value=""><?=get_phrase('select_department');?></option>
                             </select>
                         </div>
@@ -80,6 +81,7 @@
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
+                            <!-- <input type="submit" class='btn btn-default btn-save' value="<?=get_phrase('save');?>" /> -->
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                            
@@ -96,8 +98,9 @@
                                         <th><?=get_phrase('description');?></th>
                                         <th><?=get_phrase('unit_cost');?></th>
                                         <th><?=get_phrase('total_cost');?></th>
-                                        <th><?=get_phrase('account');?></th>
                                         <th><?=get_phrase('allocation_code');?></th>
+                                        <th><?=get_phrase('account');?></th>
+                                        <th><?=get_phrase('attachments');?></th>
 
                                     </tr>
                                 </thead>
@@ -105,7 +108,7 @@
                                 </tbody>  
                                 <tfoot>
                                     <tr>
-                                        <td colspan='6'><?=get_phrase('total');?></td>
+                                        <td colspan='7'><?=get_phrase('total');?></td>
                                         <td><input type='text' id='request_total' class='form-control' readonly /></td>
                                     </tr>
                                 </tfoot>      
@@ -117,6 +120,7 @@
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-insert'><?=get_phrase('insert_request_detail_row');?></div>
+                            <!-- <input type="submit" class='btn btn-default btn-save' value="<?=get_phrase('save');?>" /> -->
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
                            
@@ -152,18 +156,38 @@ function unhide_all_hidden_button(){
     $('.btn-save-new').show()
 }
 
-$("#office").on('change',function(){
+$("#request_type_id").on('change',function(){
+    let url = "<?=base_url();?>Request/get_request_department";
+    let data  = {'request_type_id':$(this).val()};
+
+    $.post(url,data,function(response){
+        var department = JSON.parse(response); 
+
+        var select_department_option = "<option value=''><?=get_phrase('select_department');?></option>";
+
+             if(department.length > 0){
+                 $.each(department,function(i,el){
+                     select_department_option += "<option value='" + department[i].department_id + "'>" + department[i].department_name +"</option>";
+                 });
+             }
+
+        $("#department_id").html(select_department_option);
+    });
+});
+
+$("#office").on('change',function(ev){
+    
+    if(!$(this).val()){
+        alert('Select a valid office');        
+        return false;
+    }
+
     let url = "<?=base_url();?>Request/get_request_type";
     $.post(url,{'office_id':$(this).val()},function(response){
         
         unhide_all_hidden_button();
         
-        var response_obj = JSON.parse(response);
-
-        var request_type = response_obj['request_type'];
-        var department = response_obj['department'];  
-
-        //alert(department[1].department_name);
+        var request_type = JSON.parse(response);        
 
         var select_option = "<option value=''><?=get_phrase('select_request_type');?></option>";
 
@@ -173,15 +197,7 @@ $("#office").on('change',function(){
                 });
             }
 
-        var select_department_option = "<option value=''><?=get_phrase('select_department');?></option>";
 
-            if(department.length > 0){
-                $.each(department,function(i,el){
-                    select_department_option += "<option value='" + department[i].department_id + "'>" + department[i].department_name +"</option>";
-                });
-            }
-
-        $("#department_id").html(select_department_option);
 
         $("#request_type_id").html(select_option);
     });
@@ -191,12 +207,26 @@ $(".btn-insert").on('click',function(){
     var tbl_body_rows = $("#tbl_request_body tbody tr");
     //alert(tbl_body_rows.length);
     if(tbl_body_rows.length == 0){
-        insertRow();
-        updateAccountAndAllocationField();
+        
+        updateAllocationField();
+        disabled_account_fields();
     }else{
         copyRow();   
     } 
 });
+
+function disabled_account_fields(){
+    $('.account_fields').each(function(i,elem){
+        //$(elem).attr("style", "pointer-events: none;");
+        if($(elem).val() != ''){
+            if($(elem).is('select')){
+                $(elem).find('option:not(:selected)').prop('disabled', true);
+            }else{
+                $(elem).prop('readonly','readonly');
+            }
+        }
+    });
+}
 
 function removeRow(rowCellButton){
     var row = $(rowCellButton).closest('tr');
@@ -208,6 +238,7 @@ function removeRow(rowCellButton){
 
     if(count_body_rows > 1){
         row.remove();
+        updateTotalCost();
     }else{
         alert('You can\'t remove all rows');
     }
@@ -215,55 +246,65 @@ function removeRow(rowCellButton){
 
 }
 
-function updateAccountAndAllocationField(expense_account_id = "", project_allocation_id = ""){
+
+$(document).on('change','.allocation',function(){
+    var office_id = $("#office").val();
+    var allocation_id = $(this).val();
+    var data = {'office_id':office_id,'allocation_id':allocation_id};
+    var row = $(this).closest('tr');
+    var url = "<?=base_url();?>Request/get_request_accounts";
+
+    $.post(url,data,function(response){
+        var account_select_option = "<option value=''>Select an account</option>";
+        var response_accounts = JSON.parse(response);
+
+         if(response_accounts.length > 0){
+            $.each(response_accounts,function(i,el){
+                account_select_option += "<option value='" + response_accounts[i].expense_account_id + "'>" + response_accounts[i].expense_account_name + "</option>";
+            });
+        }
+
+         //$(".account").html(account_select_option);
+         row.find(".account").html(account_select_option);
+
+    });
+});
+
+function updateAllocationField(expense_account_id = "", project_allocation_id = ""){
     
     var office_id = $("#office").val();
-
     var request_date = $("#request_date").val();
+    var request_type_id = $("#request_type_id").val();
+    var data = {'office_id':office_id,'request_date':request_date,'request_type_id':request_type_id};
 
-    var url = "<?=base_url();?>Request/get_request_accounts_and_allocation/" + office_id + "/" + request_date;
-    
-    $.ajax({
-        url:url,
-        type:"POST",
-        beforeSend:function(){
+    var url = "<?=base_url();?>Request/get_request_allocation";
 
-        },
-        success:function(response){
-            var account_select_option = "<option value=''>Select an account</option>";
+    $.post(url,data,function(response){
+        var allocation_select_option = "<option value=''>Select an allocation code</option>";
 
-            var allocation_select_option = "<option value=''>Select an allocation code</option>";
+        var response_allocation = JSON.parse(response);
 
-            //alert(response);
+        insertRow();
 
-            var response_objects = JSON.parse(response);
-
-            var response_accounts = response_objects['accounts'];
-            
-            var response_allocation = response_objects['project_allocation'];
-
-            if(response_accounts.length > 0){
-                $.each(response_accounts,function(i,el){
-                    account_select_option += "<option value='" + response_accounts[i].expense_account_id + "'>" + response_accounts[i].expense_account_name + "</option>";
-                });
-            }
-
-            if(response_allocation.length > 0){
-                $.each(response_allocation,function(i,el){
-                    allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
-                });
-            }
-
-            $(".allocation").html(allocation_select_option);
-
-            $(".account").html(account_select_option);
-
-        },
-        error:function(){
-            alert('Error occurred');
+        if(response_allocation.length > 0){
+            $.each(response_allocation,function(i,el){
+                allocation_select_option += "<option value='" + response_allocation[i].project_allocation_id + "'>" + response_allocation[i].project_allocation_name + "</option>";
+            });
         }
+
+        $(".allocation").html(allocation_select_option);
     });
+
 }
+
+// function copyRow(){
+    
+//     var tbl_body = $("#tbl_request_body tbody");
+
+//     var original_row = tbl_body.find('tr').clone()[0];
+
+//     tbl_body.append(original_row);
+// }
 
 function copyRow(){
     
@@ -272,6 +313,23 @@ function copyRow(){
     var original_row = tbl_body.find('tr').clone()[0];
 
     tbl_body.append(original_row);
+
+    $.each(tbl_body.find("tr:last").find('input'),function(i,el){
+        let resatable_fields = ['quantity','description','unitcost'];
+        var elem = $(el);
+
+        resatable_fields.forEach(function(fieldClass,index){
+            if(elem.hasClass(fieldClass)){
+                elem.removeAttr('readonly');
+            }
+            
+            if(elem.hasClass('number-fields')){
+                elem.val(0);
+            }else{
+                elem.val("");
+            }
+        });
+    });
 }
 
 function insertRow(){
@@ -281,9 +339,10 @@ function insertRow(){
     cell += quantityCell(); 
     cell += descriptionCell();
     cell += unitCostCell(); 
-    cell += totalCostCell(); 
+    cell += totalCostCell();
+    cell += allocatioCodeCell();  
     cell += accountCell(); 
-    cell += allocatioCodeCell(); 
+    cell += fileUploadCell();
 
     tbl_body.append("<tr>"+cell+"</tr>");
 }
@@ -327,6 +386,10 @@ function computeTotalCost(numberField){
         
 }
 
+function updateTotalCost(){
+    $("#request_total").val(sumRequestDetailTotalCost());
+}
+
 function sumRequestDetailTotalCost(){
    
    var sum = 0;
@@ -368,6 +431,7 @@ function resetRequest(){
     $("#department_id").html('<option value="">Select a department</option>');
     $("#request_description").val(null);
     $("#request_total").val(0);
+    $("#office").val('');
     
 }
 
@@ -399,9 +463,16 @@ function allocatioCodeCell(value = 0){
     return "<td><select name='fk_project_allocation_id[]' class='form-control body-input allocation' id=''></select></td>";
 }
 
+function fileUploadCell(value = 0){
+    return "<td><input name='file_upload[]' class='form-control body-input file_upload' type='file' /></td>";
+}
+
 function saveRequest(){
     var url = "<?=base_url();?>Request/insert_new_request";
     var data = $("#frm_request").serializeArray();
+    //var files = $('.file_upload');
+    //var form = $("#frm_request");
+    //var data = new FormData(form);
 
     $.ajax({
         url:url,
@@ -419,6 +490,7 @@ function saveRequest(){
 
     });
 }
+
 
 $(".btn-save").on('click',function(){
     saveRequest();

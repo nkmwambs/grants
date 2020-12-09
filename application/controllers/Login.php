@@ -59,17 +59,20 @@ public $controller;
 
         // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
         // populate setup tables, add mandatory fields, create item approval flow and permissions
-        $this->system_setup_check();
+        //$this->system_setup_check();
 
         //$this->run_migrations();
         
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-             if(parse_url(base_url())['host'] == 'localhost'){
+             if(parse_url(base_url())['host'] == 'localhost' && $this->session->system_admin){
                 $this->grants->create_missing_system_files_from_yaml_setup(); 
               }
             
+              if($this->session->system_admin){
+                $this->system_setup_check();
+              }
               // Create table permissions
              //$this->grants_model->create_missing_page_access_permission();
             
@@ -231,6 +234,8 @@ public $controller;
 
 	function create_user_session ($row,$first_login_attempt = false){
 
+        $this->session->set_userdata('package', 'Grants'); // To be changed when changing Apps
+
 		$this->session->set_userdata('user_login', '1');
 		$this->session->set_userdata('user_id', $row->user_id);
 		$this->session->set_userdata('name', $row->user_firstname.' '.$row->user_lastname);
@@ -246,8 +251,9 @@ public $controller;
         $this->session->set_userdata('user_currency_code',$this->db->get_where('country_currency',
             array('country_currency_id'=>$row->fk_country_currency_id))->row()->country_currency_code);           
         
-        $account_system_code = $this->db->get_where('account_system',array('account_system_id'=>$row->fk_account_system_id))->row()->account_system_code;    
-        $this->session->set_userdata('user_account_system',$account_system_code);   
+        $account_system = $this->db->get_where('account_system',array('account_system_id'=>$row->fk_account_system_id))->row();    
+        $this->session->set_userdata('user_account_system',$account_system->account_system_code); 
+        $this->session->set_userdata('user_account_system_id',$row->fk_account_system_id);   
         
             
         $this->session->set_userdata('base_currency_id',

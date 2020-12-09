@@ -20,6 +20,8 @@ class Status_library extends Grants
 
   function index(){}
 
+  
+
   function change_field_type(){
 
     $change_field_type = array();
@@ -38,7 +40,8 @@ class Status_library extends Grants
     );
 
     $change_field_type['status_approval_sequence']['field_type'] = 'select';
-    $change_field_type['status_approval_sequence']['options'] = array(
+
+    $default_sequencies = array(
       '1'=>get_phrase('first_level'),
       '2'=>get_phrase('second_level'),
       '3'=>get_phrase('third_level'),
@@ -50,6 +53,21 @@ class Status_library extends Grants
       '9'=>get_phrase('nineth_level'),
       '10'=>get_phrase('tenth_level'),
     );
+
+    if($this->CI->action == 'single_form_add'){
+      // Get an array from the $default_sequencies of approval sequencies that have not been used in reference to the status table
+      $unused_approval_sequencies = $this->CI->status_model->status_approval_sequencies($default_sequencies);
+      $immediate_unused_approval_sequency_label = current($unused_approval_sequencies);
+      $immediate_unused_approval_sequency_key = array_search($immediate_unused_approval_sequency_label,$unused_approval_sequencies);
+
+      // Create an array of the immediate unused approval sequency
+      $immediate_unused_approval_sequency_array = [$immediate_unused_approval_sequency_key => $immediate_unused_approval_sequency_label];
+
+      $default_sequencies = $immediate_unused_approval_sequency_array;
+    
+    }
+
+    $change_field_type['status_approval_sequence']['options'] = $default_sequencies;
 
     $change_field_type['status_backflow_sequence']['field_type'] = 'select';
     $change_field_type['status_backflow_sequence']['options'] = array(

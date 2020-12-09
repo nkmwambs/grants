@@ -35,13 +35,14 @@ class Status_role_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+    
 
     function single_form_add_visible_columns(){
         return ['role_name'];
     }
 
     function edit_visible_columns(){
-        return ['role_name'];
+        return ['role_name','status_role_is_active'];
     }
     
 
@@ -61,39 +62,22 @@ class Status_role_model extends MY_Model{
 
      }
 
+     function action_before_insert($post_array){
 
-    function add(){
+        $post_array['header']['status_role_status_id'] = hash_id($this->id,'decode');
 
-        $this->write_db->trans_begin();
+        $status_name = $this->read_db->get_where('status',
+        array('status_id'=>hash_id($this->id,'decode')))->row()->status_name;
 
-        $header = $this->input->post('header');
+        $post_array['header']['status_role_name'] = $status_name ;
 
-        $status_role_data['status_role_track_number'] = $this->grants_model->generate_item_track_number_and_name('status_role')['status_role_track_number'];
-        $status_role_data['status_role_name'] = $this->grants_model->generate_item_track_number_and_name('status_role')['status_role_name'];
-        $status_role_data['fk_role_id'] = $header['fk_role_id'];
-        $status_role_data['fk_status_id'] = $this->grants_model->initial_item_status('status_role');//hash_id($this->id,'decode');// Status id is a parent id and not a approval status 
-        $status_role_data['status_role_status_id'] = hash_id($this->id,'decode');// Status id is a parent id and not a approval status 
-        $status_role_data['status_role_created_by'] = $this->session->user_id;
-        $status_role_data['status_role_created_date'] = date('Y-m-d');
-        $status_role_data['status_role_last_modified_by'] = $this->session->user_id;
-        $status_role_data['status_role_last_modified_date'] = date('Y-m-d h:i:s');
-        $status_role_data['fk_approval_id'] = $this->grants_model->insert_approval_record('status_role');
-
-        $this->write_db->insert('status_role',$status_role_data);
-        
-    
-        $model = $this->controller.'_model';
-          
-        $transaction_validate_duplicates = $this->grants_model->transaction_validate_duplicates($this->controller,$status_role_data,$this->transaction_validate_duplicates_columns());
-        $transaction_validate_by_computation = $this->grants_model->transaction_validate_by_computation($this->controller, $status_role_data);
-
-        return $this->grants_model->transaction_validate([$transaction_validate_duplicates,$transaction_validate_by_computation]);
-    }
+        return $post_array;
+     }
 
     
     function detail_list_query(){
         $this->db->join('role','role.role_id=status_role.fk_role_id');
-        $this->db->join('approval','approval.approval_id=status_role.fk_approval_id');
+        //$this->db->join('approval','approval.approval_id=status_role.fk_approval_id');
         $this->db->join('status','status.status_id=status_role.status_role_status_id');
         $this->db->where(array('status_role_status_id'=>hash_id($this->id,'decode')));
         $result = $this->db->get('status_role')->result_array();
@@ -102,7 +86,35 @@ class Status_role_model extends MY_Model{
     }
 
     function detail_list_table_visible_columns(){
-        return ['status_role_track_number','role_name'];
+        return ['status_role_track_number','role_name','status_role_is_active'];
+    }
+
+    function multi_select_field(){
+        return 'role';
+    }
+
+    function lookup_values()
+    {
+        $lookup_values = parent::lookup_values();
+        
+        // $this->read_db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+        // $approve_item_id = $this->read_db->get_where('status',
+        // array('status_id'=>hash_id($this->id,'decode')))->row()->fk_approve_item_id;
+
+        // $this->read_db->select(array('fk_role_id'));
+        // $this->read_db->join('status','status.status_id=status_role.status_role_status_id');
+        // $this->read_db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+        // $this->read_db->where(array('fk_approve_item_id'=>$approve_item_id));
+        // $not_exists_sql = $this->read_db->get_compiled_select('status_role',false);
+
+        $this->read_db->select(array('role_id','role_name'));
+        $this->read_db->where('NOT EXISTS (SELECT * FROM status_role WHERE status_role.fk_role_id=role.role_id AND status_role_status_id='.hash_id($this->id,'decode').')', '', FALSE);
+        //$this->read_db->where($this->grants_model->not_exists_sub_query('role'),NULL,FALSE);
+        // $this->read_db->where('NOT EXISTS('.$not_exists_sql.')',NULL,FALSE);
+        $lookup_values['role'] = $this->read_db->get('role')->result_array();
+
+        return $lookup_values;
+
     }
     
 

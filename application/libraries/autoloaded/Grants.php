@@ -816,6 +816,18 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
     return $has_detail_table;
   }
 
+  function check_if_table_is_multi_row(String $table_name = ""){
+
+    $table = $table_name == ""?$this->controller:$table_name;
+    $model = $this->load_detail_model($table_name);
+
+    if(property_exists($this->CI->$model,'is_multi_row')){
+      return $this->CI->$model->is_multi_row;
+    }else{
+      return false;
+    }
+  }
+
   /**
    * check_if_table_has_detail_listing
    * 
@@ -972,9 +984,13 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
    * @return String
    */
     
-  function header_row_field(String $column, String $field_value = "", bool $show_only_selected_value = false): String {
-
+  function header_row_field(String $column, String $field_value = "", bool $show_only_selected_value = false, $detail_table = ''): String {
+      
       $f = new Fields_base($column,$this->controller,true);
+
+      if($detail_table != ''){
+        $f = new Fields_base($column,$detail_table,false,true);
+      }
 
       $this->set_change_field_type();
       
@@ -982,32 +998,30 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
 
       $field = $field_type."_field";
 
-      $lib = strtolower($this->current_library);
-
+      //$lib = strtolower($this->current_library);
+      
       if(array_key_exists($column,$this->set_field_type)){
 
         $field_type = $this->set_field_type[$column]['field_type'];
         $field = $field_type."_field";
 
         if($field_type == 'select' && count($this->set_field_type[$column]['options']) > 0){
-          return $f->select_field($this->set_field_type[$column]['options'], $field_value,false,'',$this->multi_select_field());
+          return $f->select_field($this->set_field_type[$column]['options'], $field_value,false,'',$this->multi_select_field($detail_table));
         }else{
           return $f->$field($field_value);
         }
-
-
       }elseif($field_type == 'select'){
         // $column has a _name suffix if is a foreign key in the table
         // This is converted from fk_xxxx_id where xxxx is the primary table name
         // The column should be in the name format and not id e.g. fk_user_id be user_name
         $lookup_table = strtolower(substr($column,0,-5));
         //echo $lookup_table;
-        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value,'',$this->multi_select_field());
+        return $f->$field($this->lookup_values($lookup_table), $field_value,$show_only_selected_value,'',$this->multi_select_field($detail_table));
      
       }elseif(strrpos($column,'_is_') == true ){
         
-        $field_value =  $f->set_default_field_value() !== null ?$f->set_default_field_value():1;
-        return $f->select_field(array(get_phrase('no'),get_phrase('yes')), $field_value,$show_only_selected_value);
+        $field_value =  $f->set_default_field_value() !== null ?$f->set_default_field_value():$field_value;
+        return $f->select_field([get_phrase('no'),get_phrase('yes')], $field_value,$show_only_selected_value);
       }else{
         return $f->$field($field_value);
       }
@@ -1028,19 +1042,38 @@ function add_form_fields(Array $visible_columns_array): Array {
 
   $fields = array();
 
-  foreach ($visible_columns_array as $column) {
-    
-    // Used to set the default select value in a single_form_add name fields if the form has been opened from a 
-    // parent record
+  //$detail_tables_visible_columns
+
+  foreach ($visible_columns_array as $table_name=>$column) {// Some table names can be 0, 1, 3 for single_form_add_visible_columns or defined names for detail_tables_single_form_add_visible_columns
     $field_value = '';
     $show_only_selected_value = false;
 
-    if($this->CI->id != null  && hash_id($this->CI->id,'decode')>0 && $column == $this->CI->sub_action.'_name'){
-      $field_value = hash_id($this->CI->id,'decode');
-      $show_only_selected_value = true;
-    }
+    if(!is_array($column)){
+      // Used to set the default select value in a single_form_add name fields if the form has been opened from a 
+      // parent record
+      
+
+      if($this->CI->id != null  && hash_id($this->CI->id,'decode')>0 && $column == $this->CI->sub_action.'_name'){
+        $field_value = hash_id($this->CI->id,'decode');
+        $show_only_selected_value = true;
+      }
+    
     
     $fields[$column] = $this->header_row_field($column,$field_value,$show_only_selected_value);
+  }else{
+
+    $detail_table = '';
+
+    if(!is_numeric($table_name)){
+      $detail_table = $table_name;
+    }
+
+    foreach($column as $detail_column){
+      $fields[$detail_column] = $this->header_row_field($detail_column,$field_value,$show_only_selected_value,$detail_table);
+    }
+  
+  }
+
   }
 
   return $fields;  
@@ -1174,7 +1207,7 @@ function single_form_add_visible_columns(){
 }
 
 function edit_visible_columns(){
-  $model = $this->current_model;
+  $model = $this->CI->current_model;
 
   $edit_visible_columns = array();
 
@@ -1359,6 +1392,8 @@ function single_form_add_output($parent_record_id = ""){
     $this->CI->grants_model->mandatory_fields($table);
 
     $visible_columns = $this->CI->grants_model->single_form_add_visible_columns();
+    $visible_columns = array_merge($visible_columns,$this->CI->grants_model->detail_tables_single_form_add_visible_columns());
+    
     $fields = $this->add_form_fields($visible_columns);//$this->single_form_add_query();
 
     return array(
@@ -1368,7 +1403,37 @@ function single_form_add_output($parent_record_id = ""){
 
 }
 
+function multi_row_add_output(){
+  //Parent record happens to be present when adding a record in reference to another e.g. add opening cash balance in reference to system opening balance
+  //Find out why the argument $table_name carries a value of 0 from MY_Controller result method: Answer is on line 145 in MY_Controller [ $this->$lib->$action($this->id);]
+  $table = $this->controller;
+  
+  // Insert appove item, approval  flow and status record if either in not existing
+  $this->table_setup(strtolower($table));
 
+  if($this->CI->input->post()){
+
+    $model = $this->current_model;
+
+    if(method_exists($this->CI->$model,'add')){
+       echo $this->CI->$model->add();
+     }else{
+      echo $this->CI->grants_model->add();
+    }
+
+  }else{
+    // Adds mandatory fields if not present in the current table
+    $this->CI->grants_model->mandatory_fields($table);
+
+    $visible_columns = $this->CI->grants_model->single_form_add_visible_columns();
+    $fields = $this->add_form_fields($visible_columns);//$this->single_form_add_query();
+
+    return array(
+      'fields'=> $fields
+    );
+  }
+
+}
 
 function table_setup($table){
   $this->CI->grants_model->mandatory_fields($table);
@@ -1390,6 +1455,7 @@ function multi_form_add_output($table_name = ""){
   $table = $table_name == ""?$this->controller:$table_name;
 
   //$this->mandatory_fields($table);
+  $this->table_setup(strtolower($table));
 
   if($this->CI->input->post()){
     $model = $this->current_model;
@@ -1457,7 +1523,7 @@ function edit_output($id = ""){
 function edit_query($table){
   
   $keys = $this->CI->grants_model->edit_visible_columns();
-
+  
   $edit_query = array();
 
   foreach($keys as $column => $value){
@@ -1751,6 +1817,8 @@ function initial_item_status(){
  * @todo - See why not working in the List_output API feature_model_list_table_visible_columns method
  */
 function unset_status_if_item_not_approveable($list_table_visible_columns){
+
+  $model = $this->current_model;
 
   $list_table_visible_columns = $this->$model->list_table_visible_columns();
   if(!$this->CI->grants_model->approveable_item(strtolower($this->controller))){
@@ -2052,12 +2120,7 @@ function feature_model_list_table_visible_columns() {
               && array_key_exists($table,$this->CI->$current_model->lookup_values($table))
             ) 
           ){  
-            
 
-            // if($this->CI->db->error()){
-            //   $this->CI->db->db_debug = false;
-            //   show_error('Db error occurred',500);
-            // }
             
               $result = $this->CI->$current_model->lookup_values($table)[$table];
 
@@ -2134,89 +2197,6 @@ function feature_model_list_table_visible_columns() {
 
     }
 
-    // /**
-    //  * @todo - need to be completed
-    //  */
-    // function get_office_data(){
-    //   return (object)['office_id'=>9,'office_name'=>'GRC Shingila'];
-    // }
-
-    function retrieve_file_uploads_info($item,$office_ids = array(),$month = "", $project_ids = []){
-
-      $files_array = [];
-  
-      $this->CI->db->select(array($item.'_id','fk_office_bank_id'));
-      
-      if(count($office_ids) > 0){
-        $this->CI->db->where_in('fk_office_id',$office_ids);
-      }
-      
-      if($month != ""){
-        $this->CI->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($month))));
-      }
-
-     
-    $this->CI->db->join('reconciliation','reconciliation.fk_financial_report_id=financial_report.financial_report_id'); 
-    $records = $this->CI->db->get($item)->result_array();
-
-      foreach($records as $record){
-
-        if(count($project_ids) == 0 ){
-          if(file_exists('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id'])){
-            $record_uploads = directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id']);
-            
-            $files_array = array_merge($files_array,$record_uploads);
-          }
-        }elseif(in_array($record['fk_office_bank_id'],$project_ids)){
-          // Throws an error if more than 1 project is selected from the report
-          if(file_exists('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id'])){
-            $record_uploads = directory_iterator('uploads'.DIRECTORY_SEPARATOR.'attachments'.DIRECTORY_SEPARATOR.'financial_report'.DIRECTORY_SEPARATOR.$record[$item.'_id'].DS.$record['fk_office_bank_id']);
-            
-            $files_array = array_merge($files_array,$record_uploads);
-          }
-
-        }
-        
-        
-      }
-      //echo json_encode($project_ids);exit;
-      return $files_array;
-    }
-
-    function upload_files($storeFolder){
-      
-      $path_array = explode(DS,$storeFolder);
-      
-      $path = [];
-
-      for ($i=0; $i < count($path_array) ; $i++) { 
-      
-        array_push($path,$path_array[$i]);
-      
-        $modified_path = implode(DS,$path);
-      
-        if(!file_exists($modified_path)){
-          mkdir($modified_path);
-        }
-      
-      }
-
-      if (!empty($_FILES)) {
-
-        for($i=0;$i<count($_FILES['file']['name']);$i++){
-          $tempFile = $_FILES['file']['tmp_name'][$i];   
-            
-          $targetPath = BASEPATH .DS.'..'.DS. $storeFolder . DS; 
-          
-          $targetFile =  $targetPath. $_FILES['file']['name'][$i]; 
-      
-          move_uploaded_file($tempFile,$targetFile);
-        }
-
-        return $_FILES;
-      }
-    }
-
     function move_temp_files_to_attachments($table,$temp_dir_name,$primary_key){
 
       $this->CI->session->unset_userdata('upload_session');
@@ -2267,12 +2247,12 @@ function feature_model_list_table_visible_columns() {
     //    return 1;
     // }
 
-    function fy_start_date($reporting_month){
-      return '2020-01-01';
-    }
+    // function fy_start_date($reporting_month){
+    //   return '2020-01-01';
+    // }
 
-    function get_fy($reporting_month){
-      return '2020';
-    }
+    // function get_fy($reporting_month){
+    //   return '2020';
+    // }
 
 }
