@@ -419,7 +419,7 @@ $("#bank").on("change",function(ev){
 });
 
 function check_cheque_validity(){
-    var url = "<?=base_url();?>Voucher/check_cheque_validity";
+    var url = "<?=base_url();?>voucher/check_cheque_validity";
     var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
 
     if($("#bank").val() == ""){
@@ -429,13 +429,20 @@ function check_cheque_validity(){
     }
 
     $.post(url,data,function(response){  
+        
+        var options = 'option value=""><?=get_phrase('select_cheque_number');?></option>';
 
-        var options = "<option></option>";
-
-        if(!response){
-            alert("The reference number given ("+ cheque_number +") is not valid");
-            $("#cheque_number").val("");
+        if(response == 0){
+            alert('The bank account selected lacks a cheque book');
+        }else{
+            var obj = JSON.parse(response);
+            
+            $.each(obj,function(i,elem){
+                options += "<option value='"+elem.cheque_number+"'>"+elem.cheque_number+"</option>";
+            });
         }
+
+        $("#cheque_number").html(options);
     });
 }
 
