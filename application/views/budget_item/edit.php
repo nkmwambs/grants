@@ -39,13 +39,7 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
                             <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_continue');?></div>
                         </div>
-                    </div>
-
-                    <div class='form-group'>
-                        <div class="col-xs-12">
-                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'><?=$budget_item['budget_item_description'];?></textarea> 
-                        </div>         
-                    </div>
+                    </div>                    
 
                     <div class="form-group">
                         <label class='control-label col-xs-2'><?=get_phrase('expense_account');?></label>
@@ -54,6 +48,36 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                                 <option value='<?=$budget_item['fk_expense_account_id'];?>'><?=$budget_item['expense_account_name'];?></option>                                
                             </select>
                         </div>
+
+                    </div>
+
+                    <div class='form-group'>
+                        <div class="col-xs-12">
+                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'><?=$budget_item['budget_item_description'];?></textarea> 
+                        </div>         
+                    </div>
+
+
+                    <div class='form-group'>
+                        <label class="control-label col-xs-1"><?=get_phrase('quantity');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable frequency_fields" id = "budget_item_quantity" name="budget_item_quantity"  value="<?=$budget_item['budget_item_quantity'];?>"/>
+                        </div>   
+                        
+                        <label class="control-label col-xs-1"><?=get_phrase('unit_cost');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable frequency_fields" id = "budget_item_unit_cost" name="budget_item_unit_cost"  value="<?=$budget_item['budget_item_unit_cost'];?>"/>
+                        </div>    
+
+                        <label class="control-label col-xs-1"><?=get_phrase('often');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable frequency_fields" id = "budget_item_often" name="budget_item_often" value="<?=$budget_item['budget_item_often'];?>" max="12" min="1" />
+                        </div>   
+                        
+                        <label class="control-label col-xs-1"><?=get_phrase('total');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable total_fields" id = "frequency_total" readonly = "readonly" value="<?=$budget_item['budget_item_total_cost'];?>" name=""  />
+                        </div> 
 
                     </div>
 
@@ -90,7 +114,7 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                     <div class='form-group'>
                         <!-- <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label> -->
                         <div class='col-xs-2'>
-                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' value='<?=$total;?>' />
+                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable total_fields' value='<?=$total;?>' />
                         </div>
                     </div>
 
@@ -215,8 +239,41 @@ $(".btn-save").on('click',function(){
         return false;
     }
 
+    if(!compute_totals_match()){
+        alert('<?=get_phrase("computation_mismatch")?>');
+        return false;
+    }
+
     save();
 });
+
+$("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").on('keyup',function(){
+    var qty = $("#budget_item_quantity").val();
+    var unit_cost = $("#budget_item_unit_cost").val();
+    var often = $("#budget_item_often").val();
+    var frequency_total = 0;
+
+    if(qty!= 0 && unit_cost != 0 && often != 0){
+        frequency_total = parseFloat(qty) * parseFloat(unit_cost) * parseFloat(often);
+    }
+    
+    $("#frequency_total").val(frequency_total);
+});
+
+function compute_totals_match(){
+    var frequency_compute =  parseFloat($("#frequency_total").val());
+    var budget_item_total_cost = parseFloat($("#budget_item_total_cost").val());
+    var compute_totals_match = false;
+
+    if(frequency_compute == budget_item_total_cost){
+        compute_totals_match = true;
+        $(".total_fields").removeAttr('style');
+    }else{
+        $(".total_fields").css('border','1px red solid');
+    }
+    //alert(compute_totals_match);
+    return compute_totals_match;
+}
 
 function save(go_back = true){
     let frm = $("#frm_budget_item");
