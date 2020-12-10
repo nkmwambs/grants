@@ -37,10 +37,17 @@ class Voucher_type extends MY_Controller
         $this->read_db->where_in('voucher_type_effect_code',$voucher_type_effect_codes);
      }
 
-     $this->read_db->select(array('voucher_type_effect_id','voucher_type_effect_name'));
+     $this->read_db->select(array('voucher_type_effect_id','voucher_type_effect_name','voucher_type_effect_code'));
      $voucher_type_effect = $this->read_db->get('voucher_type_effect')->result_array();
      
      echo json_encode($voucher_type_effect);
+  }
+
+  function check_select_voucher_type_effect($voucher_type_effect_id){
+     $voucher_type_effect_code = $this->read_db->get_where('voucher_type_effect',
+     array('voucher_type_effect_id'=>$voucher_type_effect_id))->row()->voucher_type_effect_code;
+
+     echo $voucher_type_effect_code;
   }
 
   static function get_menu_list(){}

@@ -66,5 +66,18 @@ class Voucher_type_model extends MY_Model
       $this->db->where(array('account_system_code'=>$this->session->user_account_system));
     }
   }
+
+  function single_form_add_visible_columns()
+  {
+    return [
+      'voucher_type_name',
+      'voucher_type_abbrev',
+      'voucher_type_is_active',
+      'voucher_type_account_name',
+      'voucher_type_effect_name',
+      'voucher_type_is_cheque_referenced',
+      'account_system_name'
+    ];
+  }
   
 }
