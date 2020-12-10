@@ -112,7 +112,7 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                     </div>
 
                     <div class='form-group'>
-                        <!-- <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label> -->
+                       
                         <div class='col-xs-2'>
                             <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable total_fields' value='<?=$total;?>' />
                         </div>
