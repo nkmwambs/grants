@@ -410,85 +410,42 @@ $("#bank").on("change",function(ev){
     var office = $('#office').val();
     var bank = $(this).val();
 
-    var url = "<?=base_url();?>Voucher/check_cheque_validity";
-    var data = {'office_id':office,'bank_id':bank};
+    if($("#cheque_number").is('input') && $("#cheque_number").val() !=""){
+        checkIfEftREfIsValid(office,bank,$("#cheque_number").val());
+    }
 
-    // if($("#bank").val() == ""){
-    //     alert("Choose a valid bank account");
-    //     $('#cheque_number').val('');
-    //     return false;
-    // }
-
-    $.ajax({
-        url:url,
-        data:data,
-        type:"POST",
-        beforeSend:function(){
-
-        },
-        success:function(response){
-            //console.log(response);
-
-            var options = 'option value=""><?=get_phrase('select_cheque_number');?></option>';
-
-            if(response == 0){
-                alert('The bank account selected lacks a cheque book');
-            }else{
-                var obj = JSON.parse(response);
-            
-                $.each(obj,function(i,elem){
-                    options += "<option value='"+elem.cheque_number+"'>"+elem.cheque_number+"</option>";
-                });
-            }
-
-            $("#cheque_number").html(options);
-        
-        },
-        error:function(){
-            alert("Error occurred!");
-        }
-    });
 });
 
-// function checkIfChequeIsValid(office,bank,cheque_number){
+function checkIfEftREfIsValid(office,bank,cheque_number){
     
-//     var url = "<?=base_url();?>voucher/check_cheque_validity";
-//     var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
+    var url = "<?=base_url();?>Voucher/check_eft_validity";
+    var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
 
-//     if($("#bank").val() == ""){
-//         alert("Choose a valid bank account");
-//         $('#cheque_number').val('');
-//         return false;
-//     }
+    if($("#bank").val() == ""){
+        alert("Choose a valid bank account");
+        $('#cheque_number').val('');
+        return false;
+    }
 
-//     $.ajax({
-//         url:url,
-//         data:data,
-//         type:"POST",
-//         beforeSend:function(){
+    $.post(url,data,function(response){  
+        if(!response){
+            alert("The reference number given ("+ cheque_number +") is not valid");
+            $("#cheque_number").val("");
+        }
+    });
+}
 
-//         },
-//         success:function(response){
-     
-//             // if(!response){
-//             //     alert("The cheque number given ("+ cheque_number +") is not valid");
-//             //     $("#cheque_number").val("");
-//             // }
-//         },
-//         error:function(){
-//             alert("Error occurred!");
-//         }
-//     });
-// }
-
-$("#cheque_number").on('change',function(){
+$(document).on('change',"#cheque_number",function(){
     var office = $("#office").val();
     var bank = $("#bank").val();
     var cheque_number = $("#cheque_number").val();
 
-    //console.log(cheque_number);
+    //console.log($(this));
 
-    //checkIfChequeIsValid(office,bank,cheque_number);
+    if($("#cheque_number").is('input')){
+        checkIfEftREfIsValid(office,bank,cheque_number);
+    }
+
 });
 
 function computeNextVoucherNumber(office_id){
@@ -650,12 +607,13 @@ function get_bank_cash_information(voucherTypeSelect){
     }
 
     checkIfDateIsSelected()?$.post(url,extra_data,function(response){
+        //console.log(response);
         var response_objects = JSON.parse(response);
         var response_office_cash = response_objects['office_cash'];
         var response_office_bank = response_objects['office_banks'];
         var response_is_transfer_contra = response_objects['is_transfer_contra'];
         var response_is_bank_payment = response_objects['is_bank_payment'];
-
+        var response_is_voucher_type_requires_cheque_referencing = response_objects['voucher_type_requires_cheque_referencing'];
 
         if(response_office_cash.length > 0){
             add_options_to_cash_select(response_office_cash);
@@ -679,6 +637,9 @@ function get_bank_cash_information(voucherTypeSelect){
 
         if(response_is_bank_payment){
             $("#cheque_number").closest('span').removeClass('hidden');
+
+           change_voucher_number_field_to_eft_number(response_is_voucher_type_requires_cheque_referencing);
+          
         }else{
             $("#cheque_number").closest('span').addClass('hidden');
         }
@@ -696,6 +657,32 @@ function get_bank_cash_information(voucherTypeSelect){
     
 }
 
+function change_voucher_number_field_to_eft_number(response_is_voucher_type_requires_cheque_referencing){
+
+    var cheque_number_div = $("#cheque_number").parent();
+    //console.log(response_is_voucher_type_requires_cheque_referencing);
+    cheque_number_div.html('');
+
+    if(response_is_voucher_type_requires_cheque_referencing == 0){
+
+        cheque_number_div.append($('#secondary_input'));
+        $('#secondary_input').prop('id', 'cheque_number');
+        $('#cheque_number').prop('name', 'voucher_cheque_number');
+        $('#cheque_number').prop('readonly', 'readonly');
+        $('#cheque_number').addClass('account_fields');
+
+        $("#cheque_number").parent().prev().html('<?=get_phrase("EFT_serial");?>');
+    }else{
+
+        cheque_number_div.append($('#secondary_select'));
+        $('#secondary_input').prop('id', 'cheque_number');
+        $('#cheque_number').prop('name', 'voucher_cheque_number');
+        $('#cheque_number').prop('readonly', 'readonly');
+        $('#cheque_number').addClass('account_fields');
+
+        $("#cheque_number").parent().prev().html('<?=get_phrase("cheque_number");?>');
+    }
+}
 
 function create_office_cash_dropdown(response_office_cash){
     var account_select_option = "<option value=''>Select Cash Account</option>";
@@ -1229,3 +1216,6 @@ $(document).on('change','.required',function(){
     }
 });
 </script>
+
+<input type="text" class="form-control required" name = "secondary_input" id="secondary_input" value = ""/>
+<select class='form-control required' name='secondary_select' id='secondary_select' disabled='disabled'><option value=''><?=get_phrase('select_cheque_number');?></option></select>
