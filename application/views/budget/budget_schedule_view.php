@@ -69,13 +69,16 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan='16' style='text-align:center'>
+                        <th colspan='19' style='text-align:center'>
                             <?=get_phrase('expense_account');?>: <?=$loop_budget_items['expense_account']['expense_account_code'];?> - <?=$loop_budget_items['expense_account']['expense_account_name'];?>
                         </th>
                     </tr>
                     <tr>
                         <th><?=get_phrase('action');?></th>
                         <th><?=get_phrase('description');?></th>
+                        <th><?=get_phrase('quantity');?></th>
+                        <th><?=get_phrase('unit_cost');?></th>
+                        <th><?=get_phrase('often');?></th>
                         <th><?=get_phrase('total_cost');?></th>                        
                         <th><?=get_phrase('status');?></th>
                         <?php foreach($month_names_with_number_keys as $month_name){?>
@@ -113,6 +116,9 @@
                                 </div>
                         </td>
                         <td><?=$loop_expense_items['description']?></td>
+                        <td><?=$loop_expense_items['quantity']?></td>
+                        <td><?=$loop_expense_items['unit_cost']?></td>
+                        <td><?=$loop_expense_items['often']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
                         <td><div class='btn btn-success'><?=$loop_expense_items['status']['status_name'];?></div></td>
                         <?php foreach($month_names_with_number_keys as $month_number=>$month_name){?>

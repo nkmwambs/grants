@@ -115,7 +115,8 @@ class Budget extends MY_Controller
     $budget_office = $this->budget_office();
 
     $this->db->select(array('budget_item_id','budget_item_total_cost',
-    'budget_item_description','status_id','status_name','fk_project_allocation_id',
+    'budget_item_description','budget_item_quantity','budget_item_unit_cost','budget_item_often',
+    'status_id','status_name','fk_project_allocation_id',
     'budget_item_detail_id','budget_item_detail_amount',
     'month_id','month_name','month_number','fk_office_id','budget_year','income_account_name',
     'income_account_id','income_account_code','expense_account_id','expense_account_name',
@@ -155,6 +156,9 @@ class Budget extends MY_Controller
           'budget_item_id'=>$row->budget_item_id,
           //'budget_item_track_number'=>$row->budget_item_track_number,
           'description'=>$row->budget_item_description,
+          'quantity'=>$row->budget_item_quantity,
+          'unit_cost'=>$row->budget_item_unit_cost,
+          'often'=>$row->budget_item_often,
           'total_cost'=>$row->budget_item_total_cost,
           'status'=>['status_id'=>$row->status_id,'status_name'=>$row->status_name],
           'month_spread'=>$month_spread[$row->budget_item_id]

@@ -151,6 +151,10 @@ class Budget_item extends MY_Controller
     $header['budget_item_description'] = $post['budget_item_description'];
     $header['fk_project_allocation_id'] = $post['fk_project_allocation_id'];
 
+    $header['budget_item_quantity'] = $post['budget_item_quantity'];
+    $header['budget_item_unit_cost'] = $post['budget_item_unit_cost'];
+    $header['budget_item_often'] = $post['budget_item_often'];
+
     $header['budget_item_created_by'] = $this->session->user_id;
     $header['budget_item_last_modified_by'] = $this->session->user_id;
     $header['budget_item_created_date'] = date('Y-m-d');
@@ -175,8 +179,8 @@ class Budget_item extends MY_Controller
       $body['budget_item_detail_last_modified_by'] = $this->session->user_id;
       $body['budget_item_detail_created_date'] = date('Y-m-d');
 
-      $body['fk_approval_id'] = 0;
-      $body['fk_status_id'] = $this->grants_model->initial_item_status('budget_item');
+      $body['fk_approval_id'] = $this->grants_model->insert_approval_record('budget_item_detail');
+      $body['fk_status_id'] = $this->grants_model->initial_item_status('budget_item_detail');
       
       $row[] = $body;
     }

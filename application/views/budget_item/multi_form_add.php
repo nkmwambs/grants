@@ -34,12 +34,6 @@ extract($result);
                         </div>
                     </div>
 
-                    <div class='form-group'>
-                        <div class="col-xs-12">
-                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'></textarea> 
-                        </div>         
-                    </div>
-
                     <div class="form-group">
 
                         <label class='control-label col-xs-2'><?=get_phrase('project_allocation');?></label>
@@ -62,6 +56,35 @@ extract($result);
                                 
                             </select>
                         </div>
+
+                    </div>
+
+                    <div class='form-group'>
+                        <div class="col-xs-12">
+                            <textarea name='budget_item_description' id='budget_item_description' placeholder="<?=get_phrase('describe_budget_item');?>"  class='form-control resetable'></textarea> 
+                        </div>         
+                    </div>
+
+                    <div class='form-group'>
+                        <label class="control-label col-xs-1"><?=get_phrase('quantity');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable frequency_fields" id = "budget_item_quantity" name="budget_item_quantity"  value="0"/>
+                        </div>   
+                        
+                        <label class="control-label col-xs-1"><?=get_phrase('unit_cost');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable frequency_fields" id = "budget_item_unit_cost" name="budget_item_unit_cost"  value="0"/>
+                        </div>    
+
+                        <label class="control-label col-xs-1"><?=get_phrase('often');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable frequency_fields" id = "budget_item_often" name="budget_item_often" value="1" max="12" min="1" />
+                        </div>   
+                        
+                        <label class="control-label col-xs-1"><?=get_phrase('total');?></label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control resetable total_fields" id = "frequency_total" readonly = "readonly" value="0" name=""  />
+                        </div> 
 
                     </div>
 
@@ -96,7 +119,7 @@ extract($result);
                     <div class='form-group'>
                         <!-- <label class='control-label col-xs-2'><?=get_phrase('total_cost');?></label> -->
                         <div class='col-xs-2'>
-                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable' value='0' />
+                            <input type='number' readonly='readonly' name='budget_item_total_cost' id='budget_item_total_cost'  class='form-control resetable total_fields' value='0' />
                         </div>
                     </div>
 
@@ -161,6 +184,25 @@ $('.month_spread').focusin(function(){
 });
 
 $('.month_spread').on('change',function(){
+    if($(this).val() < 0){
+        alert('<?=get_phrase('negative_values_not_allowed');?>');
+        $(this).val(0);
+    }
+});
+
+$('.frequency_fields').focusout(function(){
+    if(!$.isNumeric($(this).val())){
+        $(this).val(0);
+    }
+});
+
+$('.frequency_fields').focusin(function(){
+    if($(this).val() == 0){
+        $(this).val('');
+    }
+});
+
+$('.frequency_fields').on('change',function(){
     if($(this).val() < 0){
         alert('<?=get_phrase('negative_values_not_allowed');?>');
         $(this).val(0);
@@ -233,8 +275,41 @@ $(".btn-save").on('click',function(){
         return false;
     }
 
+    if(!compute_totals_match()){
+        alert('<?=get_phrase("computation_mismatch")?>');
+        return false;
+    }
+
     save();
 });
+
+$("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").on('keyup',function(){
+    var qty = $("#budget_item_quantity").val();
+    var unit_cost = $("#budget_item_unit_cost").val();
+    var often = $("#budget_item_often").val();
+    var frequency_total = 0;
+
+    if(qty!= 0 && unit_cost != 0 && often != 0){
+        frequency_total = parseFloat(qty) * parseFloat(unit_cost) * parseFloat(often);
+    }
+    
+    $("#frequency_total").val(frequency_total);
+});
+
+function compute_totals_match(){
+    var frequency_compute =  parseFloat($("#frequency_total").val());
+    var budget_item_total_cost = parseFloat($("#budget_item_total_cost").val());
+    var compute_totals_match = false;
+
+    if(frequency_compute == budget_item_total_cost){
+        compute_totals_match = true;
+        $(".total_fields").removeAttr('style');
+    }else{
+        $(".total_fields").css('border','1px red solid');
+    }
+    //alert(compute_totals_match);
+    return compute_totals_match;
+}
 
 function save(go_back = true){
     let frm = $("#frm_budget_item");
