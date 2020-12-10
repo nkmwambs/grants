@@ -338,6 +338,7 @@ class MY_Controller extends CI_Controller
   function multi_form_add($id = null):Void{
     $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create');
     $this->id = $id;
+    $this->grants_model->insert_status_if_missing(strtolower($this->controller));
     $this->crud_views();
   }
 /**
@@ -350,6 +351,7 @@ class MY_Controller extends CI_Controller
   function single_form_add($id = null):Void{
     $this->has_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'create');
     $this->id = $id;
+    $this->grants_model->insert_status_if_missing(strtolower($this->controller));
     $this->crud_views();
   }
 
