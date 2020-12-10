@@ -397,6 +397,7 @@ $("#bank").on("change",function(ev){
     if($(this).val() != ''){
         $("#cheque_number").removeAttr('disabled');
         $("#cheque_number").removeAttr('readonly');
+        //console.log($("#cheque_number").html());
     }else{
         $("#cheque_number").val("");
         $("#cheque_number").prop('disabled','disabled');
@@ -412,6 +413,7 @@ $("#bank").on("change",function(ev){
 
     if($("#cheque_number").is('input') && $("#cheque_number").val() !=""){
         checkIfEftREfIsValid(office,bank,$("#cheque_number").val());
+        
     }else{
         check_cheque_validity();
     }
@@ -419,6 +421,11 @@ $("#bank").on("change",function(ev){
 });
 
 function check_cheque_validity(){
+
+    var office = $("#office").val();
+    var bank = $("#bank").val();
+    var cheque_number = $("#cheque_number").val();
+
     var url = "<?=base_url();?>voucher/check_cheque_validity";
     var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
 
@@ -429,12 +436,15 @@ function check_cheque_validity(){
     }
 
     $.post(url,data,function(response){  
-        
+        //console.log(response);
         var options = 'option value=""><?=get_phrase('select_cheque_number');?></option>';
 
         if(response == 0){
             alert('The bank account selected lacks a cheque book');
         }else{
+            // $("#cheque_number").removeAttr('readonly');
+            // $("#cheque_number").removeAttr('disabled');
+
             var obj = JSON.parse(response);
             
             $.each(obj,function(i,elem){
@@ -689,20 +699,25 @@ function get_bank_cash_information(voucherTypeSelect){
 
 function change_voucher_number_field_to_eft_number(response_is_voucher_type_requires_cheque_referencing){
 
-    var cheque_number_div = $("#cheque_number").parent();
-    //console.log(response_is_voucher_type_requires_cheque_referencing);
-    cheque_number_div.html('');
 
     if(response_is_voucher_type_requires_cheque_referencing == 0){
 
+        var cheque_number_div = $("#cheque_number").parent();
+   
+        cheque_number_div.html('');
         cheque_number_div.append($('#secondary_input'));
+        
         $('#secondary_input').prop('id', 'cheque_number');
         $('#cheque_number').prop('name', 'voucher_cheque_number');
         $('#cheque_number').prop('readonly', 'readonly');
         $('#cheque_number').addClass('account_fields');
 
         $("#cheque_number").parent().prev().html('<?=get_phrase("EFT_serial");?>');
-    }else{
+
+    }else if($('#cheque_number').is('input')){
+
+        cheque_number_div.html('');
+        cheque_number_div.append($('#secondary_select'));
 
         cheque_number_div.append($('#secondary_select'));
         $('#secondary_input').prop('id', 'cheque_number');
