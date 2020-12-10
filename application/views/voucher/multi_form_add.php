@@ -412,9 +412,32 @@ $("#bank").on("change",function(ev){
 
     if($("#cheque_number").is('input') && $("#cheque_number").val() !=""){
         checkIfEftREfIsValid(office,bank,$("#cheque_number").val());
+    }else{
+        check_cheque_validity();
     }
 
 });
+
+function check_cheque_validity(){
+    var url = "<?=base_url();?>Voucher/check_cheque_validity";
+    var data = {'office_id':office,'bank_id':bank,'cheque_number':cheque_number};
+
+    if($("#bank").val() == ""){
+        alert("Choose a valid bank account");
+        $('#cheque_number').val('');
+        return false;
+    }
+
+    $.post(url,data,function(response){  
+
+        var options = "<option></option>";
+
+        if(!response){
+            alert("The reference number given ("+ cheque_number +") is not valid");
+            $("#cheque_number").val("");
+        }
+    });
+}
 
 function checkIfEftREfIsValid(office,bank,cheque_number){
     
