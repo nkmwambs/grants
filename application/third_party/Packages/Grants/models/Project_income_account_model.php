@@ -56,4 +56,22 @@ class Project_income_account_model extends MY_Model{
     function multi_select_field(){
         return "income_account";
     }  
+
+    function lookup_values()
+    {
+        $lookup_values = parent::lookup_values();
+
+        if(!$this->session->system_admin){
+            $this->read_db->join('funder','funder.funder_id=project.fk_funder_id');
+            $this->read_db->where(array('funder.fk_account_system_id'=>$this->session->user_account_system_id));
+            $this->read_db->select(array('project_id','project_name'));
+            $lookup_values['project'] = $this->read_db->get('project')->result_array();
+
+            $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+            $this->read_db->select(array('income_account_id','income_account_name'));
+            $lookup_values['income_account'] = $this->read_db->get('income_account')->result_array();
+        }
+
+        return $lookup_values;
+    }
 }

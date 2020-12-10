@@ -615,6 +615,10 @@ class Voucher_model extends MY_Model
 
     // Only list vouchers without not yet in the cash journal 
     $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+
+    if(!$this->session->system_admin){
+      $this->db->where_in('office.office_id',array_column($this->session->hierarchy_offices,'office_id'));
+    }
  
   }
 

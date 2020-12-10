@@ -606,7 +606,24 @@ class Voucher extends MY_Controller
   }
 
 
+function check_eft_validity(){
+    $post = $this->input->post();
+    $is_valid = true;
 
+    $cheque_number = $post['cheque_number'];
+    $office_bank_id = $post['bank_id'];
+
+    $this->read_db->select(array('voucher_cheque_number'));
+    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,
+    'voucher_cheque_number'=>$cheque_number));
+    $used_eft_ref = $this->read_db->get('voucher');
+
+    if($used_eft_ref->num_rows() > 0){
+      $is_valid = false;
+    }
+
+    echo $is_valid;
+}
 
   function compute_next_voucher_number(){
     $office_id = $this->input->post('office_id');
