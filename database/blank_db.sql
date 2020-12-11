@@ -1,4 +1,4 @@
--- Adminer 4.7.7 MySQL dump
+-- Adminer 4.6.3 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -151,6 +151,9 @@ CREATE TABLE `budget_item` (
   `budget_item_total_cost` int(50) DEFAULT NULL,
   `fk_expense_account_id` int(100) DEFAULT NULL,
   `budget_item_description` longtext,
+  `budget_item_quantity` int(10) NOT NULL DEFAULT '0',
+  `budget_item_unit_cost` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `budget_item_often` int(10) NOT NULL DEFAULT '0',
   `fk_status_id` int(11) DEFAULT '0',
   `fk_approval_id` int(11) DEFAULT '0',
   `fk_project_allocation_id` int(100) DEFAULT NULL,
@@ -191,6 +194,7 @@ CREATE TABLE `budget_item_detail` (
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_approval_id` (`fk_approval_id`),
   CONSTRAINT `budget_item_detail_ibfk_1` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
+  CONSTRAINT `budget_item_detail_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
@@ -569,10 +573,10 @@ CREATE TABLE `contra_account` (
   KEY `fk_voucher_type_account_id` (`fk_voucher_type_account_id`),
   KEY `fk_office_bank_id` (`fk_office_bank_id`),
   KEY `fk_voucher_type_effect_id` (`fk_voucher_type_effect_id`),
-  CONSTRAINT `contra_account_ibfk_4` FOREIGN KEY (`fk_voucher_type_effect_id`) REFERENCES `voucher_type_effect` (`voucher_type_effect_id`),
   CONSTRAINT `contra_account_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
   CONSTRAINT `contra_account_ibfk_2` FOREIGN KEY (`fk_voucher_type_account_id`) REFERENCES `voucher_type_account` (`voucher_type_account_id`),
-  CONSTRAINT `contra_account_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
+  CONSTRAINT `contra_account_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`),
+  CONSTRAINT `contra_account_ibfk_4` FOREIGN KEY (`fk_voucher_type_effect_id`) REFERENCES `voucher_type_effect` (`voucher_type_effect_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1120,7 +1124,9 @@ CREATE TABLE `opening_bank_balance` (
   `opening_bank_balance_last_modified_by` int(100) NOT NULL,
   `fk_status_id` int(100) NOT NULL,
   `fk_approval_id` int(100) NOT NULL,
-  PRIMARY KEY (`opening_bank_balance_id`)
+  PRIMARY KEY (`opening_bank_balance_id`),
+  KEY `fk_office_bank_id` (`fk_office_bank_id`),
+  CONSTRAINT `opening_bank_balance_ibfk_1` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1305,6 +1311,7 @@ CREATE TABLE `permission` (
   `fk_permission_label_id` int(100) NOT NULL,
   `permission_type` int(5) NOT NULL DEFAULT '1' COMMENT 'Type 1 = Page Access, 2 = Field Access',
   `permission_field` varchar(100) NOT NULL,
+  `permission_is_global` int(5) NOT NULL DEFAULT '1',
   `fk_menu_id` int(100) DEFAULT NULL,
   `fk_approval_id` int(11) DEFAULT NULL,
   `fk_status_id` int(11) DEFAULT NULL,
@@ -1331,6 +1338,27 @@ CREATE TABLE `permission_label` (
   `permission_label_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `permission_label_last_modified_by` int(100) NOT NULL,
   PRIMARY KEY (`permission_label_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `permission_template`;
+CREATE TABLE `permission_template` (
+  `permission_template_id` int(100) NOT NULL AUTO_INCREMENT,
+  `permission_template_track_number` varchar(100) NOT NULL,
+  `permission_template_name` varchar(100) NOT NULL,
+  `fk_role_group_id` int(100) NOT NULL,
+  `fk_permission_id` int(11) NOT NULL,
+  `permission_template_created_date` date NOT NULL,
+  `permission_template_created_by` int(100) NOT NULL,
+  `permission_template_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `permission_template_last_modified_by` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  `fk_approval_id` int(100) NOT NULL,
+  PRIMARY KEY (`permission_template_id`),
+  KEY `fk_role_group_id` (`fk_role_group_id`),
+  KEY `fk_permission_id` (`fk_permission_id`),
+  CONSTRAINT `permission_template_ibfk_2` FOREIGN KEY (`fk_role_group_id`) REFERENCES `role_group` (`role_group_id`),
+  CONSTRAINT `permission_template_ibfk_3` FOREIGN KEY (`fk_permission_id`) REFERENCES `permission` (`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1447,6 +1475,27 @@ CREATE TABLE `project_income_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `project_request_type`;
+CREATE TABLE `project_request_type` (
+  `project_request_type_id` int(100) NOT NULL AUTO_INCREMENT,
+  `project_request_type_track_number` varchar(100) NOT NULL,
+  `project_request_type_name` varchar(100) NOT NULL,
+  `fk_project_id` int(100) NOT NULL,
+  `fk_request_type_id` int(11) NOT NULL,
+  `project_request_type_created_by` int(100) NOT NULL,
+  `project_request_type_created_date` date NOT NULL,
+  `project_request_type_last_modified_by` int(100) NOT NULL,
+  `project_request_type_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_status_id` int(11) NOT NULL,
+  `fk_approval_id` int(11) NOT NULL,
+  PRIMARY KEY (`project_request_type_id`),
+  KEY `fk_request_type_id` (`fk_request_type_id`),
+  KEY `fk_project_id` (`fk_project_id`),
+  CONSTRAINT `project_request_type_ibfk_2` FOREIGN KEY (`fk_request_type_id`) REFERENCES `request_type` (`request_type_id`),
+  CONSTRAINT `project_request_type_ibfk_3` FOREIGN KEY (`fk_project_id`) REFERENCES `project` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `reconciliation`;
 CREATE TABLE `reconciliation` (
   `reconciliation_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -1482,6 +1531,7 @@ CREATE TABLE `request` (
   `request_date` date DEFAULT NULL,
   `request_description` varchar(100) DEFAULT NULL,
   `fk_department_id` int(100) NOT NULL,
+  `request_is_fully_vouched` int(5) NOT NULL DEFAULT '0',
   `request_created_date` date DEFAULT NULL,
   `request_created_by` varchar(45) DEFAULT NULL,
   `request_last_modified_by` varchar(45) DEFAULT NULL,
@@ -1527,7 +1577,7 @@ CREATE TABLE `request_detail` (
   `fk_status_id` int(100) DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `request_detail_conversion_set` int(5) DEFAULT '0',
-  `request_detail_voucher_number` int(100) DEFAULT '0',
+  `fk_voucher_id` int(100) NOT NULL DEFAULT '0',
   `request_detail_created_date` date DEFAULT NULL,
   `request_detail_created_by` int(100) DEFAULT NULL,
   `request_detail_last_modified_by` int(100) DEFAULT NULL,
@@ -1590,6 +1640,7 @@ CREATE TABLE `role` (
   `role_is_active` int(5) DEFAULT NULL,
   `role_is_new_status_default` int(5) DEFAULT '0',
   `role_is_department_strict` int(5) DEFAULT '0',
+  `fk_account_system_id` int(100) DEFAULT NULL,
   `role_created_by` int(100) DEFAULT NULL,
   `role_created_date` date DEFAULT NULL,
   `role_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1597,7 +1648,50 @@ CREATE TABLE `role` (
   `role_deleted_at` date DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`role_id`)
+  PRIMARY KEY (`role_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `role_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `role_group`;
+CREATE TABLE `role_group` (
+  `role_group_id` int(100) NOT NULL AUTO_INCREMENT,
+  `role_group_name` varchar(100) NOT NULL,
+  `role_group_track_number` varchar(100) NOT NULL,
+  `role_group_description` longtext NOT NULL,
+  `role_group_is_active` int(5) NOT NULL DEFAULT '1',
+  `fk_account_system_id` int(100) NOT NULL,
+  `role_group_created_date` date NOT NULL,
+  `role_group_created_by` int(100) NOT NULL,
+  `role_group_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `role_group_last_modified_by` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  `fk_approval_id` int(100) NOT NULL,
+  PRIMARY KEY (`role_group_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `role_group_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `role_group_association`;
+CREATE TABLE `role_group_association` (
+  `role_group_association_id` int(100) NOT NULL AUTO_INCREMENT,
+  `role_group_association_name` varchar(100) NOT NULL,
+  `role_group_association_track_number` varchar(100) NOT NULL,
+  `fk_role_group_id` int(100) NOT NULL,
+  `fk_role_id` int(100) NOT NULL,
+  `role_group_association_created_date` date NOT NULL,
+  `role_group_association_created_by` int(100) NOT NULL,
+  `role_group_association_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `role_group_association_last_modified_by` int(100) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  `fk_approval_id` int(11) NOT NULL,
+  PRIMARY KEY (`role_group_association_id`),
+  KEY `fk_role_group_id` (`fk_role_group_id`),
+  KEY `fk_role_id` (`fk_role_id`),
+  CONSTRAINT `role_group_association_ibfk_1` FOREIGN KEY (`fk_role_group_id`) REFERENCES `role_group` (`role_group_id`),
+  CONSTRAINT `role_group_association_ibfk_2` FOREIGN KEY (`fk_role_id`) REFERENCES `role` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1654,7 +1748,9 @@ CREATE TABLE `status` (
   `status_last_modified_by` int(100) NOT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`status_id`)
+  PRIMARY KEY (`status_id`),
+  KEY `fk_approval_flow_id` (`fk_approval_flow_id`),
+  CONSTRAINT `status_ibfk_1` FOREIGN KEY (`fk_approval_flow_id`) REFERENCES `approval_flow` (`approval_flow_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1666,6 +1762,7 @@ CREATE TABLE `status_role` (
   `fk_role_id` int(100) NOT NULL,
   `fk_status_id` int(100) NOT NULL,
   `status_role_status_id` int(100) NOT NULL,
+  `status_role_is_active` int(5) NOT NULL DEFAULT '1',
   `status_role_created_by` int(100) NOT NULL,
   `status_role_created_date` date NOT NULL DEFAULT '0000-00-00',
   `status_role_last_modified_by` int(100) NOT NULL,
@@ -1788,7 +1885,7 @@ CREATE TABLE `voucher` (
   `fk_status_id` int(100) DEFAULT NULL,
   `fk_office_bank_id` int(100) DEFAULT NULL,
   `fk_office_cash_id` int(100) DEFAULT NULL,
-  `voucher_cheque_number` int(100) DEFAULT NULL,
+  `voucher_cheque_number` varchar(50) DEFAULT NULL,
   `voucher_transaction_cleared_date` date DEFAULT '0000-00-00',
   `voucher_transaction_cleared_month` date DEFAULT '0000-00-00',
   `voucher_vendor` varchar(100) DEFAULT NULL,
@@ -1841,7 +1938,7 @@ CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_track_number` varchar(100) NOT NULL,
   `voucher_type_name` varchar(45) DEFAULT NULL,
-  `voucher_type_is_active` int(5) DEFAULT NULL,
+  `voucher_type_is_active` int(5) NOT NULL,
   `voucher_type_abbrev` varchar(5) DEFAULT NULL,
   `fk_voucher_type_account_id` int(100) DEFAULT NULL COMMENT 'Can be bank, cash or contra',
   `fk_voucher_type_effect_id` int(100) DEFAULT NULL COMMENT 'Can be income or expense',
@@ -1940,4 +2037,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-11-25 11:56:24
+-- 2020-12-11 07:06:24
