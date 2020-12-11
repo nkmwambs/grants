@@ -14,7 +14,7 @@ class Access_output{
     }
 
     function check_role_department_strictness($role_id){
-      $role_is_department_strict = $this->db->get_where('role',
+      $role_is_department_strict = $this->CI->db->get_where('role',
       array('role_id'=>$role_id))->row()->role_is_department_strict;
   
       return $role_is_department_strict;
@@ -33,7 +33,7 @@ class Access_output{
    function user_department(int $user_id):Array{
 
     $this->CI->db->select(array('fk_department_id'));
-    $user_department = $this->db->get_where('department_user',
+    $user_department = $this->CI->db->get_where('department_user',
     array('fk_user_id'=>$user_id));
 
     $department_ids = array();
@@ -60,11 +60,11 @@ class Access_output{
 
       $user_context_definition = [];
   
-      $this->db->select(array('context_definition_id','context_definition_name',
+      $this->CI->db->select(array('context_definition_id','context_definition_name',
       'context_definition_level','context_definition_is_active'));
       
       $this->CI->db->join('user','user.fk_context_definition_id=context_definition.context_definition_id');
-      $user_context_definition_obj = $this->db->get_where('context_definition',
+      $user_context_definition_obj = $this->CI->db->get_where('context_definition',
       array('user_id'=>$user_id));
   
       if($user_context_definition_obj->num_rows() > 0){
