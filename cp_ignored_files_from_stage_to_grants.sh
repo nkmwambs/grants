@@ -1,16 +1,16 @@
 #!/bin/bash
-
-cp ../stage/application/Controllers/Context_region_user.php application/Controllers/Context_region_user.php
-cp ../stage/application/Controllers/Context_region.php application/Controllers/Context_region.php
-cp ../stage/application/Controllers/Context_country_user.php application/Controllers/Context_country_user.php
-cp ../stage/application/Controllers/Context_country.php application/Controllers/Context_country.php
-cp ../stage/application/Controllers/Context_cohort_user.php application/Controllers/Context_cohort_user.php
-cp ../stage/application/Controllers/Context_cohort.php application/Controllers/Context_cohort.php
-cp ../stage/application/Controllers/Context_cluster_user.php application/Controllers/Context_cluster_user.php
-cp ../stage/application/Controllers/Context_cluster.php application/Controllers/Context_cluster.php
-cp ../stage/application/Controllers/Context_center_user.php application/Controllers/Context_center_user.php
-cp ../stage/application/Controllers/Context_center.php application/Controllers/Context_center.php
-
+#Controllers
+cp ../stage/application/controllers/Context_region_user.php application/controllers/Context_region_user.php
+cp ../stage/application/controllers/Context_region.php application/controllers/Context_region.php
+cp ../stage/application/controllers/Context_country_user.php application/controllers/Context_country_user.php
+cp ../stage/application/controllers/Context_country.php application/controllers/Context_country.php
+cp ../stage/application/controllers/Context_cohort_user.php application/controllers/Context_cohort_user.php
+cp ../stage/application/controllers/Context_cohort.php application/controllers/Context_cohort.php
+cp ../stage/application/controllers/Context_cluster_user.php application/controllers/Context_cluster_user.php
+cp ../stage/application/controllers/Context_cluster.php application/controllers/Context_cluster.php
+cp ../stage/application/controllers/Context_center_user.php application/controllers/Context_center_user.php
+cp ../stage/application/controllers/Context_center.php application/controllers/Context_center.php
+#Libraries
 cp ../stage/application/third_party/Packages/Core/libraries/Context_region_user_library.php application/third_party/Packages/Core/libraries/Context_region_user_library.php
 cp ../stage/application/third_party/Packages/Core/libraries/Context_region_library.php application/third_party/Packages/Core/libraries/Context_region_library.php
 cp ../stage/application/third_party/Packages/Core/libraries/Context_country_user_library.php application/third_party/Packages/Core/libraries/Context_country_user_library.php
@@ -21,7 +21,7 @@ cp ../stage/application/third_party/Packages/Core/libraries/Context_cluster_user
 cp ../stage/application/third_party/Packages/Core/libraries/Context_cluster_library.php application/third_party/Packages/Core/libraries/Context_cluster_library.php
 cp ../stage/application/third_party/Packages/Core/libraries/Context_center_user_library.php application/third_party/Packages/Core/libraries/Context_center_user_library.php
 cp ../stage/application/third_party/Packages/Core/libraries/Context_center_library.php application/third_party/Packages/Core/libraries/Context_center_library.php
-
+#Models
 cp ../stage/application/third_party/Packages/Core/models/Context_region_user_model.php application/third_party/Packages/Core/models/Context_region_user_model.php
 cp ../stage/application/third_party/Packages/Core/models/Context_region_model.php application/third_party/Packages/Core/models/Context_region_model.php
 cp ../stage/application/third_party/Packages/Core/models/Context_country_user_model.php application/third_party/Packages/Core/models/Context_country_user_model.php
