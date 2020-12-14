@@ -85,6 +85,15 @@ grants:
   
   tables:
 
+    budget_projection_income_account:
+      lookup_tables:
+        - budget_projection
+        - income_account
+
+    budget_projection:
+      lookup_tables:
+        - budget
+
     request_type_department:
       lookup_tables:
         - request_type
