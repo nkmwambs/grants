@@ -1,15 +1,9 @@
 <?php
-    //print_r($result['budget_schedule'][1]['budget_items'][1]['expense_items']['month_spread']);
-    //print_r(array_shift($result['budget_schedule']));
 
-
-    //print_r($month_names_with_number_keys);
-
-    //print_r(array_keys($result));
-
+    //echo $this->general_model->status_require_originator_action(353);
+    //print_r($result);
     extract($result);
-    //print_r($budget_schedule['spreading_of_month']);
-    //print_r($month_names_with_number_keys);
+
 ?>
 
 <style>
@@ -92,21 +86,23 @@
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                                    <?=get_phrase('action');?>
+                                    <?=get_phrase('action');
+                                        $require_originator_action = $this->general_model->status_require_originator_action($loop_expense_items['status']['status_id'])
+                                    ?>
                                 <span class="caret"></span></button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review){ ?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review && $require_originator_action){ ?>
                                     <li><?=list_table_edit_action('budget_item',$budget_item_id);?></li>
                                     <li class="divider"></li>
                                     <?php }?>
-                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review){ ?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review && $require_originator_action){ ?>
                                     <li><?=list_table_delete_action('budget_item',$budget_item_id);?></li>
                                     <?php }?>
 
                                     <?php if(
                                         (!$this->user_model->check_role_has_permissions('Budget_item','update') && 
-                                        !$this->user_model->check_role_has_permissions('Budget_item','delete')
-                                        ) ||  !$is_current_review
+                                        !$this->user_model->check_role_has_permissions('Budget_item','delete')                                         
+                                        ) || !$is_current_review || !$require_originator_action
 
                                     ){ 
                                         echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
