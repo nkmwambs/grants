@@ -129,24 +129,28 @@ class Contra_account_model extends MY_Model{
                 }
                 
            
-                // $this->read_db->where(array('fk_voucher_type_account_id'=>$voucher_type_account_id,
-                // 'fk_voucher_type_effect_id'=>$bank_to_bank_contra_effect,
-                // 'fk_office_bank_id'=>$office_bank_id,'fk_account_system_id'=>$office_info->fk_account_system_id));
-                // $contra_account_obj = $this->read_db->get('contra_account');
+                $this->read_db->where(
+                  [
+                    'fk_voucher_type_account_id'=>$voucher_type_account_id,
+                    'fk_voucher_type_effect_id'=>$bank_to_bank_contra_effect['voucher_type_effect_id'],
+                    'fk_office_bank_id'=>$office_bank_id,
+                    'fk_account_system_id'=>$office_info->fk_account_system_id]
+                  );
+                $contra_account_obj = $this->read_db->get('contra_account');
                 
-        //         if($contra_account_obj->num_rows() == 0){
-        //             $contra_account_record['contra_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('contra_account')['contra_account_track_number'];
-        //             $contra_account_record['contra_account_name'] = $contra_account_name;
-        //             $contra_account_record['contra_account_code'] = $contra_account_code;
-        //             $contra_account_record['contra_account_description'] = $contra_account_name;;
-        //             $contra_account_record['fk_voucher_type_account_id'] = $voucher_type_account_id;//$voucher_type_account['voucher_type_account_id'];
-        //             $contra_account_record['fk_voucher_type_effect_id'] = $bank_to_bank_contra_effect['voucher_type_effect_id'];
-        //             $contra_account_record['fk_office_bank_id'] = $office_bank_id;
-        //             $contra_account_record['fk_account_system_id'] = $office_info->fk_account_system_id;
+                if($contra_account_obj->num_rows() == 0){
+                    $contra_account_record['contra_account_track_number'] = $this->grants_model->generate_item_track_number_and_name('contra_account')['contra_account_track_number'];
+                    $contra_account_record['contra_account_name'] = $contra_account_name;
+                    $contra_account_record['contra_account_code'] = $contra_account_code;
+                    $contra_account_record['contra_account_description'] = $contra_account_name;;
+                    $contra_account_record['fk_voucher_type_account_id'] = $voucher_type_account_id;//$voucher_type_account['voucher_type_account_id'];
+                    $contra_account_record['fk_voucher_type_effect_id'] = $bank_to_bank_contra_effect['voucher_type_effect_id'];
+                    $contra_account_record['fk_office_bank_id'] = $office_bank_id;
+                    $contra_account_record['fk_account_system_id'] = $office_info->fk_account_system_id;
     
-        //             $contra_account_data_to_insert = $this->grants_model->merge_with_history_fields('contra_account',$contra_account_record,false);
-        //             $this->write_db->insert('contra_account',$contra_account_data_to_insert);
-        //         }
+                    $contra_account_data_to_insert = $this->grants_model->merge_with_history_fields('contra_account',$contra_account_record,false);
+                    $this->write_db->insert('contra_account',$contra_account_data_to_insert);
+                }
               
            }
   
@@ -156,9 +160,9 @@ class Contra_account_model extends MY_Model{
   
         if ($this->write_db->trans_status() === FALSE)
           {
-            return "Missing";
+            return false;
           }else{
-            return "Got it";
+            return true;
           }
       }
 

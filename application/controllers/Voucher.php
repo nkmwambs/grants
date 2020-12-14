@@ -452,14 +452,14 @@ class Voucher extends MY_Controller
 
       $accounts = $this->contra_account_model->add_contra_account($office_bank_id);
 
-      // $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
-      // $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
-      // $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
-      // $accounts = $this->db->get_where('contra_account',
-      // array('voucher_type_effect_code'=>'cash_contra',
-      // 'fk_account_system_id'=>$office_accounting_system->account_system_id,
-      // 'office_bank_is_active'=>1,
-      // 'office_bank_id'=>$office_bank_id))->result_object();
+      $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
+      $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
+      $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
+      $accounts = $this->db->get_where('contra_account',
+      array('voucher_type_effect_code'=>'cash_contra',
+      'fk_account_system_id'=>$office_accounting_system->account_system_id,
+      'office_bank_is_active'=>1,
+      'office_bank_id'=>$office_bank_id))->result_object();
 
     }elseif($voucher_type_effect == 'bank_contra'){
 

@@ -14,9 +14,8 @@
 
 <?php 
 
-$office_bank_id = 1;
-
-$this->contra_account_model->add_contra_account($office_bank_id);
+// $office_bank_id = 1;
+// echo $this->contra_account_model->add_contra_account($office_bank_id);
 
 ?>
 
@@ -1130,21 +1129,21 @@ $(document).on('change','.allocation',function(){
     if(toggle_accounts_by_allocation){
 
         $.post(url,data,function(response){
-                console.log(response);
-                // var response_accounts = JSON.parse(response);
+                //console.log(response);
+                var response_accounts = JSON.parse(response);
 
-                // var accounts_select_option = "<option value=''>Select account</option>";
+                var accounts_select_option = "<option value=''>Select account</option>";
 
-                // if(response_accounts.length > 0){
-                //     $(".account").removeAttr('disabled');
-                //     $.each(response_accounts,function(i,el){
-                //         accounts_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
-                //     });
-                // }else{
-                //     $(".account").prop('disabled','disabled');
-                // }
+                if(response_accounts.length > 0){
+                    $(".account").removeAttr('disabled');
+                    $.each(response_accounts,function(i,el){
+                        accounts_select_option += "<option value='" + response_accounts[i].account_id + "'>" + response_accounts[i].account_name + "</option>";
+                    });
+                }else{
+                    $(".account").prop('disabled','disabled');
+                }
 
-                // row.find(".account").html(accounts_select_option);
+                row.find(".account").html(accounts_select_option);
         });
     }
 
