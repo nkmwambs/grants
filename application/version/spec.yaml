@@ -1,5 +1,14 @@
 core:
   tables:
+    
+    office_group_association:
+      lookup_tables:
+        - office_group
+        - office
+
+    office_group:
+      lookup_tables:
+        - account_system
 
     role_group:
       lookup_tables:
