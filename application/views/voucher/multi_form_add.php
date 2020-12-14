@@ -442,8 +442,6 @@ function check_cheque_validity(){
         if(response == 0){
             alert('The bank account selected lacks a cheque book');
         }else{
-            // $("#cheque_number").removeAttr('readonly');
-            // $("#cheque_number").removeAttr('disabled');
 
             var obj = JSON.parse(response);
             
