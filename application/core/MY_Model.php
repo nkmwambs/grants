@@ -55,6 +55,12 @@ class MY_Model extends CI_Model
       return list_detail_tables();
     }
 
+    // Works in the approve method of My_Controller to help in putting on actions in an approval process
+    // E.g. Update a certain table after approval
+    public function post_approve_action(){}
+
+    public function edit_visible_columns(){}
+
     public function master_table_visible_columns(){}
   
     public function list_table_visible_columns(){}

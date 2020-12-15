@@ -483,6 +483,12 @@ class MY_Controller extends CI_Controller
       //     $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
       //     $this->write_db->update($detail_record,$detail_data);
       //  }
+
+      //return hash_id($this->id,'decode');
+
+      if(method_exists($this->{$this->current_model},'post_approve_action')){
+        $this->{$this->current_model}->post_approve_action();
+      }
    
     }    
        

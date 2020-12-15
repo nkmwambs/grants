@@ -176,8 +176,13 @@ function feature_model_list_table_visible_columns(): Array {
         $table = $this->controller;
         //echo hash_id($this->CI->id,'decode');exit;
         $filter_where_array = hash_id($this->CI->id,'decode') > 0 && !in_array($table,$this->CI->config->item('table_that_dont_require_history_fields')) ? [$table.'.fk_status_id'=>hash_id($this->CI->id,'decode')] : [];
+        $toggle_list_select_columns = $this->toggle_list_select_columns();
 
-        return $this->CI->grants_model->run_list_query($table,$this->toggle_list_select_columns(),$lookup_tables,'list_table_where',$filter_where_array);
+        array_push($toggle_list_select_columns,$table.'.fk_status_id as status_id');
+
+        //print_r($toggle_list_select_columns);exit;
+        
+        return $this->CI->grants_model->run_list_query($table,$toggle_list_select_columns,$lookup_tables,'list_table_where',$filter_where_array);
 
     }
 

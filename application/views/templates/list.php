@@ -49,25 +49,28 @@ extract($result);
 
           foreach ($table_body as $row) {
             $primary_key = $row[$primary_key_column];
+
+            $require_originator_action = $this->general_model->status_require_originator_action($row['status_id'])
         ?>
           <tr>
               <td>
                 <div class="dropdown">
                   <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                    <?=get_phrase('action');?>
+                    <?=get_phrase('action');?> 
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update')){ ?>
+                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update') && $require_originator_action){ ?>
                     <li><?=list_table_edit_action($this->controller,$primary_key);?></li>
                     <li class="divider"></li>
                     <?php }?>
-                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete')){ ?>
+                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete') && $require_originator_action){ ?>
                     <li><?=list_table_delete_action($this->controller,$primary_key);?></li>
                     <?php }?>
 
                     <?php if(
                         !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'update') && 
-                        !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete')
+                        !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete') 
+                        || !$require_originator_action
 
                     ){ 
                         echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
