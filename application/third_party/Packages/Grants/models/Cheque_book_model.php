@@ -119,4 +119,18 @@ class Cheque_book_model extends MY_Model{
 
         echo $office_bank_id;exit;
     }
+
+    public function lookup_values(){
+        $lookup_values = parent::lookup_values();
+
+        if(!$this->session->system_admin){
+            $hierarchy_offices = array_column($this->session->hierarchy_offices,'office_id');
+
+            $this->read_db->select(array('office_bank_id','office_bank_name'));
+            $this->read_db->where_in('fk_office_id',$hierarchy_offices);
+            $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array();
+        }
+
+        return $lookup_values;
+    }
 }
