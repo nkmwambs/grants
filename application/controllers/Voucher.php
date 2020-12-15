@@ -592,13 +592,15 @@ class Voucher extends MY_Controller
     //$office_id = $post['office_id'];
     $office_bank_id = $post['bank_id'];
 
+    $max_status = $this->general_model->get_max_approval_status_id('cheque_book');
+
     $this->read_db->select(array('voucher_cheque_number'));
     $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
     $used_cheque_leaves_obj = $this->read_db->get('voucher');
     
 
     $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
-    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1));
+    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1,'cheque_book.fk_status_id'=>$max_status));
     $cheque_book = $this->read_db->get('cheque_book');
 
     $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves();

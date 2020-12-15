@@ -33,7 +33,7 @@ class Cheque_book_model extends MY_Model{
     }
 
     function single_form_add_visible_columns(){
-        return ['cheque_book_start_serial_number','cheque_book_count_of_leaves','cheque_book_use_start_date','cheque_book_is_active','office_bank_name'];
+        return ['cheque_book_start_serial_number','cheque_book_count_of_leaves','cheque_book_use_start_date','office_bank_name'];
     }
 
     public function detail_tables(){}
@@ -60,4 +60,32 @@ class Cheque_book_model extends MY_Model{
     //         }
     //     }
     // }
+
+
+    public function list_table_where(){
+        // Use the Office hierarchy for the logged user if not system admin
+        if(!$this->session->system_admin){
+            $office_ids = array_column($this->session->hierarchy_offices,'office_id');
+            $this->db->where_in('fk_office_id',$office_ids);
+        }
+    }
+
+    public function list_table_visible_columns(){
+        return [
+            'cheque_book_track_number',
+            'office_bank_name',
+            'cheque_book_use_start_date',
+            'cheque_book_is_active',
+            'cheque_book_start_serial_number',
+            'cheque_book_count_of_leaves'
+        ];
+    }
+
+    public function edit_visible_columns(){
+        return [
+            'cheque_book_use_start_date',
+            'cheque_book_start_serial_number',
+            'cheque_book_count_of_leaves'
+        ];
+    }
 }

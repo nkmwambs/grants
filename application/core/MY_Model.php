@@ -55,6 +55,8 @@ class MY_Model extends CI_Model
       return list_detail_tables();
     }
 
+    public function edit_visible_columns(){}
+
     public function master_table_visible_columns(){}
   
     public function list_table_visible_columns(){}
