@@ -16,6 +16,7 @@ class Voucher extends MY_Controller
     parent::__construct();
 
     $this->load->model('voucher_type_model');
+    $this->load->model('cheque_book_model');
     $this->load->model('contra_account_model');
     $this->load->model('approval_model');
     $this->load->model('voucher_model');
@@ -586,63 +587,6 @@ class Voucher extends MY_Controller
     return $opening_outstanding_cheques_array;
   }
 
-  function check_cheque_validity(){
-    $post = $this->input->post();
-
-    //$office_id = $post['office_id'];
-    $office_bank_id = $post['bank_id'];
-
-    $this->read_db->select(array('voucher_cheque_number'));
-    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
-    $used_cheque_leaves_obj = $this->read_db->get('voucher');
-    
-
-    $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
-    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1));
-    $cheque_book = $this->read_db->get('cheque_book');
-
-    $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves();
-
-    $leaves = 0;
-
-    if($cheque_book->num_rows() > 0){
-      $cheque_book_start_serial_number = $cheque_book->row()->cheque_book_start_serial_number;
-      $cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
-  
-      $last_leaf = $cheque_book_start_serial_number + ($cheque_book_count_of_leaves - 1);
-      $all_cheque_leaves = range($cheque_book_start_serial_number, $last_leaf);
-      
-      $used_cheque_leaves = [];
-
-      if($used_cheque_leaves_obj->num_rows() > 0){
-        $used_cheque_leaves = array_column($used_cheque_leaves_obj->result_array(),'voucher_cheque_number');
-        //$all_cheque_leaves = array_diff($used_cheque_leaves,$all_cheque_leaves);
-      }
-
-      if(!empty($opening_outstanding_cheques_used_cheque_leaves)){
-        $used_cheque_leaves = array_merge($used_cheque_leaves,$opening_outstanding_cheques_used_cheque_leaves);
-      }
-
-      foreach($all_cheque_leaves as $cheque_number){
-       if(in_array($cheque_number,$used_cheque_leaves)){
-          unset($all_cheque_leaves[array_search($cheque_number,$all_cheque_leaves)]);
-       } 
-      }
-  
-      $keyed_cheque_leaves = [];
-  
-      foreach($all_cheque_leaves as $cheque_leaf){
-        //if(in_array($cheque_leaf,$opening_outstanding_cheques_used_cheque_leaves)) continue;
-        $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
-      }
-  
-      $leaves = json_encode($keyed_cheque_leaves);
-    }
-
-    echo $leaves;
-   
-  }
-
 
 function check_eft_validity(){
     $post = $this->input->post();
@@ -825,6 +769,11 @@ function check_eft_validity(){
     if($this->input->post('cash_recipient_account') !== null){
       $this->create_cash_recipient_account_record($header_id, $this->input->post());
     }
+
+    // Check if the cheque book is used up. If yes, make the current cheque book inactive.
+    // if($header['fk_office_bank_id'] > 0 && $header_id > 0){
+    //   $this->check_and_deactivate_fully_used_cheque_book($header['fk_office_bank_id']);
+    // }
     
 
     for ($i=0; $i < sizeof($this->input->post('voucher_detail_quantity')); $i++) { 
@@ -881,8 +830,7 @@ function check_eft_validity(){
 
     //echo json_encode($row);
     $this->write_db->insert_batch('voucher_detail',$row);
-
-
+   
     $this->write_db->trans_complete();
 
     if ($this->write_db->trans_status() === FALSE)
@@ -892,6 +840,130 @@ function check_eft_validity(){
       echo "Voucher posted successfully";
     }
 
+  }
+
+  function get_remaining_unused_cheque_leaves($office_bank_id){
+
+    $max_status = $this->general_model->get_max_approval_status_id('cheque_book');
+
+    $this->read_db->select(array('voucher_cheque_number'));
+    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
+    $used_cheque_leaves_obj = $this->read_db->get('voucher');
+    
+
+    $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
+    $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1,'cheque_book.fk_status_id'=>$max_status));
+    $cheque_book = $this->read_db->get('cheque_book');
+
+    $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves();
+
+    $leaves = 0;
+
+    if($cheque_book->num_rows() > 0){
+      $cheque_book_start_serial_number = $cheque_book->row()->cheque_book_start_serial_number;
+      $cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
+  
+      $last_leaf = $cheque_book_start_serial_number + ($cheque_book_count_of_leaves - 1);
+      $all_cheque_leaves = range($cheque_book_start_serial_number, $last_leaf);
+      
+      $used_cheque_leaves = [];
+
+      if($used_cheque_leaves_obj->num_rows() > 0){
+        $used_cheque_leaves = array_column($used_cheque_leaves_obj->result_array(),'voucher_cheque_number');
+        //$all_cheque_leaves = array_diff($used_cheque_leaves,$all_cheque_leaves);
+      }
+
+      if(!empty($opening_outstanding_cheques_used_cheque_leaves)){
+        $used_cheque_leaves = array_merge($used_cheque_leaves,$opening_outstanding_cheques_used_cheque_leaves);
+      }
+
+      foreach($all_cheque_leaves as $cheque_number){
+       if(in_array($cheque_number,$used_cheque_leaves)){
+          unset($all_cheque_leaves[array_search($cheque_number,$all_cheque_leaves)]);
+       } 
+      }
+  
+      $keyed_cheque_leaves = [];
+  
+      foreach($all_cheque_leaves as $cheque_leaf){
+        //if(in_array($cheque_leaf,$opening_outstanding_cheques_used_cheque_leaves)) continue;
+        $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
+      }
+  
+      $leaves = json_encode($keyed_cheque_leaves);
+    }
+
+    return  $leaves;
+  }
+
+  function check_cheque_validity(){
+    $post = $this->input->post();
+
+    //$office_id = $post['office_id'];
+    $office_bank_id = $post['bank_id'];
+
+    $leaves = $this->get_remaining_unused_cheque_leaves($office_bank_id);
+
+    echo $leaves;
+
+    // $max_status = $this->general_model->get_max_approval_status_id('cheque_book');
+
+    // $this->read_db->select(array('voucher_cheque_number'));
+    // $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
+    // $used_cheque_leaves_obj = $this->read_db->get('voucher');
+    
+
+    // $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
+    // $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1,'cheque_book.fk_status_id'=>$max_status));
+    // $cheque_book = $this->read_db->get('cheque_book');
+
+    // $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves();
+
+    // $leaves = 0;
+
+    // if($cheque_book->num_rows() > 0){
+    //   $cheque_book_start_serial_number = $cheque_book->row()->cheque_book_start_serial_number;
+    //   $cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
+  
+    //   $last_leaf = $cheque_book_start_serial_number + ($cheque_book_count_of_leaves - 1);
+    //   $all_cheque_leaves = range($cheque_book_start_serial_number, $last_leaf);
+      
+    //   $used_cheque_leaves = [];
+
+    //   if($used_cheque_leaves_obj->num_rows() > 0){
+    //     $used_cheque_leaves = array_column($used_cheque_leaves_obj->result_array(),'voucher_cheque_number');
+    //     //$all_cheque_leaves = array_diff($used_cheque_leaves,$all_cheque_leaves);
+    //   }
+
+    //   if(!empty($opening_outstanding_cheques_used_cheque_leaves)){
+    //     $used_cheque_leaves = array_merge($used_cheque_leaves,$opening_outstanding_cheques_used_cheque_leaves);
+    //   }
+
+    //   foreach($all_cheque_leaves as $cheque_number){
+    //    if(in_array($cheque_number,$used_cheque_leaves)){
+    //       unset($all_cheque_leaves[array_search($cheque_number,$all_cheque_leaves)]);
+    //    } 
+    //   }
+  
+    //   $keyed_cheque_leaves = [];
+  
+    //   foreach($all_cheque_leaves as $cheque_leaf){
+    //     //if(in_array($cheque_leaf,$opening_outstanding_cheques_used_cheque_leaves)) continue;
+    //     $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
+    //   }
+  
+    //   $leaves = json_encode($keyed_cheque_leaves);
+    // }
+   
+  }
+
+  function check_and_deactivate_fully_used_cheque_book($office_bank_id){
+    // Get all the used cheques for this office bank + the cheques opening outstanding
+    $remaining_cheque_leaves = $this->get_remaining_unused_cheque_leaves($office_bank_id);
+
+    if(empty($remaining_cheque_leaves)){
+      $this->cheque_book_model->deactivate_fully_used_cheque_book($office_bank_id);
+    }
   }
 
   function get_project_details_account(){
