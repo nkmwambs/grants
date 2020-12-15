@@ -7,7 +7,7 @@
     $this->CI->read_db->select(array('status_id','status_name'));
     $this->CI->read_db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
     $this->CI->read_db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
-
+    $this->CI->read_db->where(array('approval_flow.fk_account_system_id'=>$this->CI->session->user_account_system_id));
     $this->CI->read_db->where( array('approve_item_name'=>strtolower($active_controller)));
     
     //$this->CI->read_db->where(array('status_id'=>$get_max_approval_status_id));
