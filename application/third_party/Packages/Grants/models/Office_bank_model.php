@@ -96,10 +96,7 @@ class Office_bank_model extends MY_Model
 
     function action_after_insert($post_array, $approval_id, $header_id){
       // Create contra accounts for the newly added bank account
-      // $this->read_db->select(array('voucher_type_account_id','voucher_type_account_name','voucher_type_account_code'));
-      // $voucher_type_accounts = $this->read_db->get('voucher_type_account')->result_array();
 
-      //$this->read_db->where(array('voucher_type_effect_code'=>'bank_to_bank_contra'));
       $bank_to_bank_contra_effects = $this->read_db->get('voucher_type_effect')->result_array();
 
       $this->write_db->select(array('office_name','fk_account_system_id'));
@@ -178,6 +175,8 @@ class Office_bank_model extends MY_Model
           return true;
         }
     }
+
+
 
     function create_default_project_allocation_and_link_to_account($post_array, $approval_id, $header_id){
       //echo json_encode($post_array);exit;

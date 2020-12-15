@@ -16,6 +16,7 @@ class Voucher extends MY_Controller
     parent::__construct();
 
     $this->load->model('voucher_type_model');
+    $this->load->model('contra_account_model');
     $this->load->model('approval_model');
     $this->load->model('voucher_model');
     $this->load->library('voucher_library');
@@ -449,6 +450,8 @@ class Voucher extends MY_Controller
       $accounts = $this->db->get('income_account')->result_array();
     }elseif($voucher_type_effect == 'cash_contra'){
 
+      $accounts = $this->contra_account_model->add_contra_account($office_bank_id);
+
       $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
       $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
       $this->db->join('office_bank','office_bank.office_bank_id=contra_account.fk_office_bank_id');
@@ -459,6 +462,8 @@ class Voucher extends MY_Controller
       'office_bank_id'=>$office_bank_id))->result_object();
 
     }elseif($voucher_type_effect == 'bank_contra'){
+
+      $this->contra_account_model->add_contra_account($office_bank_id);
     
       $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
       $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
@@ -470,6 +475,8 @@ class Voucher extends MY_Controller
       'office_bank_id'=>$office_bank_id))->result_object();
     
     }elseif($voucher_type_effect == 'bank_to_bank_contra'){
+
+      $this->contra_account_model->add_contra_account($office_bank_id);
     
       $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
       $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
@@ -481,6 +488,8 @@ class Voucher extends MY_Controller
       'office_bank_id'=>$office_bank_id))->result_object();
     
     }elseif($voucher_type_effect == 'cash_to_cash_contra'){
+
+      $this->contra_account_model->add_contra_account($office_bank_id);
     
       $this->db->select(array('contra_account_id as account_id','contra_account_name as account_name','contra_account_code as account_code'));
       $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=contra_account.fk_voucher_type_effect_id');
@@ -557,6 +566,26 @@ class Voucher extends MY_Controller
     
   // }
 
+  function opening_outstanding_cheques_used_cheque_leaves(){
+    $post = $this->input->post();
+
+    $office_bank_id = $post['bank_id'];
+
+    $opening_outstanding_cheques_array = [];
+
+    $this->read_db->select(array('opening_outstanding_cheque_number'));
+    $this->read_db->where(array('opening_outstanding_cheque.fk_office_bank_id'=>$office_bank_id));
+    $opening_outstanding_cheques_obj = $this->read_db->get('opening_outstanding_cheque');
+
+    if($opening_outstanding_cheques_obj->num_rows() > 0){
+      $opening_outstanding_cheques = $opening_outstanding_cheques_obj->result_array();
+
+      $opening_outstanding_cheques_array = array_column($opening_outstanding_cheques,'opening_outstanding_cheque_number');
+    }
+
+    return $opening_outstanding_cheques_array;
+  }
+
   function check_cheque_validity(){
     $post = $this->input->post();
 
@@ -572,6 +601,10 @@ class Voucher extends MY_Controller
     $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1));
     $cheque_book = $this->read_db->get('cheque_book');
 
+    $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves();
+
+    $leaves = 0;
+
     if($cheque_book->num_rows() > 0){
       $cheque_book_start_serial_number = $cheque_book->row()->cheque_book_start_serial_number;
       $cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
@@ -586,6 +619,10 @@ class Voucher extends MY_Controller
         //$all_cheque_leaves = array_diff($used_cheque_leaves,$all_cheque_leaves);
       }
 
+      if(!empty($opening_outstanding_cheques_used_cheque_leaves)){
+        $used_cheque_leaves = array_merge($used_cheque_leaves,$opening_outstanding_cheques_used_cheque_leaves);
+      }
+
       foreach($all_cheque_leaves as $cheque_number){
        if(in_array($cheque_number,$used_cheque_leaves)){
           unset($all_cheque_leaves[array_search($cheque_number,$all_cheque_leaves)]);
@@ -595,13 +632,14 @@ class Voucher extends MY_Controller
       $keyed_cheque_leaves = [];
   
       foreach($all_cheque_leaves as $cheque_leaf){
+        //if(in_array($cheque_leaf,$opening_outstanding_cheques_used_cheque_leaves)) continue;
         $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
       }
   
-      echo json_encode($keyed_cheque_leaves);//json_encode($keyed_cheque_leaves);
-    }else{
-      echo 0;
+      $leaves = json_encode($keyed_cheque_leaves);
     }
+
+    echo $leaves;
    
   }
 

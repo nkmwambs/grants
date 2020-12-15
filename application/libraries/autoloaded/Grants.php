@@ -684,6 +684,18 @@ function lookup_table_name_fields(String $table):Array {
   return $lookup_name_fields;
 }
 
+function lookup_tables_fields(String $table):Array {
+  $lookup_tables_fields = array();
+
+  if(is_array($this->lookup_tables($table)) && count($this->lookup_tables($table)) > 0){
+    foreach($this->lookup_tables($table) as $lookup_table){
+      $lookup_tables_fields = array_merge($lookup_tables_fields,$this->CI->grants_model->get_all_table_fields($lookup_table));
+    }
+  }
+
+  return $lookup_tables_fields;
+}
+
 /**
  * detail_tables
  * 
@@ -1892,9 +1904,13 @@ function feature_model_list_table_visible_columns() {
 
        //Add the lookup table name to the all fields array
        $all_fields = $this->CI->grants_model->get_all_table_fields($this->controller);
-       $lookup_name_fields = $this->lookup_table_name_fields($this->controller);
-       $all_fields = array_merge($all_fields,$lookup_name_fields);
+       //$lookup_name_fields = $this->lookup_table_name_fields($this->controller);
+       //$all_fields = array_merge($all_fields,$lookup_name_fields);
+       $all_lookup_fields = $this->lookup_tables_fields($this->controller);
+       $all_fields = array_merge($all_fields,$all_lookup_fields);
        $lookup_tables = $this->lookup_tables($this->controller);
+
+       //print_r($this->lookup_tables_fields($this->controller));exit;
        
        foreach($list_table_visible_columns as $_column){
          if(!in_array($_column,$all_fields) && $_column !==""){

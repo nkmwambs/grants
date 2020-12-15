@@ -59,7 +59,7 @@ class Budget_item extends MY_Controller
     array('fk_account_system_id'=>$office->fk_account_system_id,'expense_account_is_active'=>1))->result_object();
     
     $budgeting_date = date('Y-m-d');
-    $query_condition = "fk_office_id = ".$office->office_id." AND (project_end_date >= '".$budgeting_date."' OR  project_allocation_extended_end_date >= '".$budgeting_date."')";
+    $query_condition = "fk_office_id = ".$office->office_id." AND ((project_end_date >= '".$budgeting_date."' OR project_end_date = '0000-00-00') OR  project_allocation_extended_end_date >= '".$budgeting_date."')";
     $this->db->where($query_condition);
     $this->db->select(array('project_allocation_id','project_allocation_name','project_name'));
     $this->db->join('project','project.project_id=project_allocation.fk_project_id');
@@ -212,6 +212,23 @@ class Budget_item extends MY_Controller
     $accounts = $this->read_db->get('expense_account')->result_array();
 
     echo json_encode($accounts);
+  }
+
+  public function update_budget_item_status(){
+    $post = $this->input->post();
+
+    $data['fk_status_id'] = $post['next_status'];
+    $this->write_db->where(array('budget_item_id'=>$post['budget_item_id']));
+    $this->write_db->update('budget_item',$data);
+
+    // Get new status label
+    $this->read_db->select(array('status_name'));
+    $this->read_db->where(array('status_id'=>$post['next_status']));
+    $button_label = $this->read_db->get('status')->row()->status_name;
+
+    $result['button_label'] = $button_label;
+
+    echo json_encode($result);
   }
 
   static function get_menu_list(){}
