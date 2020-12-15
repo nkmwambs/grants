@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-print_r($result);
+//print_r($result);
 
 //$current_month = 9;
 //echo month_after_adding_size_of_budget_review_period($current_month);
