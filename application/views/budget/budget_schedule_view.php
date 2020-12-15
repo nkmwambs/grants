@@ -1,15 +1,9 @@
 <?php
-    //print_r($result['budget_schedule'][1]['budget_items'][1]['expense_items']['month_spread']);
-    //print_r(array_shift($result['budget_schedule']));
 
-
-    //print_r($month_names_with_number_keys);
-
-    //print_r(array_keys($result));
-
+    //echo $this->general_model->status_require_originator_action(353);
+    //print_r($result);
     extract($result);
-    //print_r($budget_schedule['spreading_of_month']);
-    //print_r($month_names_with_number_keys);
+
 ?>
 
 <style>
@@ -89,24 +83,27 @@
                 <tbody>
                 <?php foreach($loop_budget_items['expense_items'] as $budget_item_id=>$loop_expense_items){?>
                     <tr>
-                        <td>
+                        <td class='action_td'>
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                                    <?=get_phrase('action');?>
+                                    <?=get_phrase('action');
+                                        $status_id = $loop_expense_items['status']['status_id'];
+                                        $require_originator_action = $this->general_model->status_require_originator_action($status_id)
+                                    ?>
                                 <span class="caret"></span></button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review){ ?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','update') && $is_current_review && $require_originator_action){ ?>
                                     <li><?=list_table_edit_action('budget_item',$budget_item_id);?></li>
                                     <li class="divider"></li>
                                     <?php }?>
-                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review){ ?>
+                                    <?php if($this->user_model->check_role_has_permissions('Budget_item','delete') && $is_current_review && $require_originator_action){ ?>
                                     <li><?=list_table_delete_action('budget_item',$budget_item_id);?></li>
                                     <?php }?>
 
                                     <?php if(
                                         (!$this->user_model->check_role_has_permissions('Budget_item','update') && 
-                                        !$this->user_model->check_role_has_permissions('Budget_item','delete')
-                                        ) ||  !$is_current_review
+                                        !$this->user_model->check_role_has_permissions('Budget_item','delete')                                         
+                                        ) || !$is_current_review || !$require_originator_action
 
                                     ){ 
                                         echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
@@ -120,7 +117,24 @@
                         <td><?=$loop_expense_items['unit_cost']?></td>
                         <td><?=$loop_expense_items['often']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
-                        <td><div class='btn btn-success'><?=$loop_expense_items['status']['status_name'];?></div></td>
+                        <td>
+                            <?php 
+                               $action_labels = $this->grants->action_labels('budget_item',$budget_item_id);
+                                    
+                               //print_r($action_labels);
+
+                               if($action_labels['show_label_as_button']){
+                            ?>
+                                <div data-next_status='<?=$action_labels['next_approval_status'];?>' data-budget_item_id='<?=$budget_item_id;?>' class='btn btn-success item_action'><?=$action_labels['status_name'];?></div>
+                            <?php
+                               }else{
+                            ?>
+                                <div class='btn btn-success disabled'><?=$action_labels['status_name'];?></div>
+                            <?php       
+                               }
+                            ?>
+                            
+                        </td>
                         <?php foreach($month_names_with_number_keys as $month_number=>$month_name){?>
                             <th><?=$loop_expense_items['month_spread'][$month_number]['amount'];?></th>
                         <?php }?>
@@ -134,3 +148,21 @@
 </div>
 
 <?php }?>  
+
+
+<script>
+$(".item_action").on('click',function(){
+    var budget_item_id = $(this).data('budget_item_id');
+    var next_status = $(this).data('next_status');
+    var data = {'budget_item_id':budget_item_id,'next_status':next_status};
+    var url = "<?=base_url();?>Budget_item/update_budget_item_status";
+    var btn = $(this);
+
+    $.post(url,data,function(response){
+        action_button = JSON.parse(response);
+        btn.html(action_button.button_label);
+        btn.addClass('disabled');
+        btn.closest('tr').find('.action_td .dropdown ul').html("<li><a href='#'><?=get_phrase('no_action');?></a></li>");
+    });
+})
+</script>

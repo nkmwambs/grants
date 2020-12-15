@@ -214,5 +214,22 @@ class Budget_item extends MY_Controller
     echo json_encode($accounts);
   }
 
+  public function update_budget_item_status(){
+    $post = $this->input->post();
+
+    $data['fk_status_id'] = $post['next_status'];
+    $this->write_db->where(array('budget_item_id'=>$post['budget_item_id']));
+    $this->write_db->update('budget_item',$data);
+
+    // Get new status label
+    $this->read_db->select(array('status_name'));
+    $this->read_db->where(array('status_id'=>$post['next_status']));
+    $button_label = $this->read_db->get('status')->row()->status_name;
+
+    $result['button_label'] = $button_label;
+
+    echo json_encode($result);
+  }
+
   static function get_menu_list(){}
 }

@@ -156,10 +156,30 @@ class Budget_model extends MY_Model
     return ['budget_tag_level'=>$budget_tag_level_of_previous_budget,'budget_id' => $budget_id_of_previous_budget];
   }
 
-  function action_after_insert($post_array,$approval_id,$header_id){
-    
-    $this->write_db->trans_start();
+  function create_budget_projection($post_array,$approval_id,$header_id){
+    // Check if a budget projection is present and if not create one
 
+    $this->read_db->where(array('fk_budget_id'=>$header_id));
+    $budget_projection_obj = $this->read_db->get('budget_projection');
+
+    if($budget_projection_obj->num_rows() == 0){
+
+      $budget_projection_data['budget_projection_name'] = $this->grants_model->generate_item_track_number_and_name('budget_projection')['budget_projection_name'];
+      $budget_projection_data['budget_projection_track_number'] = $this->grants_model->generate_item_track_number_and_name('budget_projection')['budget_projection_track_number'];
+      $budget_projection_data['fk_budget_id'] = $header_id;
+      $budget_projection_data['budget_projection_created_by'] = $this->session->user_id;
+      $budget_projection_data['budget_projection_created_date'] = date('Y-m-d');
+      $budget_projection_data['budget_projection_last_modified_by'] = $this->session->user_id;
+      $budget_projection_data['fk_approval_id'] = '';
+      $budget_projection_data['fk_status_id'] = '';
+
+      $budget_projection_to_insert = $this->grants_model->merge_with_history_fields('budget_projection',$budget_projection_data,false);
+      $this->write_db->insert('budget_projection',$budget_projection_to_insert);
+
+    }
+  }
+
+  function replicate_budget($post_array,$approval_id,$header_id){
     // Checking the bugdet tag level of the posted budget and retrive the budget record that has n-1 budget tag level
     $budget_tag_id_of_new_budget = $post_array['fk_budget_tag_id'];
     $office_id = $post_array['fk_office_id'];
@@ -203,7 +223,7 @@ class Budget_model extends MY_Model
             $budget_item_details_grouped[$budget_item_detail['budget_item_id']]['budget_item_detail'][$budget_item_detail['fk_month_id']] = $budget_item_detail['budget_item_detail_amount'];
           }
 
-         foreach($budget_item_details_grouped as $loop_budget_item_id=>$loop_budget_item_and_details){
+        foreach($budget_item_details_grouped as $loop_budget_item_id=>$loop_budget_item_and_details){
             // Insert budget item
           //$budget_item_insert_array = $budget_item_details_grouped[$budget_item_detail['budget_item_id']]['budget_item'];
           $budget_item_array['budget_item_name'] = $this->grants_model->generate_item_track_number_and_name('budget_item')['budget_item_name'];
@@ -236,14 +256,37 @@ class Budget_model extends MY_Model
             $this->write_db->insert('budget_item_detail',$budget_item_detail_array_to_insert);
 
           }
-         }
+        }
 
         }
     }
+  }
+
+  function action_after_insert($post_array,$approval_id,$header_id){
+    
+    $this->write_db->trans_start();
+
+    $this->create_budget_projection($post_array,$approval_id,$header_id);
+
+    $this->replicate_budget($post_array,$approval_id,$header_id);
 
     $this->write_db->trans_complete();
 
     return $this->write_db->trans_status();
+  }
+
+  public function has_initial_status_budget_items($budget_id){
+    $has_initial_status_budget_items = false;
+
+    $this->read_db->where(array('fk_budget_id'=>$budget_id,'status_approval_sequence'=>1));
+    $this->read_db->join('status','status.status_id=budget_item.fk_status_id');
+    $budget_item_count = $this->read_db->get('budget_item')->num_rows();
+
+    if($budget_item_count > 0){
+      $has_initial_status_budget_items = true;
+    }
+
+    return $has_initial_status_budget_items;
   }
 
 }
