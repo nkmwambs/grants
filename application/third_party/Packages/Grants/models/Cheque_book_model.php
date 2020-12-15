@@ -99,4 +99,24 @@ class Cheque_book_model extends MY_Model{
 
         return true;
     }
+
+    public function deactivate_fully_used_cheque_book($office_bank_id){
+
+        $query_condition = [
+            'cheque_book_is_active'=>1,
+            'fk_office_bank_id'=>$office_bank_id
+        ];
+
+        $this->read_db->where($query_condition);
+        $active_cheque_book_obj = $this->read_db->get('cheque_book');
+
+        if($active_cheque_book_obj->num_rows() > 0){
+            $this->write_db->where($query_condition);
+            $data['cheque_book_is_active'] = 0;
+
+            $this->write_db->update('cheque_book',$data);
+        }
+
+        echo $office_bank_id;exit;
+    }
 }
