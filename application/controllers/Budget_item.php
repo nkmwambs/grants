@@ -59,7 +59,7 @@ class Budget_item extends MY_Controller
     array('fk_account_system_id'=>$office->fk_account_system_id,'expense_account_is_active'=>1))->result_object();
     
     $budgeting_date = date('Y-m-d');
-    $query_condition = "fk_office_id = ".$office->office_id." AND (project_end_date >= '".$budgeting_date."' OR  project_allocation_extended_end_date >= '".$budgeting_date."')";
+    $query_condition = "fk_office_id = ".$office->office_id." AND ((project_end_date >= '".$budgeting_date."' OR project_end_date = '0000-00-00') OR  project_allocation_extended_end_date >= '".$budgeting_date."')";
     $this->db->where($query_condition);
     $this->db->select(array('project_allocation_id','project_allocation_name','project_name'));
     $this->db->join('project','project.project_id=project_allocation.fk_project_id');
