@@ -430,6 +430,24 @@ function show_label_as_button($item_status,$logged_role_id,$table,$primary_key){
 
 }
 
+function status_require_originator_action($status_id){
+
+  $status_require_originator_action = false;
+  
+  $this->read_db->where(['status_id'=>$status_id]);
+  $this->read_db->group_start();
+    $this->read_db->where(array('status_approval_sequence'=>1));
+    $this->read_db->or_where(array('status_backflow_sequence'=>1));
+  $this->read_db->group_end();
+  $status_obj = $this->read_db->get('status');
+
+  if($status_obj->num_rows() > 0){
+    $status_require_originator_action = true;
+  }
+
+  return $status_require_originator_action;
+}
+
 function display_approver_status_action($logged_role_id,$table,$primary_key){
   /**
    * Given the status find the following:
