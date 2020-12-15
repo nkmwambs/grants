@@ -275,4 +275,18 @@ class Budget_model extends MY_Model
     return $this->write_db->trans_status();
   }
 
+  public function has_initial_status_budget_items($budget_id){
+    $has_initial_status_budget_items = false;
+
+    $this->read_db->where(array('fk_budget_id'=>$budget_id,'status_approval_sequence'=>1));
+    $this->read_db->join('status','status.status_id=budget_item.fk_status_id');
+    $budget_item_count = $this->read_db->get('budget_item')->num_rows();
+
+    if($budget_item_count > 0){
+      $has_initial_status_budget_items = true;
+    }
+
+    return $has_initial_status_budget_items;
+  }
+
 }

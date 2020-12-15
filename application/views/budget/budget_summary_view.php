@@ -1,14 +1,4 @@
 <?php
-    //print_r($this->general_model->is_min_approval_status_id('budget',176));
-    //print_r($result);
-    //print_r($this->grants_model->initial_item_status('budget'));
-    //echo $this->session->user_account_system_id;
-   
-
-    // $lookup_values = $this->budget_model->lookup_values();
-    // print_r($lookup_values);
-
-
     extract($result);
 ?>
 
@@ -34,12 +24,48 @@
             <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
         </a>
 
+        <?php 
+            $action_labels = $this->grants->action_labels('budget',hash_id($this->id,'decode'));
+
+            if($action_labels['show_label_as_button'] && $this->budget_model->has_initial_status_budget_items(hash_id($this->id,'decode'))){
+        ?>
+            <div id='action_btn' data-budget_id = '<?=hash_id($this->id,'decode')?>' data-next_status = '<?=$action_labels['next_approval_status'];?>' class='btn btn-default'><?=$action_labels['status_name'];?></div>
+        <?php        
+            }else{
+        ?>
+            <div class='btn btn-default disabled'><?=$action_labels['status_name'];?></div>
+        <?php
+            }
+        ?>
+
     </div>
 
     <!-- <div class='col-xs-2'>
         <a class='pull-right' href="#" title='Next Year'><i class='fa fa-plus-circle' style='font-size:20pt;'></i></a>
     </div> -->
 
+</div>
+
+<div class='row'>
+    <div class='col-xs-6'>
+        <div class='form-group'>
+            <label class='control-label col-xs-4'><?=get_phrase('scanned_budget_upload');?></label>
+            <div class='col-xs-4'>
+                <input type='file' name='file' multiple/>
+            </div>
+
+            <!-- <div class='col-xs-4'>
+                <table class='table table-striped'>
+                    <thead>
+                        <tr>
+                            <td><?=get_phrase('download_link');?></td>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div> -->
+        </div>
+    </div>
 </div>
 
 <!-- <div class='row'>
@@ -73,7 +99,7 @@
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
-                       <?=get_phrase('year');?> <?=$current_year;?> <?=$budget_tag;?> : <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> <?=get_phrase('budget_summary');?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/<?=hash_id($income_account['income_account_id'],'encode');?>'><?=get_phrase('show_budget_schedule');?></a>) &nbsp; <div class='btn btn-success'><?=get_phrase('submit_budget');?></div>
+                       <?=get_phrase('year');?> <?=$current_year;?> <?=$budget_tag;?> : <?=$office?> <?=$income_account['income_account_name'].' ('.$income_account['income_account_code'].')';?> <?=get_phrase('budget_summary');?> (<a href='<?=base_url();?>Budget/view/<?=$this->id;?>/schedule/<?=hash_id($income_account['income_account_id'],'encode');?>'><?=get_phrase('show_budget_schedule');?></a>) &nbsp; </div>
                     </th>
                 </tr>
                 <tr>
@@ -135,3 +161,23 @@
        
     </div>
 </div>
+
+<script>
+$('#action_btn').on('click',function(){
+    
+    alert('Button function still under construction');
+    return false;
+
+    // var budget_id = $(this).data('budget_id');
+    // var next_status = $(this).data('next_status');
+    // var data = {'budget_id':budget_id,'next_status':next_status};
+    // var url = "<?=base_url();?>Budget/update_budget_status";
+    // var btn = $(this);
+
+    // $.post(url,data,function(response){
+    //     action_button = JSON.parse(response);
+    //     btn.html(action_button.button_label);
+    //     btn.addClass('disabled');
+    // });
+});
+</script>

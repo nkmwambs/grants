@@ -255,6 +255,20 @@ class Budget extends MY_Controller
     return $segment_budget_view_type;
   }
 
+  public function update_budget_status(){
+    $post = $this->input->post();
+
+    // Update all budget items with a status not maximum  to maximum
+
+    // Update the Budget status to maximum
+
+    // Get status name of the maximum 
+
+    //$result['button_label'] = 'Fully Approved';
+
+    //echo json_encode($result);
+  }
+
   function view(){
     parent::view();
   }
