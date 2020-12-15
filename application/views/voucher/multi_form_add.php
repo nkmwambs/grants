@@ -443,7 +443,7 @@ function check_cheque_validity(){
     }
 
     $.post(url,data,function(response){  
-        //console.log(response);
+        
         var options = '<option value=""><?=get_phrase('select_cheque_number');?></option>';
 
         if(response == 0){
