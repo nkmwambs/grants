@@ -88,4 +88,15 @@ class Cheque_book_model extends MY_Model{
             'cheque_book_count_of_leaves'
         ];
     }
+
+    public function post_approve_action(){
+        $cheque_book_id = hash_id($this->id,'decode');
+
+        // Update the cheque_book_is_active to 1
+        $data['cheque_book_is_active'] = 1;
+        $this->write_db->where(array('cheque_book_id'=>$cheque_book_id));
+        $this->write_db->update('cheque_book',$data);
+
+        return true;
+    }
 }
