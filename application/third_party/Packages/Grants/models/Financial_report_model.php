@@ -784,7 +784,7 @@ class Financial_report_model extends MY_Model{
        
         
         // $this->db->group_start();
-        //     $this->db->where(array('voucher_cleared'=>0));
+        //     $this->db->where(array('voucher_cleared'=>0,'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))));
         //     $this->db->or_group_start();
         //         $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
         //     $this->db->group_end();
@@ -792,13 +792,13 @@ class Financial_report_model extends MY_Model{
 
         $this->db->group_start();
             $this->db->where(array('voucher_cleared'=>0,
-            'voucher_date >='=>date('Y-m-01',strtotime($reporting_month)),
-            'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))    
+            'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))
+            //'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))    
             ));
             $this->db->or_group_start();
                 $this->db->where(array('voucher_cleared'=>1,
-                'voucher_date >='=>date('Y-m-01',strtotime($reporting_month)),
-                'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
+                'voucher_date <='=>date('Y-m-01',strtotime($reporting_month)),
+                // 'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
                 'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
             $this->db->group_end();
         $this->db->group_end();
@@ -812,8 +812,43 @@ class Financial_report_model extends MY_Model{
         
         
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
+
+        $uncleared_opening_outstanding_cheques = $this->get_uncleared_opening_outstanding_cheques();
+
+        $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$uncleared_opening_outstanding_cheques);
         //echo json_encode($list_oustanding_cheques_and_deposit);exit;
         return $list_oustanding_cheques_and_deposit;
+      }
+
+      private function get_uncleared_opening_outstanding_cheques(){
+        return [
+            // [
+            //     'voucher_detail_total_cost' => 34500.23,
+            //     'voucher_id'=>0,
+            //     'voucher_number'=>0,
+            //     'voucher_cheque_number'=>1,
+            //     'voucher_description'=>'Test 1',
+            //     'voucher_cleared'=>0,
+            //     'office_code'=>'KE0278',
+            //     'office_name'=>'KE0728',
+            //     'voucher_date'=>'2020-05-10',
+            //     'fk_office_bank_id'=>1,
+            //     'office_bank_name'=>'KCB'
+            // ],
+            // [
+            //     'voucher_detail_total_cost' => 67800.11,
+            //     'voucher_id'=>0,
+            //     'voucher_number'=>0,
+            //     'voucher_cheque_number'=>2,
+            //     'voucher_description'=>'Test 2',
+            //     'voucher_cleared'=>0,
+            //     'office_code'=>'KE0278',
+            //     'office_name'=>'KE0728',
+            //     'voucher_date'=>'2020-06-12',
+            //     'fk_office_bank_id'=>1,
+            //     'office_bank_name'=>'KCB'
+            // ]
+        ];
       }
 
       /**
