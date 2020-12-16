@@ -131,23 +131,16 @@
 $("#submit_report").on('click',function(ev){
     var url = "<?=base_url();?>financial_report/submit_financial_report";
     var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
-    
-    $.ajax({
-        url:url,
-        data:data,
-        type:"POST",
-        success:function(response){
-            //alert(response);
-            if(response){
-                alert(response);
-                location.href = document.referrer;
-            }else{
-                alert(response);
-            }
-            
-            
-        }
-    });
+    //alert('<?=$office_ids[0];?>' + ' - ' + '<?=$reporting_month;?>');
+
+    // $.post(url,data,function(response){
+    //     if(response){
+    //             alert(response);
+    //             location.href = document.referrer;
+    //         }else{
+    //             alert(response);
+    //         }
+    // });
 
     ev.preventDefault();
 });

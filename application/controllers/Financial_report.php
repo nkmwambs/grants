@@ -885,35 +885,36 @@ function submit_financial_report(){
   $post = $this->input->post();
   
   $message = 'MFR Submitted Successful';
+  echo json_encode($post);
 
-  // Check if the report has reconciled
-  $report_reconciled = $this->_check_if_report_has_reconciled($post['office_id'],$post['reporting_month']);
+  // // Check if the report has reconciled
+  // $report_reconciled = $this->_check_if_report_has_reconciled($post['office_id'],$post['reporting_month']);
   
-  // Check if the all vouchers have been approved
-  $vouchers_approved = $this->_check_if_month_vouchers_are_approved($post['office_id'],$post['reporting_month']);
+  // // Check if the all vouchers have been approved
+  // $vouchers_approved = $this->_check_if_month_vouchers_are_approved($post['office_id'],$post['reporting_month']);
 
-  // // Check if their is a bank statement
-  $bank_statements_uploaded = $this->_check_if_bank_statements_are_uploaded($post['office_id'],$post['reporting_month']);
+  // // // Check if their is a bank statement
+  // $bank_statements_uploaded = $this->_check_if_bank_statements_are_uploaded($post['office_id'],$post['reporting_month']);
 
-  if((!$report_reconciled || !$vouchers_approved || !$bank_statements_uploaded) && !$this->config->item('submit_mfr_without_controls')){
-    $message = "You have missing requirements and report is not submitted. Check the following items:\n";
+  // if((!$report_reconciled || !$vouchers_approved || !$bank_statements_uploaded) && !$this->config->item('submit_mfr_without_controls')){
+  //   $message = "You have missing requirements and report is not submitted. Check the following items:\n";
 
-    $items = "";
+  //   $items = "";
     
-    if(!$report_reconciled) $items .= "-> Report is reconciled\n";
-    if(!$vouchers_approved) $items .= "-> All vouchers in the month are approved\n";
-    if(!$bank_statements_uploaded) $items .= "-> Bank statement uploaded\n";
+  //   if(!$report_reconciled) $items .= "-> Report is reconciled\n";
+  //   if(!$vouchers_approved) $items .= "-> All vouchers in the month are approved\n";
+  //   if(!$bank_statements_uploaded) $items .= "-> Bank statement uploaded\n";
 
-    $message .= $items;
+  //   $message .= $items;
 
-  }else{
-    // Update financial report table
-    $this->write_db->where(array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']));
-    $update_data = ['financial_report_is_submitted'=>1];
-    $this->write_db->update('financial_report',$update_data);
-  }
+  // }else{
+  //   // Update financial report table
+  //   $this->write_db->where(array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']));
+  //   $update_data = ['financial_report_is_submitted'=>1];
+  //   $this->write_db->update('financial_report',$update_data);
+  // }
 
-  echo $message;
+  // echo $message;
 }
 
 function _check_if_report_has_reconciled($office_id,$reporting_month){
