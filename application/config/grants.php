@@ -57,7 +57,7 @@
 	$config['skip_empty_expense_reports'] = true;
 
 	//Submit MFR without controls
-	$config['submit_mfr_without_controls']=true;
+	$config['submit_mfr_without_controls']=false;
 
 	//Budget configs
 	$config['size_in_months_of_a_budget_review_period'] = 3;

@@ -228,11 +228,11 @@ class Financial_report_model extends MY_Model{
         
         $initial_account_opening_balance = $this->_initial_opening_account_balance($office_ids,$income_account_id,$project_ids,$office_bank_ids);
 
-        //$account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids);
+        $account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids);
 
-        //$account_last_month_expense_to_date = $this->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
+        $account_last_month_expense_to_date = $this->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
 
-        $account_opening_balance = $initial_account_opening_balance;//$initial_account_opening_balance + ($account_last_month_income_to_date - $account_last_month_expense_to_date); 
+        $account_opening_balance = $initial_account_opening_balance + ($account_last_month_income_to_date - $account_last_month_expense_to_date); 
         
         return $account_opening_balance;
     }
