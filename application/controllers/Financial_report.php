@@ -43,7 +43,7 @@ class Financial_report extends MY_Controller
   private function _fund_balance_report($office_ids, $start_date_of_month, $project_ids = [], $office_bank_ids = []){
     
     $income_accounts =  $this->financial_report_model->income_accounts($office_ids,$project_ids,$office_bank_ids);
-    
+    //print_r($income_accounts);exit;
     $all_accounts_month_opening_balance = $this->month_income_opening_balance($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
     $all_accounts_month_income = $this->month_income_account_receipts($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
     $all_accounts_month_expense = $this->month_income_account_expenses($office_ids, $start_date_of_month,$project_ids,$office_bank_ids);
