@@ -797,8 +797,7 @@ class Financial_report_model extends MY_Model{
             ));
             $this->db->or_group_start();
                 $this->db->where(array('voucher_cleared'=>1,
-                'voucher_date <='=>date('Y-m-01',strtotime($reporting_month)),
-                // 'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
+                'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
                 'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
             $this->db->group_end();
         $this->db->group_end();

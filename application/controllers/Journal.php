@@ -127,7 +127,7 @@ class Journal extends MY_Controller
 
     // Replace the voucher number in selected voucher with the next voucher number
     $voucher_description = '<strike>'.$voucher['voucher_description'].'</strike> [Reversal of voucher number '.$voucher['voucher_number'].']';
-    $voucher = array_replace($voucher,['voucher_vendor'=>'<strike>'.$voucher['voucher_vendor'].'<strike>','voucher_is_reversed'=>1,'voucher_cleared'=>1,'voucher_date'=>$next_voucher_date,'voucher_cleared_month'=>date('Y-m-t',strtotime($next_voucher_date)),'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
+    $voucher = array_replace($voucher,['voucher_vendor'=>'<strike>'.$voucher['voucher_vendor'].'<strike>','voucher_is_reversed'=>1,'voucher_reversal_from'=>$voucher_id,'voucher_cleared'=>1,'voucher_date'=>$next_voucher_date,'voucher_cleared_month'=>date('Y-m-t',strtotime($next_voucher_date)),'voucher_number'=>$next_voucher_number,'voucher_description'=>$voucher_description,'voucher_cheque_number'=>$voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number']]);
   
     //Insert the next voucher record and get the insert id
     $this->write_db->insert('voucher',$voucher);
@@ -151,6 +151,7 @@ class Journal extends MY_Controller
     $update_data['voucher_cleared'] = 1;
     $update_data['voucher_cleared_month'] = date('Y-m-t',strtotime($next_voucher_date));
     $update_data['voucher_cheque_number'] = $voucher['voucher_cheque_number'] > 0 ? -$voucher['voucher_cheque_number'] : $voucher['voucher_cheque_number'];
+    $update_data['voucher_reversal_to'] = $new_voucher_id;
     $this->write_db->update('voucher',$update_data);
 
     return $new_voucher_id;
