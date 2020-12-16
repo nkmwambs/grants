@@ -1345,7 +1345,9 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
       show_error($message,500,'An Error Was Encountered');
     }else{
       $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
-    
+      
+      $this->db->order_by($table.'_id DESC');
+
       return  $this->db->get($table)->result_array();
       
     }

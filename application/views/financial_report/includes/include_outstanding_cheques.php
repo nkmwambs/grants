@@ -1,4 +1,7 @@
 
+    <?php 
+    //print_r($outstanding_cheques);
+    ?>
     <table class="table table-striped tbl_cleared_outstanding_cheque_connector" id='tbl_outstanding_cheque'>
            <thead>
                 <tr>
