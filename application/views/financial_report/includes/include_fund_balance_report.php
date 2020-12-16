@@ -1,4 +1,5 @@
 <?php 
+//print_r($result['fund_balance_report']);
 extract($result);
 ?>
 <table class="table table-striped" id="fund_balance_table">
