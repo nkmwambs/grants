@@ -20,7 +20,7 @@
 </style>
 
 <?php
-    
+    //print_r($result['month_opening_balance']);
     extract($result);
     
     //print_r($month_opening_balance);

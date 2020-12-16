@@ -20,7 +20,7 @@
                         <?php if(!$allow_mfr_reconciliation){?>
                             <?=number_format($bank_reconciliation['bank_statement_balance'],2);?> <i class='fa fa-info-circle' style='color:red;' title='<?=get_phrase('choose_one_bank_account_to_reconcile');?>'></i>
                         <?php }else{?>
-                            <input type="text" class="form-control" id="bank_statement_balance" value="<?=$bank_reconciliation['bank_statement_balance'];?>"/>
+                            <input type="number" class="form-control" id="bank_statement_balance" value="<?=$bank_reconciliation['bank_statement_balance'];?>"/>
                         <?php }?>
                     </td>
                 </tr>
