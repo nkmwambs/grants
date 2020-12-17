@@ -233,8 +233,6 @@ function clear_effect(btn){
     var to_color = 'success';
     var to_label = "<?=get_phrase('unclear');?>";
 
-    //alert(opening_deposit_transit_id);
-
     if(btn.hasClass('cleared_effect')){
         from_class = 'cleared_effect';
         to_class = "active_effect";
