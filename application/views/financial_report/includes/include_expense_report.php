@@ -1,4 +1,7 @@
 <?php 
+
+//print_r($expense_report[3]['expense_accounts']);
+
 $check_sum = array_column($expense_report,'check_sum');
 
 $cnt = 0;
