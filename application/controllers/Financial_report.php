@@ -964,7 +964,7 @@ function submit_financial_report(){
     $items = "";
     
     if(!$report_reconciled) $items .= "-> Report is reconciled\n";
-    if(!$vouchers_approved) $items .= "-> All vouchers in the month are approved\n";
+    if(!$vouchers_approved) $items .= "-> All vouchers in the month are approved or journal is not empty\n";
     if(!$bank_statements_uploaded) $items .= "-> Bank statement uploaded\n";
 
     $message .= $items;

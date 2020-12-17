@@ -15,7 +15,7 @@
 <?php 
 
 // $office_bank_id = 1;
-// echo $this->contra_account_model->add_contra_account($office_bank_id);
+//echo $this->voucher_model->check_if_month_vouchers_are_approved(31,'2021-01-01');
 
 ?>
 
