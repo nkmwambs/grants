@@ -29,7 +29,7 @@
                             }
                         ?>
                         <td>
-                            <div id="<?=$outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$oustanding_state_color;?> <?=$allow_mfr_reconciliation?'':'disabled';?> clear_btn <?=$oustanding_state_clear_class;?> outstanding_cheque active_effect state_<?=$outstanding_cheque['voucher_cleared'];?>'>
+                            <div data-opening_outstanding_cheque_id="<?=isset($outstanding_cheque['opening_outstanding_cheque_id'])?$outstanding_cheque['opening_outstanding_cheque_id']:0;?>" id="<?=$outstanding_cheque['voucher_id'];?>" class='btn btn-<?=$oustanding_state_color;?> <?=$allow_mfr_reconciliation?'':'disabled';?> clear_btn <?=$oustanding_state_clear_class;?> outstanding_cheque active_effect state_<?=$outstanding_cheque['voucher_cleared'];?>'>
                                 <?=$oustanding_state_label;?>
                             </div>
                         </td>

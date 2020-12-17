@@ -222,7 +222,8 @@ function clear_effect(btn){
     var id = btn.attr('id');
     var url = "<?=base_url();?>financial_report/clear_transactions";
     var voucher_state = btn.hasClass('state_0')?0:1;//$(this).attr('data-state');
-    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>'};
+    var opening_outstanding_cheque_id = btn.data('opening_outstanding_cheque_id');
+    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>','opening_outstanding_cheque_id':opening_outstanding_cheque_id};
     var from_class = "active_effect";
     var to_class = "cleared_effect";
     var current_table = btn.closest('table');
@@ -254,7 +255,13 @@ function clear_effect(btn){
                 btn.closest('tr').remove();
                         
                 action_div.removeClass(from_class).removeClass('btn-'+from_color).addClass(to_class).addClass('btn-'+to_color).html(to_label);
-                        
+                
+                if(action_div.hasClass('state_0')){
+                    action_div.removeClass('state_0').addClass('state_1');
+                }else{
+                    action_div.removeClass('state_1').addClass('state_0');
+                }
+
                 $("."+connector_table+" tbody").append(cloned_tr);
 
             }else{
