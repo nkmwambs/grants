@@ -101,16 +101,29 @@
 
                 <div class='col-xs-2'>
                     <select name='office_bank_ids[]' id='office_bank_ids' class='form-control select2' multiple ><?=get_phrase('select_office_banks');?>
-                        <?php foreach($office_banks as $office_bank){?>
-                            <option value='<?=$office_bank['office_bank_id'];?>'><?=$office_bank['office_bank_name'];?></option>
-                        <?php }?>
+                        <?php 
+                            $office_bank_selected = ''; 
+                            $cnt = 0;
+                            
+                            foreach($office_banks as $office_bank){
+                                if($cnt == 0 && count($office_banks) == 1){
+                                    $office_bank_selected = 'selected="selected"';
+                                }
+                        ?>
+                                <option <?=$office_bank_selected;?> value='<?=$office_bank['office_bank_id'];?>'><?=$office_bank['office_bank_name'];?></option>
+                        <?php 
+                                $cnt++;
+                            }  
+                        ?>
+                            
+                    
                     </select>
                 </div>
                 <?php }?>
 
                 <div class='col-xs-2'>
                      <i class='badge badge-info'></i>               
-                    <button type='submit' id='merge_reports' class='btn btn-default'><?=get_phrase('run');?></button>
+                    <button type='submit' id='merge_reports' class='btn btn-default <?=count($office_banks) == 1?'hidden':'';?>'><?=get_phrase('run');?></button>
                 </div>
             </div>
         </form>
@@ -131,11 +144,11 @@
 $("#submit_report").on('click',function(ev){
     var url = "<?=base_url();?>Financial_report/submit_financial_report";
     var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
-
+    
     $.post(url,data,function(response){
         if(response){
                 alert(response);
-                location.href = document.referrer;
+                //location.href = document.referrer;
             }else{
                 alert(response);
             }
