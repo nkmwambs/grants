@@ -331,7 +331,7 @@ class Financial_report extends MY_Controller
   function financial_report_information($report_id){
 
     $additional_information = $this->financial_report_library->financial_report_information($report_id);
-
+    
     if((isset($_POST['office_ids']) && count($_POST['office_ids']) > 0)){
       $additional_information = $this->financial_report_library->financial_report_information($report_id, $_POST['office_ids']);
     }
@@ -826,18 +826,25 @@ class Financial_report extends MY_Controller
     }
   }
 
+  // function create__missing_reconciliation(){
+
+  // }
+
   function upload_statements(){
 
     $post = $this->input->post();
 
     $office_banks = explode(",",$post['office_bank_ids']);
-
+    
+    
     // Check if a reconciliation record exists, if not create it
     $this->db->join('financial_report','financial_report.financial_report_id=reconciliation.fk_financial_report_id');
     $this->db->where(array('reconciliation.fk_office_bank_id'=>$office_banks[0]));  
     $reconciliation_obj = $this->db->get_where('reconciliation',
-      array('fk_office_id'=>$post['office_id'],
+      array('financial_report.fk_office_id'=>$post['office_id'],
       'financial_report_month'=>$post['reporting_month']));
+
+      // echo json_encode($reconciliation_obj->num_rows()); 
 
     if($reconciliation_obj->num_rows() == 0){
       // Create a reconciliation record
@@ -845,7 +852,7 @@ class Financial_report extends MY_Controller
 
       $financial_report_id = $this->read_db->get_where('financial_report',
       array('fk_office_id'=>$post['office_id'],'financial_report_month'=>$post['reporting_month']))->row()->financial_report_id;
-
+      
       $this->insert_reconciliation($financial_report_id,$office_banks[0]);
     }  
 
@@ -1064,9 +1071,11 @@ function insert_reconciliation($financial_report_id,$office_bank_id,$statement_b
       $data['reconciliation_last_modified_by'] = $this->session->user_id;
       
       $data['fk_approval_id'] = $this->grants_model->insert_approval_record('reconciliation');
-      $data['fk_status_id'] = $this->grants_model->initial_item_status('reconciliation');
+      $data['fk_status_id'] = 0;//$this->grants_model->initial_item_status('reconciliation');
 
       $this->write_db->insert('reconciliation',$data);
+
+      //return json_encode($data);
 }
 
 static function get_menu_list(){}

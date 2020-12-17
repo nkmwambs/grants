@@ -148,11 +148,42 @@
                 ?>
                      <tr>
                         <td>
+
+
+                        <?php 
+                                if($voucher_is_reversed && $cheque_number && ($voucher_reversal_from || $voucher_reversal_to)){
+                                
+                                    $related_voucher_id = hash_id($voucher_reversal_from,'encode');
+                                    $reverse_btn_label = get_phrase('linked_source');
+                               
+                                    if(!$voucher_reversal_from){
+                                        $related_voucher_id = hash_id($voucher_reversal_to,'encode');
+                                        $reverse_btn_label = get_phrase('linked_destination');
+                                     }
+                            ?>
+                                <a class='btn btn-danger' target="__blank" href='<?=base_url().'Voucher/view/'.$related_voucher_id;?>'><?=$reverse_btn_label;?></a>
+                            <?php }?>
+
+
+                            <?php if($cheque_number == 0){?>
+                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                    <i class='fa fa-undo' style='cursor:pointer;'></i>
+                                    <?=get_phrase('reverse');?>
+                                </div>
+                            <?php }else{?>
+                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                    <i class='fa fa-undo' style='cursor:pointer;'></i>
+                                    <?=get_phrase('reverse');?>
+                                </div>
+
+                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse re_use <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                    <i class='fa fa-plus' style='cursor:pointer;'></i>
+                                    <?=get_phrase('re-use_cheque');?>
+                                </div>
+
+                            <?php }?>
+
                             
-                            <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
-                                <i class='fa fa-undo' style='cursor:pointer;'></i>
-                                <?=get_phrase('reverse');?>
-                            </div>
                            
                             <!-- <div class="btn <?=!$cleared?'btn-danger':'btn-success';?> btn_action" ><?=get_phrase(!$cleared?'clear':'cleared');?></div> -->
                         </td>
@@ -178,7 +209,9 @@
                             <span class='cell_content'><?=strlen($description)>50?substr($description,0,50).'...':$description;?></span>
                         </td>
 
-                        <td class='align-right'><?=$cheque_number != 0?$cheque_number:'';?></td>
+                        <td class='align-right'>
+                            <?=!$voucher_is_reversed?(!$cheque_number?'':$cheque_number):'';?>
+                        </td>
                         
                         <?php 
 
@@ -333,10 +366,15 @@ $('.table').DataTable({
       $(".btn_reverse").on('click',function(){
         var btn = $(this);
         var voucher_id = btn.data('voucher_id');
+        var reuse_cheque = btn.hasClass('re_use')?1:0;
         var cnfrm = confirm('Are you sure you want to reverse this voucher?');
 
+        if(reuse_cheque){
+            var cnfrm = confirm('Are you sure you want to reverse this voucher and reuse it\'s cheque number?');
+        }
+
         if(cnfrm){
-            var url = "<?=base_url();?>Journal/reverse_voucher/"+voucher_id;
+            var url = "<?=base_url();?>Journal/reverse_voucher/"+voucher_id+"/"+reuse_cheque;
 
             $.get(url,function(response){
                 alert(response);
