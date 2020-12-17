@@ -148,7 +148,7 @@ $("#submit_report").on('click',function(ev){
     $.post(url,data,function(response){
         if(response){
                 alert(response);
-                //location.href = document.referrer;
+                location.href = document.referrer;
             }else{
                 alert(response);
             }
