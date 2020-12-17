@@ -153,7 +153,7 @@ CREATE TABLE `budget_item` (
   `budget_item_description` longtext,
   `budget_item_quantity` int(10) NOT NULL DEFAULT '0',
   `budget_item_unit_cost` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `budget_item_often` int(10) NOT NULL DEFAULT '0',
+  `budget_item_often` int(10) NOT NULL DEFAULT '1',
   `fk_status_id` int(11) DEFAULT '0',
   `fk_approval_id` int(11) DEFAULT '0',
   `fk_project_allocation_id` int(100) DEFAULT NULL,
@@ -194,9 +194,56 @@ CREATE TABLE `budget_item_detail` (
   KEY `fk_status_id` (`fk_status_id`),
   KEY `fk_approval_id` (`fk_approval_id`),
   CONSTRAINT `budget_item_detail_ibfk_1` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `budget_item_detail_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
   CONSTRAINT `fk_budget_month_spread_budget_detail1` FOREIGN KEY (`fk_budget_item_id`) REFERENCES `budget_item` (`budget_item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
+
+
+DROP TABLE IF EXISTS `budget_projection`;
+CREATE TABLE `budget_projection` (
+  `budget_projection_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_projection_name` varchar(100) NOT NULL,
+  `budget_projection_track_number` varchar(100) NOT NULL,
+  `fk_budget_id` int(100) NOT NULL,
+  `budget_projection_created_by` int(100) NOT NULL,
+  `budget_projection_created_date` date NOT NULL,
+  `budget_projection_last_modified_by` int(100) NOT NULL,
+  `budget_projection_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(11) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  PRIMARY KEY (`budget_projection_id`),
+  KEY `fk_budget_id` (`fk_budget_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  CONSTRAINT `budget_projection_ibfk_2` FOREIGN KEY (`fk_budget_id`) REFERENCES `budget` (`budget_id`),
+  CONSTRAINT `budget_projection_ibfk_3` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
+  CONSTRAINT `budget_projection_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `budget_projection_income_account`;
+CREATE TABLE `budget_projection_income_account` (
+  `budget_projection_income_account_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_projection_income_account_name` varchar(100) NOT NULL,
+  `budget_projection_income_account_track_number` varchar(100) NOT NULL,
+  `fk_budget_projection_id` int(100) NOT NULL,
+  `fk_income_account_id` int(11) NOT NULL,
+  `budget_projection_income_account_amount` decimal(10,2) NOT NULL,
+  `budget_projection_income_account_created_by` int(100) NOT NULL,
+  `budget_projection_income_account_created_date` date NOT NULL,
+  `budget_projection_income_account_last_modified_by` int(100) NOT NULL,
+  `budget_projection_income_account_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(11) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  PRIMARY KEY (`budget_projection_income_account_id`),
+  KEY `fk_budget_projection_id` (`fk_budget_projection_id`),
+  KEY `fk_income_account_id` (`fk_income_account_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  CONSTRAINT `budget_projection_income_account_ibfk_1` FOREIGN KEY (`fk_budget_projection_id`) REFERENCES `budget_projection` (`budget_projection_id`),
+  CONSTRAINT `budget_projection_income_account_ibfk_2` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`),
+  CONSTRAINT `budget_projection_income_account_ibfk_3` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
+  CONSTRAINT `budget_projection_income_account_ibfk_4` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `budget_review_count`;
@@ -267,9 +314,9 @@ CREATE TABLE `cheque_book` (
   `cheque_book_track_number` varchar(100) NOT NULL,
   `cheque_book_name` varchar(100) NOT NULL,
   `fk_office_bank_id` int(100) DEFAULT NULL,
-  `cheque_book_is_active` int(5) DEFAULT '1',
-  `cheque_book_start_serial_number` varchar(45) DEFAULT NULL,
-  `cheque_book_count_of_leaves` varchar(45) DEFAULT NULL,
+  `cheque_book_is_active` int(5) DEFAULT '0',
+  `cheque_book_start_serial_number` int(100) DEFAULT NULL,
+  `cheque_book_count_of_leaves` int(100) DEFAULT NULL,
   `cheque_book_use_start_date` date DEFAULT NULL,
   `cheque_book_created_date` date DEFAULT NULL,
   `cheque_book_created_by` int(100) DEFAULT NULL,
@@ -572,11 +619,9 @@ CREATE TABLE `contra_account` (
   KEY `fk_account_system_id` (`fk_account_system_id`),
   KEY `fk_voucher_type_account_id` (`fk_voucher_type_account_id`),
   KEY `fk_office_bank_id` (`fk_office_bank_id`),
-  KEY `fk_voucher_type_effect_id` (`fk_voucher_type_effect_id`),
   CONSTRAINT `contra_account_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
   CONSTRAINT `contra_account_ibfk_2` FOREIGN KEY (`fk_voucher_type_account_id`) REFERENCES `voucher_type_account` (`voucher_type_account_id`),
-  CONSTRAINT `contra_account_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`),
-  CONSTRAINT `contra_account_ibfk_4` FOREIGN KEY (`fk_voucher_type_effect_id`) REFERENCES `voucher_type_effect` (`voucher_type_effect_id`)
+  CONSTRAINT `contra_account_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1010,7 +1055,7 @@ CREATE TABLE `office` (
   `fk_context_definition_id` int(100) NOT NULL,
   `office_start_date` date NOT NULL,
   `office_end_date` date DEFAULT '0000-00-00',
-  `office_is_active` int(5) NOT NULL DEFAULT '1',
+  `office_is_active` int(5) NOT NULL DEFAULT '0',
   `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `fk_country_currency_id` int(100) NOT NULL,
   `office_created_by` int(100) NOT NULL,
@@ -1067,7 +1112,11 @@ CREATE TABLE `office_bank_project_allocation` (
   `office_bank_project_allocation_last_modified_by` int(100) NOT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`office_bank_project_allocation_id`)
+  PRIMARY KEY (`office_bank_project_allocation_id`),
+  KEY `fk_office_bank_id` (`fk_office_bank_id`),
+  KEY `fk_project_allocation_id` (`fk_project_allocation_id`),
+  CONSTRAINT `office_bank_project_allocation_ibfk_1` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`),
+  CONSTRAINT `office_bank_project_allocation_ibfk_2` FOREIGN KEY (`fk_project_allocation_id`) REFERENCES `project_allocation` (`project_allocation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1085,6 +1134,54 @@ CREATE TABLE `office_cash` (
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`office_cash_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `office_group`;
+CREATE TABLE `office_group` (
+  `office_group_id` int(100) NOT NULL AUTO_INCREMENT,
+  `office_group_track_number` varchar(100) NOT NULL,
+  `office_group_name` varchar(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `office_group_created_by` int(100) NOT NULL,
+  `office_group_created_date` date NOT NULL,
+  `office_group_last_modified_by` int(100) NOT NULL,
+  `office_group_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(11) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  PRIMARY KEY (`office_group_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  CONSTRAINT `office_group_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`),
+  CONSTRAINT `office_group_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
+  CONSTRAINT `office_group_ibfk_3` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `office_group_association`;
+CREATE TABLE `office_group_association` (
+  `office_group_association_id` int(11) NOT NULL AUTO_INCREMENT,
+  `office_group_association_name` varchar(100) NOT NULL,
+  `office_group_association_track_number` varchar(100) NOT NULL,
+  `fk_office_group_id` int(100) NOT NULL,
+  `fk_office_id` int(100) NOT NULL,
+  `office_group_association_is_lead` int(5) NOT NULL DEFAULT '0',
+  `office_group_association_created_by` int(100) NOT NULL,
+  `office_group_association_created_date` date NOT NULL,
+  `office_group_association_last_modified_by` int(100) NOT NULL,
+  `office_group_association_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(11) NOT NULL,
+  `fk_status_id` int(11) NOT NULL,
+  PRIMARY KEY (`office_group_association_id`),
+  KEY `fk_office_id` (`fk_office_id`),
+  KEY `fk_approval_id` (`fk_approval_id`),
+  KEY `fk_status_id` (`fk_status_id`),
+  KEY `fk_office_group_id` (`fk_office_group_id`),
+  CONSTRAINT `office_group_association_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `office_group_association_ibfk_2` FOREIGN KEY (`fk_approval_id`) REFERENCES `approval` (`approval_id`),
+  CONSTRAINT `office_group_association_ibfk_3` FOREIGN KEY (`fk_status_id`) REFERENCES `status` (`status_id`),
+  CONSTRAINT `office_group_association_ibfk_4` FOREIGN KEY (`fk_office_group_id`) REFERENCES `office_group` (`office_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1124,9 +1221,7 @@ CREATE TABLE `opening_bank_balance` (
   `opening_bank_balance_last_modified_by` int(100) NOT NULL,
   `fk_status_id` int(100) NOT NULL,
   `fk_approval_id` int(100) NOT NULL,
-  PRIMARY KEY (`opening_bank_balance_id`),
-  KEY `fk_office_bank_id` (`fk_office_bank_id`),
-  CONSTRAINT `opening_bank_balance_ibfk_1` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
+  PRIMARY KEY (`opening_bank_balance_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1166,7 +1261,7 @@ CREATE TABLE `opening_deposit_transit` (
   `opening_deposit_transit_description` longtext NOT NULL,
   `opening_deposit_transit_amount` decimal(10,2) NOT NULL,
   `opening_deposit_transit_is_cleared` int(5) NOT NULL DEFAULT '0',
-  `opening_deposit_transit_cleared_date` date NOT NULL,
+  `opening_deposit_transit_cleared_date` date NOT NULL DEFAULT '0000-00-00',
   `opening_deposit_transit_created_date` date DEFAULT NULL,
   `opening_deposit_transit_created_by` int(100) DEFAULT NULL,
   `opening_deposit_transit_last_modified_by` int(100) DEFAULT NULL,
@@ -1368,7 +1463,7 @@ CREATE TABLE `project` (
   `project_track_number` varchar(100) DEFAULT NULL,
   `project_name` varchar(100) DEFAULT NULL,
   `project_code` varchar(10) NOT NULL,
-  `project_description` varchar(100) DEFAULT NULL,
+  `project_description` longtext,
   `project_start_date` date NOT NULL,
   `project_end_date` date DEFAULT '0000-00-00',
   `fk_funder_id` int(100) NOT NULL,
@@ -1893,6 +1988,8 @@ CREATE TABLE `voucher` (
   `voucher_description` varchar(200) DEFAULT NULL,
   `voucher_allow_edit` int(5) DEFAULT '0',
   `voucher_is_reversed` int(5) DEFAULT '0',
+  `voucher_reversal_from` int(100) NOT NULL DEFAULT '0',
+  `voucher_reversal_to` int(100) NOT NULL DEFAULT '0',
   `voucher_created_by` int(100) DEFAULT NULL,
   `voucher_created_date` date DEFAULT NULL,
   `voucher_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1938,7 +2035,7 @@ CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
   `voucher_type_track_number` varchar(100) NOT NULL,
   `voucher_type_name` varchar(45) DEFAULT NULL,
-  `voucher_type_is_active` int(5) NOT NULL,
+  `voucher_type_is_active` int(5) DEFAULT NULL,
   `voucher_type_abbrev` varchar(5) DEFAULT NULL,
   `fk_voucher_type_account_id` int(100) DEFAULT NULL COMMENT 'Can be bank, cash or contra',
   `fk_voucher_type_effect_id` int(100) DEFAULT NULL COMMENT 'Can be income or expense',
@@ -2037,4 +2134,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-12-11 07:06:24
+-- 2020-12-17 14:38:51
