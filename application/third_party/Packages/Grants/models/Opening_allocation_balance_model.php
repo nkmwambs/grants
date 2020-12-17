@@ -66,8 +66,17 @@ class Opening_allocation_balance_model extends MY_Model{
             $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
             array('system_opening_balance_id'=>hash_id($this->id,'decode')))->result_array();
 
-            $lookup_values['project_allocation'] = $this->read_db->get_where('project_allocation',
-            array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id']))->result_array();
+
+            $this->read_db->where(array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id'],
+            'project_end_date<>'=>'0000-00-00'));
+            
+            $this->read_db->group_start();
+                $this->read_db->where(array('project_allocation_extended_end_date>='=>date('Y-m-t')));
+                $this->read_db->or_where(array('project_end_date>='=>date('Y-m-t')));
+            $this->read_db->group_end();
+
+            $this->read_db->join('project','project.project_id=project_allocation.fk_project_id');
+            $lookup_values['project_allocation'] = $this->read_db->get('project_allocation')->result_array();
 
             return $lookup_values;
          }
