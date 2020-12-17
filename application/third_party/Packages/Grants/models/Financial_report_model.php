@@ -61,18 +61,30 @@ class Financial_report_model extends MY_Model{
 
         $offices_information = [];
 
-        $financial_report_month = "";
+        // $financial_report_month = "";
         
-        $reporting_month = $this->db->get_where('financial_report',
-        array('financial_report_id'=>$report_id))->row()->financial_report_month;
+        // $financial_report_obj = $this->db->get_where('financial_report',
+        // array('financial_report_id'=>$report_id))->row();
 
+        // $reporting_month = $financial_report_obj->financial_report_month;
+
+        // $office_id = $financial_report_obj->fk_office_id;
+
+        //echo $report_id;exit;
+
+        $this->db->select(array('financial_report_month','fk_office_id as office_id','office_name'));
         $this->db->join('office','office.office_id=financial_report.fk_office_id');
-        $financial_report =  $this->db->select(array('financial_report_month',
-        'fk_office_id as office_id','office_name'))->get_where('financial_report',
-        array('financial_report_month'=>$reporting_month));
+
+        if(count($offices_ids) > 0){
+            $this->db->where_in('fk_office_id',$offices_ids);
+        }else{
+            $this->db->where(array('financial_report_id'=>$report_id));
+        }
+
+        $offices_information =  $this->db->get('financial_report')->result_array();
 
         //if(count($offices_ids) > 0){
-            $offices_information =  $financial_report->result_array();
+            //$offices_information =  $financial_report->result_array();
             
         //}
         // else{  
@@ -82,6 +94,8 @@ class Financial_report_model extends MY_Model{
         // $offices_information =  $financial_report->result_array();
 
         // echo  json_encode($financial_report->result_array());exit;
+
+        //print_r($offices_information);exit;
 
         return $offices_information;
     }

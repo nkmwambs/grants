@@ -331,7 +331,7 @@ class Financial_report extends MY_Controller
   function financial_report_information($report_id){
 
     $additional_information = $this->financial_report_library->financial_report_information($report_id);
-
+    
     if((isset($_POST['office_ids']) && count($_POST['office_ids']) > 0)){
       $additional_information = $this->financial_report_library->financial_report_information($report_id, $_POST['office_ids']);
     }
