@@ -846,20 +846,33 @@ class Financial_report extends MY_Controller
   function clear_transactions(){
     $post = $this->input->post();
 
-    $update_data['voucher_cleared'] = 1;
-    $update_data['voucher_cleared_month'] = date('Y-m-t',strtotime($post['reporting_month']));//date('Y-m-t');
-
-    if($post['voucher_state'] == 1){
-      $update_data['voucher_cleared'] = 0;
-      $update_data['voucher_cleared_month'] = null;
-    }
-    
-
     $this->write_db->trans_start();
 
-    $this->write_db->where(array('voucher_id'=>$post['voucher_id']));
+    if($post['opening_outstanding_cheque_id'] > 0){
+      $update_data['opening_outstanding_cheque_is_cleared'] = 1;
+      $update_data['opening_outstanding_cheque_cleared_date'] = date('Y-m-t',strtotime($post['reporting_month']));//date('Y-m-t');
+  
+      if($post['voucher_state'] == 1){
+        $update_data['opening_outstanding_cheque_is_cleared'] = 0;
+        $update_data['opening_outstanding_cheque_cleared_date'] = null;
+      }
 
-    $this->write_db->update('voucher',$update_data);
+      $this->write_db->where(array('opening_outstanding_cheque_id'=>$post['opening_outstanding_cheque_id']));
+      $this->write_db->update('opening_outstanding_cheque',$update_data);
+
+    }else{
+      $update_data['voucher_cleared'] = 1;
+      $update_data['voucher_cleared_month'] = date('Y-m-t',strtotime($post['reporting_month']));//date('Y-m-t');
+  
+      if($post['voucher_state'] == 1){
+        $update_data['voucher_cleared'] = 0;
+        $update_data['voucher_cleared_month'] = null;
+      }
+
+      $this->write_db->where(array('voucher_id'=>$post['voucher_id']));
+
+      $this->write_db->update('voucher',$update_data);
+    }
 
     $this->write_db->trans_complete();
 
