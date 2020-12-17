@@ -215,8 +215,6 @@ function compute_reconciliation(clear_btn){
     }
 }
 
-//$(document).on('click',".to_clear",function(){
-
 function clear_effect(btn){
     // var btn = $(this);
     var id = btn.attr('id');
