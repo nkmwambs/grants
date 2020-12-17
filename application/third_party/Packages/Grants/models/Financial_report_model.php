@@ -669,13 +669,15 @@ class Financial_report_model extends MY_Model{
     //       return [1,2];
     //   }
 
-      function get_budget_tag_based_on_month($reporting_month){
+      function get_budget_tag_based_on_month($reporting_month,$office_ids = []){
         
         $month_number = date('n',strtotime($reporting_month));
         
         $this->read_db->select(array('budget_tag_id','fk_month_id'));
         $this->read_db->order_by('budget_tag_level ASC');
-        $this->read_db->where(array('fk_account_system_id'=>2));
+        $this->read_db->join('account_system','account_system.account_system_id=budget_tag.fk_account_system_id');
+        $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
+        $this->read_db->where_in('office_id',$office_ids);
         $budget_tags_start_month = $this->read_db->get('budget_tag')->result_array();
 
         $budget_tag_id_array = array_column($budget_tags_start_month,'budget_tag_id');
@@ -706,14 +708,16 @@ class Financial_report_model extends MY_Model{
       }
 
       function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
-
+        //echo json_encode($office_bank_ids);exit;
         $financial_year = get_fy($reporting_month);
         $month_number = date('m',strtotime($reporting_month));
         $month_order = $this->db->get_where('month',array('month_number'=>$month_number))->row()->month_order;
         //$list_of_month_order = $this->list_of_month_order($reporting_month);
-        $get_budget_tag_based_on_month = $this->get_budget_tag_based_on_month($reporting_month);
+        $get_budget_tag_based_on_month = $this->get_budget_tag_based_on_month($reporting_month,$office_ids);
 
         $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
+
+        //echo json_encode($get_budget_tag_based_on_month);exit;
 
         $this->db->select_sum('budget_item_detail_amount');
         $this->db->select(array('income_account.income_account_id as income_account_id',
