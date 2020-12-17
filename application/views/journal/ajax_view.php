@@ -154,12 +154,14 @@
                                 if($voucher_is_reversed && $cheque_number && ($voucher_reversal_from || $voucher_reversal_to)){
                                 
                                     $related_voucher_id = hash_id($voucher_reversal_from,'encode');
+                                    $reverse_btn_label = get_phrase('linked_voucher').'(S)';
                                
                                     if(!$voucher_reversal_from){
                                         $related_voucher_id = hash_id($voucher_reversal_to,'encode');
+                                        $reverse_btn_label = get_phrase('linked_voucher').'(D)';
                                      }
                             ?>
-                                <a class='btn btn-danger' target="__blank" href='<?=base_url().'Voucher/view/'.$related_voucher_id;?>'><?=get_phrase('linked_voucher');?></a>
+                                <a class='btn btn-danger' target="__blank" href='<?=base_url().'Voucher/view/'.$related_voucher_id;?>'><?=$reverse_btn_label;?></a>
                             <?php }?>
 
 
