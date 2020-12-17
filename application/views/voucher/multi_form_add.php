@@ -12,6 +12,13 @@
 
 </style>
 
+<?php 
+
+// $office_bank_id = 1;
+//echo $this->voucher_model->check_if_month_vouchers_are_approved(31,'2021-01-01');
+
+?>
+
 
 <div class="row">
     <div class="col-xs-12">
@@ -436,14 +443,12 @@ function check_cheque_validity(){
     }
 
     $.post(url,data,function(response){  
-        //console.log(response);
-        var options = 'option value=""><?=get_phrase('select_cheque_number');?></option>';
+        
+        var options = '<option value=""><?=get_phrase('select_cheque_number');?></option>';
 
         if(response == 0){
             alert('The bank account selected lacks a cheque book');
         }else{
-            // $("#cheque_number").removeAttr('readonly');
-            // $("#cheque_number").removeAttr('disabled');
 
             var obj = JSON.parse(response);
             
@@ -711,6 +716,8 @@ function change_voucher_number_field_to_eft_number(response_is_voucher_type_requ
         $('#cheque_number').prop('name', 'voucher_cheque_number');
         $('#cheque_number').prop('readonly', 'readonly');
         $('#cheque_number').addClass('account_fields');
+        $('#cheque_number').removeClass('hidden');
+        $('#cheque_number').removeClass('required');
 
         $("#cheque_number").parent().prev().html('<?=get_phrase("EFT_serial");?>');
 
@@ -724,6 +731,8 @@ function change_voucher_number_field_to_eft_number(response_is_voucher_type_requ
         $('#cheque_number').prop('name', 'voucher_cheque_number');
         $('#cheque_number').prop('readonly', 'readonly');
         $('#cheque_number').addClass('account_fields');
+        $('#cheque_number').removeClass('hidden');
+        $('#cheque_number').removeClass('required');
 
         $("#cheque_number").parent().prev().html('<?=get_phrase("cheque_number");?>');
     }
@@ -1120,7 +1129,7 @@ $(document).on('change','.allocation',function(){
     if(toggle_accounts_by_allocation){
 
         $.post(url,data,function(response){
-                //alert(response);
+                //console.log(response);
                 var response_accounts = JSON.parse(response);
 
                 var accounts_select_option = "<option value=''>Select account</option>";
@@ -1262,5 +1271,5 @@ $(document).on('change','.required',function(){
 });
 </script>
 
-<input type="text" class="form-control required" name = "secondary_input" id="secondary_input" value = ""/>
-<select class='form-control required' name='secondary_select' id='secondary_select' disabled='disabled'><option value=''><?=get_phrase('select_cheque_number');?></option></select>
+<input type="text" class="form-control hidden" name = "secondary_input" id="secondary_input" value = ""/>
+<select class='form-control hidden' name='secondary_select' id='secondary_select' disabled='disabled'><option value=''><?=get_phrase('select_cheque_number');?></option></select>

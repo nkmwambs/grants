@@ -91,10 +91,13 @@ class MY_Controller extends CI_Controller
     $this->load->model($this->current_model);
 
     // Load package library, helper and model
-    $this->load->helper($this->session->package.'_package');
-    $this->load->library($this->session->package.'_package_library');
-    $this->load->model($this->session->package.'_package_model');
-	
+    if($this->session->userdata('package')){
+      $this->load->helper($this->session->package.'_package');
+      $this->load->library($this->session->package.'_package_library');
+      $this->load->model($this->session->package.'_package_model');
+    }else{
+      $this->session->sess_destroy();
+    }
 	
     //Setting the session of master table. For view action always the master table= the controler u are in.
     //Will alwasy be null for other actions
@@ -483,6 +486,12 @@ class MY_Controller extends CI_Controller
       //     $this->write_db->where(array($primary_table_id=>hash_id($this->id,'decode')));
       //     $this->write_db->update($detail_record,$detail_data);
       //  }
+
+      //return hash_id($this->id,'decode');
+
+      if(method_exists($this->{$this->current_model},'post_approve_action')){
+        $this->{$this->current_model}->post_approve_action();
+      }
    
     }    
        

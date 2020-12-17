@@ -61,18 +61,30 @@ class Financial_report_model extends MY_Model{
 
         $offices_information = [];
 
-        $financial_report_month = "";
+        // $financial_report_month = "";
         
-        $reporting_month = $this->db->get_where('financial_report',
-        array('financial_report_id'=>$report_id))->row()->financial_report_month;
+        // $financial_report_obj = $this->db->get_where('financial_report',
+        // array('financial_report_id'=>$report_id))->row();
 
+        // $reporting_month = $financial_report_obj->financial_report_month;
+
+        // $office_id = $financial_report_obj->fk_office_id;
+
+        //echo $report_id;exit;
+
+        $this->db->select(array('financial_report_month','fk_office_id as office_id','office_name'));
         $this->db->join('office','office.office_id=financial_report.fk_office_id');
-        $financial_report =  $this->db->select(array('financial_report_month',
-        'fk_office_id as office_id','office_name'))->get_where('financial_report',
-        array('financial_report_month'=>$reporting_month));
+
+        if(count($offices_ids) > 0){
+            $this->db->where_in('fk_office_id',$offices_ids);
+        }else{
+            $this->db->where(array('financial_report_id'=>$report_id));
+        }
+
+        $offices_information =  $this->db->get('financial_report')->result_array();
 
         //if(count($offices_ids) > 0){
-            $offices_information =  $financial_report->result_array();
+            //$offices_information =  $financial_report->result_array();
             
         //}
         // else{  
@@ -82,6 +94,8 @@ class Financial_report_model extends MY_Model{
         // $offices_information =  $financial_report->result_array();
 
         // echo  json_encode($financial_report->result_array());exit;
+
+        //print_r($offices_information);exit;
 
         return $offices_information;
     }
@@ -228,11 +242,11 @@ class Financial_report_model extends MY_Model{
         
         $initial_account_opening_balance = $this->_initial_opening_account_balance($office_ids,$income_account_id,$project_ids,$office_bank_ids);
 
-        //$account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids);
+        $account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids);
 
-        //$account_last_month_expense_to_date = $this->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
+        $account_last_month_expense_to_date = $this->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
 
-        $account_opening_balance = $initial_account_opening_balance;//$initial_account_opening_balance + ($account_last_month_income_to_date - $account_last_month_expense_to_date); 
+        $account_opening_balance = $initial_account_opening_balance + ($account_last_month_income_to_date - $account_last_month_expense_to_date); 
         
         return $account_opening_balance;
     }
@@ -655,13 +669,15 @@ class Financial_report_model extends MY_Model{
     //       return [1,2];
     //   }
 
-      function get_budget_tag_based_on_month($reporting_month){
+      function get_budget_tag_based_on_month($reporting_month,$office_ids = []){
         
         $month_number = date('n',strtotime($reporting_month));
         
         $this->read_db->select(array('budget_tag_id','fk_month_id'));
         $this->read_db->order_by('budget_tag_level ASC');
-        $this->read_db->where(array('fk_account_system_id'=>2));
+        $this->read_db->join('account_system','account_system.account_system_id=budget_tag.fk_account_system_id');
+        $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
+        $this->read_db->where_in('office_id',$office_ids);
         $budget_tags_start_month = $this->read_db->get('budget_tag')->result_array();
 
         $budget_tag_id_array = array_column($budget_tags_start_month,'budget_tag_id');
@@ -692,14 +708,19 @@ class Financial_report_model extends MY_Model{
       }
 
       function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
+        
+        $max_approval_status_id = $this->general_model->get_max_approval_status_id('budget_item');
 
         $financial_year = get_fy($reporting_month);
         $month_number = date('m',strtotime($reporting_month));
         $month_order = $this->db->get_where('month',array('month_number'=>$month_number))->row()->month_order;
         //$list_of_month_order = $this->list_of_month_order($reporting_month);
-        $get_budget_tag_based_on_month = $this->get_budget_tag_based_on_month($reporting_month);
+        $get_budget_tag_based_on_month = $this->get_budget_tag_based_on_month($reporting_month,$office_ids);
 
         $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
+
+        //echo json_encode($get_budget_tag_based_on_month);exit;
+        
 
         $this->db->select_sum('budget_item_detail_amount');
         $this->db->select(array('income_account.income_account_id as income_account_id',
@@ -728,6 +749,8 @@ class Financial_report_model extends MY_Model{
         if(!empty($office_bank_ids)){
             $this->db->where_in('budget_item.fk_project_allocation_id',$get_office_bank_project_allocation);
         }
+
+        $this->db->where(array('budget_item.fk_status_id'=>$max_approval_status_id));
     
         $result = $this->db->get('budget_item_detail');
     
@@ -784,7 +807,7 @@ class Financial_report_model extends MY_Model{
        
         
         // $this->db->group_start();
-        //     $this->db->where(array('voucher_cleared'=>0));
+        //     $this->db->where(array('voucher_cleared'=>0,'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))));
         //     $this->db->or_group_start();
         //         $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
         //     $this->db->group_end();
@@ -792,12 +815,11 @@ class Financial_report_model extends MY_Model{
 
         $this->db->group_start();
             $this->db->where(array('voucher_cleared'=>0,
-            'voucher_date >='=>date('Y-m-01',strtotime($reporting_month)),
-            'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))    
+            'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))
+            //'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))    
             ));
             $this->db->or_group_start();
                 $this->db->where(array('voucher_cleared'=>1,
-                'voucher_date >='=>date('Y-m-01',strtotime($reporting_month)),
                 'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
                 'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
             $this->db->group_end();
@@ -812,8 +834,70 @@ class Financial_report_model extends MY_Model{
         
         
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
+
+        $uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month);
+
+        $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$uncleared_opening_outstanding_cheques);
         //echo json_encode($list_oustanding_cheques_and_deposit);exit;
         return $list_oustanding_cheques_and_deposit;
+      }
+
+      private function get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,$state = 'uncleared'){
+        $opening_outstanding_cheques = [];
+
+        $this->read_db->select(
+            [
+                'opening_outstanding_cheque_amount as voucher_detail_total_cost',
+                'opening_outstanding_cheque_number as voucher_cheque_number',
+                'opening_outstanding_cheque_description as voucher_description',
+                'opening_outstanding_cheque_date as voucher_date',
+                'fk_office_bank_id',
+                'opening_outstanding_cheque_is_cleared as voucher_cleared',
+                'opening_outstanding_cheque_cleared_date as voucher_cleared_month',
+                'office_bank_name',
+                'opening_outstanding_cheque_id'
+            ]
+        );
+
+        $this->read_db->where_in('system_opening_balance.fk_office_id',$office_ids);
+
+        if($state == 'uncleared'){
+            $this->read_db->group_start();
+                $this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>0));
+
+                $this->read_db->or_group_start();
+                    $this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1,
+                    'opening_outstanding_cheque_cleared_date > '=>date('Y-m-t',strtotime($reporting_month))));
+                $this->read_db->group_end();
+            $this->read_db->group_end();
+        }else{
+
+            //$this->read_db->group_start();
+                //$this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1));
+
+                //$this->read_db->or_group_start();
+                    $this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1,
+                    'opening_outstanding_cheque_cleared_date '=>date('Y-m-t',strtotime($reporting_month))));
+                //$this->read_db->group_end();
+           // $this->read_db->group_end();
+
+        }
+
+        $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_outstanding_cheque.fk_system_opening_balance_id');
+        $this->read_db->join('office_bank','office_bank.office_bank_id=opening_outstanding_cheque.fk_office_bank_id');
+        $opening_outstanding_cheque_obj = $this->read_db->get('opening_outstanding_cheque');
+
+        if($opening_outstanding_cheque_obj->num_rows() > 0){
+            $opening_outstanding_cheques = $opening_outstanding_cheque_obj->result_array();
+        }
+
+        $modified_opening_outstanding_cheques = [];
+
+        foreach($opening_outstanding_cheques as $opening_outstanding_cheque){
+            $modified_opening_outstanding_cheques[] = array_merge($opening_outstanding_cheque,['voucher_id'=>0]);
+        }
+
+        return $modified_opening_outstanding_cheques;
       }
 
       /**
@@ -883,6 +967,8 @@ class Financial_report_model extends MY_Model{
         }
 
         $list_cleared_effects = $this->db->get('voucher_detail')->result_array();
+
+        $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'cleared'));
         //echo json_encode($project_ids);exit;
         return $list_cleared_effects;
       }

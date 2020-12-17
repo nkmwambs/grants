@@ -502,30 +502,44 @@ function generate_item_track_number_and_name($approveable_item){
     return $this->db->table_exists($table)?$this->db->field_data($table):array();
   }
 
-  public function fields_meta_data_type_and_name($table_name){
+  public function fields_meta_data_type_and_name($table){
 
     $fields_meta_data = [];
 
-    $feature_library = $table_name.'_library';
+    $table_names = $this->grants->lookup_tables($table);
 
-    $meta_data = $this->read_db->field_data($table_name);
-    $names = array_column($meta_data,'name');
-    $types = array_column($meta_data,'type');
-    $fields_meta_data = array_combine($names,$types);
+    array_push($table_names,$table);
 
-    foreach($fields_meta_data as $field_name => $field_type){
-      if(substr($field_name,0,3) =='fk_'){
-        $_field_name = substr($field_name,3,-3).'_name';
-        unset($fields_meta_data[$field_name]);
-        $fields_meta_data[$_field_name] = 'varchar';
+    foreach($table_names as $table_name){
+
+      if($table_name !== $table){
+        $this->load->library($table_name.'_library');
       }
 
-      if( method_exists($this->{$feature_library},'change_field_type') && 
-      array_key_exists($field_name,$this->{$feature_library}->change_field_type()))
-      {
-        $fields_meta_data[$field_name] = $this->{$feature_library}->change_field_type()[$field_name]['field_type'];
+      $feature_library = $table_name.'_library';
+
+      $meta_data = $this->read_db->field_data($table_name);
+      $names = array_column($meta_data,'name');
+      $types = array_column($meta_data,'type');
+      $fields_meta_data = array_merge($fields_meta_data,array_combine($names,$types));
+  
+      foreach($fields_meta_data as $field_name => $field_type){
+        if(substr($field_name,0,3) =='fk_'){
+          $_field_name = substr($field_name,3,-3).'_name';
+          unset($fields_meta_data[$field_name]);
+          $fields_meta_data[$_field_name] = 'varchar';
+        }
+  
+        if( method_exists($this->{$feature_library},'change_field_type') && 
+        array_key_exists($field_name,$this->{$feature_library}->change_field_type()))
+        {
+          $fields_meta_data[$field_name] = $this->{$feature_library}->change_field_type()[$field_name]['field_type'];
+        }
       }
+
     }
+
+    //print_r($fields_meta_data);exit;
 
     return $fields_meta_data;
   }
@@ -1331,7 +1345,9 @@ public function run_list_query($table, $selected_columns, $lookup_tables,
       show_error($message,500,'An Error Was Encountered');
     }else{
       $this->_run_list_query($table, $selected_columns, $lookup_tables,$model_where_method, $filter_where_array);
-    
+      
+      $this->db->order_by($table.'_id DESC');
+
       return  $this->db->get($table)->result_array();
       
     }

@@ -635,7 +635,7 @@ class Voucher_model extends MY_Model
       array('fk_office_id'=>$office_id,'voucher_date>='=>$start_month_date,
       'voucher_date<='=>$end_month_date))->num_rows();
 
-    return  $approved_vouchers == $count_of_month_raised_vouchers ? true : false;
+    return  ($approved_vouchers == $count_of_month_raised_vouchers) && $count_of_month_raised_vouchers > 0 ? true : false;
   }
 
 

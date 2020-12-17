@@ -130,7 +130,7 @@ class Journal_model extends MY_Model
     $system_opening_cash = $this->system_opening_cash_balance($office_id,$office_bank_id);
 
     //echo json_encode($system_opening_bank);exit;
-
+    
     $bank_to_date_income = [];
     $bank_to_date_expense = [];
     $month_bank_opening = [];
@@ -160,6 +160,7 @@ class Journal_model extends MY_Model
   }
 
   function get_office_bank_project_allocation($office_bank_id){
+    //$this->db->select(array('fk_project_allocation_id','fk_office_bank_id'));
     $office_bank_project_allocations = $this->db->
     where(array('fk_office_bank_id'=>$office_bank_id))->
     get('office_bank_project_allocation')->result_array();
@@ -171,10 +172,13 @@ class Journal_model extends MY_Model
     
     $office_bank_project_allocations = $this->get_office_bank_project_allocation($office_bank_id);
 
-    //print_r($office_bank_project_allocations);exit;
+    //return json_encode($office_bank_project_allocations);
 
     $office_bank_ids = array_unique(array_column($office_bank_project_allocations,'fk_office_bank_id'));
- 
+    
+    //print_r($office_bank_ids);exit;
+
+    //return $office_bank_id;
 
     $this->db->select_sum('voucher_detail_total_cost');
 
@@ -184,7 +188,6 @@ class Journal_model extends MY_Model
     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
 
-
     if($office_bank_id){
       $this->db->group_start();
         $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
@@ -193,6 +196,7 @@ class Journal_model extends MY_Model
         
         if(in_array($office_bank_id,$office_bank_ids)){  
           $this->db->or_where_in('fk_project_allocation_id',$allocation_ids);
+          $this->db->where(array('fk_office_bank_id'=>$office_bank_id));
         }
 
         $this->db->group_end();
@@ -267,7 +271,7 @@ class Journal_model extends MY_Model
       $this->db->group_end();
     }
    
-    $this->db->group_by(array('voucher_type_account_code'));
+    $this->db->group_by(array('voucher_type_account_code'));// Bank or Cash
 
    $total_cost=0;
    $total_cost_obj=$this->db->get('voucher_detail');
@@ -385,12 +389,14 @@ class Journal_model extends MY_Model
       $month_start_date = date('Y-m-01',strtotime($transacting_month));
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
       
-      $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
+      //$this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
+      $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
+      $this->db->where(array('voucher.fk_status_id'=>$max_approval_status_id));
       
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
       'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',
       'voucher_cleared_month','voucher.fk_status_id as fk_status_id','voucher_created_date',
-      'voucher_is_reversed','voucher_cleared','voucher_cleared_month'));
+      'voucher_is_reversed','voucher_cleared','voucher_cleared_month','voucher_reversal_from','voucher_reversal_to'));
       $this->db->select(array('voucher_type_abbrev','voucher_type_name'));
       $this->db->select(array('voucher_type_account_code'));
       $this->db->select(array('voucher_type_effect_code'));
@@ -459,6 +465,8 @@ class Journal_model extends MY_Model
           'receiving_office_bank_id'=> $receiving_office_bank_id,
           'receiving_office_cash_id' => $receiving_office_cash_id,
           'voucher_is_reversed'=>$voucher_is_reversed,
+          'voucher_reversal_from'=>$voucher_reversal_from,
+          'voucher_reversal_to'=>$voucher_reversal_to,
           'voucher_is_cleared'=>$voucher_cleared,
           'spread'=>$this->get_voucher_spread($raw_array_of_vouchers,$voucher_id)
 
