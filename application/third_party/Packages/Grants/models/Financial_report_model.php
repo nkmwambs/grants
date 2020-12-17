@@ -834,13 +834,77 @@ class Financial_report_model extends MY_Model{
         
         
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
-
-        $uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month);
-
-        $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$uncleared_opening_outstanding_cheques);
-        //echo json_encode($list_oustanding_cheques_and_deposit);exit;
+        
+        if($transaction_type == 'expense'){
+            $cleared_and_uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month);
+            $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$cleared_and_uncleared_opening_outstanding_cheques);
+        }else{
+            $cleared_and_uncleared_deposit_in_transit = $this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month);
+            $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$cleared_and_uncleared_deposit_in_transit);
+        }
+        
+        
         return $list_oustanding_cheques_and_deposit;
       }
+
+    private function get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,$state = 'uncleared'){
+        $opening_deposit_in_transits = [];
+
+        $this->read_db->select(
+            [
+                'opening_deposit_transit_amount as voucher_detail_total_cost',
+                //'opening_outstanding_cheque_number as voucher_cheque_number',
+                'opening_deposit_transit_description as voucher_description',
+                'opening_deposit_transit_date as voucher_date',
+                'fk_office_bank_id',
+                'opening_deposit_transit_is_cleared as voucher_cleared',
+                'opening_deposit_transit_cleared_date as voucher_cleared_month',
+                'office_bank_name',
+                'opening_deposit_transit_id'
+            ]
+        );
+
+        $this->read_db->where_in('system_opening_balance.fk_office_id',$office_ids);
+
+        if($state == 'uncleared'){
+            $this->read_db->group_start();
+                $this->read_db->where(array('opening_deposit_transit_is_cleared'=>0));
+
+                $this->read_db->or_group_start();
+                    $this->read_db->where(array('opening_deposit_transit_is_cleared'=>1,
+                    'opening_deposit_transit_cleared_date > '=>date('Y-m-t',strtotime($reporting_month))));
+                $this->read_db->group_end();
+            $this->read_db->group_end();
+        }else{
+
+            //$this->read_db->group_start();
+                //$this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1));
+
+                //$this->read_db->or_group_start();
+                    $this->read_db->where(array('opening_deposit_transit_is_cleared'=>1,
+                    'opening_deposit_transit_cleared_date '=>date('Y-m-t',strtotime($reporting_month))));
+                //$this->read_db->group_end();
+           // $this->read_db->group_end();
+
+        }
+
+        $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_deposit_transit.fk_system_opening_balance_id');
+        $this->read_db->join('office_bank','office_bank.office_bank_id=opening_deposit_transit.fk_office_bank_id');
+        $opening_deposit_in_transits_obj = $this->read_db->get('opening_deposit_transit');
+
+        if($opening_deposit_in_transits_obj->num_rows() > 0){
+            $opening_deposit_in_transits = $opening_deposit_in_transits_obj->result_array();
+        }
+
+        $modified_opening_deposit_in_transits = [];
+
+        foreach($opening_deposit_in_transits as $opening_deposit_in_transit){
+            $modified_opening_deposit_in_transits[] = array_merge($opening_deposit_in_transit,['voucher_id'=>0]);
+        }
+
+        return $modified_opening_deposit_in_transits;
+
+    }
 
       private function get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,$state = 'uncleared'){
         $opening_outstanding_cheques = [];
@@ -968,8 +1032,12 @@ class Financial_report_model extends MY_Model{
 
         $list_cleared_effects = $this->db->get('voucher_detail')->result_array();
 
-        $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'cleared'));
-        //echo json_encode($project_ids);exit;
+        if($transaction_type == 'expense'){
+            $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'cleared'));
+        }else{
+            $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,'cleared'));
+        }
+        
         return $list_cleared_effects;
       }
 

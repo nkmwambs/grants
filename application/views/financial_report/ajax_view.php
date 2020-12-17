@@ -223,7 +223,8 @@ function clear_effect(btn){
     var url = "<?=base_url();?>financial_report/clear_transactions";
     var voucher_state = btn.hasClass('state_0')?0:1;//$(this).attr('data-state');
     var opening_outstanding_cheque_id = btn.data('opening_outstanding_cheque_id');
-    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>','opening_outstanding_cheque_id':opening_outstanding_cheque_id};
+    var opening_deposit_transit_id = btn.data('opening_deposit_transit_id');
+    var data = {'voucher_id':id,'is_outstanding_cheque':btn.hasClass('outstanding_cheque'),'voucher_state':voucher_state,'reporting_month':'<?=$reporting_month;?>','opening_outstanding_cheque_id':opening_outstanding_cheque_id,'opening_deposit_transit_id':opening_deposit_transit_id};
     var from_class = "active_effect";
     var to_class = "cleared_effect";
     var current_table = btn.closest('table');
@@ -231,6 +232,8 @@ function clear_effect(btn){
     var from_color = 'danger';
     var to_color = 'success';
     var to_label = "<?=get_phrase('unclear');?>";
+
+    //alert(opening_deposit_transit_id);
 
     if(btn.hasClass('cleared_effect')){
         from_class = 'cleared_effect';
