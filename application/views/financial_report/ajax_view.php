@@ -337,10 +337,6 @@ var myDropzone = new Dropzone("#drop_statements", {
         var table_tbody = $("#tbl_list_statements tbody");
         var obj = JSON.parse(response);
 
-        // for (let i = 0; i < obj.file.name.length; i++) {
-        //     table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id="uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'"></a></td><td><a target="__blank" href="<?=base_url();?>uploads/attachments/financial_report/'+obj.financial_report_id+'/'+obj.file.name[i]+'">'+obj.file.name[i]+'</a></td><td>'+obj.file.size[i]+'</td><td><?=date('Y-m-d');?></td></tr>');
-        // }
-
         $.each(obj,function(i,elem){
             table_tbody.append('<tr><td><a href="#" class="fa fa-trash-o delete_statement" id=""></a></td><td><a target="__blank" href="'+elem.s3_preassigned_url+'">'+elem.attachment_name+'</a></td><td>'+elem.attachment_size+'</td><td>'+elem.attachment_last_modified_date+'</td></tr>');
         });
