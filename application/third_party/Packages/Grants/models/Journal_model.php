@@ -389,7 +389,9 @@ class Journal_model extends MY_Model
       $month_start_date = date('Y-m-01',strtotime($transacting_month));
       $month_end_date = date('Y-m-t',strtotime($transacting_month));
       
-      $this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
+      //$this->db->where($this->general_model->max_status_id_where_condition_by_created_date('voucher',$month_start_date));
+      $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
+      $this->db->where(array('voucher.fk_status_id'=>$max_approval_status_id));
       
       $this->db->select(array('voucher_id','voucher_number','voucher_date','voucher_vendor',
       'voucher_cleared','voucher_cleared_month','voucher_cheque_number','voucher_description',

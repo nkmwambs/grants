@@ -835,42 +835,69 @@ class Financial_report_model extends MY_Model{
         
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
 
-        $uncleared_opening_outstanding_cheques = $this->get_uncleared_opening_outstanding_cheques();
+        $uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month);
 
         $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$uncleared_opening_outstanding_cheques);
         //echo json_encode($list_oustanding_cheques_and_deposit);exit;
         return $list_oustanding_cheques_and_deposit;
       }
 
-      private function get_uncleared_opening_outstanding_cheques(){
-        return [
-            // [
-            //     'voucher_detail_total_cost' => 34500.23,
-            //     'voucher_id'=>0,
-            //     'voucher_number'=>0,
-            //     'voucher_cheque_number'=>1,
-            //     'voucher_description'=>'Test 1',
-            //     'voucher_cleared'=>0,
-            //     'office_code'=>'KE0278',
-            //     'office_name'=>'KE0728',
-            //     'voucher_date'=>'2020-05-10',
-            //     'fk_office_bank_id'=>1,
-            //     'office_bank_name'=>'KCB'
-            // ],
-            // [
-            //     'voucher_detail_total_cost' => 67800.11,
-            //     'voucher_id'=>0,
-            //     'voucher_number'=>0,
-            //     'voucher_cheque_number'=>2,
-            //     'voucher_description'=>'Test 2',
-            //     'voucher_cleared'=>0,
-            //     'office_code'=>'KE0278',
-            //     'office_name'=>'KE0728',
-            //     'voucher_date'=>'2020-06-12',
-            //     'fk_office_bank_id'=>1,
-            //     'office_bank_name'=>'KCB'
-            // ]
-        ];
+      private function get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,$state = 'uncleared'){
+        $opening_outstanding_cheques = [];
+
+        $this->read_db->select(
+            [
+                'opening_outstanding_cheque_amount as voucher_detail_total_cost',
+                'opening_outstanding_cheque_number as voucher_cheque_number',
+                'opening_outstanding_cheque_description as voucher_description',
+                'opening_outstanding_cheque_date as voucher_date',
+                'fk_office_bank_id',
+                'opening_outstanding_cheque_is_cleared as voucher_cleared',
+                'opening_outstanding_cheque_cleared_date as voucher_cleared_month',
+                'office_bank_name',
+                'opening_outstanding_cheque_id'
+            ]
+        );
+
+        $this->read_db->where_in('system_opening_balance.fk_office_id',$office_ids);
+
+        if($state == 'uncleared'){
+            $this->read_db->group_start();
+                $this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>0));
+
+                $this->read_db->or_group_start();
+                    $this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1,
+                    'opening_outstanding_cheque_cleared_date > '=>date('Y-m-t',strtotime($reporting_month))));
+                $this->read_db->group_end();
+            $this->read_db->group_end();
+        }else{
+
+            //$this->read_db->group_start();
+                //$this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1));
+
+                //$this->read_db->or_group_start();
+                    $this->read_db->where(array('opening_outstanding_cheque_is_cleared'=>1,
+                    'opening_outstanding_cheque_cleared_date '=>date('Y-m-t',strtotime($reporting_month))));
+                //$this->read_db->group_end();
+           // $this->read_db->group_end();
+
+        }
+
+        $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_outstanding_cheque.fk_system_opening_balance_id');
+        $this->read_db->join('office_bank','office_bank.office_bank_id=opening_outstanding_cheque.fk_office_bank_id');
+        $opening_outstanding_cheque_obj = $this->read_db->get('opening_outstanding_cheque');
+
+        if($opening_outstanding_cheque_obj->num_rows() > 0){
+            $opening_outstanding_cheques = $opening_outstanding_cheque_obj->result_array();
+        }
+
+        $modified_opening_outstanding_cheques = [];
+
+        foreach($opening_outstanding_cheques as $opening_outstanding_cheque){
+            $modified_opening_outstanding_cheques[] = array_merge($opening_outstanding_cheque,['voucher_id'=>0]);
+        }
+
+        return $modified_opening_outstanding_cheques;
       }
 
       /**
@@ -940,6 +967,8 @@ class Financial_report_model extends MY_Model{
         }
 
         $list_cleared_effects = $this->db->get('voucher_detail')->result_array();
+
+        $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'cleared'));
         //echo json_encode($project_ids);exit;
         return $list_cleared_effects;
       }
