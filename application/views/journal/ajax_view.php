@@ -151,7 +151,7 @@
 
 
                         <?php 
-                                if($voucher_is_reversed && $cheque_number && ($voucher_reversal_from || $voucher_reversal_to)){
+                                if($voucher_is_reversed && ($voucher_reversal_from || $voucher_reversal_to)){
                                 
                                     $related_voucher_id = hash_id($voucher_reversal_from,'encode');
                                     $reverse_btn_label = get_phrase('linked_source');
