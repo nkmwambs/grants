@@ -54,10 +54,11 @@ class Role_model extends MY_Model
   // }
 
   function lookup_values(){
-    $lookup_values = $this->db->get('role')->result_array();
+    $lookup_values=parent::lookup_values();
+    //$lookup_values = $this->db->get('role')->result_array();
 
     if(!$this->session->system_admin){
-        $lookup_values = $this->db->get_where('role',array('role_id <>'=>1))->result_array();
+        $lookup_values['role'] = $this->db->get_where('role',array('role_id <>'=>1))->result_array();
     }
     
     return $lookup_values;
