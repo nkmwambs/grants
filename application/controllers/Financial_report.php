@@ -671,8 +671,11 @@ class Financial_report extends MY_Controller
     $opening_allocation_balance = 0;
 
     $this->read_db->select_sum('opening_allocation_balance_amount');
+    $this->read_db->where_in('system_opening_balance.fk_office_id',$office_ids);
+    $this->read_db->where_in('project_id',$project_ids);
     $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_allocation_balance.fk_system_opening_balance_id');
-    $this->read_db->where_in('fk_office_id',$office_ids);
+    $this->read_db->join('project_allocation','project_allocation.project_allocation_id=opening_allocation_balance.fk_project_allocation_id');
+    $this->read_db->join('project','project.project_id=project_allocation.fk_project_id');
     $opening_allocation_balance_obj = $this->read_db->get('opening_allocation_balance');
 
     if($opening_allocation_balance_obj->num_rows() > 0){
@@ -814,6 +817,8 @@ class Financial_report extends MY_Controller
       $ordered_array[$project['project_id']]['office_id'] = $project['fk_office_id'];
       $ordered_array[$project['project_id']]['project_allocation_amount'] = $project['project_allocation_amount'];
     }
+
+    //print_r($ordered_array);exit;
 
     return $ordered_array;
   }
