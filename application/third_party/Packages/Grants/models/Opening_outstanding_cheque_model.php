@@ -38,7 +38,7 @@ class Opening_outstanding_cheque_model extends MY_Model{
 
     function single_form_add_visible_columns(){
         return [
-                'opening_outstanding_cheque_name',
+                //'opening_outstanding_cheque_name',
                 'opening_outstanding_cheque_description',
                 'opening_outstanding_cheque_date',
                 'system_opening_balance_name',
