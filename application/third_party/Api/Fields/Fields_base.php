@@ -293,7 +293,7 @@ class Fields_base{
     $mask_asterisk_color = $this->is_field_required ? "red" : "green";
     $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
 
-    $select =  '<div class="input-group">'.$mask."<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' '.$required.' ".$multiple.">
+    $select =  '<div class="input-group">'.$mask."<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' $required ".$multiple.">
             <option class='".$hide_select_label."' value=''>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
