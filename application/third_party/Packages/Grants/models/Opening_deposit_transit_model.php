@@ -38,7 +38,7 @@ class Opening_deposit_transit_model extends MY_Model{
 
     function single_form_add_visible_columns(){
         return [
-            'opening_deposit_transit_name',
+            //'opening_deposit_transit_name',
             'system_opening_balance_name',
             'opening_deposit_transit_description',
             'office_bank_name',
@@ -48,18 +48,23 @@ class Opening_deposit_transit_model extends MY_Model{
     }
 
     function lookup_values(){
-        $lookup_values = [];
+        $lookup_values = parent::lookup_values();
+
+        $this->read_db->select(array('office_bank_id','office_bank_name'));
         
-        if($this->id !== null){
-          
-           $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
-           array('system_opening_balance_id'=>hash_id($this->id,'decode')))->result_array();
-
-           $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',
-           array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id']))->result_array();
-
-           return $lookup_values;
+        $this->read_db->join('office','office.office_id=office_bank.fk_office_id');
+        $this->read_db->join('system_opening_balance','system_opening_balance.fk_office_id=office.office_id');
+        
+        if($this->action== 'edit'){
+            $this->read_db->join('opening_deposit_transit','opening_deposit_transit.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+            $this->read_db->where(array('opening_deposit_transit_id'=>hash_id($this->id,'decode')));
+        }else{
+            $this->read_db->where(array('system_opening_balance_id'=>hash_id($this->id,'decode')));
         }
+        
+        $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array();
+
+        return $lookup_values;
         
     }
 }
