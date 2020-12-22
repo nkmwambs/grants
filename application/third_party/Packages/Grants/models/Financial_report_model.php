@@ -179,7 +179,7 @@ class Financial_report_model extends MY_Model{
             $get_office_bank_project_allocation = $this->get_office_bank_project_allocation($office_bank_ids);
         }
         
-        $this->db->select(array('opening_fund_balance_amount'));
+        $this->db->select_sum('opening_fund_balance_amount');
         $this->db->join('opening_fund_balance','opening_fund_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
         
         if(count($office_bank_ids) > 0){
@@ -212,7 +212,7 @@ class Financial_report_model extends MY_Model{
        
         //echo json_encode($project_ids);exit;
         
-        
+        $this->db->group_by(array('fk_income_account_id'));
         $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
         $initial_account_opening_balance_obj = $this->db->get_where('system_opening_balance',
                array('opening_fund_balance.fk_income_account_id'=>$income_account_id));
