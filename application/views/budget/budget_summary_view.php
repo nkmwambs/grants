@@ -95,7 +95,7 @@
             $months = array_keys(array_shift($spread_expense_account)['spread']);
         ?>
             
-        <table class="table table-bordered">
+        <table class="table table-bordered datatable">
             <thead>
                 <tr>
                     <th colspan='14' style='text-align:center'>
@@ -114,6 +114,7 @@
 
             <tbody>
                  <?php 
+                    //$_months = ['July','August','September','November','December','January','February','March','April','May','June'];
                     //print_r($spread_account);
                     foreach($expense_spread as $expense_spreading){
                         extract($expense_spreading);
@@ -134,7 +135,7 @@
                     
                     <?php 
                         $total = 0;
-
+                        //print_r($expense_spread);
                         foreach (array_column($expense_spread,'spread') as $row_spread) {
                             $total += array_sum($row_spread);
                         }
@@ -149,6 +150,8 @@
                             <?php 
                                 $_spread_col = array_column($expense_spread,'spread');
                                 echo number_format(array_sum(array_column($_spread_col,$month_label)),2);
+
+                                //print_r(array_column($_spread_col,$month_label));
                             ?>
                         </td>
                     <?php }?>
@@ -179,5 +182,9 @@ $('#action_btn').on('click',function(){
     //     btn.html(action_button.button_label);
     //     btn.addClass('disabled');
     // });
+});
+
+$(document).ready(function(){
+    $('.datatable').DataTable();
 });
 </script>
