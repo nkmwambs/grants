@@ -182,18 +182,22 @@ function insert_final_approval_status($approval_flow_id, $status_approval_sequen
 
   $this->read_db->where(array('fk_approval_flow_id'=>$approval_flow_id,
   'status_is_requiring_approver_action'=>0,
-  'status_approval_direction'=>0,
+  'status_approval_direction'=>1,
   'status_backflow_sequence'=>0));
   $final_approval_status = $this->read_db->get('status');
 
   $max_sequency_level = $status_approval_sequence + 1;
 
   if($final_approval_status->num_rows() == 0){  
-    $this->grants_model->insert_status($this->session->user_id,get_phrase('fully_approved'),$approval_flow_id,$max_sequency_level,0,0,0);
+    $this->grants_model->insert_status($this->session->user_id,get_phrase('fully_approved'),$approval_flow_id,$max_sequency_level,0,1,0);
+    $this->grants_model->insert_status($this->session->user_id,get_phrase('reinstate_after_allow_edit'),$approval_flow_id,$max_sequency_level,1,-1,1);
+    $this->grants_model->insert_status($this->session->user_id,get_phrase('reinstated_after_edit'),$approval_flow_id,$max_sequency_level,0,0,1);
   }else{
     // Update to the status_approval_sequence to the last sequence
     $update_data['status_approval_sequence'] = $max_sequency_level;
-    $this->write_db->where(array('status_id'=>$final_approval_status->row()->status_id));
+    //$this->write_db->where(array('status_id'=>$final_approval_status->row()->status_id));
+    $this->write_db->where(array('status_approval_sequence'=>$status_approval_sequence,
+    'fk_approval_flow_id'=>$approval_flow_id));
     $this->write_db->update('status',$update_data);
   }
 }
