@@ -310,7 +310,7 @@ var myDropzone = new Dropzone("#drop_statements", {
             'project_id': $("#project_ids").val()?$("#project_ids").val():'',
             'office_bank_ids':$("#office_bank_ids").val()?$("#office_bank_ids").val():''
         },
-        maxFilesize: 5, // MB
+        maxFilesize: 50, // MB
         uploadMultiple:true,
         parallelUploads:5,
         maxFiles:5,
