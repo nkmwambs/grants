@@ -111,6 +111,10 @@ class Budget_item extends MY_Controller
      * "fk_budget_id":"1"}
      */
 
+    $header['budget_item_quantity'] = $post['budget_item_quantity'];
+    $header['budget_item_unit_cost'] = $post['budget_item_unit_cost'];
+    $header['budget_item_often'] = $post['budget_item_often'];
+
     $header['budget_item_total_cost'] = $post['budget_item_total_cost'];
     $header['budget_item_description'] = $post['budget_item_description'];
 

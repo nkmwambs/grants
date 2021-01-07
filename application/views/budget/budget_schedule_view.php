@@ -117,7 +117,7 @@
                         <td><?=$loop_expense_items['unit_cost']?></td>
                         <td><?=$loop_expense_items['often']?></td>
                         <td><?=number_format($loop_expense_items['total_cost'],2)?></td>
-                        <td>
+                        <td nowrap='nowrap'>
                             <?php 
                                $action_labels = $this->grants->action_labels('budget_item',$budget_item_id);
                                     
@@ -125,11 +125,21 @@
 
                                if($action_labels['show_label_as_button']){
                             ?>
-                                <div data-next_status='<?=$action_labels['next_approval_status'];?>' data-budget_item_id='<?=$budget_item_id;?>' class='btn btn-success item_action'><?=$action_labels['status_name'];?></div>
-                            <?php
+                                <div <?=$action_labels['show_decline_button'] && $this->general_model->get_max_approval_status_id('budget_item')?'disabled':'';?> data-next_status='<?=$action_labels['next_approval_status'];?>' data-budget_item_id='<?=$budget_item_id;?>' class='btn btn-success item_action'><?=$action_labels['status_name'];?></div>
+                                
+                                <?php
+                                    if($action_labels['show_decline_button']){
+                                ?>
+                                    <div data-next_status='<?=$action_labels['next_decline_status'];?>' data-budget_item_id='<?=$budget_item_id;?>' class='btn btn-danger item_action'><?=get_phrase('decline');?></div>
+                                <?php
+                                    }
+                                ?>
+
+                                <?php 
                                }else{
                             ?>
                                 <div class='btn btn-success disabled'><?=$action_labels['status_name'];?></div>
+                                
                             <?php       
                                }
                             ?>
@@ -162,6 +172,7 @@ $(".item_action").on('click',function(){
         action_button = JSON.parse(response);
         btn.html(action_button.button_label);
         btn.addClass('disabled');
+        btn.siblings().remove();
         btn.closest('tr').find('.action_td .dropdown ul').html("<li><a href='#'><?=get_phrase('no_action');?></a></li>");
     });
 })
