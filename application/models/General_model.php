@@ -338,6 +338,17 @@ function next_status($item_status){
     if($next_status_id_obj->num_rows() > 0){
       $next_status_id = $next_status_id_obj->row()->status_id;
     }
+  }elseif(($status_approval_sequence == $range_of_status_approval_sequence) && $backflow_sequence == 0){
+
+    $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
+    $this->db->where(array('status_approval_sequence'=>$status_approval_sequence,
+    'fk_approve_item_id'=>$approveable_item_id,
+    'approval_flow.fk_account_system_id'=>$this->session->user_account_system_id,'status_approval_direction'=>1));
+    $next_status_id_obj = $this->db->get('status');
+
+    if($next_status_id_obj->num_rows() > 0){
+      $next_status_id = $next_status_id_obj->row()->status_id;
+    }
   }
 
   // If backflow is > 0, get the actors of the sequence that equals the backflow e.g. backflow = 1, actors of seq 1 are 4 , 2
@@ -518,7 +529,7 @@ function get_max_approval_status_id(String $approveable_item):Int{
   ->order_by('status_approval_sequence DESC')
   ->where(array('approve_item_name'=>$approveable_item,
   'fk_account_system_id'=>$this->session->user_account_system_id,
-  'status_backflow_sequence'=>0,'status_approval_direction'=>1))
+  'status_backflow_sequence'=>0,'status_approval_direction'=>1,'status_is_requiring_approver_action'=> 1))
   ->get('status');
 
   //print_r($max_status_approval_sequence_obj->row());exit;
