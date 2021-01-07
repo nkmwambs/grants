@@ -911,12 +911,15 @@ function generate_item_track_number_and_name($approveable_item){
     $initial_status_id = $this->insert_status($user_id,get_phrase('ready_to_submit'),$approval_flow_id,1,0,1,1);
 
     // Insert fully approved status
-    $fully_approved_status_id = $this->insert_status($user_id,get_phrase('fully_approved'),$approval_flow_id,2,0,0,0);
+    $fully_approved_status_id = $this->insert_status($user_id,get_phrase('fully_approved'),$approval_flow_id,2,0,1,0);
+    $reinstate_after_allow_edit_status_id = $this->insert_status($user_id,get_phrase('reinstate_after_allow_edit'),$approval_flow_id,2,1,-1,1);
+    $reinstated_after_edit_status_id = $this->insert_status($user_id,get_phrase('reinstated_after_edit'),$approval_flow_id,2,0,0,1);
 
+    //insert_status($user_id,$status_name,$approval_flow_id,$status_approval_sequence,$status_backflow_sequence,$status_approval_direction,$status_is_requiring_approver_action)
 
     // Get the new_status_role_id if set otherwise use the logged in user role id
-    $new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
-    $role_id = $new_status_default_role->num_rows() > 0 ? $new_status_default_role->row()->role_id : 1;
+    //$new_status_default_role = $this->db->get_where('role',array('role_is_new_status_default'=>1));
+    //$role_id = $new_status_default_role->num_rows() > 0 ? $new_status_default_role->row()->role_id : 1;
 
     // $status_role_data['status_role_track_number'] =  $this->generate_item_track_number_and_name('status_role')['status_role_number'];
     // $status_role_data['status_role_name']  =  $this->generate_item_track_number_and_name('status_role')['status_role_name'];
