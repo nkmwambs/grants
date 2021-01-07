@@ -529,7 +529,7 @@ function get_max_approval_status_id(String $approveable_item):Int{
   ->order_by('status_approval_sequence DESC')
   ->where(array('approve_item_name'=>$approveable_item,
   'fk_account_system_id'=>$this->session->user_account_system_id,
-  'status_backflow_sequence'=>0,'status_approval_direction'=>1,'status_is_requiring_approver_action'=> 1))
+  'status_backflow_sequence'=>0,'status_approval_direction'=>1))
   ->get('status');
 
   //print_r($max_status_approval_sequence_obj->row());exit;
