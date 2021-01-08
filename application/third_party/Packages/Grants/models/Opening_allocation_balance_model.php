@@ -59,12 +59,13 @@ class Opening_allocation_balance_model extends MY_Model{
       }
 
      function lookup_values(){
-         $lookup_values = [];
+         $lookup_values = parent::lookup_values();
          
          if($this->id !== null){
            
+            $this->read_db->join('opening_allocation_balance','opening_allocation_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
             $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
-            array('system_opening_balance_id'=>hash_id($this->id,'decode')))->result_array();
+            array('opening_allocation_balance_id'=>hash_id($this->id,'decode')))->result_array();
 
 
             $this->read_db->where(array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id'],
