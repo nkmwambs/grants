@@ -50,7 +50,6 @@ class Opening_deposit_transit_model extends MY_Model{
 
     function edit_visible_columns(){
         return [
-            //'opening_deposit_transit_name',
             'opening_deposit_transit_description',
             'system_opening_balance_name',
             'office_bank_name',
