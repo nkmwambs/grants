@@ -853,7 +853,7 @@ class Financial_report extends MY_Controller
 
     $this->write_db->trans_start();
 
-    if($post['opening_deposit_transit_id'] > 0){
+    if(isset($post['opening_deposit_transit_id']) && $post['opening_deposit_transit_id'] > 0){
       
       $update_data['opening_deposit_transit_is_cleared'] = 1;
       $update_data['opening_deposit_transit_cleared_date'] = date('Y-m-t',strtotime($post['reporting_month']));//date('Y-m-t');
@@ -866,7 +866,7 @@ class Financial_report extends MY_Controller
       $this->write_db->where(array('opening_deposit_transit_id'=>$post['opening_deposit_transit_id']));
       $this->write_db->update('opening_deposit_transit',$update_data);
 
-    }elseif($post['opening_outstanding_cheque_id'] > 0){
+    }elseif(isset($post['opening_outstanding_cheque_id']) && $post['opening_outstanding_cheque_id'] > 0){
       $update_data['opening_outstanding_cheque_is_cleared'] = 1;
       $update_data['opening_outstanding_cheque_cleared_date'] = date('Y-m-t',strtotime($post['reporting_month']));//date('Y-m-t');
   
@@ -897,7 +897,7 @@ class Financial_report extends MY_Controller
     if($this->write_db->trans_status() == false){
       echo false;
     }else{
-      echo true;
+      echo json_encode($post);//true;//
     }
   }
 
