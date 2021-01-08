@@ -244,7 +244,7 @@ function clear_effect(btn){
         data:data,
         type:"POST",
         success:function(response){
-
+            //console.log(response);
             if(response){
 
                 var cloned_tr = btn.closest('tr').clone();
