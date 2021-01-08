@@ -210,7 +210,10 @@
                         </td>
 
                         <td class='align-right'>
-                            <?=!$voucher_is_reversed?(!$cheque_number?'':$cheque_number):'';?>
+                            <?php
+                                echo $cheque_number > 0 || $cheque_number < -1 ? $cheque_number: '';
+                                //!$voucher_is_reversed?(!$cheque_number?'':$cheque_number):$cheque_number;
+                            ?>
                         </td>
                         
                         <?php 
