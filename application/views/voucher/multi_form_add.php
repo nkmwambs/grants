@@ -15,7 +15,7 @@
 <?php 
 
 // $office_bank_id = 1;
-//echo $this->voucher_model->check_if_month_vouchers_are_approved(31,'2021-01-01');
+//print_r($this->cheque_book_model->get_remaining_unused_cheque_leaves(6));
 
 ?>
 

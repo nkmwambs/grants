@@ -593,22 +593,22 @@ class User_model extends MY_Model
     }
 
     
-    function user_associated_office_names($user_id){
-      $user_associated_centers = $this->get_centers_in_center_group_hierarchy($user_id);
+    // function user_associated_office_names($user_id){
+    //   $user_associated_centers = $this->get_centers_in_center_group_hierarchy($user_id);
 
-      $options = array();
+    //   $options = array();
 
-      $this->db->select(array('center_id','center_name'));
-      $this->db->where_in('center_id',$user_associated_centers); 
-      $result = $this->db->get('center');
+    //   $this->db->select(array('center_id','center_name'));
+    //   $this->db->where_in('center_id',$user_associated_centers); 
+    //   $result = $this->db->get('center');
       
-      if($result->num_rows()>0){
-        $center_id = array_column($result->result_array(),'center_id');
-        $center_name = array_column($result->result_array(),'center_name');
-        $options = array_combine($center_id,$center_name);
-      }
-      return $options;
-    }
+    //   if($result->num_rows()>0){
+    //     $center_id = array_column($result->result_array(),'center_id');
+    //     $center_name = array_column($result->result_array(),'center_name');
+    //     $options = array_combine($center_id,$center_name);
+    //   }
+    //   return $options;
+    // }
 
     
 

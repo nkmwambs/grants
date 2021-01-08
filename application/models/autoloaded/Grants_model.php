@@ -413,7 +413,18 @@ function generate_item_track_number_and_name($approveable_item){
     $model = $table_name."_model";
 
     if(method_exists($this->$model,'transaction_validate_duplicates_columns') && is_array($validation_fields) && count($validation_fields) > 0){
-        foreach($insert_array as $insert_column => $insert_value){
+      
+      $validate_duplicates_columns = $this->$model->transaction_validate_duplicates_columns();
+
+      $insert_array_keys = array_unique(array_merge(array_keys($insert_array),$validate_duplicates_columns));
+      
+        foreach($insert_array_keys as $insert_column){
+
+          if(!array_key_exists($insert_column,$insert_array)){
+            $missing_field_in_insert_array = [$insert_column=>1];
+            $insert_array = array_merge($insert_array,$missing_field_in_insert_array);
+          }
+
           if(!in_array($insert_column,$validation_fields)){
             unset($insert_array[$insert_column]);
           }
