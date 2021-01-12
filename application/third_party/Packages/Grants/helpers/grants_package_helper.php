@@ -16,4 +16,11 @@ if(!function_exists('office_bank_select')){
 
         return '<select data-project_allocation_id = "'.$project_allocation_id.'" class="form-control change_office_bank">'.$option.'</select>';
     }
+
+    if(!function_exists('get_related_voucher')){
+        function get_related_voucher($voucher_id){
+            $CI =& get_instance();
+            return $CI->db->get_where('voucher',array('voucher_id'=>$voucher_id))->row()->voucher_number;
+        }
+    }
 }
