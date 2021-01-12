@@ -203,7 +203,7 @@ class Journal_model extends MY_Model
     }
 
     if($office_cash_id){
-      $this->db->where(array('fk_office_cash_id'=>$office_cash_id));
+      $this->db->where(array('fk_office_cash_id'=>$office_cash_id,'fk_office_id'=>$office_id));
     }
 
      /*1: Cash income has [voucher_type_account_code of cash and a voucher_type_effect_code of income] 
