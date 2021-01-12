@@ -75,18 +75,24 @@ class Cheque_book_model extends MY_Model{
         
     
         $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
-        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1,'cheque_book.fk_status_id'=>$max_status));
+        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,
+        'cheque_book.fk_status_id'=>$max_status));
         $cheque_book = $this->read_db->get('cheque_book');
+
     
         $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves($office_bank_id);
     
         $leaves = [];
     
         if($cheque_book->num_rows() > 0){
-          $cheque_book_start_serial_number = $cheque_book->row()->cheque_book_start_serial_number;
-          $cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
+           
+          // Sum of all pages
+          $sum_leaves_count_for_all_books = array_sum(array_column($cheque_book->result_array(),'cheque_book_count_of_leaves'));
+            
+          $cheque_book_start_serial_number = $cheque_book->row(0)->cheque_book_start_serial_number;
+          //$cheque_book_count_of_leaves = $cheque_book->row(0)->cheque_book_count_of_leaves;
       
-          $last_leaf = $cheque_book_start_serial_number + ($cheque_book_count_of_leaves - 1);
+          $last_leaf = $cheque_book_start_serial_number + ($sum_leaves_count_for_all_books - 1);
           $all_cheque_leaves = range($cheque_book_start_serial_number, $last_leaf);
           
           $used_cheque_leaves = [];
