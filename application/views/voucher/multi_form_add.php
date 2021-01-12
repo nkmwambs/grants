@@ -15,7 +15,7 @@
 <?php 
 
 // $office_bank_id = 1;
-//print_r($this->cheque_book_model->get_remaining_unused_cheque_leaves(6));
+//print_r($this->cheque_book_model->get_reused_cheques(10));
 
 ?>
 
@@ -451,9 +451,19 @@ function check_cheque_validity(){
         }else{
 
             var obj = JSON.parse(response);
-            
+            var reusable_cheque_numbers = JSON.parse('<?=json_encode($this->cheque_book_model->get_reused_cheques(10));?>');            
+
             $.each(obj,function(i,elem){
-                options += "<option value='"+elem.cheque_number+"'>"+elem.cheque_number+"</option>";
+                
+                var reusable_label = '';
+
+                $.each(reusable_cheque_numbers,function(indx,el){
+                    if(el == elem.cheque_number){
+                        reusable_label = "[<?=get_phrase('reused');?>]";
+                    }
+                });
+
+                options += "<option value='"+elem.cheque_number+"'>"+elem.cheque_number+" "+reusable_label+"</option>";
             });
         }
 
