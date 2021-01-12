@@ -64,6 +64,27 @@ class Cheque_book_model extends MY_Model{
         return ['fk_office_bank_id','cheque_book_is_active'];
     }
 
+    function get_reused_cheques($office_bank_id){
+        $this->read_db->select(array('voucher_cheque_number'));
+        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,
+        'voucher_cheque_number < '=>0));
+        $reusable_cheque_leaves_obj = $this->read_db->get('voucher');
+
+        $reusable_cheque_leaves = [];
+
+        if($reusable_cheque_leaves_obj->num_rows() > 0){
+            $reusable_cheque_leaves = array_unique(array_column($reusable_cheque_leaves_obj->result_array(),'voucher_cheque_number'));
+            
+            $reusable_cheque_leaves = array_map([$this,'make_unsigned_values'],$reusable_cheque_leaves);
+        }
+
+        return $reusable_cheque_leaves;
+    }
+
+    function make_unsigned_values($signed_cheque_number){
+        return abs($signed_cheque_number);
+    }   
+
 
     function get_remaining_unused_cheque_leaves($office_bank_id){
 
@@ -90,7 +111,7 @@ class Cheque_book_model extends MY_Model{
           $sum_leaves_count_for_all_books = array_sum(array_column($cheque_book->result_array(),'cheque_book_count_of_leaves'));
             
           $cheque_book_start_serial_number = $cheque_book->row(0)->cheque_book_start_serial_number;
-          //$cheque_book_count_of_leaves = $cheque_book->row(0)->cheque_book_count_of_leaves;
+          //$cheque_book_count_of_leaves = $cheque_book->row()->cheque_book_count_of_leaves;
       
           $last_leaf = $cheque_book_start_serial_number + ($sum_leaves_count_for_all_books - 1);
           $all_cheque_leaves = range($cheque_book_start_serial_number, $last_leaf);
