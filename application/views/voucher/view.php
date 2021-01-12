@@ -6,7 +6,7 @@
 </style>
 
 <?php 
-    //print_r($result['header']);
+    //print_r($result);
     extract($result);
 
     //print_r($chat_messages);
@@ -99,7 +99,7 @@
                 <hr/>
 
                 <div class="row form_rows">
-                    <div class="col-xs-12"><span class='span_label'><?=get_phrase('voucher_description');?>:</span> <?=$header['voucher_description']?></div>
+                    <div class="col-xs-12"><span class='span_label'><?=get_phrase('voucher_description');?>:</span> <?=$header['voucher_description']?> <?php echo $header['voucher_reversal_to'] > 0 ? ' ['.get_phrase('voucher_reversed_to_') .' '. get_related_voucher($header['voucher_reversal_to']).']':'';?></div>
                 </div>
 
                 <hr/>
