@@ -6,7 +6,7 @@
 </style>
 
 <?php 
-
+    //print_r($result['header']);
     extract($result);
 
     //print_r($chat_messages);
@@ -72,9 +72,13 @@
 
                     <div class="col-xs-3"><span class='span_label'><?=get_phrase('voucher_type');?>:</span> <?=$header['voucher_type_name']?></div>
                     
-                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_cash']?></div>
-
-                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_bank']?></div>
+                    <?php if(!empty($header['office_cash'])){?>
+                        <div class="col-xs-3"><span class='span_label'><?=get_phrase('cash_account');?>:</span> <?=$header['office_cash']?></div>
+                    <?php }?>
+                    
+                    <?php if(!empty($header['office_bank'])){?>
+                        <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_bank']?></div>
+                    <?php }?>
 
                     <div class="col-xs-3"><span class='span_label'><?=get_phrase('cheque_number');?>:</span> <?=$header['voucher_cheque_number']?></div>
 

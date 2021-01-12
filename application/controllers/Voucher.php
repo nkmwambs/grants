@@ -169,7 +169,7 @@ class Voucher extends MY_Controller
 
     $office_bank = $this->voucher_model->get_office_bank($raw_result[0]['fk_office_bank_id']);
 
-    $office_cash = $this->voucher_model->get_office_cash($this->office_account_system($raw_result[0]['fk_office_id'])->account_system_id);
+    $office_cash = $this->voucher_model->get_office_cash($this->office_account_system($raw_result[0]['fk_office_id'])->account_system_id,$raw_result[0]['fk_office_cash_id']);
     
     $voucher_type = $this->voucher_model->get_voucher_type($raw_result[0]['fk_voucher_type_id']);
   
