@@ -169,7 +169,7 @@ class Voucher extends MY_Controller
 
     $office_bank = $this->voucher_model->get_office_bank($raw_result[0]['fk_office_bank_id']);
 
-    $office_cash = $this->voucher_model->get_office_cash($this->office_account_system($raw_result[0]['fk_office_id'])->account_system_id);
+    $office_cash = $this->voucher_model->get_office_cash($this->office_account_system($raw_result[0]['fk_office_id'])->account_system_id,$raw_result[0]['fk_office_cash_id']);
     
     $voucher_type = $this->voucher_model->get_voucher_type($raw_result[0]['fk_voucher_type_id']);
   
@@ -188,6 +188,10 @@ class Voucher extends MY_Controller
     $header['office_cash'] = sizeof((array)$office_cash)>0?$office_cash->office_cash_name:"";
     $header['voucher_cheque_number'] = $raw_result[0]['voucher_cheque_number'];
     $header['voucher_vendor'] = $raw_result[0]['voucher_vendor'];
+
+    $header['voucher_reversal_from'] = $raw_result[0]['voucher_reversal_from'];
+    $header['voucher_reversal_to'] = $raw_result[0]['voucher_reversal_to'];
+
     $header['voucher_vendor_address'] = $raw_result[0]['voucher_vendor_address'];
     $header['voucher_description'] = $raw_result[0]['voucher_description'];
     $header['voucher_created_date'] = $raw_result[0]['voucher_created_date'];
