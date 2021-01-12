@@ -585,11 +585,11 @@ class Voucher_model extends MY_Model
     }
   }
 
-  function get_office_cash($account_system_id){
+  function get_office_cash($account_system_id, $office_cash_id = 0){
 
     // $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
     // $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
-    $result = $this->db->get_where('office_cash',array('fk_account_system_id'=>$account_system_id));
+    $result = $this->db->get_where('office_cash',array('fk_account_system_id'=>$account_system_id,'office_cash_id'=>$office_cash_id));
 
     if($result->num_rows()>0){
       return $result->row();
