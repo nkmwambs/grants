@@ -102,7 +102,9 @@ class Cheque_book_model extends MY_Model{
 
     
         $opening_outstanding_cheques_used_cheque_leaves = $this->opening_outstanding_cheques_used_cheque_leaves($office_bank_id);
-    
+        
+        $injected_cheque_leaves = $this->get_injected_cheque_leaves($office_bank_id);
+
         $leaves = [];
     
         if($cheque_book->num_rows() > 0){
@@ -126,6 +128,10 @@ class Cheque_book_model extends MY_Model{
           if(!empty($opening_outstanding_cheques_used_cheque_leaves)){
             $used_cheque_leaves = array_merge($used_cheque_leaves,$opening_outstanding_cheques_used_cheque_leaves);
           }
+
+          if(!empty($injected_cheque_leaves)){
+            $all_cheque_leaves = array_merge($all_cheque_leaves,$injected_cheque_leaves);
+          }
     
           foreach($all_cheque_leaves as $cheque_number){
            if(in_array($cheque_number,$used_cheque_leaves)){
@@ -144,6 +150,21 @@ class Cheque_book_model extends MY_Model{
         }
     
         return  $leaves;
+      }
+
+      private function get_injected_cheque_leaves($office_bank_id){
+
+        $cheque_injection = [];
+
+        $this->read_db->select(['cheque_injection_number']);
+        $this->read_db->where(['fk_office_bank_id'=>$office_bank_id]);
+        $cheque_injection_obj =  $this->read_db->get('cheque_injection');
+
+        if($cheque_injection_obj->num_rows() > 0){
+            $cheque_injection = array_column($cheque_injection_obj->result_array(),"cheque_injection_number");
+        }
+
+        return $cheque_injection;
       }
 
       function opening_outstanding_cheques_used_cheque_leaves($office_bank_id){
@@ -165,6 +186,7 @@ class Cheque_book_model extends MY_Model{
     
         return $opening_outstanding_cheques_array;
       }
+
 
     // function transaction_validate_by_computation_flag($insert_array){
     //     // Get last cheque book record

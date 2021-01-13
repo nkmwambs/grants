@@ -85,6 +85,10 @@ grants:
   
   tables:
 
+    cheque_injection:
+      lookup_tables:
+        - office_bank
+
     budget_projection_income_account:
       lookup_tables:
         - budget_projection
