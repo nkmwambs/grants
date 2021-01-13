@@ -14,6 +14,7 @@
 
 <?php 
 
+//print_r($this->cheque_book_model->get_remaining_unused_cheque_leaves(3));
 // $office_bank_id = 1;
 //print_r($this->cheque_book_model->get_reused_cheques(10));
 
