@@ -897,7 +897,7 @@ class Financial_report extends MY_Controller
     if($this->write_db->trans_status() == false){
       echo false;
     }else{
-      echo json_encode($post);//true;//
+      echo true;
     }
   }
 
