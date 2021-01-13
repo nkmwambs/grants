@@ -1,4 +1,23 @@
 <script>
+
+$("#fk_office_bank_id").on('change',function(){
+
+    var url = "<?=base_url();?>cheque_book/new_cheque_book_start_serial";
+    var data = {'office_bank_id':$(this).val()};
+
+    $.post(url,data,function(next_new_cheque_book_start_serial){
+        //alert(next_new_cheque_book_start_serial);
+
+        if(next_new_cheque_book_start_serial > 0){
+            $("#cheque_book_start_serial_number").val(next_new_cheque_book_start_serial);
+            $("#cheque_book_start_serial_number").prop('readonly','readonly');
+        }else{
+            $("#cheque_book_start_serial_number").val("");
+            $("#cheque_book_start_serial_number").removeAttr('readonly');
+        }
+    });
+});
+
 $("#cheque_book_count_of_leaves, #cheque_book_start_serial_number").on('change',function(){
     if($(this).val() < 1){
         alert('You must have a count greater than zero');
@@ -7,6 +26,21 @@ $("#cheque_book_count_of_leaves, #cheque_book_start_serial_number").on('change',
     }else{    
         last_cheque_leaf_label();
     }
+});
+
+$("#cheque_book_start_serial_number").on('change',function(){
+
+    var url = "<?=base_url();?>cheque_book/validate_start_serial_number";
+    var data = {'office_bank_id':$("#fk_office_bank_id").val(),'start_serial_number':$(this).val()};
+
+    $.post(url,data,function(last_book_max_serial){
+        //alert(last_book_max_serial);
+        if(last_book_max_serial > 0){
+            alert("Start serial number MUST be equal to " + last_book_max_serial);
+            $(this).val("")
+        }
+    });
+
 });
 
 function last_cheque_leaf_label(){
