@@ -35,9 +35,10 @@ class Cheque_book_model extends MY_Model{
     function action_before_insert($post_array){
         
         $office_bank_id = $post_array['header']['fk_office_bank_id'];
+        $cheque_book_start_serial_number = $post_array['header']['cheque_book_start_serial_number'];
 
 
-        if(count($this->get_remaining_unused_cheque_leaves($office_bank_id)) == 0){
+        if(count($this->get_remaining_unused_cheque_leaves($office_bank_id)) == 0 ){
             
             $active_cheque_book_obj = $this->write_db->get_where('cheque_book',array(
                 'fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1
@@ -51,9 +52,42 @@ class Cheque_book_model extends MY_Model{
         return $post_array;
     }
 
+    function office_bank_last_cheque_serial_number($office_bank_id){
+
+        $last_cheque_book_max_leaf = 0;
+
+        $this->read_db->order_by('cheque_book_start_serial_number DESC');
+        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
+        $cheque_book_obj = $this->read_db->get('cheque_book');
+
+        if($cheque_book_obj->num_rows() > 0){
+            $last_cheque_book = $cheque_book_obj->row(0);
+            $count_of_leaves = $last_cheque_book->cheque_book_count_of_leaves;
+            $last_cheque_book_first_leaf = $last_cheque_book->cheque_book_start_serial_number;
+            $last_cheque_book_max_leaf = $last_cheque_book_first_leaf + ($count_of_leaves - 1);
+        }
+
+        return $last_cheque_book_max_leaf;
+    }
+
+    function office_bank_start_cheque_serial_number($office_bank_id){
+
+        $min_serial_number = 0;
+
+        $this->read_db->select_min("cheque_book_start_serial_number");
+        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
+        $min_serial_number_obj = $this->read_db->get('cheque_book');
+
+        if($min_serial_number_obj->num_rows() > 0){
+            $min_serial_number = $min_serial_number_obj->row()->cheque_book_start_serial_number;
+        }
+
+        return $min_serial_number;
+    }
+
     function single_form_add_visible_columns(){
-        return ['cheque_book_start_serial_number','cheque_book_count_of_leaves',
-        'cheque_book_use_start_date','office_bank_name'];
+        return ['office_bank_name','cheque_book_start_serial_number','cheque_book_count_of_leaves',
+        'cheque_book_use_start_date'];
     }
 
     public function detail_tables(){}
@@ -277,4 +311,6 @@ class Cheque_book_model extends MY_Model{
 
         return $lookup_values;
     }
+
+
 }

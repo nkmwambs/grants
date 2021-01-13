@@ -17,6 +17,7 @@ class Cheque_injection extends MY_Controller
   function __construct(){
     parent::__construct();
     $this->load->library('cheque_injection_library');
+    $this->load->model("cheque_book_model");
   }
 
   function index(){}
@@ -24,16 +25,10 @@ class Cheque_injection extends MY_Controller
   function validate_cheque_number(){
     $post = $this->input->post();
     $validate_cheque_number = true;
-    $min_serial_number = 1;
 
     // Check if the injected leaf is before the first cheque book
-    $this->read_db->select_min("cheque_book_start_serial_number");
-    $this->read_db->where(array('fk_office_bank_id'=>$post['office_bank_id']));
-    $min_serial_number_obj = $this->read_db->get('cheque_book');
 
-    if($min_serial_number_obj->num_rows() > 0){
-      $min_serial_number = $min_serial_number_obj->row()->cheque_book_start_serial_number;
-    }
+    $min_serial_number = $this->cheque_book_model->office_bank_start_cheque_serial_number($post['office_bank_id']);
 
     // Check id injection leaf is already in the cheque_injection table
     $this->read_db->where(array('fk_office_bank_id'=>$post['office_bank_id'],
