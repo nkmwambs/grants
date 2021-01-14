@@ -57,6 +57,21 @@ class Cheque_injection_model extends MY_Model{
         return $lookup_values;
     }
 
+    function is_injected_cheque_number($office_bank_id,$cheque_number){
+        
+        $is_injected_cheque_number = true;
+
+        $this->read_db->where(array("fk_office_bank_id"=>$office_bank_id,
+        'cheque_injection_number'=>$cheque_number));
+        $cheque_injection_obj = $this->read_db->get('cheque_injection');
+
+        if($cheque_injection_obj->num_rows() == 0){
+            $is_injected_cheque_number = false;
+        }
+
+        return $is_injected_cheque_number;
+    }
+
     function list_table_where()
     {
         if(!$this->session->system_admin){
