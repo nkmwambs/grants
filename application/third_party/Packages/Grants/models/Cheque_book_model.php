@@ -24,6 +24,7 @@ class Cheque_book_model extends MY_Model{
     function __construct(){
         parent::__construct();
         $this->load->database();
+        $this->load->model('cheque_injection_model');
     }
 
     function index(){}
@@ -70,6 +71,7 @@ class Cheque_book_model extends MY_Model{
         return $last_cheque_book_max_leaf;
     }
 
+
     function office_bank_start_cheque_serial_number($office_bank_id){
 
         $min_serial_number = 0;
@@ -98,7 +100,33 @@ class Cheque_book_model extends MY_Model{
         return ['fk_office_bank_id','cheque_book_is_active'];
     }
 
+    function cancelled_cheque_numbers($office_bank_id){
+      
+        // Only one cheque number is -ve
+
+        $cancelled_cheque_numbers = [];
+
+        $sql = "SELECT voucher_cheque_number, COUNT(*) FROM voucher ";
+        $sql .= "WHERE fk_office_bank_id = ".$office_bank_id." AND voucher_cheque_number < 0 ";
+        $sql .= "GROUP BY voucher_cheque_number HAVING COUNT(*) = 1"; 
+        
+        // $this->read_db->select(array('voucher_cheque_number','COUNT(*)'));
+        // $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,'voucher_cheque_number < ' => 0));
+        // $this->read_db->having('COUNT(*) = 2');
+        // $cancelled_cheque_numbers_obj = $this->read_db->get('voucher');
+
+        $cancelled_cheque_numbers_obj = $this->read_db->query($sql);
+
+        if($cancelled_cheque_numbers_obj->num_rows() > 0){
+            $cancelled_cheque_numbers = array_column($cancelled_cheque_numbers_obj->result_array(),'voucher_cheque_number');
+            $cancelled_cheque_numbers = array_map([$this,'make_unsigned_values'],$cancelled_cheque_numbers);
+        }
+
+        return $cancelled_cheque_numbers;
+    }
+
     function get_reused_cheques($office_bank_id){
+        // All the cheque numbers are -ve
         $this->read_db->select(array('voucher_cheque_number'));
         $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,
         'voucher_cheque_number < '=>0));
@@ -166,8 +194,18 @@ class Cheque_book_model extends MY_Model{
           if(!empty($injected_cheque_leaves)){
             $all_cheque_leaves = array_merge($all_cheque_leaves,$injected_cheque_leaves);
           }
-    
+
+          $cancelled_cheque_numbers = $this->cancelled_cheque_numbers($office_bank_id);
+          
+          
           foreach($all_cheque_leaves as $cheque_number){
+
+            $is_injected_cheque_number = $this->cheque_injection_model->is_injected_cheque_number($office_bank_id,$cheque_number);
+
+            if(in_array($cheque_number,$cancelled_cheque_numbers) && in_array($cheque_number,$used_cheque_leaves) && $is_injected_cheque_number){
+                unset($used_cheque_leaves[array_search($cheque_number,$used_cheque_leaves)]);
+            }
+
            if(in_array($cheque_number,$used_cheque_leaves)){
               unset($all_cheque_leaves[array_search($cheque_number,$all_cheque_leaves)]);
            } 
