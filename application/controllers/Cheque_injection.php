@@ -24,7 +24,7 @@ class Cheque_injection extends MY_Controller
 
   function validate_cheque_number(){
     $post = $this->input->post();
-    $validate_cheque_number = true;
+    $validate_cheque_number = false;
 
     // Check if the injected leaf is before the first cheque book
 
@@ -35,8 +35,13 @@ class Cheque_injection extends MY_Controller
     'cheque_injection_number'=>$post['cheque_number']));
     $cheque_injection_count = $this->read_db->get('cheque_injection')->num_rows();
 
-    if($cheque_injection_count > 0 || $min_serial_number <= $post['cheque_number']){
-      $validate_cheque_number = false;
+    // List all cancelled cheque numbers for an office bank
+    $cancelled_cheque_numbers = $this->cheque_book_model->cancelled_cheque_numbers($post['office_bank_id']);
+
+    // Only inject if missing in the cheque injection table and is lesser than the start serial of the initial cheque book
+    
+    if(($cheque_injection_count == 0 && $min_serial_number > $post['cheque_number']) || ($cheque_injection_count == 0 && $min_serial_number <= $post['cheque_number'] && in_array($post['cheque_number'],$cancelled_cheque_numbers))){
+      $validate_cheque_number = true;
     }
 
     echo $validate_cheque_number;

@@ -14,7 +14,7 @@
 
             $.post(url,data,function(response){
                  if(response == 0){
-                    alert('Duplicate cheque number '+ cheque_injection_number +' found or leaf is in a used cheque book');
+                    alert('Duplicate injected cheque number '+ cheque_injection_number +' found or leaf is in a used cheque book');
                     cheque_injection_number_elem.val("");
                 }
             });
