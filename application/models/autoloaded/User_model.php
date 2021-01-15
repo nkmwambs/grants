@@ -495,24 +495,45 @@ class User_model extends MY_Model
       }  
       
       // Merge with Office group Association
-      $user_office_group_associations = $this->user_office_group_associations($user_id);
+      $user_office_group_associations = $this->user_office_group_associations($user_hierarchy_offices);
       
       if($user_office_group_associations && !$show_context){
         $user_hierarchy_offices = array_merge($user_hierarchy_offices,$user_office_group_associations);
       }
 
-      return $user_hierarchy_offices;
+      return array_unique($user_hierarchy_offices,SORT_REGULAR);
     }
 
-    function user_office_group_associations($user_id){
+    function user_office_group_associations($user_hierarchy_offices){
 
-      // $this->read_db->where(array());
-      // $this->read_db->get('office_group_association');
+      $office_group_association = [];
+      
+      $user_office_ids = array_column($user_hierarchy_offices,"office_id");
 
-      return [
-        ["office_id"=>22,"office_name"=>"TAG 1","office_is_active"=>1],
-        ["office_id"=>27,"office_name"=>"TAG 2","office_is_active"=>1]
-      ];
+      // Get office group id of the leading office for the group
+      $this->read_db->select(array('fk_office_group_id'));
+      $this->read_db->where_in("fk_office_id",$user_office_ids);
+      $this->read_db->where(array('office_group_association_is_lead'=>1));
+      $office_group_ids_array_obj = $this->read_db->get('office_group_association');
+
+      if($office_group_ids_array_obj->num_rows() > 0){
+        
+        $office_group_ids_array = $office_group_ids_array_obj->result_array();
+
+        $office_group_ids = array_column($office_group_ids_array,'fk_office_group_id');
+
+        $this->read_db->select(array('office_id','office_name',"office_is_active"));
+        $this->read_db->join('office','office.office_id=office_group_association.fk_office_id');
+        $this->read_db->where_in('fk_office_group_id',$office_group_ids);
+        $office_group_association_obj = $this->read_db->get('office_group_association');
+
+        if($office_group_association_obj->num_rows() > 0){
+          $office_group_association = $office_group_association_obj->result_array();
+        }
+
+      }
+        
+      return $office_group_association;
     }
     
     //Context can be global, region, country, cohort, cluster, center 

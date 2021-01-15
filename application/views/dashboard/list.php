@@ -4,7 +4,7 @@
 
 if ($this->session->system_admin) {
 
-  print_r($this->user_model->user_hierarchy_offices(38));//38, 27
+  //print_r(count($this->user_model->user_hierarchy_offices(27)));//38, 27
 
 }
 
