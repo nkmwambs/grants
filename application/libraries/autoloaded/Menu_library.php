@@ -247,10 +247,11 @@ class Menu_library {
 
       foreach ($menus as $menu => $items) {
           if($this->CI->user_model->check_role_has_permissions($menu,'read') && 
-            in_array(ucfirst($menu),$menu_derivative_controllers)){  
+            in_array(ucfirst($menu),$menu_derivative_controllers)){ 
+               
               $nav .= '
               <li class="">
-                  <a href="'.base_url().strtolower($menu).'/list">
+                  <a href="'.base_url().strtolower($menu).'/'.$this->access_add_form_or_list_from_main_menu($menu).'">
                       <i class="'.$menu_icon.'"></i>
                       <span>'.get_phrase(strtolower($items['menu_name'])).'</span>
                   </a>
@@ -272,6 +273,21 @@ class Menu_library {
       }
 
       return $nav;
+    }
+
+    function access_add_form_or_list_from_main_menu($menu_name){
+      
+      $check_if_allowed_to_access_add_from_from_main_menu = $this->CI->grants->access_add_form_from_main_menu($menu_name);
+
+      $add_form = $this->CI->grants->check_if_table_has_detail_listing($menu_name) ? "multi_form_add" : "single_form_add";
+
+      $access_add_form_or_list_from_main_menu = "list";
+
+      if($check_if_allowed_to_access_add_from_from_main_menu){
+        $access_add_form_or_list_from_main_menu = $add_form;
+      }
+
+      return $access_add_form_or_list_from_main_menu;
     }
 
     function create_breadcrumb(){

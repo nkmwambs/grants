@@ -866,6 +866,20 @@ function check_if_table_has_detail_table(String $table_name = ""): Bool {
       return $has_detail_table;
     }
 
+    function access_add_form_from_main_menu($table){
+      $model = $this->load_detail_model($table);
+
+      $access_add_form_from_main_menu = false;
+
+      if(method_exists($this->CI->$model,'access_add_form_from_main_menu') &&
+        is_bool($this->CI->$model->access_add_form_from_main_menu())
+      ){
+        $access_add_form_from_main_menu = $this->CI->$model->access_add_form_from_main_menu();
+      }
+
+      return $access_add_form_from_main_menu;
+    }
+
 /**
  * THE BELOW METHODS ARE TO MOVE TO THE OUTPUT API CLASSES
  */
