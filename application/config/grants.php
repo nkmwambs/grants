@@ -10,7 +10,8 @@
 	$config['default_launch_page'] = "Dashboard";
 	$config['use_context_office'] = false;
 	$config['use_select2_plugin'] = true;
-	$config['drop_only_center'] = true;
+	$config['drop_only_center'] = true; // Should be decaprecated in favor of drop_transacting_offices
+	$config['drop_transacting_offices'] = true;
 	$config['method_to_attach_permission_to_role'] = 'both'; // direct, role_group, both
 	$config['prevent_using_global_permissions_by_non_admins'] = false;
 	$config['link_new_project_allocations_only_to_default_bank_accounts'] = true;
