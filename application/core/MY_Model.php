@@ -75,6 +75,8 @@ class MY_Model extends CI_Model
 
     public function order_list_page():String{return '';}
 
+    public function access_add_form_from_main_menu():bool{return false;}
+
     // Lists/ Array of detail tables of the current controller that you would like to use their 
     // single_form_add_visible_columns in the current controller's single form add forms
 
@@ -124,32 +126,28 @@ class MY_Model extends CI_Model
 
         $this->read_db->select(array($lookup_table.'_id',$lookup_table.'_name'));
 
-        //This ensure only lowest level offices e.g. center
-        //$this->config->item('drop_only_center') && in_array($lookup_table,$this->config->item('tables_allowing_drop_only_centers')) && 
-        if($this->config->item('drop_only_center')  && $lookup_table=='office' && in_array($current_table,$this->config->item('tables_allowing_drop_only_centers'))){
+        if($lookup_table=='office'){
+            $this->read_db->group_start();
 
-          $this->read_db->where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
+              // Show drop offices that are not readonly i.e. transacting offices
+              if($this->config->item('drop_transacting_offices')){
+                $this->read_db->where(array('office_is_readonly'=>0));
+              }else{
+                $this->read_db->where(array('office_is_readonly'=>1));
+              }
+
+              //This ensure only lowest level offices e.g. center - To be decaprecated in favor of of the previous condition
+                
+                if($this->config->item('drop_only_center') && in_array($current_table,$this->config->item('tables_allowing_drop_only_centers'))){
+
+                  $this->read_db->or_where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
+                }
+
+            $this->read_db->group_end();
         }
-
-        //$check_if_table_has_account_system = $this->grants->check_if_table_has_account_system($lookup_table);
 
         if(!$this->session->system_admin){
 
-        //  $array_intersect = array_intersect($this->grants->lookup_tables($lookup_table),$this->config->item('tables_with_account_system_relationship'));
-
-        //   if(count($array_intersect)>0){
-        //     $this->read_db->join($array_intersect[0],$array_intersect[0].'.'.$array_intersect[0].'_id='.$lookup_table.'.fk_'.$array_intersect[0].'_id');
-        //     $this->read_db->join('account_system', 'account_system.account_system_id='.$array_intersect[0].'.fk_account_system_id');
-        //     $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
-        //   }
-
-        //   if($lookup_table !== 'account_system' && $check_if_table_has_account_system){
-        //     $this->read_db->join('account_system', 'account_system.account_system_id='.$lookup_table.'.fk_account_system_id');
-        //   }
-
-        //   if($check_if_table_has_account_system){
-        //     $this->read_db->where(array('account_system_code'=>$this->session->user_account_system));
-        //   }
 
         if(strtolower($this->controller) !== 'account_system'){
           $this->grants->join_tables_with_account_system($lookup_table);
