@@ -73,36 +73,14 @@ class Project_allocation_model extends MY_Model
 
   function action_after_insert($post_array,$approval_id,$header_id){
 
-    // Get the insert allocation account system id
-    $this->write_db->join('project','project.fk_funder_id=funder.funder_id');
-    $this->write_db->where(array('project_id'=>$post_array['fk_project_id']));
-    $account_system_id = $this->write_db->get('funder')->row()->fk_account_system_id;
+    $this->link_new_project_allocation_to_default_bank($post_array,$header_id);
 
-    // Get all active default bank accounts for an account system
-    $this->write_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
-    $this->write_db->where(array('fk_account_system_id'=>$account_system_id,
-    'fk_office_id'=>$post_array['fk_office_id']));
-    
-    if($this->config->item('link_new_project_allocations_only_to_default_bank_accounts')){
-      $this->write_db->where(array('office_bank_is_default'=>1));
-    }
+    $office_id = $post_array['fk_office_id'];
+    $office_group_id = $this->check_office_belongs_to_office_group($office_id);
+    $office_group_lead_id = $this->get_office_group_lead_office_id($office_group_id);
 
-    $account_system_office_banks = $this->write_db->get('office_bank')->result_array();
-
-    //echo json_encode($account_system_id);exit;
-
-    $this->write_db->trans_start();
-
-    // Insert office_bank_project_allocation table
-    foreach($account_system_office_banks as $account_system_office_bank){
-      $office_bank_project_allocation_data['office_bank_project_allocation_name'] = $this->grants_model->generate_item_track_number_and_name('office_bank_project_allocation')['office_bank_project_allocation_name'];
-      $office_bank_project_allocation_data['office_bank_project_allocation_track_number'] = $this->grants_model->generate_item_track_number_and_name('office_bank_project_allocation')['office_bank_project_allocation_track_number'];
-      $office_bank_project_allocation_data['fk_office_bank_id'] = $account_system_office_bank['office_bank_id'];
-      $office_bank_project_allocation_data['fk_project_allocation_id'] = $header_id;
-      
-      $office_bank_project_allocation_data_to_insert = $this->grants_model->merge_with_history_fields('office_bank_project_allocation',$office_bank_project_allocation_data,false);
-      $this->write_db->insert('office_bank_project_allocation',$office_bank_project_allocation_data_to_insert);
-
+    if($office_group_lead_id){
+      $this->link_project_allocation_to_leading_office_in_office_group($post_array,$office_group_lead_id);
     }
 
     $this->write_db->trans_complete();
@@ -114,6 +92,79 @@ class Project_allocation_model extends MY_Model
         return true;
       }
     
+  }
+
+  function link_project_allocation_to_leading_office_in_office_group($post_array,$office_id){
+    $post_array = array_replace($post_array,['fk_office_id'=>$office_id]);
+    $this->write_db->insert('project_allocation',$post_array);
+
+    $header_id = $this->write_db->insert_id();
+
+    $this->link_new_project_allocation_to_default_bank($post_array,$header_id);
+  }
+
+  function check_office_belongs_to_office_group($office_id){
+      
+      $check_office_belongs_to_office_group = 0;
+
+      $office_group_association_obj = $this->read_db->get_where('office_group_association',
+      array("fk_office_id"=>$office_id));
+
+      if($office_group_association_obj->num_rows() > 0){
+        $check_office_belongs_to_office_group = $office_group_association_obj->row()->fk_office_group_id;
+      }
+
+      return $check_office_belongs_to_office_group;
+
+  }
+
+  function get_office_group_lead_office_id($office_group_id){
+
+    $lead_office_id = 0;
+
+    $office_group_association_is_lead_obj = $this->read_db->get_where('office_group_association',
+    array('fk_office_group_id'=>$office_group_id,"office_group_association_is_lead"=>1));
+
+    if($office_group_association_is_lead_obj->num_rows() > 0){
+      $lead_office_id = $office_group_association_is_lead_obj->row()->fk_office_id;
+
+    }
+
+    return $lead_office_id;
+  }
+
+  function link_new_project_allocation_to_default_bank($post_array,$header_id){
+      // Get the insert allocation account system id
+      $this->write_db->join('project','project.fk_funder_id=funder.funder_id');
+      $this->write_db->where(array('project_id'=>$post_array['fk_project_id']));
+      $account_system_id = $this->write_db->get('funder')->row()->fk_account_system_id;
+
+      // Get all active default bank accounts for an account system
+      $this->write_db->join('bank','bank.bank_id=office_bank.fk_bank_id');
+      $this->write_db->where(array('fk_account_system_id'=>$account_system_id,
+      'fk_office_id'=>$post_array['fk_office_id']));
+      
+      if($this->config->item('link_new_project_allocations_only_to_default_bank_accounts')){
+        $this->write_db->where(array('office_bank_is_default'=>1));
+      }
+
+      $account_system_office_banks = $this->write_db->get('office_bank')->result_array();
+
+      //echo json_encode($account_system_id);exit;
+
+      $this->write_db->trans_start();
+
+      // Insert office_bank_project_allocation table
+      foreach($account_system_office_banks as $account_system_office_bank){
+        $office_bank_project_allocation_data['office_bank_project_allocation_name'] = $this->grants_model->generate_item_track_number_and_name('office_bank_project_allocation')['office_bank_project_allocation_name'];
+        $office_bank_project_allocation_data['office_bank_project_allocation_track_number'] = $this->grants_model->generate_item_track_number_and_name('office_bank_project_allocation')['office_bank_project_allocation_track_number'];
+        $office_bank_project_allocation_data['fk_office_bank_id'] = $account_system_office_bank['office_bank_id'];
+        $office_bank_project_allocation_data['fk_project_allocation_id'] = $header_id;
+        
+        $office_bank_project_allocation_data_to_insert = $this->grants_model->merge_with_history_fields('office_bank_project_allocation',$office_bank_project_allocation_data,false);
+        $this->write_db->insert('office_bank_project_allocation',$office_bank_project_allocation_data_to_insert);
+
+      }
   }
 
   public function lookup_tables(){
