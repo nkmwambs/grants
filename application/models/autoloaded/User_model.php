@@ -492,9 +492,27 @@ class User_model extends MY_Model
             
         }
         
-      }      
+      }  
+      
+      // Merge with Office group Association
+      $user_office_group_associations = $this->user_office_group_associations($user_id);
+      
+      if($user_office_group_associations && !$show_context){
+        $user_hierarchy_offices = array_merge($user_hierarchy_offices,$user_office_group_associations);
+      }
 
       return $user_hierarchy_offices;
+    }
+
+    function user_office_group_associations($user_id){
+
+      // $this->read_db->where(array());
+      // $this->read_db->get('office_group_association');
+
+      return [
+        ["office_id"=>22,"office_name"=>"TAG 1","office_is_active"=>1],
+        ["office_id"=>27,"office_name"=>"TAG 2","office_is_active"=>1]
+      ];
     }
     
     //Context can be global, region, country, cohort, cluster, center 

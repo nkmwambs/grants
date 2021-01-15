@@ -4,13 +4,7 @@
 
 if ($this->session->system_admin) {
 
-  //print_r(array_column($this->session->hierarchy_offices,"office_id"));
-  //echo hash_id('1Oz3jEmZWr','decode');
-
-  //$this->read_db->join('account_system', 'account_system.account_system_id=bank.fk_account_system_id');
-  //$lookup_values['bank'] = $this->read_db->get_where('bank',array('account_system_code'=>$this->session->user_account_system))->result_array();
-  //print_r($lookup_values);
-  //print_r($this->session->context_definition['context_definition_id']);
+  print_r($this->user_model->user_hierarchy_offices(38));//38, 27
 
 }
 
