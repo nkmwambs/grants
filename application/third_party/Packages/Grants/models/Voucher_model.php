@@ -638,6 +638,10 @@ class Voucher_model extends MY_Model
     return  ($approved_vouchers == $count_of_month_raised_vouchers) && $count_of_month_raised_vouchers > 0 ? true : false;
   }
 
+  function access_add_form_from_main_menu():bool{
+    return true;
+  }
+
 
 
   /**

@@ -75,6 +75,8 @@ class MY_Model extends CI_Model
 
     public function order_list_page():String{return '';}
 
+    public function access_add_form_from_main_menu():bool{return false;}
+
     // Lists/ Array of detail tables of the current controller that you would like to use their 
     // single_form_add_visible_columns in the current controller's single form add forms
 
