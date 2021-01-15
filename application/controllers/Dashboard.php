@@ -20,6 +20,8 @@ public $auth;
         $this->load->database();
         $this->load->library('dashboard_library');
         
+        $this->load->model("project_allocation_model");
+        
     }
 
 

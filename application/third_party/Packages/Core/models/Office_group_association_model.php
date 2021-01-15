@@ -35,4 +35,31 @@ class Office_group_association_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function single_form_add_visible_columns()
+    {
+        return [
+            "office_group_name",
+            "office_name",
+            "office_group_association_is_lead"
+        ];
+    }
+
+    function multi_select_field()
+    {
+        return "office";
+    }
+
+    function lookup_values()
+    {
+        $lookup_values = parent::lookup_values();
+
+        if(!$this->session->system_admin){
+            $office_ids = array_column($this->session->hierarchy_offices,"office_id");
+            $this->db->where_in('office_id',$office_ids);
+            $lookup_values['office'] = $this->db->get('office')->result_array();
+        }
+
+        return $lookup_values;
+    }
 }
