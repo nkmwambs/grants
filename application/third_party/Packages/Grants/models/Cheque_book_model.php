@@ -45,9 +45,11 @@ class Cheque_book_model extends MY_Model{
                 'fk_office_bank_id'=>$office_bank_id,'cheque_book_is_active'=>1
             ));
 
-            $this->write_db->where(['cheque_book_id'=>$active_cheque_book_obj->row()->cheque_book_id]);
-            $cheque_book_data['cheque_book_is_active'] = 0;
-            $this->write_db->update('cheque_book',$cheque_book_data);
+            if($active_cheque_book_obj->num_rows() > 0){
+                $this->write_db->where(['cheque_book_id'=>$active_cheque_book_obj->row()->cheque_book_id]);
+                $cheque_book_data['cheque_book_is_active'] = 0;
+                $this->write_db->update('cheque_book',$cheque_book_data);
+            }            
         }
 
         return $post_array;
