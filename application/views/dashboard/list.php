@@ -1,11 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 //print_r(array_column($this->session->hierarchy_offices,"office_id"));
+//print_r($this->project_allocation_model->get_office_group_lead_office_id(1));
 
 if ($this->session->system_admin) {
-
   //print_r(count($this->user_model->user_hierarchy_offices(27)));//38, 27
-
 }
 
 ?>

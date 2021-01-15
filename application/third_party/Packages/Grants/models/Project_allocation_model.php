@@ -28,8 +28,6 @@ class Project_allocation_model extends MY_Model
      * {"header":{"fk_project_id":"16","fk_office_id":["9"],"project_allocation_is_active":"1"}}
      */
 
-
-
     $office_ids = $post_array['header']['fk_office_id'];
     $project_id = $post_array['header']['fk_project_id'];
 
@@ -73,14 +71,17 @@ class Project_allocation_model extends MY_Model
 
   function action_after_insert($post_array,$approval_id,$header_id){
 
+    $this->write_db->trans_start();
+
     $this->link_new_project_allocation_to_default_bank($post_array,$header_id);
 
     $office_id = $post_array['fk_office_id'];
     $office_group_id = $this->check_office_belongs_to_office_group($office_id);
     $office_group_lead_id = $this->get_office_group_lead_office_id($office_group_id);
 
-    if($office_group_lead_id){
-      $this->link_project_allocation_to_leading_office_in_office_group($post_array,$office_group_lead_id);
+    if($office_group_lead_id > 0){
+      //echo $office_group_lead_id." === ";
+      $this->link_project_allocation_to_leading_office_in_office_group($post_array,$office_group_lead_id,$header_id);
     }
 
     $this->write_db->trans_complete();
@@ -94,13 +95,28 @@ class Project_allocation_model extends MY_Model
     
   }
 
-  function link_project_allocation_to_leading_office_in_office_group($post_array,$office_id){
-    $post_array = array_replace($post_array,['fk_office_id'=>$office_id]);
-    $this->write_db->insert('project_allocation',$post_array);
+  function link_project_allocation_to_leading_office_in_office_group($post_array,$office_id,$project_allocation_id){
 
-    $header_id = $this->write_db->insert_id();
+    $project_name = $this->read_db->get_where('project',array('project_id'=>$post_array['fk_project_id']))->row()->project_name;
+    $office_name = $this->read_db->select('office_name')->get_where('office',array('office_id'=>$office_id))->row()->office_name;
+    $project_allocation_name = $project_name.' '.get_phrase('allocation_for').' '.$office_name;
 
-    $this->link_new_project_allocation_to_default_bank($post_array,$header_id);
+    // Check if the project allocation is present for the office group lead
+
+    $count_project_allocations = $this->write_db->get_where('project_allocation',
+    array('fk_office_id'=>$office_id,'fk_project_id'=>$post_array['fk_project_id']))->num_rows();
+
+    if($count_project_allocations == 0){
+     
+      $lead_post_array = array_replace($post_array,['fk_office_id'=>$office_id,'project_allocation_name'=>$project_allocation_name]);
+      $this->write_db->insert('project_allocation',$lead_post_array);
+  
+      $header_id = $this->write_db->insert_id();
+  
+      $this->link_new_project_allocation_to_default_bank($lead_post_array,$header_id);
+
+    }
+
   }
 
   function check_office_belongs_to_office_group($office_id){
@@ -152,7 +168,6 @@ class Project_allocation_model extends MY_Model
 
       //echo json_encode($account_system_id);exit;
 
-      $this->write_db->trans_start();
 
       // Insert office_bank_project_allocation table
       foreach($account_system_office_banks as $account_system_office_bank){
@@ -166,6 +181,7 @@ class Project_allocation_model extends MY_Model
 
       }
   }
+  
 
   public function lookup_tables(){
     return array('office','project');
@@ -275,30 +291,30 @@ class Project_allocation_model extends MY_Model
       $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
     }
 
-    if($this->sub_action != null){
+    //if($this->sub_action != null){
 
-      $project_id=hash_id($this->id,'decode');
+      //$project_id=hash_id($this->id,'decode');
       //$this->read_db->select(array('office.office_id as office_id','office.office_name as office_name'));
 
       // Drop only centers
-      if($this->config->item('drop_only_lowest_context_offices')){
-        $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
-        $this->read_db->where(array('context_definition_level'=>1));
-      }
+      // if($this->config->item('drop_only_lowest_context_offices')){
+      //   $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+      //   $this->read_db->where(array('context_definition_level'=>1));
+      // }
 
-      $this->read_db->order_by('office_name');
-      $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id AND fk_project_id='.$project_id.')', '', FALSE);
-      $this->read_db->where(array('office_bank_is_active'=>1));
-      $this->read_db->join('office_bank','office_bank.fk_office_id=office.office_id'); 
+      // $this->read_db->order_by('office_name');
+      // $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id AND fk_project_id='.$project_id.')', '', FALSE);
+      // $this->read_db->where(array('office_bank_is_active'=>1));
+      // $this->read_db->join('office_bank','office_bank.fk_office_id=office.office_id'); 
 
-      if(!$this->session->system_admin){
-        $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));       
-        $lookup_values['office'] = $this->read_db->get('office')->result_array();
-      }else{
-        $lookup_values['office'] = $this->read_db->get('office')->result_array();
-      }
+      // if(!$this->session->system_admin){
+      //   $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));       
+      //   $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      // }else{
+      //   $lookup_values['office'] = $this->read_db->get('office')->result_array();
+      // }
       
-    }
+    //}
 
     return $lookup_values;
    }
