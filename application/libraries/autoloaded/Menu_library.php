@@ -248,10 +248,10 @@ class Menu_library {
       foreach ($menus as $menu => $items) {
           if($this->CI->user_model->check_role_has_permissions($menu,'read') && 
             in_array(ucfirst($menu),$menu_derivative_controllers)){ 
-               
+               //<a href="'.base_url().strtolower($menu).'/'.$this->access_add_form_or_list_from_main_menu($menu).'">
               $nav .= '
               <li class="">
-                  <a href="'.base_url().strtolower($menu).'/'.$this->access_add_form_or_list_from_main_menu($menu).'">
+                <a href="'.base_url().strtolower($menu).'/list">
                       <i class="'.$menu_icon.'"></i>
                       <span>'.get_phrase(strtolower($items['menu_name'])).'</span>
                   </a>
