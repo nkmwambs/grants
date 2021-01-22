@@ -1,5 +1,7 @@
 core:
   tables:
+
+    user_switch:
     
     office_group_association:
       lookup_tables:
