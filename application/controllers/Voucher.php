@@ -21,6 +21,7 @@ class Voucher extends MY_Controller
     $this->load->model('approval_model');
     $this->load->model('voucher_model');
     $this->load->library('voucher_library');
+    $this->load->model('office_group_model');
   }
 
   /**
@@ -439,13 +440,21 @@ class Voucher extends MY_Controller
     $this->db->where(array('fk_account_system_id'=>$office_accounting_system->account_system_id));
 
     if($voucher_type_effect == 'expense'){
-      $this->db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
-      $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
-      $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
-      $this->db->join('project','project.project_id=project_income_account.fk_project_id');
-      $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
-      $this->db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
-      $accounts = $this->db->get('expense_account')->result_array();
+
+      // Check if the office is a lead in an office group
+      $is_office_group_lead = $this->office_group_model->check_if_office_is_office_group_lead($this->input->post('office_id'));
+
+      if(!$is_office_group_lead){
+        $this->grants_model->not_exists_sub_query('expense_account','expense_account_office_association');
+      }
+
+      $this->read_db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
+      $this->read_db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+      $this->read_db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
+      $this->read_db->join('project','project.project_id=project_income_account.fk_project_id');
+      $this->read_db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+      $this->read_db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
+      $accounts = $this->read_db->get('expense_account')->result_array();
     }elseif($voucher_type_effect == 'income'){
       $this->db->where(array('project_allocation_id'=>$project_allocation_id,'income_account_is_active'=>1));
       $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');

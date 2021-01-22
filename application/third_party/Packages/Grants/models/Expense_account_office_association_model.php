@@ -59,9 +59,9 @@ class Expense_account_office_association_model extends MY_Model{
             // $lookup_values['office'] = $this->read_db->get('office')->result_array();
 
             $office_ids = array_column($this->session->hierarchy_offices,'office_id');
+            $not_exist_string_condition = "AND fk_expense_account_id = ".hash_id($this->id,'decode');
             $this->read_db->where_in('office_id',$office_ids);
-            $this->read_db->where(array('office_is_readonly'=>0));
-            $this->grants_model->get_unused_lookup_values($lookup_values, 'office','expense_account_office_association');
+            $this->grants_model->get_unused_lookup_values($lookup_values, 'office','expense_account_office_association',$not_exist_string_condition);
         }
 
         return $lookup_values;
