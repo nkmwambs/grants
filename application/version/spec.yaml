@@ -85,6 +85,11 @@ grants:
   
   tables:
 
+    expense_account_office_association:
+      lookup_tables:
+        - office
+        - expense_account
+
     cheque_injection:
       lookup_tables:
         - office_bank
