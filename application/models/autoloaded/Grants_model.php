@@ -2010,9 +2010,9 @@ function not_exists_sub_query($lookup_table, $association_table){
 }
 
 
-function get_unused_lookup_values(&$lookup_values,$lookup_table, $association_table){
-
-  $this->read_db->where('NOT EXISTS (SELECT * FROM '.$association_table.' WHERE '.$association_table.'.fk_'.$lookup_table.'_id='.$lookup_table.'.'.$lookup_table.'_id)', '', FALSE);
+function get_unused_lookup_values(&$lookup_values,$lookup_table, $association_table, $not_exist_string_condition = ''){
+  
+  $this->read_db->where('NOT EXISTS (SELECT * FROM '.$association_table.' WHERE '.$association_table.'.fk_'.$lookup_table.'_id='.$lookup_table.'.'.$lookup_table.'_id '.$not_exist_string_condition.')', '', FALSE);
   
   if($this->config->item('drop_transacting_offices')){
     $this->read_db->where(array('office_is_readonly'=>0));
