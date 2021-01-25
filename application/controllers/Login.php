@@ -210,6 +210,26 @@ public $controller;
         
       }
 
+    public function switch_user(){
+
+        $user_id = $this->input->post('user_id');
+        
+        //$this->session->sess_destroy();
+
+        $this->read_db->where(['user_id'=>$user_id]);
+        $user = $this->read_db->get('user')->row();
+
+        $email = $user->user_email;
+
+        $login_status = $this->validate_login($email, '', true);
+
+        if($login_status){
+            redirect(base_url().'login','refresh');
+        }else{
+            redirect(base_url(),'refresh');
+        }
+    }  
+
     //Ajax login function
     function ajax_login() {
         $response = array();
@@ -233,6 +253,33 @@ public $controller;
 
 
 	function create_user_session ($row,$first_login_attempt = false){
+        
+        if($this->session->has_userdata('user_id')){
+
+            $sesion_keys = [
+                "user_id",
+                "name",
+                "role_id",
+                "role_permissions",
+                "system_admin",
+                "user_locale",
+                "user_currency_id",
+                "user_currency_code",
+                "user_account_system",
+                "user_account_system_id",
+                "base_currency_id",
+                "departments",
+                "context_associations",
+                "context_definition",
+                "context_offices",
+                "hierarchy_offices",
+                "role_is_department_strict",
+                "breadcrumb_list",
+                "default_launch_page"
+            ];
+
+            $this->session->unset_userdata($sesion_keys);
+        }
 
         $this->session->set_userdata('package', 'Grants'); // To be changed when changing Apps
 
@@ -322,9 +369,13 @@ public $controller;
       }
 
     //Validating login from ajax request
-    function validate_login($email = '', $password = '') {
+    function validate_login($email = '', $password = '', $is_user_switch = false) {
 
         $credential = array('user_email' => $email,"user_is_active"=>1,"user_password"=>md5($password));
+
+        if($password == '' && $is_user_switch){
+            $credential = array('user_email' => $email,"user_is_active"=>1);
+        }
 
         // Checking login credential for admin
         $query = $this->db->get_where('user', $credential);

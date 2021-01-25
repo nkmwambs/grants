@@ -37,4 +37,20 @@ class Office_group_model extends MY_Model{
     }
 
     public function detail_multi_form_add_visible_columns(){}
+
+    public function check_if_office_is_office_group_lead($office_id){
+
+        $is_group_lead = false;
+
+        $this->read_db->where(["fk_office_id"=>$office_id,'office_group_association_is_lead'=>1]);
+        $this->read_db->join('office_group_association','office_group_association.fk_office_group_id=office_group.office_group_id');
+        $office_group_obj = $this->read_db->get('office_group');
+
+        if($office_group_obj->num_rows() > 0){
+            $is_group_lead = true;
+        }
+
+        return $is_group_lead;
+
+    }
 }

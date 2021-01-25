@@ -330,6 +330,25 @@ CREATE TABLE `cheque_book` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `cheque_injection`;
+CREATE TABLE `cheque_injection` (
+  `cheque_injection_id` int(100) NOT NULL AUTO_INCREMENT,
+  `cheque_injection_track_number` varchar(100) NOT NULL,
+  `cheque_injection_name` varchar(100) NOT NULL,
+  `fk_office_bank_id` int(100) NOT NULL,
+  `cheque_injection_number` int(10) NOT NULL,
+  `cheque_injection_created_date` date NOT NULL,
+  `cheque_injection_created_by` int(100) NOT NULL,
+  `cheque_injection_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `cheque_injection_last_modified_by` int(100) NOT NULL,
+  `fk_status_id` int(100) NOT NULL,
+  `fk_approval_id` int(100) NOT NULL,
+  PRIMARY KEY (`cheque_injection_id`),
+  KEY `fk_office_bank_id` (`fk_office_bank_id`),
+  CONSTRAINT `cheque_injection_ibfk_1` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `ci_sessions`;
 CREATE TABLE `ci_sessions` (
   `id` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
@@ -381,7 +400,13 @@ CREATE TABLE `context_center_user` (
   `context_center_user_last_modified_by` int(100) NOT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`context_center_user_id`)
+  PRIMARY KEY (`context_center_user_id`),
+  KEY `fk_context_center_id` (`fk_context_center_id`),
+  KEY `fk_user_id` (`fk_user_id`),
+  KEY `fk_designation_id` (`fk_designation_id`),
+  CONSTRAINT `context_center_user_ibfk_1` FOREIGN KEY (`fk_context_center_id`) REFERENCES `context_center` (`context_center_id`),
+  CONSTRAINT `context_center_user_ibfk_2` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `context_center_user_ibfk_3` FOREIGN KEY (`fk_designation_id`) REFERENCES `designation` (`designation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -495,7 +520,11 @@ CREATE TABLE `context_country_user` (
   `context_country_user_last_modified_by` int(100) NOT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`context_country_user_id`)
+  PRIMARY KEY (`context_country_user_id`),
+  KEY `fk_user_id` (`fk_user_id`),
+  KEY `fk_context_country_id` (`fk_context_country_id`),
+  CONSTRAINT `context_country_user_ibfk_1` FOREIGN KEY (`fk_user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `context_country_user_ibfk_2` FOREIGN KEY (`fk_context_country_id`) REFERENCES `context_country` (`context_country_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -796,6 +825,27 @@ CREATE TABLE `expense_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds the expense accounts';
 
 
+DROP TABLE IF EXISTS `expense_account_office_association`;
+CREATE TABLE `expense_account_office_association` (
+  `expense_account_office_association_id` int(100) NOT NULL AUTO_INCREMENT,
+  `expense_account_office_association_name` varchar(100) NOT NULL,
+  `expense_account_office_association_track_number` varchar(100) NOT NULL,
+  `fk_expense_account_id` int(100) NOT NULL,
+  `fk_office_id` int(100) NOT NULL,
+  `expense_account_office_association_created_date` date NOT NULL,
+  `expense_account_office_association_created_by` int(100) NOT NULL,
+  `expense_account_office_association_last_modified_by` int(100) NOT NULL,
+  `expense_account_office_association_last_modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_status_id` int(11) DEFAULT NULL,
+  `fk_approval_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`expense_account_office_association_id`),
+  KEY `fk_expense_account_id` (`fk_expense_account_id`),
+  KEY `fk_office_id` (`fk_office_id`),
+  CONSTRAINT `expense_account_office_association_ibfk_1` FOREIGN KEY (`fk_expense_account_id`) REFERENCES `expense_account` (`expense_account_id`),
+  CONSTRAINT `expense_account_office_association_ibfk_2` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `financial_report`;
 CREATE TABLE `financial_report` (
   `financial_report_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -811,7 +861,9 @@ CREATE TABLE `financial_report` (
   `financial_report_last_modified_date` date DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`financial_report_id`)
+  PRIMARY KEY (`financial_report_id`),
+  KEY `fk_office_id` (`fk_office_id`),
+  CONSTRAINT `financial_report_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -829,7 +881,9 @@ CREATE TABLE `funder` (
   `funder_deleted_at` datetime DEFAULT NULL,
   `fk_approval_id` int(100) DEFAULT NULL,
   `fk_status_id` int(100) DEFAULT NULL,
-  PRIMARY KEY (`funder_id`)
+  PRIMARY KEY (`funder_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `funder_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table holds donor (funders) bio-information';
 
 
@@ -1056,6 +1110,7 @@ CREATE TABLE `office` (
   `office_start_date` date NOT NULL,
   `office_end_date` date DEFAULT '0000-00-00',
   `office_is_active` int(5) NOT NULL DEFAULT '0',
+  `office_is_readonly` int(5) NOT NULL DEFAULT '0',
   `fk_account_system_id` int(100) NOT NULL DEFAULT '1',
   `fk_country_currency_id` int(100) NOT NULL,
   `office_created_by` int(100) NOT NULL,
@@ -1281,7 +1336,7 @@ CREATE TABLE `opening_fund_balance` (
   `opening_fund_balance_track_number` varchar(100) NOT NULL,
   `opening_fund_balance_name` varchar(100) NOT NULL,
   `fk_income_account_id` int(11) NOT NULL,
-  `fk_office_bank_id` int(11) NOT NULL,
+  `fk_office_bank_id` int(100) NOT NULL,
   `opening_fund_balance_amount` decimal(10,2) NOT NULL,
   `opening_fund_balance_created_date` date DEFAULT NULL,
   `opening_fund_balance_created_by` int(100) DEFAULT NULL,
@@ -1292,8 +1347,10 @@ CREATE TABLE `opening_fund_balance` (
   PRIMARY KEY (`opening_fund_balance_id`),
   KEY `fk_system_opening_balance_id` (`fk_system_opening_balance_id`),
   KEY `fk_income_account_id` (`fk_income_account_id`),
+  KEY `fk_office_bank_id` (`fk_office_bank_id`),
   CONSTRAINT `opening_fund_balance_ibfk_1` FOREIGN KEY (`fk_system_opening_balance_id`) REFERENCES `system_opening_balance` (`system_opening_balance_id`),
-  CONSTRAINT `opening_fund_balance_ibfk_2` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`)
+  CONSTRAINT `opening_fund_balance_ibfk_2` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`),
+  CONSTRAINT `opening_fund_balance_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1318,8 +1375,10 @@ CREATE TABLE `opening_outstanding_cheque` (
   `fk_status_id` int(100) DEFAULT NULL,
   PRIMARY KEY (`opening_outstanding_cheque_id`),
   KEY `fk_system_opening_balance_id` (`fk_system_opening_balance_id`),
+  KEY `fk_office_bank_id` (`fk_office_bank_id`),
   CONSTRAINT `opening_outstanding_cheque_ibfk_1` FOREIGN KEY (`fk_system_opening_balance_id`) REFERENCES `system_opening_balance` (`system_opening_balance_id`),
-  CONSTRAINT `opening_outstanding_cheque_ibfk_2` FOREIGN KEY (`fk_system_opening_balance_id`) REFERENCES `system_opening_balance` (`system_opening_balance_id`)
+  CONSTRAINT `opening_outstanding_cheque_ibfk_2` FOREIGN KEY (`fk_system_opening_balance_id`) REFERENCES `system_opening_balance` (`system_opening_balance_id`),
+  CONSTRAINT `opening_outstanding_cheque_ibfk_3` FOREIGN KEY (`fk_office_bank_id`) REFERENCES `office_bank` (`office_bank_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -1491,7 +1550,7 @@ CREATE TABLE `project_allocation` (
   `fk_project_id` int(100) DEFAULT NULL,
   `project_allocation_name` varchar(100) DEFAULT NULL,
   `project_allocation_amount` int(100) DEFAULT '0',
-  `project_allocation_is_active` int(5) DEFAULT '0',
+  `project_allocation_is_active` int(5) DEFAULT '1',
   `fk_office_id` int(100) DEFAULT NULL,
   `fk_status_id` int(11) DEFAULT NULL,
   `fk_approval_id` int(11) DEFAULT NULL,
@@ -1922,7 +1981,7 @@ CREATE TABLE `user` (
   `user_lastname` varchar(100) NOT NULL,
   `user_email` varchar(100) NOT NULL,
   `fk_context_definition_id` int(100) NOT NULL,
-  `user_is_context_manager` int(5) NOT NULL,
+  `user_is_context_manager` int(5) NOT NULL DEFAULT '0',
   `user_is_system_admin` int(5) NOT NULL DEFAULT '0',
   `fk_language_id` int(100) DEFAULT NULL COMMENT 'User''s default language',
   `fk_country_currency_id` int(100) DEFAULT NULL,
@@ -2091,7 +2150,7 @@ CREATE TABLE `voucher_type_effect` (
 
 DROP TABLE IF EXISTS `workplan`;
 CREATE TABLE `workplan` (
-  `workplan_id` int(100) NOT NULL,
+  `workplan_id` int(100) NOT NULL AUTO_INCREMENT,
   `workplan_track_number` varchar(100) DEFAULT NULL,
   `workplan_name` varchar(100) DEFAULT NULL,
   `fk_budget_id` int(100) DEFAULT NULL,
@@ -2134,4 +2193,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-12-17 14:38:51
+-- 2021-01-22 10:49:17

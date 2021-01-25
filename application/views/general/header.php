@@ -13,9 +13,16 @@
 
 				<ul class="dropdown-menu <?php if ($text_align == 'right-to-left') echo 'pull-right'; else echo 'pull-left';?>">
 					<li>
-						<a href="<?php echo base_url();?>account/manage_profile">
-                        	<i class="entypo-info"></i>
-							<span><?php echo get_phrase('edit_profile');?></span>
+						<a href="<?php echo base_url();?>user/view/<?=hash_id($this->session->user_id,'encode');?>">
+                        	<i class="fa fa-user"></i>
+							<span><?php echo get_phrase('your_profile');?></span>
+						</a>
+					</li>
+
+					<li>
+						<a href="<?php echo base_url();?>user_switch/list">
+                        	<i class="fa fa-toggle-on"></i>
+							<span><?php echo get_phrase('switch_user');?></span>
 						</a>
 					</li>
 
