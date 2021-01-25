@@ -2005,11 +2005,24 @@ function overwrite_field_value_on_post(Array $post_array, String $insert_table,S
   return $post_array;
 }
 
-function not_exists_sub_query($lookup_table){
-  $sql = "NOT EXISTS (SELECT * FROM ".$this->controller." WHERE ".$this->controller.".fk_".$lookup_table."_id=".$lookup_table.".".$lookup_table."_id)";
-
-  return $sql;
+function not_exists_sub_query($lookup_table, $association_table){
+  $this->read_db->where('NOT EXISTS (SELECT * FROM '.$association_table.' WHERE '.$association_table.'.fk_'.$lookup_table.'_id='.$lookup_table.'.'.$lookup_table.'_id)', '', FALSE);
 }
+
+
+function get_unused_lookup_values(&$lookup_values,$lookup_table, $association_table, $not_exist_string_condition = ''){
+  
+  $this->read_db->where('NOT EXISTS (SELECT * FROM '.$association_table.' WHERE '.$association_table.'.fk_'.$lookup_table.'_id='.$lookup_table.'.'.$lookup_table.'_id '.$not_exist_string_condition.')', '', FALSE);
+  
+  if($this->config->item('drop_transacting_offices')){
+    $this->read_db->where(array('office_is_readonly'=>0));
+  }
+  
+  $this->read_db->select(array($lookup_table.'_id',$lookup_table.'_name'));
+  $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+  
+}
+
 
 function event_tracker(){
   // $event = $this->input->post();

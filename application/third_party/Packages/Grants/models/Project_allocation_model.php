@@ -80,7 +80,6 @@ class Project_allocation_model extends MY_Model
     $office_group_lead_id = $this->get_office_group_lead_office_id($office_group_id);
 
     if($office_group_lead_id > 0){
-      //echo $office_group_lead_id." === ";
       $this->link_project_allocation_to_leading_office_in_office_group($post_array,$office_group_lead_id,$header_id);
     }
 
@@ -287,34 +286,13 @@ class Project_allocation_model extends MY_Model
       $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
       $this->read_db->join('funder','funder.funder_id=project.fk_funder_id');
       $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
+
+      $not_exist_string_condition = "AND fk_project_id = ".hash_id($this->id,'decode');
+      //$this->read_db->where(['fk_context_definition_id'=>1]);
+      $this->grants_model->get_unused_lookup_values($lookup_values,'office','project_allocation',$not_exist_string_condition);
     }else{
       $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
     }
-
-    //if($this->sub_action != null){
-
-      //$project_id=hash_id($this->id,'decode');
-      //$this->read_db->select(array('office.office_id as office_id','office.office_name as office_name'));
-
-      // Drop only centers
-      // if($this->config->item('drop_only_lowest_context_offices')){
-      //   $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
-      //   $this->read_db->where(array('context_definition_level'=>1));
-      // }
-
-      // $this->read_db->order_by('office_name');
-      // $this->read_db->where('NOT EXISTS (SELECT * FROM project_allocation WHERE project_allocation.fk_office_id=office.office_id AND fk_project_id='.$project_id.')', '', FALSE);
-      // $this->read_db->where(array('office_bank_is_active'=>1));
-      // $this->read_db->join('office_bank','office_bank.fk_office_id=office.office_id'); 
-
-      // if(!$this->session->system_admin){
-      //   $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));       
-      //   $lookup_values['office'] = $this->read_db->get('office')->result_array();
-      // }else{
-      //   $lookup_values['office'] = $this->read_db->get('office')->result_array();
-      // }
-      
-    //}
 
     return $lookup_values;
    }

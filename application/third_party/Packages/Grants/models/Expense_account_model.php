@@ -33,7 +33,7 @@ class Expense_account_model extends MY_Model
   }
 
   function detail_tables(){
-    
+    return ['expense_account_office_association'];
   }
 
   function list(){
