@@ -1,23 +1,15 @@
 <style>
-.control-label{
-    text-align:left;
-}
+    .control-label{
+        text-align:left;
+    }
 
-.center{
-    text-align:center;
-}
-/* .validate_error{
-    border : 1px red solid;
-} */
-
+    .center{
+        text-align:center;
+    }
 </style>
 
 <?php 
-
-//print_r($this->cheque_book_model->cancelled_cheque_numbers(3));
-// $office_bank_id = 1;
-//print_r($this->cheque_book_model->get_reused_cheques(10));
-
+    //print_r($this->cheque_book_model->get_cheque_book_account_system_setting("allow_skipping_of_cheque_leaves"));
 ?>
 
 
