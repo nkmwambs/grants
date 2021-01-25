@@ -218,12 +218,43 @@ class Cheque_book_model extends MY_Model{
           foreach($all_cheque_leaves as $cheque_leaf){
             //if(in_array($cheque_leaf,$opening_outstanding_cheques_used_cheque_leaves)) continue;
             $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
+            
+            if($this->config->item("allow_skipping_of_cheque_leaves") || $this->get_cheque_book_account_system_setting('allow_skipping_of_cheque_leaves')) {
+                break;
+            }
           }
       
           $leaves = $keyed_cheque_leaves;
         }
     
         return  $leaves;
+      }
+
+      function get_cheque_book_account_system_setting($setting_key){
+        $account_system_setting = $this->cheque_book_account_system_setting();
+ 
+        return isset($account_system_setting[$setting_key])?$account_system_setting[$setting_key]:[];
+      }
+
+      function cheque_book_account_system_setting(){
+
+        $account_system_setting = [];
+
+        $this->read_db->select(["account_system_setting_name","account_system_setting_value"]);
+        $this->read_db->where(["approve_item_name"=>"cheque_book",'fk_account_system_id'=>$this->session->user_account_system_id]);
+        $this->read_db->join("approve_item","approve_item.approve_item_id=account_system_setting.fk_approve_item_id");
+        $account_system_setting_obj = $this->read_db->get('account_system_setting');
+
+        if($account_system_setting_obj->num_rows() > 0){
+            $account_system_setting_array = $account_system_setting_obj->result_array();
+
+            $account_system_setting_name = array_column($account_system_setting_array,"account_system_setting_name");
+            $account_system_setting_value = array_column($account_system_setting_array,"account_system_setting_value");
+        
+            $account_system_setting = array_combine($account_system_setting_name,$account_system_setting_value);
+        }
+        
+        return $account_system_setting;
       }
 
       private function get_injected_cheque_leaves($office_bank_id){
