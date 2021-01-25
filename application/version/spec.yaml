@@ -1,5 +1,7 @@
 core:
   tables:
+
+    user_switch:
     
     office_group_association:
       lookup_tables:
@@ -84,6 +86,11 @@ core:
 grants:
   
   tables:
+
+    expense_account_office_association:
+      lookup_tables:
+        - office
+        - expense_account
 
     cheque_injection:
       lookup_tables:
