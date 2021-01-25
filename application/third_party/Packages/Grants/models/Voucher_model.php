@@ -398,6 +398,7 @@ class Voucher_model extends MY_Model
    * @param String $office_bank - Office bank id
    * @param int $cheque_number - Cheque number
    * @return Bool - True is a valid cheque number else false 
+   * @todo This method is decaprecated - To be removed in the future implementations
    */
   function validate_cheque_number(String $office_bank, int $cheque_number):Bool{
 
