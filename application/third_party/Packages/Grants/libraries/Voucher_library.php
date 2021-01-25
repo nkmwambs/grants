@@ -36,6 +36,9 @@ class Voucher_library extends Grants
     return $this->CI->voucher_model->get_voucher_date($office_id);
   }
 
+  /**
+   * @todo This method is decaprecated and is to be removed in the future implementations
+   */
   function validate_cheque_number($office_bank_id,$cheque_number){
     return $this->CI->voucher_model->validate_cheque_number($office_bank_id,$cheque_number);
   }
