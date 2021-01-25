@@ -2,6 +2,11 @@ core:
   tables:
 
     user_switch:
+
+    account_system_setting:
+      lookup_tables:
+        - account_system
+        - approve_item
     
     office_group_association:
       lookup_tables:
