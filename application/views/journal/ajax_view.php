@@ -21,6 +21,7 @@
 
 <?php
     //print_r($result['vouchers']);
+    //print_r($result['allow_skipping_of_cheque_leaves']);
     extract($result);
     
     //print_r($month_opening_balance);
@@ -168,18 +169,20 @@
                             <?php if($cheque_number == 0){?>
                                 <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
                                     <i class='fa fa-undo' style='cursor:pointer;'></i>
-                                    <?=get_phrase('reverse');?>
+                                    <?=get_phrase('cancel_cheque');?>
                                 </div>
                             <?php }else{?>
                                 <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
                                     <i class='fa fa-undo' style='cursor:pointer;'></i>
-                                    <?=get_phrase('reverse');?>
+                                    <?=get_phrase('cancel_cheque');?>
                                 </div>
-
-                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse re_use <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
-                                    <i class='fa fa-plus' style='cursor:pointer;'></i>
-                                    <?=get_phrase('re-use_cheque');?>
-                                </div>
+                                <?php if($allow_skipping_of_cheque_leaves){?> 
+                                    <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse re_use <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                        <i class='fa fa-plus' style='cursor:pointer;'></i>
+                                        <?=get_phrase('re-use_cheque');?>
+                                       
+                                    </div>
+                                <?php }?>
 
                             <?php }?>
 
