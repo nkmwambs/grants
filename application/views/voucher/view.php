@@ -142,7 +142,7 @@
                                 <tr>
                                  <td  colspan='2'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td></td><td colspan="2"><span style='font-weight:bold;'><?=get_phrase('raised_on')?>: </span><?php
                                     //coverting msyql date to British date
-                                    $date = new DateTime($voucher_raised_date);
+                                    $date = new DateTime($header['voucher_created_date']);
                                     echo $date->format('d/m/Y');?>
                                     
                                  </td>
@@ -151,9 +151,10 @@
                                   if(sizeof($signitories)>0){
                                       $voucher_signitories=array_column($signitories,'voucher_signatory_name');
                                       foreach($voucher_signitories as $voucher_signitory){
+                                        $string_aprover_label=explode(' ',$voucher_signitory);
                                 ?>
                                     <tr>        
-                                        <td  colspan='2'><span style='font-weight:bold;'><?=$voucher_signitory;?>: </span>________________________________<td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td><td colspan="2"><span style='font-weight:bold;'><?=get_phrase('date')?>:</span>_____/____/<?= date('Y');?></td>
+                                        <td  colspan='2'><span style='font-weight:bold;'><?=$voucher_signitory;?>: </span>________________________________<td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td><td colspan="2"><span style='font-weight:bold;'><?=$string_aprover_label[0]. ' '.get_phrase('on')?>:</span>_____/____/<?= date('Y');?></td>
                                     </tr>
 
                                 <?php } }?>

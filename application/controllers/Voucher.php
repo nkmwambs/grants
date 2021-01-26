@@ -252,7 +252,7 @@ class Voucher extends MY_Controller
       "body"=>$body,
       "signitories"=>$this->voucher_model->get_voucher_signitories($raw_result[0]['fk_office_id']),
       'raiser_approver_info'=>[$voucher_raiser_name['full_name']],
-      'voucher_raised_date'=>$header['voucher_created_date'],
+      //'voucher_raised_date'=>$header['voucher_created_date'],
       'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)]
       //'chat_messages'=>$this->get_chat_messages($this->controller,$id),
     ];
