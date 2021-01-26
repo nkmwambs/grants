@@ -17,7 +17,7 @@
 
    // print_r(array_column($signitories,'voucher_signatory_name'));
 
-   print_r($raiser_approver_info);
+  // print_r($raiser_approver_info);
 ?>
 
 <div class="row">
