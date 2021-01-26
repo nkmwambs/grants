@@ -22,7 +22,21 @@ class Voucher extends MY_Controller
     $this->load->model('voucher_model');
     $this->load->library('voucher_library');
     $this->load->model('office_group_model');
+
+    $this->load->model('voucher_model');
   }
+
+  // /**
+  //  * get_signitories
+  //  * 
+  //  * This return signitories
+  //  * 
+  //  * @return Array - Array
+  //  * @author Onduso
+  //  */
+  // function get_signitories():Array {
+    
+  // }
 
   /**
    * get_voucher_type_effect
@@ -234,7 +248,8 @@ class Voucher extends MY_Controller
     return [
       "header"=>$header,
       "body"=>$body,
-      'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name],
+      "signitories"=>$this->voucher_model->get_voucher_signitories($raw_result[0]['fk_office_id']),
+      'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name]
       //'chat_messages'=>$this->get_chat_messages($this->controller,$id),
     ];
 
