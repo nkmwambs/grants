@@ -92,6 +92,10 @@ grants:
   
   tables:
 
+    voucher_signatory:
+      lookup_tables:
+        - account_system
+
     expense_account_office_association:
       lookup_tables:
         - office
