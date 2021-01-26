@@ -16,6 +16,8 @@
     $primary_key = hash_id($this->id,'decode');
 
    // print_r(array_column($signitories,'voucher_signatory_name'));
+
+   print_r($raiser_approver_info);
 ?>
 
 <div class="row">
@@ -138,7 +140,7 @@
                                     <td colspan='3'><?=number_format(array_sum(array_column($body,'totalcost')),2);?></td>
                                 </tr>
                                 <tr>
-                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?='Onduso';//$raiser_approver_info['voucher_raiser_name'];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
+                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
                                 </tr>
                                 <?php 
                                   if(sizeof($signitories)>0){
