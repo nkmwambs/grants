@@ -140,7 +140,7 @@
                                     <td colspan='3'><?=number_format(array_sum(array_column($body,'totalcost')),2);?></td>
                                 </tr>
                                 <tr>
-                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
+                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:___________________________</span></td>
                                 </tr>
                                 <?php 
                                   if(sizeof($signitories)>0){
@@ -148,7 +148,7 @@
                                       foreach($voucher_signitories as $voucher_signitory){
                                 ?>
                                     <tr>        
-                                        <td  colspan='3'><span style='font-weight:bold;'><?=$voucher_signitory//get_phrase('approved_by');?>:</span><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
+                                        <td  colspan='3'><span style='font-weight:bold;'><?=$voucher_signitory;?>: ________________________________</span><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:___________________________</span></td>
                                     </tr>
 
                                 <?php } }?>
