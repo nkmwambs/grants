@@ -140,7 +140,12 @@
                                     <td colspan='3'><?=number_format(array_sum(array_column($body,'totalcost')),2);?></td>
                                 </tr>
                                 <tr>
-                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:___________________________</span></td>
+                                 <td  colspan='2'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td></td><td colspan="2"><span style='font-weight:bold;'><?=get_phrase('raised_on')?>: </span><?php
+                                    //coverting msyql date to British date
+                                    $date = new DateTime($voucher_raised_date);
+                                    echo $date->format('d/m/Y');?>
+                                    
+                                 </td>
                                 </tr>
                                 <?php 
                                   if(sizeof($signitories)>0){
@@ -148,7 +153,7 @@
                                       foreach($voucher_signitories as $voucher_signitory){
                                 ?>
                                     <tr>        
-                                        <td  colspan='3'><span style='font-weight:bold;'><?=$voucher_signitory;?>: ________________________________</span><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:___________________________</span></td>
+                                        <td  colspan='2'><span style='font-weight:bold;'><?=$voucher_signitory;?>: </span>________________________________<td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td><td colspan="2"><span style='font-weight:bold;'><?=get_phrase('date')?>:</span>_____/____/<?= date('Y');?></td>
                                     </tr>
 
                                 <?php } }?>
