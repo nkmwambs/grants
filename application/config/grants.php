@@ -43,7 +43,7 @@
 
 	//Voucher configurations
 	//If true cheque numbers can be skipped as long as are in the active cheque book
-	$config['allow_skipping_of_cheque_leaves'] = false; 
+	$config['allow_skipping_of_cheque_leaves'] = true; 
 	$config['use_voucher_type_abbreviation'] = true; 
 	$config['only_allow_voucher_details_from_request'] = false;
 	$config['append_office_code_to_voucher_number'] = true;

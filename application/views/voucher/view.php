@@ -14,6 +14,10 @@
     $logged_role_id = $this->session->role_id;
     $table = 'voucher';
     $primary_key = hash_id($this->id,'decode');
+
+   // print_r(array_column($signitories,'voucher_signatory_name'));
+
+  // print_r($raiser_approver_info);
 ?>
 
 <div class="row">
@@ -136,12 +140,24 @@
                                     <td colspan='3'><?=number_format(array_sum(array_column($body,'totalcost')),2);?></td>
                                 </tr>
                                 <tr>
-                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info['voucher_raiser_name'];?><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
+                                 <td  colspan='2'><span style='font-weight:bold;'><?=get_phrase('raised_by');?>:</span> <?=$raiser_approver_info[0];?><td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td></td><td colspan="2"><span style='font-weight:bold;'><?=get_phrase('raised_on')?>: </span><?php
+                                    //coverting msyql date to British date
+                                    $date = new DateTime($header['voucher_created_date']);
+                                    echo $date->format('d/m/Y');?>
+                                    
+                                 </td>
                                 </tr>
-                                
-                                <tr>        
-                                    <td  colspan='3'><span style='font-weight:bold;'><?=get_phrase('approved_by');?>:</span><td> <td colspan='3'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span></td>
-                                </tr>
+                                <?php 
+                                  if(sizeof($signitories)>0){
+                                      $voucher_signitories=array_column($signitories,'voucher_signatory_name');
+                                      foreach($voucher_signitories as $voucher_signitory){
+                                        // $string_aprover_label=explode(' ',$voucher_signitory);
+                                ?>
+                                    <tr>        
+                                        <td  colspan='2'><span style='font-weight:bold;'><?=$voucher_signitory;?>: </span>________________________________<td> <td colspan='2'><span style='font-weight:bold;'><?=get_phrase('signature');?>:</span>___________________________</td><td colspan="2"><span style='font-weight:bold;'><?=get_phrase('date')?>:</span>_____/____/<?= date('Y');?></td>
+                                    </tr>
+
+                                <?php } }?>
                         </tfoot>
                     </table>
                    </div>
