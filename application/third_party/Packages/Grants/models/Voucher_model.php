@@ -457,7 +457,7 @@ class Voucher_model extends MY_Model
     $this->read_db->select(array('voucher_signatory_name'));
     $this->read_db->join('account_system','account_system.account_system_id=voucher_signatory.fk_account_system_id');
     $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
-    $this->read_db->where(array('office_id'=>$office));
+    $this->read_db->where(array('office_id'=>$office,'voucher_signatory_is_active'=>1));
     $voucher_signatory=$this->read_db->get('voucher_signatory')->result_array();
 
 
