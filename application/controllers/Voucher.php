@@ -26,17 +26,25 @@ class Voucher extends MY_Controller
     $this->load->model('voucher_model');
   }
 
-  // /**
-  //  * get_signitories
-  //  * 
-  //  * This return signitories
-  //  * 
-  //  * @return Array - Array
-  //  * @author Onduso
-  //  */
-  // function get_signitories():Array {
+  /**
+   * get_cheques_for_office
+   * 
+   * This return list of cheques
+   * 
+   * @return Array - Array
+   * @author Onduso
+   */
+  function get_cheques_for_office(Int $office, Int $bank_office_id, Int $cheque_number){
+
+    $cheque_number_exists=false;
+
+    $cheque_numbers=$this->voucher_model->get_cheques_for_office($office,$bank_office_id,$cheque_number);
     
-  // }
+    if($cheque_numbers>0){
+     $cheque_number_exists=true;
+    }
+    echo $cheque_number_exists;
+  }
 
   /**
    * get_voucher_type_effect
@@ -179,6 +187,7 @@ class Voucher extends MY_Controller
 
   // New voucher form methods
 
+  
   function get_transaction_voucher($id){
     
     $raw_result = $this->voucher_model->get_transaction_voucher(hash_id($id,'decode'));
@@ -312,7 +321,9 @@ class Voucher extends MY_Controller
     //    }    
  
     //   return $result; 
-    }else{
+    }
+ 
+    else{
       return parent::result($id = '');
     }
   }
