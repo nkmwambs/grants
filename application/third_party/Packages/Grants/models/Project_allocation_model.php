@@ -288,7 +288,6 @@ class Project_allocation_model extends MY_Model
       $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
 
       $not_exist_string_condition = "AND fk_project_id = ".hash_id($this->id,'decode');
-      //$this->read_db->where(['fk_context_definition_id'=>1]);
       $this->grants_model->get_unused_lookup_values($lookup_values,'office','project_allocation',$not_exist_string_condition);
     }else{
       $lookup_values['project'] = $this->read_db->get_where('project')->result_array();
