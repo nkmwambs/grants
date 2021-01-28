@@ -283,7 +283,7 @@ $(".btn-save").on('click',function(){
     save();
 });
 
-$("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").on('keyup',function(){
+$("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").bind('keyup change',function(){
     var qty = $("#budget_item_quantity").val();
     var unit_cost = $("#budget_item_unit_cost").val();
     var often = $("#budget_item_often").val();

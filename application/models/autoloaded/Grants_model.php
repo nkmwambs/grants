@@ -2018,6 +2018,11 @@ function get_unused_lookup_values(&$lookup_values,$lookup_table, $association_ta
     $this->read_db->where(array('office_is_readonly'=>0));
   }
   
+  if($lookup_table == 'office' && !$this->session->system_admin){
+      $hierarchy_offices = array_column($this->session->hierarchy_offices,'office_id');
+      $this->read_db->where_in('office_id',$hierarchy_offices);
+  }
+  
   $this->read_db->select(array($lookup_table.'_id',$lookup_table.'_name'));
   $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
   
