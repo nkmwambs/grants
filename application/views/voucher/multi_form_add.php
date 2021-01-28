@@ -10,6 +10,9 @@
 
 <?php 
     //print_r($this->cheque_book_model->get_cheque_book_account_system_setting("allow_skipping_of_cheque_leaves"));
+    //extract($result);
+    //print_r($result);
+
 ?>
 
 
@@ -620,6 +623,28 @@ function populate_select(obj,parent_elem,default_html_text = 'Select an option')
 
     parent_elem.append(option_html);
 }
+//Modified by Onduso on 28/1/2021
+$("#cheque_number").on('change',function(){
+
+    var office_id = $("#office").val().trim();
+    var bank_office_id = $("#bank").val().trim();
+    var cheque_number=$(this).val().trim();
+
+    var url = "<?=base_url();?>Voucher/get_cheques_for_office/" + office_id + "/" + bank_office_id+"/"+cheque_number;
+
+   // alert(url);
+
+    $.get(url,function(response){
+        if(response){
+          alert('The cheque number is already used. Choose another one');
+
+          check_cheque_validity();
+
+        }
+        
+    });
+    
+});
 
 function add_options_to_bank_select(response_office_bank, show_cash_accounts = false){
     if(!show_cash_accounts) $("#cash_account").closest('span').addClass('hidden');

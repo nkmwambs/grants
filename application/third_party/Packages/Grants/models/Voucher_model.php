@@ -441,6 +441,53 @@ class Voucher_model extends MY_Model
   }
 
   /**
+   * Get the signitories
+   * 
+   * Gives an array of the voucher signitories
+   * 
+   * @param Int $office - the id office
+   * @return Array - An array
+   * @author LOnduso
+   */
+  function get_voucher_signitories(Int $office):Array{
+
+    $voucher_signatory = array();
+
+    //Get the signitories of a given office of a given accounting system
+    $this->read_db->select(array('voucher_signatory_name'));
+    $this->read_db->join('account_system','account_system.account_system_id=voucher_signatory.fk_account_system_id');
+    $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $this->read_db->where(array('office_id'=>$office));
+    $voucher_signatory=$this->read_db->get('voucher_signatory')->result_array();
+
+
+    return $voucher_signatory;
+  }
+
+  /**
+   * Get the get_cheques_for_office
+   * 
+   * Gives an array of the voucher signitories
+   * 
+   * @param Int $office - the id office
+   * @return Array - An array
+   * @author LOnduso
+   */
+  function get_cheques_for_office(Int $office, Int $bank_office_id,Int $cheque_number):Int{
+    
+     
+
+    //Get the cheque numbers for an office for a given bank office
+      $this->read_db->select(array('voucher_cheque_number'));
+       $this->read_db->where(array('fk_office_id'=>$office,'fk_office_bank_id'=>$bank_office_id, 'voucher_cheque_number'=>$cheque_number));
+       $cheque_numbers=$this->read_db->get('voucher')->num_rows();
+
+      return $cheque_numbers;
+  
+  }
+
+
+  /**
    * Get Approveable Item Last Status
    * 
    * Gives the Last Approval Status ID of the item as the set approval workflow
