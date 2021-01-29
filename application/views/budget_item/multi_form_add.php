@@ -6,6 +6,7 @@
 
 <?php 
 //print_r($result);
+//print_r(financial_year_quarter_months(1));
 
 extract($result);
 
@@ -113,7 +114,7 @@ extract($result);
                                     <td><div class='btn btn-danger' id='btn-clear'><?=get_phrase('clear');?></div></td>
                                     
                                     <?php foreach($months as $month){ ?>
-                                        <td><input type='text' id='' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
+                                        <td><input type='text' <?=in_array($month->month_id,$months_to_freeze)?"readonly":'';?> id='' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
                                     <?php }?>
                                 
                                 </tr>
@@ -191,7 +192,7 @@ $('.month_spread').focusout(function(){
 });
 
 $('.month_spread').focusin(function(){
-    if($(this).val() == 0){
+    if($(this).val() == 0 && !$(this).attr('readonly')){
         $(this).val('');
     }
 });

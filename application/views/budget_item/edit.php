@@ -107,7 +107,7 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                                     
                                     <?php foreach($months as $month){ ?>
                                         <td>
-                                        <input type='text' id='' value='<?=$budget_item_details[$month->month_number]['budget_item_detail_amount'];?>' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' />
+                                        <input type='text' <?=in_array($month->month_id,$months_to_freeze)?"readonly":'';?> id='' value='<?=$budget_item_details[$month->month_number]['budget_item_detail_amount'];?>' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' />
                                         </td>
                                     <?php }?>
                                 
@@ -177,7 +177,7 @@ $('.month_spread').focusout(function(){
 });
 
 $('.month_spread').focusin(function(){
-    if($(this).val() == 0){
+    if($(this).val() == 0 && !$(this).attr('readonly')){
         $(this).val('');
     }
 });
