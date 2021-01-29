@@ -31,7 +31,7 @@ class Budget_limit_model extends MY_Model{
     function index(){}
 
     public function lookup_tables(){
-        return array('office','budget_tag');
+        return array('office','budget_tag','income_account');
     }
 
     public function detail_tables(){}

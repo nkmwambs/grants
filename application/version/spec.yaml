@@ -96,6 +96,7 @@ grants:
       lookup_tables:
         - office
         - budget_tag
+        - income_account
 
     voucher_signatory:
       lookup_tables:
