@@ -3779,7 +3779,49 @@ INSERT INTO `approval` (`approval_id`, `approval_track_number`, `approval_name`,
 (3724,	'APAL-24541',	'Approval Ticket # APAL-24541',	38,	456,	35,	'2021-01-26',	'2021-01-26 07:56:49',	35),
 (3725,	'APAL-54986',	'Approval Ticket # APAL-54986',	33,	463,	35,	'2021-01-26',	'2021-01-26 07:56:49',	35),
 (3726,	'APAL-9908',	'Approval Ticket # APAL-9908',	80,	396,	35,	'2021-01-26',	'2021-01-26 07:56:49',	35),
-(3727,	'APAL-61789',	'Approval Ticket # APAL-61789',	81,	403,	35,	'2021-01-26',	'2021-01-26 07:56:49',	35);
+(3727,	'APAL-61789',	'Approval Ticket # APAL-61789',	81,	403,	35,	'2021-01-26',	'2021-01-26 07:56:49',	35),
+(3728,	'APAL-53164',	'Approval Ticket # APAL-53164',	59,	0,	1,	'2021-01-26',	'2021-01-26 08:27:47',	1),
+(3729,	'APAL-72574',	'Approval Ticket # APAL-72574',	59,	0,	1,	'2021-01-26',	'2021-01-26 08:27:47',	1),
+(3730,	'APAL-33898',	'Approval Ticket # APAL-33898',	59,	0,	1,	'2021-01-26',	'2021-01-26 08:27:47',	1),
+(3731,	'APAL-21705',	'Approval Ticket # APAL-21705',	59,	0,	1,	'2021-01-26',	'2021-01-26 08:27:47',	1),
+(3732,	'APAL-56523',	'Approval Ticket # APAL-56523',	105,	565,	1,	'2021-01-26',	'2021-01-26 08:29:33',	1),
+(3733,	'APAL-48054',	'Approval Ticket # APAL-48054',	105,	565,	1,	'2021-01-26',	'2021-01-26 08:30:10',	1),
+(3734,	'APAL-86436',	'Approval Ticket # APAL-86436',	91,	212,	1,	'2021-01-28',	'2021-01-28 09:57:39',	1),
+(3735,	'APAL-18160',	'Approval Ticket # APAL-18160',	59,	0,	1,	'2021-01-29',	'2021-01-29 06:18:58',	1),
+(3736,	'APAL-78324',	'Approval Ticket # APAL-78324',	59,	0,	1,	'2021-01-29',	'2021-01-29 06:18:58',	1),
+(3737,	'APAL-26814',	'Approval Ticket # APAL-26814',	59,	0,	1,	'2021-01-29',	'2021-01-29 06:18:58',	1),
+(3738,	'APAL-24420',	'Approval Ticket # APAL-24420',	59,	0,	1,	'2021-01-29',	'2021-01-29 06:18:58',	1),
+(3739,	'APAL-9979',	'Approval Ticket # APAL-9979',	72,	335,	1,	'2021-01-29',	'2021-01-29 06:32:13',	1),
+(3740,	'APAL-47868',	'Approval Ticket # APAL-47868',	106,	593,	11,	'2021-01-29',	'2021-01-29 10:25:12',	11),
+(3741,	'APAL-7054',	'Approval Ticket # APAL-7054',	6,	202,	35,	'2021-01-29',	'2021-01-29 11:57:50',	35),
+(3742,	'APAL-19189',	'Approval Ticket # APAL-19189',	97,	361,	35,	'2021-01-29',	'2021-01-29 11:57:50',	35),
+(3743,	'APAL-34246',	'Approval Ticket # APAL-34246',	6,	202,	35,	'2021-01-29',	'2021-01-29 11:59:56',	35),
+(3744,	'APAL-36632',	'Approval Ticket # APAL-36632',	7,	348,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3745,	'APAL-28013',	'Approval Ticket # APAL-28013',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3746,	'APAL-88112',	'Approval Ticket # APAL-88112',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3747,	'APAL-81304',	'Approval Ticket # APAL-81304',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3748,	'APAL-59986',	'Approval Ticket # APAL-59986',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3749,	'APAL-9155',	'Approval Ticket # APAL-9155',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3750,	'APAL-19946',	'Approval Ticket # APAL-19946',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3751,	'APAL-41668',	'Approval Ticket # APAL-41668',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3752,	'APAL-10464',	'Approval Ticket # APAL-10464',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3753,	'APAL-21551',	'Approval Ticket # APAL-21551',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3754,	'APAL-32728',	'Approval Ticket # APAL-32728',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3755,	'APAL-70308',	'Approval Ticket # APAL-70308',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3756,	'APAL-65455',	'Approval Ticket # APAL-65455',	8,	353,	35,	'2021-01-29',	'2021-01-29 12:18:07',	35),
+(3757,	'APAL-25363',	'Approval Ticket # APAL-25363',	7,	348,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3758,	'APAL-30860',	'Approval Ticket # APAL-30860',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3759,	'APAL-53035',	'Approval Ticket # APAL-53035',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3760,	'APAL-52677',	'Approval Ticket # APAL-52677',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3761,	'APAL-8537',	'Approval Ticket # APAL-8537',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3762,	'APAL-57773',	'Approval Ticket # APAL-57773',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3763,	'APAL-77749',	'Approval Ticket # APAL-77749',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3764,	'APAL-87126',	'Approval Ticket # APAL-87126',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3765,	'APAL-52697',	'Approval Ticket # APAL-52697',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3766,	'APAL-23796',	'Approval Ticket # APAL-23796',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3767,	'APAL-75607',	'Approval Ticket # APAL-75607',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3768,	'APAL-76029',	'Approval Ticket # APAL-76029',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35),
+(3769,	'APAL-34289',	'Approval Ticket # APAL-34289',	8,	353,	35,	'2021-01-29',	'2021-01-29 14:05:23',	35);
 
 DROP TABLE IF EXISTS `approval_flow`;
 CREATE TABLE `approval_flow` (
@@ -4096,7 +4138,15 @@ INSERT INTO `approval_flow` (`approval_flow_id`, `approval_flow_name`, `approval
 (292,	'Global Account System account system setting workflow',	'APOW-13213',	104,	1,	1,	'2021-01-25',	1,	'2021-01-25 10:27:27',	NULL,	NULL),
 (293,	'Africa Region Accounting system account system setting workflow',	'APOW-11499',	104,	2,	1,	'2021-01-25',	1,	'2021-01-25 10:27:27',	NULL,	NULL),
 (294,	'Kenya Accounting System account system setting workflow',	'APOW-47293',	104,	3,	1,	'2021-01-25',	1,	'2021-01-25 10:27:27',	NULL,	NULL),
-(295,	'Tanzania Accounting System account system setting workflow',	'APOW-69626',	104,	4,	1,	'2021-01-25',	1,	'2021-01-25 10:27:27',	NULL,	NULL);
+(295,	'Tanzania Accounting System account system setting workflow',	'APOW-69626',	104,	4,	1,	'2021-01-25',	1,	'2021-01-25 10:27:27',	NULL,	NULL),
+(296,	'Global Account System voucher signatory workflow',	'APOW-59649',	105,	1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	NULL,	NULL),
+(297,	'Africa Region Accounting system voucher signatory workflow',	'APOW-19596',	105,	2,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	NULL,	NULL),
+(298,	'Kenya Accounting System voucher signatory workflow',	'APOW-48833',	105,	3,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	NULL,	NULL),
+(299,	'Tanzania Accounting System voucher signatory workflow',	'APOW-48121',	105,	4,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	NULL,	NULL),
+(300,	'Global Account System budget limit workflow',	'APOW-29072',	106,	1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	NULL,	NULL),
+(301,	'Africa Region Accounting system budget limit workflow',	'APOW-85040',	106,	2,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	NULL,	NULL),
+(302,	'Kenya Accounting System budget limit workflow',	'APOW-25240',	106,	3,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	NULL,	NULL),
+(303,	'Tanzania Accounting System budget limit workflow',	'APOW-36998',	106,	4,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	NULL,	NULL);
 
 DROP TABLE IF EXISTS `approve_item`;
 CREATE TABLE `approve_item` (
@@ -4218,7 +4268,9 @@ INSERT INTO `approve_item` (`approve_item_id`, `approve_item_track_number`, `app
 (101,	'APEM-27169',	'cheque_injection',	0,	'2021-01-25',	1,	'2021-01-25 07:17:17',	1,	NULL,	NULL),
 (102,	'APEM-52658',	'expense_account_office_association',	0,	'2021-01-25',	1,	'2021-01-25 07:17:18',	1,	NULL,	NULL),
 (103,	'APEM-18951',	'user_switch',	0,	'2021-01-25',	1,	'2021-01-25 07:17:19',	1,	NULL,	NULL),
-(104,	'APEM-47630',	'account_system_setting',	0,	'2021-01-25',	1,	'2021-01-25 10:27:27',	1,	NULL,	NULL);
+(104,	'APEM-47630',	'account_system_setting',	0,	'2021-01-25',	1,	'2021-01-25 10:27:27',	1,	NULL,	NULL),
+(105,	'APEM-75593',	'voucher_signatory',	0,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(106,	'APEM-5221',	'budget_limit',	0,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `attachment`;
 CREATE TABLE `attachment` (
@@ -4341,7 +4393,8 @@ INSERT INTO `budget` (`budget_id`, `budget_track_number`, `budget_name`, `fk_off
 (59,	'BUET-62632',	'Budget # BUET-62632',	26,	2,	2546,	202,	23,	34,	'2020-12-15',	34,	NULL),
 (60,	'BUET-20610',	'Budget # BUET-20610',	31,	2,	2548,	202,	21,	44,	'2020-12-15',	44,	NULL),
 (61,	'BUET-45275',	'Budget # BUET-45275',	25,	3,	2654,	202,	22,	32,	'2020-12-15',	32,	NULL),
-(63,	'BUET-5999',	'Budget # BUET-5999',	21,	3,	3635,	202,	21,	18,	'2020-12-18',	18,	NULL);
+(63,	'BUET-5999',	'Budget # BUET-5999',	21,	3,	3635,	202,	21,	18,	'2020-12-18',	18,	NULL),
+(64,	'BUET-14064',	'Budget # BUET-14064',	27,	3,	3741,	202,	21,	35,	'2021-01-29',	35,	NULL);
 
 DROP TABLE IF EXISTS `budget_item`;
 CREATE TABLE `budget_item` (
@@ -4481,7 +4534,9 @@ INSERT INTO `budget_item` (`budget_item_id`, `budget_item_track_number`, `budget
 (106,	'BUEM-75733',	'Budget_item # BUEM-40698',	21,	1900000,	29,	'school uniform form one',	25,	38000.00,	2,	348,	2628,	14,	35,	35,	'2020-12-15',	'0000-00-00 00:00:00'),
 (107,	'BUEM-54142',	'Budget_item # BUEM-59743',	42,	950000,	29,	'Center Uniform for Children and Youth',	25,	38000.00,	1,	349,	2641,	7,	22,	22,	'2020-12-15',	'0000-00-00 00:00:00'),
 (108,	'BUEM-44340',	'Budget_item # BUEM-61142',	60,	180000,	29,	'School Uniform for Primary School',	2,	45000.00,	2,	349,	3206,	48,	41,	41,	'2020-12-17',	'0000-00-00 00:00:00'),
-(109,	'BUEM-74949',	'Budget_item # BUEM-39689',	60,	1200,	30,	'Test',	1,	1200.00,	1,	349,	3622,	48,	41,	41,	'2020-12-18',	'0000-00-00 00:00:00');
+(109,	'BUEM-74949',	'Budget_item # BUEM-39689',	60,	1200,	30,	'Test',	1,	1200.00,	1,	349,	3622,	48,	41,	41,	'2020-12-18',	'0000-00-00 00:00:00'),
+(110,	'BUEM-63833',	'Budget_item # BUEM-25765',	64,	1125000,	28,	'School Fees for High School Students ',	15,	25000.00,	3,	348,	3744,	14,	35,	35,	'2021-01-29',	'0000-00-00 00:00:00'),
+(111,	'BUEM-16491',	'Budget_item # BUEM-67824',	64,	38500,	28,	'Test Limit',	1,	38500.00,	1,	348,	3757,	14,	35,	35,	'2021-01-29',	'0000-00-00 00:00:00');
 
 DROP TABLE IF EXISTS `budget_item_detail`;
 CREATE TABLE `budget_item_detail` (
@@ -5777,7 +5832,61 @@ INSERT INTO `budget_item_detail` (`budget_item_detail_id`, `budget_item_detail_t
 (1305,	'BUIL-66221',	'Budget_item_detail # BUIL-77006',	109,	3,	353,	3631,	0.00,	'2020-12-18',	41,	41,	'0000-00-00 00:00:00'),
 (1306,	'BUIL-64661',	'Budget_item_detail # BUIL-81280',	109,	4,	353,	3632,	0.00,	'2020-12-18',	41,	41,	'0000-00-00 00:00:00'),
 (1307,	'BUIL-32101',	'Budget_item_detail # BUIL-69734',	109,	5,	353,	3633,	0.00,	'2020-12-18',	41,	41,	'0000-00-00 00:00:00'),
-(1308,	'BUIL-36967',	'Budget_item_detail # BUIL-16710',	109,	6,	353,	3634,	0.00,	'2020-12-18',	41,	41,	'0000-00-00 00:00:00');
+(1308,	'BUIL-36967',	'Budget_item_detail # BUIL-16710',	109,	6,	353,	3634,	0.00,	'2020-12-18',	41,	41,	'0000-00-00 00:00:00'),
+(1309,	'BUIL-73767',	'Budget_item_detail # BUIL-28475',	110,	7,	353,	3745,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1310,	'BUIL-82525',	'Budget_item_detail # BUIL-86751',	110,	8,	353,	3746,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1311,	'BUIL-62386',	'Budget_item_detail # BUIL-71847',	110,	9,	353,	3747,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1312,	'BUIL-54696',	'Budget_item_detail # BUIL-44003',	110,	10,	353,	3748,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1313,	'BUIL-9159',	'Budget_item_detail # BUIL-70995',	110,	11,	353,	3749,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1314,	'BUIL-64990',	'Budget_item_detail # BUIL-83216',	110,	12,	353,	3750,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1315,	'BUIL-78307',	'Budget_item_detail # BUIL-29758',	110,	1,	353,	3751,	375000.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1316,	'BUIL-13324',	'Budget_item_detail # BUIL-36133',	110,	2,	353,	3752,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1317,	'BUIL-43887',	'Budget_item_detail # BUIL-83973',	110,	3,	353,	3753,	375000.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1318,	'BUIL-30853',	'Budget_item_detail # BUIL-28075',	110,	4,	353,	3754,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1319,	'BUIL-12329',	'Budget_item_detail # BUIL-70444',	110,	5,	353,	3755,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1320,	'BUIL-76410',	'Budget_item_detail # BUIL-42232',	110,	6,	353,	3756,	375000.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1321,	'BUIL-48097',	'Budget_item_detail # BUIL-47726',	111,	7,	353,	3758,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1322,	'BUIL-10050',	'Budget_item_detail # BUIL-30938',	111,	8,	353,	3759,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1323,	'BUIL-55032',	'Budget_item_detail # BUIL-87145',	111,	9,	353,	3760,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1324,	'BUIL-9649',	'Budget_item_detail # BUIL-33408',	111,	10,	353,	3761,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1325,	'BUIL-74560',	'Budget_item_detail # BUIL-55396',	111,	11,	353,	3762,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1326,	'BUIL-17641',	'Budget_item_detail # BUIL-85997',	111,	12,	353,	3763,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1327,	'BUIL-85069',	'Budget_item_detail # BUIL-3186',	111,	1,	353,	3764,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1328,	'BUIL-45379',	'Budget_item_detail # BUIL-71166',	111,	2,	353,	3765,	38500.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1329,	'BUIL-65293',	'Budget_item_detail # BUIL-32847',	111,	3,	353,	3766,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1330,	'BUIL-4861',	'Budget_item_detail # BUIL-3390',	111,	4,	353,	3767,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1331,	'BUIL-63376',	'Budget_item_detail # BUIL-73534',	111,	5,	353,	3768,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00'),
+(1332,	'BUIL-73946',	'Budget_item_detail # BUIL-40542',	111,	6,	353,	3769,	0.00,	'2021-01-29',	35,	35,	'0000-00-00 00:00:00');
+
+DROP TABLE IF EXISTS `budget_limit`;
+CREATE TABLE `budget_limit` (
+  `budget_limit_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_limit_track_number` varchar(100) NOT NULL,
+  `budget_limit_name` varchar(100) NOT NULL,
+  `fk_office_id` int(100) NOT NULL,
+  `budget_limit_year` int(100) NOT NULL,
+  `fk_budget_tag_id` int(100) NOT NULL,
+  `fk_income_account_id` int(11) NOT NULL,
+  `budget_limit_amount` decimal(10,2) NOT NULL,
+  `budget_limit_created_date` date DEFAULT NULL,
+  `budget_limit_created_by` int(100) DEFAULT NULL,
+  `budget_limit_last_modified_by` int(100) DEFAULT NULL,
+  `budget_limit_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`budget_limit_id`),
+  KEY `fk_office_id` (`fk_office_id`),
+  KEY `budget_limit_year` (`budget_limit_year`),
+  KEY `fk_budget_tag_id` (`fk_budget_tag_id`),
+  KEY `fk_income_account_id` (`fk_income_account_id`),
+  CONSTRAINT `budget_limit_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `budget_limit_ibfk_2` FOREIGN KEY (`budget_limit_year`) REFERENCES `budget` (`budget_id`),
+  CONSTRAINT `budget_limit_ibfk_3` FOREIGN KEY (`fk_budget_tag_id`) REFERENCES `budget_tag` (`budget_tag_id`),
+  CONSTRAINT `budget_limit_ibfk_4` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `budget_limit` (`budget_limit_id`, `budget_limit_track_number`, `budget_limit_name`, `fk_office_id`, `budget_limit_year`, `fk_budget_tag_id`, `fk_income_account_id`, `budget_limit_amount`, `budget_limit_created_date`, `budget_limit_created_by`, `budget_limit_last_modified_by`, `budget_limit_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'BUIT-28423',	'Budget_limit # BUIT-28423',	27,	21,	3,	3,	5000000.00,	'2021-01-29',	11,	11,	'2021-01-29 10:25:12',	3740,	593);
 
 DROP TABLE IF EXISTS `budget_projection`;
 CREATE TABLE `budget_projection` (
@@ -5826,7 +5935,8 @@ INSERT INTO `budget_projection` (`budget_projection_id`, `budget_projection_name
 (24,	'Budget_projection # BUON-9374',	'BUON-67388',	59,	34,	'2020-12-15',	34,	'2020-12-15 10:30:39',	2547,	361),
 (25,	'Budget_projection # BUON-76597',	'BUON-13023',	60,	44,	'2020-12-15',	44,	'2020-12-15 10:47:04',	2549,	361),
 (26,	'Budget_projection # BUON-39200',	'BUON-82539',	61,	32,	'2020-12-15',	32,	'2020-12-15 12:05:16',	2655,	361),
-(27,	'Budget_projection # BUON-14214',	'BUON-35402',	63,	18,	'2020-12-18',	18,	'2020-12-18 15:21:33',	3636,	361);
+(27,	'Budget_projection # BUON-14214',	'BUON-35402',	63,	18,	'2020-12-18',	18,	'2020-12-18 15:21:33',	3636,	361),
+(28,	'Budget_projection # BUON-23310',	'BUON-20235',	64,	35,	'2021-01-29',	35,	'2021-01-29 11:57:50',	3742,	361);
 
 DROP TABLE IF EXISTS `budget_projection_income_account`;
 CREATE TABLE `budget_projection_income_account` (
@@ -6761,13 +6871,13 @@ INSERT INTO `expense_account` (`expense_account_id`, `expense_account_track_numb
 (76,	'EXNT-2109',	'E211 - WaSH (WTP)',	'E211 - WaSH (WTP)',	'E211',	0,	1,	0,	40,	755,	288,	'2020-12-10',	NULL,	11,	11),
 (77,	'EXNT-53651',	'E212 - Church Planting (CPT)',	'E212 - Church Planting (CPT)',	'E212',	0,	1,	0,	41,	756,	288,	'2020-12-10',	NULL,	11,	11),
 (78,	'EXNT-17507',	'E213 - Disaster Response (DRF)',	'E213 - Disaster Response (DRF)',	'E213',	0,	1,	0,	42,	757,	288,	'2020-12-10',	NULL,	11,	11),
-(79,	'EXNT-72089',	'E091 - Local Donation& Church Contribution',	'E091 - Local Donation& Church Contribution',	'E091',	0,	1,	0,	43,	758,	288,	'2020-12-10',	NULL,	11,	11),
-(80,	'EXNT-75527',	'E092 - Parents Contribution',	'E092 - Parents Contribution',	'E092',	0,	1,	0,	44,	759,	288,	'2020-12-10',	NULL,	11,	11),
-(81,	'EXNT-57132',	'E093 - Youth accounts',	'E093 - Youth accounts',	'E093',	0,	1,	0,	45,	760,	288,	'2020-12-10',	NULL,	11,	11),
-(82,	'EXNT-44376',	'E094 – Government',	'E094 – Government',	'E094',	0,	1,	0,	46,	761,	288,	'2020-12-10',	NULL,	11,	11),
-(83,	'EXNT-3426',	'E095 – NGOs',	'E095 – NGOs',	'E095',	0,	1,	0,	47,	762,	288,	'2020-12-10',	NULL,	11,	11),
-(84,	'EXNT-85444',	'E096 - Project generated income (Child support /CIV)',	'E096 - Project generated income (Child support /CIV)',	'E096',	0,	1,	0,	48,	763,	288,	'2020-12-10',	NULL,	11,	11),
-(85,	'EXNT-22615',	'E097 - Others ',	'E097 - Others ',	'E097',	0,	1,	0,	49,	764,	288,	'2020-12-10',	NULL,	11,	11),
+(79,	'EXNT-72089',	'E091 - Local Donation& Church Contribution',	'E091 - Local Donation& Church Contribution',	'E091',	0,	1,	1,	43,	758,	288,	'2020-12-10',	NULL,	11,	11),
+(80,	'EXNT-75527',	'E092 - Parents Contribution',	'E092 - Parents Contribution',	'E092',	0,	1,	1,	44,	759,	288,	'2020-12-10',	NULL,	11,	11),
+(81,	'EXNT-57132',	'E093 - Youth accounts',	'E093 - Youth accounts',	'E093',	0,	1,	1,	45,	760,	288,	'2020-12-10',	NULL,	11,	11),
+(82,	'EXNT-44376',	'E094 – Government',	'E094 – Government',	'E094',	0,	1,	1,	46,	761,	288,	'2020-12-10',	NULL,	11,	11),
+(83,	'EXNT-3426',	'E095 – NGOs',	'E095 – NGOs',	'E095',	0,	1,	1,	47,	762,	288,	'2020-12-10',	NULL,	11,	11),
+(84,	'EXNT-85444',	'E096 - Project generated income (Child support /CIV)',	'E096 - Project generated income (Child support /CIV)',	'E096',	0,	1,	1,	48,	763,	288,	'2020-12-10',	NULL,	11,	11),
+(85,	'EXNT-22615',	'E097 - Others ',	'E097 - Others ',	'E097',	0,	1,	1,	49,	764,	288,	'2020-12-10',	NULL,	11,	11),
 (86,	'EXNT-71658',	'E99 - Support Funds Transfer',	'Support Funds Transfer',	'E99',	0,	1,	0,	1,	348,	285,	'2021-01-25',	NULL,	1,	1);
 
 DROP TABLE IF EXISTS `expense_account_office_association`;
@@ -6940,7 +7050,7 @@ INSERT INTO `income_account` (`income_account_id`, `income_account_track_number`
 (21,	'INNT-88388',	'R101 - AIDS Medical (HIV-MED)',	'R101 - AIDS Medical (HIV-MED)',	'R101',	1,	0,	0,	4,	'2020-12-09',	NULL,	11,	11,	733,	284),
 (22,	'INNT-27408',	'R070 - Highly Vulnerable Children (HVC)',	'R070 - Highly Vulnerable Children (HVC)',	'R070',	1,	0,	0,	4,	'2020-12-09',	NULL,	11,	11,	734,	284),
 (23,	'INNT-7833',	'R080 - Medical (HH)',	'R080 - Medical (HH)',	'R080',	1,	0,	0,	4,	'2020-12-09',	NULL,	11,	11,	735,	284),
-(24,	'INNT-25031',	'R099 - Non- Compassion Funds',	'R099 - Non- Compassion Funds',	'R099',	1,	0,	0,	4,	'2020-12-09',	NULL,	11,	11,	736,	284),
+(24,	'INNT-25031',	'R099 - Non- Compassion Funds',	'R099 - Non- Compassion Funds',	'R099',	1,	1,	0,	4,	'2020-12-09',	NULL,	11,	11,	736,	284),
 (25,	'INNT-78091',	'R033 - Project Gifts',	'R033 - Project Gifts',	'R033',	1,	0,	0,	4,	'2020-12-10',	NULL,	11,	11,	740,	284),
 (26,	'INNT-46263',	'R104 - Highly Vulnerable Children- Child Protection (HVC-CPR)',	'R104 - Highly Vulnerable Children- Child Protection (HVC-CPR)',	'R104',	1,	0,	0,	4,	'2020-12-10',	NULL,	11,	11,	741,	284),
 (27,	'INNT-22844',	'R105 - Highly Vulnerable Children-Ongoing Support (HVC-CDI)',	'R105 - Highly Vulnerable Children-Ongoing Support (HVC-CDI)',	'R105',	1,	0,	0,	4,	'2020-12-10',	NULL,	11,	11,	742,	284),
@@ -7155,7 +7265,9 @@ INSERT INTO `menu` (`menu_id`, `menu_name`, `menu_derivative_controller`, `menu_
 (101,	'Cheque_injection',	'Cheque_injection',	1,	NULL,	'2021-01-25 07:17:17',	NULL,	NULL,	NULL,	NULL),
 (102,	'Expense_account_office_association',	'Expense_account_office_association',	1,	NULL,	'2021-01-25 07:17:18',	NULL,	NULL,	NULL,	NULL),
 (103,	'User_switch',	'User_switch',	1,	NULL,	'2021-01-25 07:17:18',	NULL,	NULL,	NULL,	NULL),
-(104,	'Account_system_setting',	'Account_system_setting',	1,	NULL,	'2021-01-25 10:27:27',	NULL,	NULL,	NULL,	NULL);
+(104,	'Account_system_setting',	'Account_system_setting',	1,	NULL,	'2021-01-25 10:27:27',	NULL,	NULL,	NULL,	NULL),
+(105,	'Voucher_signatory',	'Voucher_signatory',	1,	NULL,	'2021-01-26 08:27:47',	NULL,	NULL,	NULL,	NULL),
+(106,	'Budget_limit',	'Budget_limit',	1,	NULL,	'2021-01-29 06:18:58',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `menu_user_order`;
 CREATE TABLE `menu_user_order` (
@@ -10945,7 +11057,18 @@ INSERT INTO `menu_user_order` (`menu_user_order_id`, `fk_user_id`, `menu_user_or
 (3772,	35,	NULL,	NULL,	101,	1,	179,	0,	NULL,	'2021-01-26 07:27:29',	NULL,	NULL,	NULL,	NULL),
 (3773,	35,	NULL,	NULL,	102,	1,	180,	0,	NULL,	'2021-01-26 07:27:29',	NULL,	NULL,	NULL,	NULL),
 (3774,	35,	NULL,	NULL,	103,	1,	181,	0,	NULL,	'2021-01-26 07:27:29',	NULL,	NULL,	NULL,	NULL),
-(3775,	35,	NULL,	NULL,	104,	1,	182,	0,	NULL,	'2021-01-26 07:27:29',	NULL,	NULL,	NULL,	NULL);
+(3775,	35,	NULL,	NULL,	104,	1,	182,	0,	NULL,	'2021-01-26 07:27:29',	NULL,	NULL,	NULL,	NULL),
+(3776,	1,	NULL,	NULL,	105,	1,	187,	0,	NULL,	'2021-01-26 08:27:47',	NULL,	NULL,	NULL,	NULL),
+(3777,	11,	NULL,	NULL,	101,	1,	179,	0,	NULL,	'2021-01-28 09:58:55',	NULL,	NULL,	NULL,	NULL),
+(3778,	11,	NULL,	NULL,	102,	1,	180,	0,	NULL,	'2021-01-28 09:58:55',	NULL,	NULL,	NULL,	NULL),
+(3779,	11,	NULL,	NULL,	103,	1,	181,	0,	NULL,	'2021-01-28 09:58:55',	NULL,	NULL,	NULL,	NULL),
+(3780,	11,	NULL,	NULL,	104,	1,	182,	0,	NULL,	'2021-01-28 09:58:55',	NULL,	NULL,	NULL,	NULL),
+(3781,	11,	NULL,	NULL,	105,	1,	183,	0,	NULL,	'2021-01-28 09:58:55',	NULL,	NULL,	NULL,	NULL),
+(3782,	35,	NULL,	NULL,	105,	1,	187,	0,	NULL,	'2021-01-28 10:02:00',	NULL,	NULL,	NULL,	NULL),
+(3783,	5,	NULL,	NULL,	105,	1,	187,	0,	NULL,	'2021-01-28 10:38:16',	NULL,	NULL,	NULL,	NULL),
+(3784,	1,	NULL,	NULL,	106,	1,	189,	0,	NULL,	'2021-01-29 06:18:59',	NULL,	NULL,	NULL,	NULL),
+(3785,	11,	NULL,	NULL,	106,	1,	189,	0,	NULL,	'2021-01-29 06:43:52',	NULL,	NULL,	NULL,	NULL),
+(3786,	35,	NULL,	NULL,	106,	1,	189,	0,	NULL,	'2021-01-29 11:56:41',	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -12061,7 +12184,15 @@ INSERT INTO `permission` (`permission_id`, `permission_track_number`, `permissio
 (393,	'PEON-79624',	'Create Account system setting',	'Create Account system setting',	1,	1,	1,	'',	1,	104,	3675,	0,	'2021-01-25',	1,	NULL,	'2021-01-25 10:27:27',	1),
 (394,	'PEON-80081',	'Read Account system setting',	'Read Account system setting',	1,	2,	1,	'',	1,	104,	3676,	0,	'2021-01-25',	1,	NULL,	'2021-01-25 10:27:27',	1),
 (395,	'PEON-4797',	'Update Account system setting',	'Update Account system setting',	1,	3,	1,	'',	1,	104,	3677,	0,	'2021-01-25',	1,	NULL,	'2021-01-25 10:27:27',	1),
-(396,	'PEON-83893',	'Delete Account system setting',	'Delete Account system setting',	1,	4,	1,	'',	1,	104,	3678,	0,	'2021-01-25',	1,	NULL,	'2021-01-25 10:27:27',	1);
+(396,	'PEON-83893',	'Delete Account system setting',	'Delete Account system setting',	1,	4,	1,	'',	1,	104,	3678,	0,	'2021-01-25',	1,	NULL,	'2021-01-25 10:27:27',	1),
+(397,	'PEON-44101',	'Create Voucher signatory',	'Create Voucher signatory',	1,	1,	1,	'',	1,	105,	3728,	0,	'2021-01-26',	1,	NULL,	'2021-01-26 08:27:47',	1),
+(398,	'PEON-74041',	'Read Voucher signatory',	'Read Voucher signatory',	1,	2,	1,	'',	1,	105,	3729,	0,	'2021-01-26',	1,	NULL,	'2021-01-26 08:27:47',	1),
+(399,	'PEON-64454',	'Update Voucher signatory',	'Update Voucher signatory',	1,	3,	1,	'',	1,	105,	3730,	0,	'2021-01-26',	1,	NULL,	'2021-01-26 08:27:47',	1),
+(400,	'PEON-49646',	'Delete Voucher signatory',	'Delete Voucher signatory',	1,	4,	1,	'',	1,	105,	3731,	0,	'2021-01-26',	1,	NULL,	'2021-01-26 08:27:47',	1),
+(401,	'PEON-87111',	'Create Budget limit',	'Create Budget limit',	1,	1,	1,	'',	1,	106,	3735,	0,	'2021-01-29',	1,	NULL,	'2021-01-29 06:18:58',	1),
+(402,	'PEON-63854',	'Read Budget limit',	'Read Budget limit',	1,	2,	1,	'',	1,	106,	3736,	0,	'2021-01-29',	1,	NULL,	'2021-01-29 06:18:58',	1),
+(403,	'PEON-40759',	'Update Budget limit',	'Update Budget limit',	1,	3,	1,	'',	1,	106,	3737,	0,	'2021-01-29',	1,	NULL,	'2021-01-29 06:18:58',	1),
+(404,	'PEON-7984',	'Delete Budget limit',	'Delete Budget limit',	1,	4,	1,	'',	1,	106,	3738,	0,	'2021-01-29',	1,	NULL,	'2021-01-29 06:18:58',	1);
 
 DROP TABLE IF EXISTS `permission_label`;
 CREATE TABLE `permission_label` (
@@ -12131,7 +12262,8 @@ INSERT INTO `permission_template` (`permission_template_id`, `permission_templat
 (23,	'PETE-80576',	'Permission_template # PETE-80576',	2,	375,	'2021-01-25',	1,	'2021-01-25 07:19:08',	1,	212,	1193),
 (24,	'PETE-83163',	'Permission_template # PETE-83163',	2,	379,	'2021-01-25',	1,	'2021-01-25 07:19:08',	1,	212,	1193),
 (25,	'PETE-50134',	'Permission_template # PETE-50134',	2,	387,	'2021-01-25',	1,	'2021-01-25 07:19:08',	1,	212,	1193),
-(26,	'PETE-77541',	'Permission_template # PETE-77541',	2,	383,	'2021-01-25',	1,	'2021-01-25 12:43:54',	1,	212,	1193);
+(26,	'PETE-77541',	'Permission_template # PETE-77541',	2,	383,	'2021-01-25',	1,	'2021-01-25 12:43:54',	1,	212,	1193),
+(27,	'PETE-50475',	'Permission_template # PETE-50475',	2,	399,	'2021-01-28',	1,	'2021-01-28 09:57:39',	1,	212,	1193);
 
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
@@ -12667,7 +12799,8 @@ INSERT INTO `role_permission` (`role_permission_id`, `role_permission_track_numb
 (65,	'ROON-82673',	'Role_permission # ROON-82673',	1,	2,	183,	290,	335,	'2020-12-15',	1,	'2020-12-15 07:58:21',	1),
 (66,	'ROON-56951',	'Read permission for Dashboard by TZ FCP Accountant Testing Role',	1,	9,	93,	2672,	338,	'2020-12-15',	44,	'2020-12-15 13:14:39',	44),
 (67,	'ROON-88161',	'Role_permission # ROON-88161',	1,	4,	22,	290,	335,	'2021-01-07',	1,	'2021-01-07 07:16:09',	1),
-(68,	'ROON-43054',	'Role_permission # ROON-43054',	1,	4,	26,	290,	335,	'2021-01-07',	1,	'2021-01-07 07:16:09',	1);
+(68,	'ROON-43054',	'Role_permission # ROON-43054',	1,	4,	26,	290,	335,	'2021-01-07',	1,	'2021-01-07 07:16:09',	1),
+(69,	'ROON-25293',	'Role_permission # ROON-25293',	1,	4,	403,	290,	335,	'2021-01-29',	1,	'2021-01-29 06:32:13',	1);
 
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting` (
@@ -13270,7 +13403,39 @@ INSERT INTO `status` (`status_id`, `status_track_number`, `status_name`, `fk_app
 (560,	'STUS-5470',	'Reinstated After Edit',	182,	2,	0,	0,	1,	'2021-01-25',	1,	'2021-01-25 12:15:14',	1,	NULL,	NULL),
 (561,	'STUS-32549',	'Fully Approved',	183,	2,	0,	1,	0,	'2021-01-25',	1,	'2021-01-25 12:15:14',	1,	NULL,	NULL),
 (562,	'STUS-86280',	'Reinstate After Allow Edit',	183,	2,	1,	-1,	1,	'2021-01-25',	1,	'2021-01-25 12:15:14',	1,	NULL,	NULL),
-(563,	'STUS-71511',	'Reinstated After Edit',	183,	2,	0,	0,	1,	'2021-01-25',	1,	'2021-01-25 12:15:14',	1,	NULL,	NULL);
+(563,	'STUS-71511',	'Reinstated After Edit',	183,	2,	0,	0,	1,	'2021-01-25',	1,	'2021-01-25 12:15:14',	1,	NULL,	NULL),
+(564,	'STUS-77338',	'Ready To Submit',	296,	1,	0,	1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(565,	'STUS-24467',	'Fully Approved',	296,	2,	0,	1,	0,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(566,	'STUS-3603',	'Reinstate After Allow Edit',	296,	2,	1,	-1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(567,	'STUS-33187',	'Reinstated After Edit',	296,	2,	0,	0,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(568,	'STUS-59129',	'Ready To Submit',	297,	1,	0,	1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(569,	'STUS-62737',	'Fully Approved',	297,	2,	0,	1,	0,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(570,	'STUS-49966',	'Reinstate After Allow Edit',	297,	2,	1,	-1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(571,	'STUS-53422',	'Reinstated After Edit',	297,	2,	0,	0,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(572,	'STUS-87779',	'Ready To Submit',	298,	1,	0,	1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(573,	'STUS-36063',	'Fully Approved',	298,	2,	0,	1,	0,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(574,	'STUS-52451',	'Reinstate After Allow Edit',	298,	2,	1,	-1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(575,	'STUS-30492',	'Reinstated After Edit',	298,	2,	0,	0,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(576,	'STUS-48610',	'Ready To Submit',	299,	1,	0,	1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(577,	'STUS-88819',	'Fully Approved',	299,	2,	0,	1,	0,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(578,	'STUS-61284',	'Reinstate After Allow Edit',	299,	2,	1,	-1,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(579,	'STUS-11788',	'Reinstated After Edit',	299,	2,	0,	0,	1,	'2021-01-26',	1,	'2021-01-26 08:27:47',	1,	NULL,	NULL),
+(580,	'STUS-68132',	'Ready To Submit',	300,	1,	0,	1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(581,	'STUS-35777',	'Fully Approved',	300,	2,	0,	1,	0,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(582,	'STUS-73846',	'Reinstate After Allow Edit',	300,	2,	1,	-1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(583,	'STUS-19586',	'Reinstated After Edit',	300,	2,	0,	0,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(584,	'STUS-86448',	'Ready To Submit',	301,	1,	0,	1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(585,	'STUS-29935',	'Fully Approved',	301,	2,	0,	1,	0,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(586,	'STUS-33437',	'Reinstate After Allow Edit',	301,	2,	1,	-1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(587,	'STUS-53885',	'Reinstated After Edit',	301,	2,	0,	0,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(588,	'STUS-63386',	'Ready To Submit',	302,	1,	0,	1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(589,	'STUS-5993',	'Fully Approved',	302,	2,	0,	1,	0,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(590,	'STUS-29094',	'Reinstate After Allow Edit',	302,	2,	1,	-1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(591,	'STUS-15407',	'Reinstated After Edit',	302,	2,	0,	0,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(592,	'STUS-24969',	'Ready To Submit',	303,	1,	0,	1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(593,	'STUS-18246',	'Fully Approved',	303,	2,	0,	1,	0,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(594,	'STUS-17700',	'Reinstate After Allow Edit',	303,	2,	1,	-1,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL),
+(595,	'STUS-16146',	'Reinstated After Edit',	303,	2,	0,	0,	1,	'2021-01-29',	1,	'2021-01-29 06:18:58',	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `status_role`;
 CREATE TABLE `status_role` (
@@ -14292,6 +14457,28 @@ INSERT INTO `voucher_detail` (`voucher_detail_id`, `voucher_detail_track_number`
 (443,	'VOIL-24993',	'Voucher_detail # VOIL-1036',	292,	'rice',	4,	-2400.00,	-9600.00,	7,	0,	0,	3683,	401,	0,	3,	NULL,	NULL,	NULL,	NULL),
 (444,	'VOIL-85069',	'Voucher_detail # VOIL-11528',	293,	'Test',	1,	34000.00,	34000.00,	28,	0,	0,	3727,	403,	0,	14,	NULL,	NULL,	NULL,	NULL);
 
+DROP TABLE IF EXISTS `voucher_signatory`;
+CREATE TABLE `voucher_signatory` (
+  `voucher_signatory_id` int(100) NOT NULL AUTO_INCREMENT,
+  `voucher_signatory_name` varchar(100) NOT NULL,
+  `voucher_signatory_track_number` varchar(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `voucher_signatory_is_active` int(5) NOT NULL DEFAULT '1',
+  `voucher_signatory_created_date` date DEFAULT NULL,
+  `voucher_signatory_created_by` int(100) DEFAULT NULL,
+  `voucher_signatory_last_modified_by` int(100) DEFAULT NULL,
+  `voucher_signatory_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`voucher_signatory_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `voucher_signatory_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `voucher_signatory` (`voucher_signatory_id`, `voucher_signatory_name`, `voucher_signatory_track_number`, `fk_account_system_id`, `voucher_signatory_is_active`, `voucher_signatory_created_date`, `voucher_signatory_created_by`, `voucher_signatory_last_modified_by`, `voucher_signatory_last_modified_date`, `fk_approval_id`, `fk_status_id`) VALUES
+(1,	'Approved By',	'VORY-61482',	4,	1,	'2021-01-26',	1,	1,	'2021-01-26 08:29:33',	3732,	565),
+(2,	'Verified By',	'VORY-71604',	4,	1,	'2021-01-26',	1,	1,	'2021-01-26 08:30:10',	3733,	565);
+
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -14421,4 +14608,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2021-01-26 08:02:19
+-- 2021-01-29 14:18:07
