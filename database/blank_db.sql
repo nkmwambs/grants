@@ -220,6 +220,34 @@ CREATE TABLE `budget_item_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table distributes budget allocations by month';
 
 
+DROP TABLE IF EXISTS `budget_limit`;
+CREATE TABLE `budget_limit` (
+  `budget_limit_id` int(100) NOT NULL AUTO_INCREMENT,
+  `budget_limit_track_number` varchar(100) NOT NULL,
+  `budget_limit_name` varchar(100) NOT NULL,
+  `fk_office_id` int(100) NOT NULL,
+  `budget_limit_year` int(100) NOT NULL,
+  `fk_budget_tag_id` int(100) NOT NULL,
+  `fk_income_account_id` int(11) NOT NULL,
+  `budget_limit_amount` decimal(10,2) NOT NULL,
+  `budget_limit_created_date` date DEFAULT NULL,
+  `budget_limit_created_by` int(100) DEFAULT NULL,
+  `budget_limit_last_modified_by` int(100) DEFAULT NULL,
+  `budget_limit_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`budget_limit_id`),
+  KEY `fk_office_id` (`fk_office_id`),
+  KEY `budget_limit_year` (`budget_limit_year`),
+  KEY `fk_budget_tag_id` (`fk_budget_tag_id`),
+  KEY `fk_income_account_id` (`fk_income_account_id`),
+  CONSTRAINT `budget_limit_ibfk_1` FOREIGN KEY (`fk_office_id`) REFERENCES `office` (`office_id`),
+  CONSTRAINT `budget_limit_ibfk_2` FOREIGN KEY (`budget_limit_year`) REFERENCES `budget` (`budget_id`),
+  CONSTRAINT `budget_limit_ibfk_3` FOREIGN KEY (`fk_budget_tag_id`) REFERENCES `budget_tag` (`budget_tag_id`),
+  CONSTRAINT `budget_limit_ibfk_4` FOREIGN KEY (`fk_income_account_id`) REFERENCES `income_account` (`income_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `budget_projection`;
 CREATE TABLE `budget_projection` (
   `budget_projection_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -2093,6 +2121,25 @@ CREATE TABLE `voucher_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `voucher_signatory`;
+CREATE TABLE `voucher_signatory` (
+  `voucher_signatory_id` int(100) NOT NULL AUTO_INCREMENT,
+  `voucher_signatory_name` varchar(100) NOT NULL,
+  `voucher_signatory_track_number` varchar(100) NOT NULL,
+  `fk_account_system_id` int(100) NOT NULL,
+  `voucher_signatory_is_active` int(5) NOT NULL DEFAULT '1',
+  `voucher_signatory_created_date` date DEFAULT NULL,
+  `voucher_signatory_created_by` int(100) DEFAULT NULL,
+  `voucher_signatory_last_modified_by` int(100) DEFAULT NULL,
+  `voucher_signatory_last_modified_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fk_approval_id` int(100) DEFAULT NULL,
+  `fk_status_id` int(100) DEFAULT NULL,
+  PRIMARY KEY (`voucher_signatory_id`),
+  KEY `fk_account_system_id` (`fk_account_system_id`),
+  CONSTRAINT `voucher_signatory_ibfk_1` FOREIGN KEY (`fk_account_system_id`) REFERENCES `account_system` (`account_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `voucher_type`;
 CREATE TABLE `voucher_type` (
   `voucher_type_id` int(100) NOT NULL AUTO_INCREMENT,
@@ -2197,4 +2244,4 @@ CREATE TABLE `workplan_task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2021-01-26 08:03:28
+-- 2021-01-29 14:17:58

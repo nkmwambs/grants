@@ -114,6 +114,23 @@ class Budget_model extends MY_Model
     return $lookup_values;
   }
 
+  public function budget_to_date_amount_by_income_account($budget_id,$income_account_id){
+
+    $budget_item_detail_amount = 0;
+
+    $this->read_db->select_sum('budget_item_detail_amount');
+    $this->read_db->where(array('fk_budget_id'=>$budget_id,'fk_income_account_id'=>$income_account_id));
+    $this->read_db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
+    $this->read_db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+    $budget_item_detail_amount_obj = $this->read_db->get('budget_item_detail');
+
+    if($budget_item_detail_amount_obj->num_rows() > 0){
+      $budget_item_detail_amount = $budget_item_detail_amount_obj->row()->budget_item_detail_amount;
+    }
+
+    return $budget_item_detail_amount;
+  }
+
   function edit_visible_columns(){
     return ['budget_tag_name','budget_year','office_name'];
   }
