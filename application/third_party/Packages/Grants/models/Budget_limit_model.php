@@ -24,6 +24,8 @@ class Budget_limit_model extends MY_Model{
     function __construct(){
         parent::__construct();
         $this->load->database();
+        
+        $this->load->model('budget_model');
     }
 
     function index(){}
@@ -42,7 +44,47 @@ class Budget_limit_model extends MY_Model{
             "office_name",
             "budget_tag_name",
             "budget_limit_year",
+            "income_account_name",
             "budget_limit_amount"
         ];
+    }
+
+    public function list_table_visible_columns()
+    {
+        return [
+            "budget_limit_track_number",
+            "office_name",
+            "budget_limit_year",
+            "budget_tag_name",
+            "income_account_name",
+            "budget_limit_amount"
+        ];
+    }
+
+    private function budget_limit_amount($budget_id,$income_account_id){
+
+        $budget_limit_amount = 0;
+
+        $this->read_db->join('office','office.office_id=budget_limit.fk_office_id');
+        $this->read_db->join('budget','budget.fk_office_id=office.office_id');
+        $this->read_db->where(array('budget_id'=>$budget_id,'fk_income_account_id'=>$income_account_id));
+        $budget_limit_obj = $this->read_db->get('budget_limit');
+
+        if($budget_limit_obj->num_rows() > 0){
+            $budget_limit_amount = $budget_limit_obj->row()->budget_limit_amount;
+        }
+
+        return $budget_limit_amount;
+    }
+
+    private function budget_to_date_amount_by_income_account($budget_id,$income_account_id){
+        return $this->budget_model->budget_to_date_amount_by_income_account($budget_id,$income_account_id);
+    }
+
+    public function budget_limit_remaining_amount($budget_id,$income_account_id){
+        $budget_limit_amount = $this->budget_limit_amount($budget_id,$income_account_id);
+        $sum_year_budgeted_amount = $this->budget_to_date_amount_by_income_account($budget_id,$income_account_id);
+
+        return $budget_limit_amount - $sum_year_budgeted_amount;
     }
 }

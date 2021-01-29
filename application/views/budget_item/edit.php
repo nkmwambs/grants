@@ -49,6 +49,11 @@ $total = array_sum(array_column($budget_item_details,'budget_item_detail_amount'
                             </select>
                         </div>
 
+                        <label class='control-label col-xs-2'><?=get_phrase('budget_limit_remaining_amount');?></label>
+                        <div class='col-xs-2'>
+                            <input type="text" class="form-control" id="budget_limit_amount" readonly="readonly" value="<?=$budget_limit_amount;?>"/>
+                        </div>
+
                     </div>
 
                     <div class='form-group'>

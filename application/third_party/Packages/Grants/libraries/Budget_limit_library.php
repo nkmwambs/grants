@@ -23,4 +23,18 @@ class Budget_limit_library extends Grants
 
   function index(){}
 
+  function change_field_type(){
+    $fields = [];
+
+    $current_year = date('y');
+    $year_range = range($current_year - 1,$current_year + 3);
+
+    $fields['budget_limit_year']['field_type'] = 'select';
+
+    foreach($year_range as $year){
+      $fields['budget_limit_year']['options'][$year] = 'FY'.$year;
+    }
+    return $fields;
+  }
+
 } 

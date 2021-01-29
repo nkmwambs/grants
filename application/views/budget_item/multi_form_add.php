@@ -57,6 +57,11 @@ extract($result);
                             </select>
                         </div>
 
+                        <label class='control-label col-xs-2'><?=get_phrase('budget_limit_remaining_amount');?></label>
+                        <div class='col-xs-2'>
+                            <input type="text" class="form-control total_fields" id="budget_limit_amount" readonly="readonly" value="<?=$budget_limit_amount?>"/>
+                        </div>
+
                     </div>
 
                     <div class='form-group'>
@@ -144,6 +149,14 @@ $(".form-control").on('change',function(){
    if($(this).val() !== ''){
      $(this).removeAttr('style');
    }
+});
+
+$("#fk_expense_account_id").on('change',function(){
+    var url = "<?=base_url();?>budget_item/get_budget_limit_remaining_amount/<?=hash_id($this->id,'decode');?>/"+$(this).val();
+
+    $.get(url,function(response){
+        $("#budget_limit_amount").val(response);
+    });
 });
 
 $("#fk_project_allocation_id").on('change',function(){
@@ -299,9 +312,10 @@ $("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").bind('key
 function compute_totals_match(){
     var frequency_compute =  parseFloat($("#frequency_total").val());
     var budget_item_total_cost = parseFloat($("#budget_item_total_cost").val());
+    var budget_limit_amount = parseFloat($("#budget_limit_amount").val());
     var compute_totals_match = false;
 
-    if(frequency_compute == budget_item_total_cost){
+    if((frequency_compute == budget_item_total_cost) && (frequency_compute <= budget_limit_amount)){
         compute_totals_match = true;
         $(".total_fields").removeAttr('style');
     }else{
