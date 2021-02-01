@@ -599,6 +599,22 @@ class Voucher_model extends MY_Model
     return $unvouched_request; 
   }
 
+  function check_active_cheque_book_for_office_exist($office_id){
+
+    //select * from cheque_book JOIN office_bank ON (office_bank.office_bank_id=cheque_book.fk_office_bank_id) 
+    //JOIN office ON(office.office_id=office_bank.fk_office_id) where office.office_id=19
+
+    
+    $this->read_db->join('office_bank','office_bank.office_bank_id=cheque_book.fk_office_bank_id');
+    $this->read_db->join('office','office.office_id=office_bank.fk_office_id');
+    $this->read_db->where(array('office.office_id'=>$office_id, 'cheque_book.cheque_book_is_active'=>1));
+    return $this->read_db->get('cheque_book');
+
+   // return ['cheque_bk'=>1];
+
+    //echo json_encode($response);
+  }
+
   function get_voucher_type_effect($voucher_type_id){
       //return (object)['voucher_type_effect_id'=>1,'voucher_type_effect_name'=>'income'];
       $this->db->select(array('voucher_type_effect_code','voucher_type_id','voucher_type_effect_id'));
