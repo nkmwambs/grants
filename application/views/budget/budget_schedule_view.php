@@ -125,7 +125,7 @@
 
                                if($action_labels['show_label_as_button']){
                             ?>
-                                <div <?=$action_labels['show_decline_button'] && $this->general_model->get_max_approval_status_id('budget_item') == $status_id?'disabled':'';?> data-next_status='<?=$action_labels['next_approval_status'];?>' data-budget_item_id='<?=$budget_item_id;?>' class='btn btn-success item_action'><?=$action_labels['status_name'];?></div>
+                                <div <?=$action_labels['show_decline_button'] && in_array($status_id,$this->general_model->get_max_approval_status_id('budget_item'))?'disabled':'';?> data-next_status='<?=$action_labels['next_approval_status'];?>' data-budget_item_id='<?=$budget_item_id;?>' class='btn btn-success item_action'><?=$action_labels['status_name'];?></div>
                                 
                                 <?php
                                     if($action_labels['show_decline_button']){
