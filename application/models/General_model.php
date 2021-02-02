@@ -516,20 +516,25 @@ function display_approver_status_action($logged_role_id,$table,$primary_key){
  * @param String $approveable_item
  * @return Int 
  */
-function get_max_approval_status_id(String $approveable_item):Int{
-  $max_status_id = 0;
+function get_max_approval_status_id(String $approveable_item):Array{
+  $max_status_ids = [];
 
   //https://codeigniter.com/userguide3/database/query_builder.html
   $this->db->reset_query();
+
+  $hierarchy_offices = array_column($this->session->hierarchy_offices,'office_id');
   //Get the maximum status_approval_sequence of an approveable item
   $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
   $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');
+  $this->db->join('account_system','account_system.account_system_id=approval_flow.fk_account_system_id');
+  $this->db->join('office','office.fk_account_system_id=account_system.account_system_id');
   
+  $this->db->where_in('office_id',$hierarchy_offices);
+
   $max_status_approval_sequence_obj = $this->db->select(array('status_id','status_approval_sequence'))
-  ->order_by('status_approval_sequence DESC')
+  //->order_by('status_approval_sequence DESC')
   ->where(array('approve_item_name'=>$approveable_item,
-  'fk_account_system_id'=>$this->session->user_account_system_id,
-  'status_backflow_sequence'=>0,'status_approval_direction'=>1))
+  'status_backflow_sequence'=>0,'status_approval_direction'=>1,'status_is_requiring_approver_action'=>0))
   ->get('status');
 
   //print_r($max_status_approval_sequence_obj->row());exit;
@@ -538,7 +543,9 @@ function get_max_approval_status_id(String $approveable_item):Int{
     $max_status_approval_sequence_obj->row()->status_approval_sequence > 0
     ){
     // Get the status_id
-    $max_status_id = $max_status_approval_sequence_obj->row()->status_id;
+    $max_status_ids_with_seq = $max_status_approval_sequence_obj->result_array();
+
+    $max_status_ids = array_unique(array_column($max_status_ids_with_seq,'status_id'));
 
   }elseif(in_array($approveable_item,$this->config->item('table_that_dont_require_history_fields'))){
     // Nothing to do
@@ -555,7 +562,7 @@ function get_max_approval_status_id(String $approveable_item):Int{
   }
   //print_r($max_status_id);exit;
   
-  return $max_status_id;
+  return $max_status_ids;
  
 }
 
