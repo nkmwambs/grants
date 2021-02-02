@@ -364,6 +364,18 @@ class Voucher extends MY_Controller
     echo json_encode($voucher_types);
   }
 
+  function check_active_cheque_book_for_office_exist($office_id){
+    $check_exists=false;
+    
+    $office_cheque_exists=$this->voucher_model->check_active_cheque_book_for_office_exist($office_id);
+
+    if($office_cheque_exists->num_rows()>0){
+      $check_exists=true;
+    }
+
+    echo $check_exists;
+  }
+
   function check_voucher_type_affects_bank($office_id, $voucher_type_id){
 
     $response['is_transfer_contra'] = false;
