@@ -538,7 +538,7 @@ class Voucher_model extends MY_Model
    */
   function get_approved_unvouched_request_details($office_id){
 
-    $max_approval_status_id = $this->general_model->get_max_approval_status_id('request');
+    $max_approval_status_ids = $this->general_model->get_max_approval_status_id('request');
 
     $this->db->select(array('request_detail_id','request_track_number','request_detail_description','request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_name'));
 
@@ -548,7 +548,9 @@ class Voucher_model extends MY_Model
     $this->db->join('request','request.request_id=request_detail.fk_request_id'); 
     $this->db->join('status','status.status_id=request.fk_status_id');
 
-    $this->db->where(array('fk_voucher_id'=>0,'request.fk_status_id'=>$max_approval_status_id));
+    $this->db->where_in('request.fk_status_id',$max_approval_status_ids);
+
+    $this->db->where(array('fk_voucher_id'=>0));
     return $this->db->get('request_detail')->result_array();
   }
 
@@ -675,10 +677,12 @@ class Voucher_model extends MY_Model
 
   function list_table_where(){
     
-    $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
-
+    $max_approval_status_ids = $this->general_model->get_max_approval_status_id('voucher');
+    //print_r($max_approval_status_ids);exit;
     // Only list vouchers without not yet in the cash journal 
-    $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+    //$this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+
+    $this->db->where_not_in($this->controller.'.fk_status_id',$max_approval_status_ids);
 
     if(!$this->session->system_admin){
       $this->db->where_in('office.office_id',array_column($this->session->hierarchy_offices,'office_id'));
