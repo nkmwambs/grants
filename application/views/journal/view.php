@@ -1,4 +1,6 @@
 <?php
+
+    //print_r($this->general_model->max_status_id_where_condition_by_created_date('voucher','2020-08-01'));
     extract($result);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
@@ -18,6 +20,12 @@
 <div class="row">
   <div class="col-xs-12">
       <?=Widget_base::load('comment');?>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+      <?=Widget_base::load('position','position_1');?>
   </div>
 </div>
 
@@ -44,7 +52,6 @@
     <?php }?>
 </div>
 
-<hr>
 
 <div class='row'>
     <div class='col-xs-12' style='overflow-x: auto' id='journal_row'>

@@ -34,6 +34,32 @@ class Account_system_model extends MY_Model{
         return $this->grants->sanitize_post_value_before_insert($post_array,'account_system_code');
     }
 
+    function action_after_insert($post_array, $approval_id, $header_id){
+        // Create default funding status
+
+        $this->write_db->trans_start();
+
+        $funding_status['funding_status_track_number'] =  $this->grants_model->generate_item_track_number_and_name('funding_status')['funding_status_track_number'];
+        $funding_status['funding_status_name'] = get_phrase('fully_funded');
+        $funding_status['funding_status_is_active'] = 1;
+        $funding_status['fk_account_system_id'] = $header_id;
+        $funding_status['funding_status_is_available'] = 1;
+
+    
+        $funding_status_data_to_insert = $this->grants_model->merge_with_history_fields('funding_status',$funding_status,false);
+        $this->write_db->insert('funding_status',$funding_status_data_to_insert);
+
+        $this->write_db->trans_complete();
+
+        if ($this->write_db->trans_status() === FALSE)
+        {
+          return false;
+        }else{
+          return true;
+        }
+
+    }
+
     function transaction_validate_duplicates_columns(){
         return ['account_system_code'];
     }
@@ -44,7 +70,7 @@ class Account_system_model extends MY_Model{
     }
 
     public function detail_tables(){
-        //return ['office'];
+        return list_detail_tables();
     }
 
     function lookup_values(){
@@ -77,6 +103,20 @@ class Account_system_model extends MY_Model{
         $this->write_db->insert('account_system',$account_system_data_to_insert);
 
         return $this->write_db->insert();
+    }
+
+    function show_add_button(){
+        if(!$this->session->system_admin){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    function list_table_where(){
+        if(!$this->session->system_admin){
+            $this->db->where(array('account_system_code'=>$this->session->user_account_system));
+        }
     }
 
 }

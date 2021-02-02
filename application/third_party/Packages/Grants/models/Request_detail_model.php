@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Request_detail_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Request_detail_model extends MY_Model 
 {
   public $table = 'request_detail'; // you MUST mention the table name
 

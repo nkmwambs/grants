@@ -19,10 +19,6 @@ class Role_permission extends MY_Controller
 
   function index(){}
 
-  //function list(){}
-
-  // static function get_menu_list(){
-  //   //return array('list_banks'=>array('view','arg1','arg2','arg3'));
-  // }
+  static function get_menu_list(){}
 
 }

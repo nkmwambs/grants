@@ -42,6 +42,8 @@ class Position_output{
         
         $position_title = $args[0];
 
+        $page_action = isset($args[1])?$args[1]:$this->CI->action;
+
         $lib = $this->current_library;
 
         $page_positions = null;
@@ -49,12 +51,18 @@ class Position_output{
         if(method_exists($this->CI->$lib,'page_position')){
            $page_positions = $this->CI->$lib->page_position();
         }
-
+        
         if(is_array($page_positions) && array_key_exists($position_title,$page_positions)){
-            if(is_array($page_positions[$position_title])){
-                return implode(" ",$page_positions[$position_title]);
-            }else{
+            if(array_key_exists($page_action,$page_positions[$position_title])){
+                if(is_array($page_positions[$position_title][$page_action])){
+                    return implode(" ",$page_positions[$position_title][$page_action]);
+                }else{
+                    return $page_positions[$position_title][$page_action];
+                }
+            }elseif(!is_array($page_positions[$position_title])){
                 return $page_positions[$position_title];
+            }else{
+                return null;
             }
         }else{
             return null;//'<i>Page position key "'.$position_title.'" in not defined in "'.$lib.'"!</i>';

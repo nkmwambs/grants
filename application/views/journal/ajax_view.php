@@ -20,8 +20,10 @@
 </style>
 
 <?php
-    
+    //print_r($result['vouchers']);
     extract($result);
+    
+    //print_r($month_opening_balance);
     $sum_of_accounts = count($accounts['income']) + count($accounts['expense']);
 
     $role_has_journal_update_permission = $this->user_model->check_role_has_permissions(ucfirst($this->controller),'update');
@@ -54,7 +56,7 @@
                     </th>
                     <th colspan="<?=$sum_of_accounts + 5 + (count($month_opening_balance['bank_balance']) * 3) + (count($month_opening_balance['cash_balance']) * 3);?>" style='text-align:center;'>
                         <?=$office_name;?></br>
-                        Cash Journal <br>
+                        <?=get_phrase('cash_journal');?> <br>
                         <?=date('F Y',strtotime($transacting_month));?>    
 
                     </th>
@@ -68,18 +70,18 @@
                     <th colspan='7'></th>
                     
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
-                        <th colspan='3' style='text-align:center;'>Bank (<?=$bank_account['account_name'];?>)</th>
+                        <th colspan='3' style='text-align:center;'><?=get_phrase('bank');?> (<?=$bank_account['account_name'];?>)</th>
                     <?php }?>
 
                     <?php foreach($month_opening_balance['cash_balance'] as $office_cash_id => $cash_account){?>
-                        <th colspan='3' style='text-align:center;'>Cash (<?=$cash_account['account_name'];?>)</th>
+                        <th colspan='3' style='text-align:center;'><?=get_phrase('cash');?> (<?=$cash_account['account_name'];?>)</th>
                     <?php }?>
                     
                     <!-- <th colspan='3' style='text-align:center;'>Cash</th> -->
                     <th colspan='<?=$sum_of_accounts;?>'></th>
                 </tr>
                 <tr>
-                    <th colspan='7'>Balance b/f</th>
+                    <th colspan='7'><?=get_phrase('balance_b/f');?></th>
                     
                     <?php foreach($month_opening_balance['bank_balance'] as $office_bank_id => $bank_account){?>
                         <th colspan='3'><?=number_format($bank_account['amount'],2);?></th>
@@ -146,11 +148,42 @@
                 ?>
                      <tr>
                         <td>
+
+
+                        <?php 
+                                if($voucher_is_reversed && ($voucher_reversal_from || $voucher_reversal_to)){
+                                
+                                    $related_voucher_id = hash_id($voucher_reversal_from,'encode');
+                                    $reverse_btn_label = get_phrase('linked_source');
+                               
+                                    if(!$voucher_reversal_from){
+                                        $related_voucher_id = hash_id($voucher_reversal_to,'encode');
+                                        $reverse_btn_label = get_phrase('linked_destination');
+                                     }
+                            ?>
+                                <a class='btn btn-danger' target="__blank" href='<?=base_url().'Voucher/view/'.$related_voucher_id;?>'><?=$reverse_btn_label;?> [<?=get_related_voucher($voucher_reversal_to > 0?$voucher_reversal_to:$voucher_reversal_from);?>]</a>
+                            <?php }?>
+
+
+                            <?php if($cheque_number == 0){?>
+                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                    <i class='fa fa-undo' style='cursor:pointer;'></i>
+                                    <?=get_phrase('reverse');?>
+                                </div>
+                            <?php }else{?>
+                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                    <i class='fa fa-undo' style='cursor:pointer;'></i>
+                                    <?=get_phrase('reverse');?>
+                                </div>
+
+                                <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse re_use <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?> <?=$voucher_is_cleared?"hidden":"";?>' >
+                                    <i class='fa fa-plus' style='cursor:pointer;'></i>
+                                    <?=get_phrase('re-use_cheque');?>
+                                </div>
+
+                            <?php }?>
+
                             
-                            <div data-voucher_id ='<?=$voucher_id;?>' class='btn btn_reverse <?=!$role_has_journal_update_permission?"disabled":''; ?> <?=$voucher_is_reversed?"hidden":"";?>' >
-                                <i class='fa fa-undo' style='cursor:pointer;'></i>
-                                <?=get_phrase('reverse');?>
-                            </div>
                            
                             <!-- <div class="btn <?=!$cleared?'btn-danger':'btn-success';?> btn_action" ><?=get_phrase(!$cleared?'clear':'cleared');?></div> -->
                         </td>
@@ -176,16 +209,32 @@
                             <span class='cell_content'><?=strlen($description)>50?substr($description,0,50).'...':$description;?></span>
                         </td>
 
-                        <td class='align-right'><?=$cheque_number != 0?$cheque_number:'';?></td>
+                        <td class='align-right'>
+                            <?php
+                                echo $cheque_number > 0 || $cheque_number < -1 ? $cheque_number: '';
+                                //!$voucher_is_reversed?(!$cheque_number?'':$cheque_number):$cheque_number;
+                            ?>
+                        </td>
                         
                         <?php 
 
                             // Compute bank and cash running balances
                             $voucher_amount = array_sum(array_column($spread,'transacted_amount'));
 
+                            if($receiving_office_bank_id && isset($sum_bank_income[$receiving_office_bank_id])){
+                               
+                                $bank_income[$receiving_office_bank_id] = ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'bank_to_bank_contra')?$voucher_amount:0;
+                                $bank_expense[$receiving_office_bank_id] = 0;
+                               
+                                $sum_bank_income[$receiving_office_bank_id] = $sum_bank_income[$receiving_office_bank_id] + $bank_income[$receiving_office_bank_id];
+                                $sum_bank_expense[$receiving_office_bank_id] = $sum_bank_expense[$receiving_office_bank_id] + $bank_expense[$receiving_office_bank_id];
+                               
+                                $running_bank_balance[$receiving_office_bank_id] = $month_opening_balance['bank_balance'][$receiving_office_bank_id]['amount'] + ($sum_bank_income[$receiving_office_bank_id] - $sum_bank_expense[$receiving_office_bank_id]);
+                            }
+
                             if($office_bank_id && isset($sum_bank_income[$office_bank_id])){
-                                $bank_income[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
-                                $bank_expense[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                                $bank_income[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='cash' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
+                                $bank_expense[$office_bank_id] = (($voucher_type_cash_account == 'bank' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'bank' && ($voucher_type_transaction_effect == 'bank_contra' || $voucher_type_transaction_effect == 'bank_to_bank_contra')))?$voucher_amount:0;
                                 
                                 $sum_bank_income[$office_bank_id] = $sum_bank_income[$office_bank_id] + $bank_income[$office_bank_id];
                                 $sum_bank_expense[$office_bank_id] = $sum_bank_expense[$office_bank_id] + $bank_expense[$office_bank_id];
@@ -194,8 +243,8 @@
                             }
                             
                             if($office_cash_id && isset($sum_petty_cash_income[$office_cash_id])){
-                                $cash_income[$office_cash_id] = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
-                                $cash_expense[$office_cash_id] = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'contra'))?$voucher_amount:0;
+                                $cash_income[$office_cash_id] = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'income') || ($voucher_type_cash_account=='bank' && $voucher_type_transaction_effect == 'bank_contra'))?$voucher_amount:0;
+                                $cash_expense[$office_cash_id] = (($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'expense') || ($voucher_type_cash_account == 'cash' && $voucher_type_transaction_effect == 'cash_contra'))?$voucher_amount:0;
                                 
                                 $sum_petty_cash_income[$office_cash_id] = $sum_petty_cash_income[$office_cash_id] + $cash_income[$office_cash_id];
                                 $sum_petty_cash_expense[$office_cash_id] = $sum_petty_cash_expense[$office_cash_id] + $cash_expense[$office_cash_id];
@@ -206,9 +255,28 @@
                        ?>
                         
                         <?php foreach($month_opening_balance['bank_balance'] as $bank_id => $bank_account){?>
-                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$bank_income[$bank_id]:0,2);?></td>
-                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$bank_expense[$bank_id]:0,2);?></td>
-                            <td class='align-right'><?=number_format($bank_id == $office_bank_id?$running_bank_balance[$bank_id]:0,2);?></td>
+                            <?php 
+                                $bank_inc = 0;
+                                $bank_exp = 0;
+                                $bank_bal = 0;    
+
+                                if($bank_id == $office_bank_id){
+                                    $bank_inc = $bank_income[$office_bank_id];
+                                    $bank_exp = $bank_expense[$office_bank_id];
+                                    $bank_bal = $running_bank_balance[$office_bank_id];
+                                }
+                                
+                                if($bank_id == $receiving_office_bank_id){
+                                    $bank_inc = $bank_income[$receiving_office_bank_id];
+                                    $bank_exp = $bank_expense[$receiving_office_bank_id];
+                                    $bank_bal = $running_bank_balance[$receiving_office_bank_id];
+                                }
+                            ?>
+
+                            <td class='align-right'><?=number_format($bank_inc,2);?></td>
+                            <td class='align-right'><?=number_format($bank_exp,2);?></td>
+                            <td class='align-right'><?=number_format($bank_bal,2);?></td>
+                        
                         <?php }?>
 
                         <?php foreach($month_opening_balance['cash_balance'] as $cash_id => $cash_account){?>
@@ -218,7 +286,7 @@
                         <?php }?>
 
                         <?php 
-                            echo $this->journal_library->journal_spread($spread,$voucher_type_cash_account,$voucher_type_transaction_effect);
+                            echo $this->journal_library->journal_spread($office_id,$spread,$voucher_type_cash_account,$voucher_type_transaction_effect);
                         ?>
 
                      </tr>   
@@ -301,10 +369,15 @@ $('.table').DataTable({
       $(".btn_reverse").on('click',function(){
         var btn = $(this);
         var voucher_id = btn.data('voucher_id');
+        var reuse_cheque = btn.hasClass('re_use')?1:0;
         var cnfrm = confirm('Are you sure you want to reverse this voucher?');
 
+        if(reuse_cheque){
+            var cnfrm = confirm('Are you sure you want to reverse this voucher and reuse it\'s cheque number?');
+        }
+
         if(cnfrm){
-            var url = "<?=base_url();?>Journal/reverse_voucher/"+voucher_id;
+            var url = "<?=base_url();?>Journal/reverse_voucher/"+voucher_id+"/"+reuse_cheque;
 
             $.get(url,function(response){
                 alert(response);

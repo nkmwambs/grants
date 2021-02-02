@@ -59,22 +59,25 @@ public $controller;
 
         // if system_setup_completed = 0, empty all tables, insert_missing_approveable_item, 
         // populate setup tables, add mandatory fields, create item approval flow and permissions
-        $this->system_setup_check();
+        //$this->system_setup_check();
 
         //$this->run_migrations();
         
 
         if ($this->session->userdata('user_login') == 1){
              //Create missing library and models files for the loading object/ controller
-             if(parse_url(base_url())['host'] == 'localhost'){
+             if(parse_url(base_url())['host'] == 'localhost' && $this->session->system_admin){
                 $this->grants->create_missing_system_files_from_yaml_setup(); 
               }
             
+              if($this->session->system_admin){
+                $this->system_setup_check();
+              }
               // Create table permissions
-             $this->grants_model->create_missing_page_access_permission();
+             //$this->grants_model->create_missing_page_access_permission();
             
             // Create mandatory role_permission for default launch page  
-            $this->create_mandatory_role_permissions();
+            $this->create_default_launch_page_role_permissions();
             
             redirect(base_url().strtolower($this->session->default_launch_page).'/list');
         }
@@ -94,14 +97,14 @@ public $controller;
         }
     }
 
-    function create_mandatory_role_permissions(){
+    function create_default_launch_page_role_permissions(){
         
-        $default_page = $this->config->item('default_launch_page');
+        $default_page = $this->config->item('default_launch_page');// Ex. Dashboard
         
         $this->db->join('permission','permission.permission_id=role_permission.fk_permission_id');
         $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
         $role_permission_obj = $this->db->get_where('role_permission',
-        array('menu.menu_name'=>$default_page,
+        array('menu.menu_derivative_controller'=>$default_page,
         'role_permission.fk_role_id'=>$this->session->role_id));
 
         $role_name = $this->db->get_where('role',
@@ -111,7 +114,7 @@ public $controller;
             
             $this->db->join('menu','menu.menu_id=permission.fk_menu_id');
             $permission_obj = $this->db->get_where('permission',
-            array('menu_name'=>$default_page));
+            array('menu_derivative_controller'=>$default_page));
 
             $role_permission_data['role_permission_name'] = "Read permission for ".$default_page." by ".$role_name;
             $role_permission_data['role_permission_is_active'] = 1;
@@ -207,6 +210,26 @@ public $controller;
         
       }
 
+    public function switch_user(){
+
+        $user_id = $this->input->post('user_id');
+        
+        //$this->session->sess_destroy();
+
+        $this->read_db->where(['user_id'=>$user_id]);
+        $user = $this->read_db->get('user')->row();
+
+        $email = $user->user_email;
+
+        $login_status = $this->validate_login($email, '', true);
+
+        if($login_status){
+            redirect(base_url().'login','refresh');
+        }else{
+            redirect(base_url(),'refresh');
+        }
+    }  
+
     //Ajax login function
     function ajax_login() {
         $response = array();
@@ -230,6 +253,35 @@ public $controller;
 
 
 	function create_user_session ($row,$first_login_attempt = false){
+        
+        if($this->session->has_userdata('user_id')){
+
+            $sesion_keys = [
+                "user_id",
+                "name",
+                "role_id",
+                "role_permissions",
+                "system_admin",
+                "user_locale",
+                "user_currency_id",
+                "user_currency_code",
+                "user_account_system",
+                "user_account_system_id",
+                "base_currency_id",
+                "departments",
+                "context_associations",
+                "context_definition",
+                "context_offices",
+                "hierarchy_offices",
+                "role_is_department_strict",
+                "breadcrumb_list",
+                "default_launch_page"
+            ];
+
+            $this->session->unset_userdata($sesion_keys);
+        }
+
+        $this->session->set_userdata('package', 'Grants'); // To be changed when changing Apps
 
 		$this->session->set_userdata('user_login', '1');
 		$this->session->set_userdata('user_id', $row->user_id);
@@ -246,8 +298,9 @@ public $controller;
         $this->session->set_userdata('user_currency_code',$this->db->get_where('country_currency',
             array('country_currency_id'=>$row->fk_country_currency_id))->row()->country_currency_code);           
         
-        $account_system_code = $this->db->get_where('account_system',array('account_system_id'=>$row->fk_account_system_id))->row()->account_system_code;    
-        $this->session->set_userdata('user_account_system',$account_system_code);   
+        $account_system = $this->db->get_where('account_system',array('account_system_id'=>$row->fk_account_system_id))->row();    
+        $this->session->set_userdata('user_account_system',$account_system->account_system_code); 
+        $this->session->set_userdata('user_account_system_id',$row->fk_account_system_id);   
         
             
         $this->session->set_userdata('base_currency_id',
@@ -316,9 +369,13 @@ public $controller;
       }
 
     //Validating login from ajax request
-    function validate_login($email = '', $password = '') {
+    function validate_login($email = '', $password = '', $is_user_switch = false) {
 
         $credential = array('user_email' => $email,"user_is_active"=>1,"user_password"=>md5($password));
+
+        if($password == '' && $is_user_switch){
+            $credential = array('user_email' => $email,"user_is_active"=>1);
+        }
 
         // Checking login credential for admin
         $query = $this->db->get_where('user', $credential);

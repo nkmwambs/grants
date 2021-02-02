@@ -47,18 +47,11 @@ extract($result);
                   }
                  ?>
 
-                 <!-- <div class="form-group">
-                   <div class="col-xs-12">
-                     <label class=""><?=get_phrase('attach_a_file(s)');?></label>
-                     <input type="file" name="attachments" multiple />
-                   </div>
-                </div> -->
-
 
                  <div class="form-group">
                    <div class="col-xs-12" style="text-align:center;">
-                     <button class="btn btn-default edit back"><?=get_phrase('edit');?></button>
-                     <button class="btn btn-default edit_continue"><?=get_phrase('edit_and_continue');?></button>
+                     <button class="btn btn-default edit back"><?=get_phrase('save');?></button>
+                     <button class="btn btn-default edit_continue"><?=get_phrase('save_and_continue');?></button>
                    </div>
                  </div>
                </form>  
@@ -80,9 +73,13 @@ $(".edit, .edit_continue").on('click',function(ev){
    //Check if all required fields are filled
    var empty_fields_count = 0;
   $('.form-control').each(function(i,el){
-    if($(el).val() == ''){
-      $(el).css('border','1px solid red');
-      empty_fields_count++;
+    if($(el).hasClass('select2')){
+      //$(el).find(':selected');
+    }else{
+      if($(el).val() == '' && $(el).attr('required')){
+        $(el).css('border','1px solid red');
+        empty_fields_count++;
+      }
     }
   });
 
@@ -122,5 +119,11 @@ $(".edit, .edit_continue").on('click',function(ev){
 }  
   ev.preventDefault();
 });
+
+$('.datepicker').datepicker(
+  {
+    format:'yyyy-mm-dd',
+  }
+);
 
 </script>

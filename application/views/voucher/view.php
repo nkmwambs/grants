@@ -6,7 +6,7 @@
 </style>
 
 <?php 
-
+    //print_r($result);
     extract($result);
 
     //print_r($chat_messages);
@@ -72,9 +72,13 @@
 
                     <div class="col-xs-3"><span class='span_label'><?=get_phrase('voucher_type');?>:</span> <?=$header['voucher_type_name']?></div>
                     
-                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_cash']?></div>
-
-                    <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_bank']?></div>
+                    <?php if(!empty($header['office_cash'])){?>
+                        <div class="col-xs-3"><span class='span_label'><?=get_phrase('cash_account');?>:</span> <?=$header['office_cash']?></div>
+                    <?php }?>
+                    
+                    <?php if(!empty($header['office_bank'])){?>
+                        <div class="col-xs-3"><span class='span_label'><?=get_phrase('bank_account');?>:</span> <?=$header['office_bank']?></div>
+                    <?php }?>
 
                     <div class="col-xs-3"><span class='span_label'><?=get_phrase('cheque_number');?>:</span> <?=$header['voucher_cheque_number']?></div>
 
@@ -95,7 +99,7 @@
                 <hr/>
 
                 <div class="row form_rows">
-                    <div class="col-xs-12"><span class='span_label'><?=get_phrase('voucher_description');?>:</span> <?=$header['voucher_description']?></div>
+                    <div class="col-xs-12"><span class='span_label'><?=get_phrase('voucher_description');?>:</span> <?=$header['voucher_description']?> <?php echo $header['voucher_reversal_to'] > 0 ? ' ['.get_phrase('voucher_reversed_to_') .' '. get_related_voucher($header['voucher_reversal_to']).']':'';?></div>
                 </div>
 
                 <hr/>

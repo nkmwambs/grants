@@ -592,117 +592,56 @@ if(!function_exists('get_fy')){
 		
 		$CI =& get_instance();
 		
-		// $start_of_fy_month = $CI->read_db->get_where('month',
-		// array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
-		// $fy_year_reference = $CI->config->item('fy_year_reference');
-		// $fy_year_digits = $CI->config->item('fy_year_digits');
-
-		// $fy_format = ($fy_year_digits == 2 && !$override_fy_year_digits_config)?'y':'Y';
-
-		// $date_year = date($fy_format,strtotime($date_string));
-
-		// $month_count_from_date_string_to_end_of_year = $start_of_fy_month + 11;
-
-		// $list_of_months = range($start_of_fy_month,$month_count_from_date_string_to_end_of_year);
-
-		// $list_of_months_with_year = [];
-
-		// foreach($list_of_months as $month){
-		// 	$_date_year = $date_year;
-
-		// 	if($month > 12){
-		// 		$_month = $month - 12;
-		// 		$_date_year++;
-		// 		$list_of_months_with_year[] = $_month.'-'.$_date_year;
-		// 	}else{
-		// 		$list_of_months_with_year[] = $month.'-'.$_date_year;
-		// 	}
-			
-		// }
-
-		// $check_if_month_in_list_of_months = in_array(date('n-'.$fy_format,strtotime($date_string)),$list_of_months_with_year);
-
-		// $fy_year = $date_year;
-
-		// if($check_if_month_in_list_of_months && ($fy_year_reference == 'next' && !$override_fy_year_digits_config)){
-		// 	$fy_year++;
-		// }
-		
-		// return $fy_year;
-
-		$date_month_number = date('n',strtotime($date_string));
-		$fy = date('Y',strtotime($date_string));
-
-		$CI->read_db->select(array('month_number'));
-		$CI->read_db->order_by('month_order','ASC');
-		$months_array = $CI->read_db->get('month')->result_array();
-
-		$months = array_column($months_array,'month_number');
-
-		$first_month = current($months);
-		$last_month = end($months);
-
+		$start_of_fy_month = $CI->read_db->get_where('month',array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
 		$fy_year_reference = $CI->config->item('fy_year_reference');
+		$fy_year_digits = $CI->config->item('fy_year_digits');
 
-		$half_year_months = array_chunk($months,6);
+		$fy_format = ($fy_year_digits == 2 && !$override_fy_year_digits_config)?'y':'Y';
 
-		if($first_month != 1 && $last_month != 12){
-			
-			if(in_array($date_month_number,$half_year_months[0]) && $fy_year_reference == 'next'){
-				$fy++;
+		$date_year = date($fy_format,strtotime($date_string));
+
+		$month_count_from_date_string_to_end_of_year = $start_of_fy_month + 11;
+
+		$list_of_months = range($start_of_fy_month,$month_count_from_date_string_to_end_of_year);
+
+		$list_of_months_with_year = [];
+
+		foreach($list_of_months as $month){
+			$_date_year = $date_year;
+
+			if($month > 12){
+				$_month = $month - 12;
+				$_date_year++;
+				$list_of_months_with_year[] = $_month.'-'.$_date_year;
+			}else{
+				$list_of_months_with_year[] = $month.'-'.$_date_year;
 			}
+			
 		}
 
-		return $fy;
+		$check_if_month_in_list_of_months = in_array(date('n-'.$fy_format,strtotime($date_string)),$list_of_months_with_year);
+
+		$fy_year = $date_year;
+
+		if($check_if_month_in_list_of_months && ($fy_year_reference == 'next' && !$override_fy_year_digits_config)){
+			$fy_year++;
+		}
+		
+		return $fy_year;
 	}
 }
-
-if(!function_exists('year_month_order')){
-	function year_month_order(){
-		// To be worked on to remove the duplicate code in fy_start_date and get_fy helper functions
-	}
-}
-
 
 if(!function_exists('fy_start_date')){
 	function fy_start_date($date_string){
-
-		//$date_string = '2021-08-01';
-
 		$CI =& get_instance();
 
-		//$fy = get_fy($date_string,true);
-		//return $fy;
-		
-		$date_month_number = date('n',strtotime($date_string));
-		$fy = date('Y',strtotime($date_string));
-		$fy_start_date = '';
-		
-		$fy_year_reference = $CI->config->item('fy_year_reference');
-		
-		$CI->read_db->select(array('month_number'));
-		$CI->read_db->order_by('month_order','ASC');
-		$months_array = $CI->read_db->get('month')->result_array();
+		$fy = get_fy($date_string,true);
+		$start_of_fy_month = $CI->read_db->get_where('month',array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
 
-		$months = array_column($months_array,'month_number');
+		$formatted_month = strlen($start_of_fy_month) == 1?'0'.$start_of_fy_month:$start_of_fy_month;
 
-		$first_month = current($months);
-		$last_month = end($months);
+		return $fy.'-'.$formatted_month.'-01';
 
-		$formatted_month = strlen($first_month) == 1?'0'.$first_month:$first_month;
-
-		$half_year_months = array_chunk($months,6);
-
-		if($first_month != 1 && $last_month != 12){
-			
-			if(in_array($date_month_number,$half_year_months[1]) && $fy_year_reference == 'next'){
-				$fy--;
-			}
-		}
-
-		$fy_start_date = $fy.'-'.$formatted_month.'-01';
-
-		return $fy_start_date;
 	}
 }
 

@@ -35,4 +35,63 @@ class Opening_outstanding_cheque_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function single_form_add_visible_columns(){
+        return [
+                //'opening_outstanding_cheque_name',
+                'opening_outstanding_cheque_description',
+                'opening_outstanding_cheque_date',
+                'system_opening_balance_name',
+                'office_bank_name',
+                'opening_outstanding_cheque_number',
+                'opening_outstanding_cheque_amount',
+            ];
+    }
+
+    function edit_visible_columns(){
+        return [
+                //'opening_outstanding_cheque_name',
+                'opening_outstanding_cheque_description',
+                'opening_outstanding_cheque_date',
+                'system_opening_balance_name',
+                'office_bank_name',
+                'opening_outstanding_cheque_number',
+                'opening_outstanding_cheque_amount',
+            ];
+    }
+
+    function detail_list_table_visible_columns()
+    {
+        return [
+            "opening_outstanding_cheque_track_number",
+            'opening_outstanding_cheque_description',
+            'opening_outstanding_cheque_date',
+            'system_opening_balance_name',
+            'office_bank_name',
+            'opening_outstanding_cheque_number',
+            'opening_outstanding_cheque_amount',
+        ];
+    }
+
+    function lookup_values(){
+
+        $lookup_values = parent::lookup_values();
+
+        $this->read_db->select(array('office_bank_id','office_bank_name'));
+        
+        $this->read_db->join('office','office.office_id=office_bank.fk_office_id');
+        $this->read_db->join('system_opening_balance','system_opening_balance.fk_office_id=office.office_id');
+        
+        if($this->action== 'edit'){
+            $this->read_db->join('opening_outstanding_cheque','opening_outstanding_cheque.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+            $this->read_db->where(array('opening_outstanding_cheque_id'=>hash_id($this->id,'decode')));
+        }else{
+            $this->read_db->where(array('system_opening_balance_id'=>hash_id($this->id,'decode')));
+        }
+        
+        $lookup_values['office_bank'] = $this->read_db->get('office_bank')->result_array();
+
+        return $lookup_values;
+        
+    }
 }

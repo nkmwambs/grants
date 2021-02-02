@@ -32,11 +32,46 @@ class Project_income_account_model extends MY_Model{
         return array('project','income_account');
     }
 
-    // function single_form_add_visible_columns(){
-    //     return ['project_name','income_account_name'];
-    // }
+    function single_form_add_visible_columns(){
+        return ['project_name','income_account_name'];
+    }
 
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    public function detail_list_table_visible_columns(){
+        return [
+            'project_income_account_track_number',
+            'income_account_name',
+            'project_name',
+            'project_income_account_created_date'
+        ];
+    }
+
+    public function transaction_validate_duplicates_columns(){
+        return ['fk_project_id','fk_income_account_id'];
+      }
+
+    function multi_select_field(){
+        return "income_account";
+    }  
+
+    function lookup_values()
+    {
+        $lookup_values = parent::lookup_values();
+
+        if(!$this->session->system_admin){
+            $this->read_db->join('funder','funder.funder_id=project.fk_funder_id');
+            $this->read_db->where(array('funder.fk_account_system_id'=>$this->session->user_account_system_id));
+            $this->read_db->select(array('project_id','project_name'));
+            $lookup_values['project'] = $this->read_db->get('project')->result_array();
+
+            $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+            $this->read_db->select(array('income_account_id','income_account_name'));
+            $lookup_values['income_account'] = $this->read_db->get('income_account')->result_array();
+        }
+
+        return $lookup_values;
+    }
 }

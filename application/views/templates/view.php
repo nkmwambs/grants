@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//print_r($result);
+//print_r($result['detail']);
 
 extract($result['master']);
 
@@ -144,6 +144,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
     if( isset($result['detail']) && count($result['detail']) > 0){
       //print_r($result['detail']);
       foreach ($result['detail'] as $detail_table_name => $details) {
+        //print_r(array_keys($details));
         extract($details);
         //echo $detail_table_name;
         $primary_key_column = array_shift($keys);
@@ -156,7 +157,7 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
             
             <?php
               if($show_add_button){
-                echo add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing);
+                echo add_record_button($detail_table_name,$has_details_table,$this->uri->segment(3,null),$has_details_listing, $is_multi_row);// $details['is_multi_row']
               }
             ?>
           </div>
@@ -231,8 +232,8 @@ $columns = array_chunk($keys,$this->config->item('master_table_columns'),true);
                               echo '<a href="'.base_url().$detail_table_name.'/view/'.hash_id($primary_key).'">'.$row[$column].'</a>';
                             }elseif(strpos($column,'_is_') == true){
                                 echo $row[$column] == 1?"Yes":"No";
-                            }elseif(is_integer($row[$column]) || is_float($row[$column]) || is_numeric($row[$column])){
-                                  echo number_format($row[$column],2);
+                            }elseif($fields_meta_data[$column] == 'int' || $fields_meta_data[$column] == 'decimal'){
+                               echo number_format($row[$column],2);
                             }elseif($column_key > 0){ 
                                echo '<a href="'.base_url().$lookup_table.'/view/'.hash_id($column_key).'">'.ucwords(str_replace('_',' ',$row[$column])).'</a>';
                             }else{

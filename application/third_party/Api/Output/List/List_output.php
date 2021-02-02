@@ -176,8 +176,13 @@ function feature_model_list_table_visible_columns(): Array {
         $table = $this->controller;
         //echo hash_id($this->CI->id,'decode');exit;
         $filter_where_array = hash_id($this->CI->id,'decode') > 0 && !in_array($table,$this->CI->config->item('table_that_dont_require_history_fields')) ? [$table.'.fk_status_id'=>hash_id($this->CI->id,'decode')] : [];
+        $toggle_list_select_columns = $this->toggle_list_select_columns();
 
-        return $this->CI->grants_model->run_list_query($table,$this->toggle_list_select_columns(),$lookup_tables,'list_table_where',$filter_where_array);
+        array_push($toggle_list_select_columns,$table.'.fk_status_id as status_id');
+
+        //print_r($toggle_list_select_columns);exit;
+        
+        return $this->CI->grants_model->run_list_query($table,$toggle_list_select_columns,$lookup_tables,'list_table_where',$filter_where_array);
 
     }
 
@@ -204,7 +209,7 @@ function feature_model_list_table_visible_columns(): Array {
     // Get result from grants model if feature model list returns empty
     $query_result = $this->list_internal_query_results($lookup_tables); // System generated query result
     
-    if(method_exists($this->CI->$model,'list')){
+    if(method_exists($this->CI->$model,'list') && !empty($this->CI->$model->list())){
       $feature_model_list_result = $this->CI->$model->list();
       if(is_array($feature_model_list_result)){
         // Allows empty result set
@@ -249,8 +254,10 @@ function feature_model_list_table_visible_columns(): Array {
       
         return array(
           'keys'=> $keys,
+          'fields_meta_data'=>$this->CI->grants_model->fields_meta_data_type_and_name($table),
           'table_body'=>$result,
           'table_name'=> $table,
+          'is_multi_row'=>$this->CI->grants->check_if_table_is_multi_row(),
           'has_details_table' => $this->CI->grants->check_if_table_has_detail_table($table),
           'has_details_listing' => $this->CI->grants->check_if_table_has_detail_listing($table),
           'show_add_button'=>$show_add_button

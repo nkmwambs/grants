@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Voucher_model extends MY_Model implements  TableRelationshipInterface
+class Voucher_model extends MY_Model
 {
   public $table = 'voucher'; // you MUST mention the table name
   //public $primary_key = 'voucher_id'; // you MUST mention the primary key
@@ -31,7 +31,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   function index(){}
 
   public function lookup_tables(){
-    return array('voucher_type','office','office_bank','office_cash','approval','status');
+    // Do not put the Office Bank and Office Cash Tables here since only contra transaction will be listed
+    return array('voucher_type','office','approval','status');
   }
 
   public function detail_tables(){
@@ -67,8 +68,8 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
 
   public function list_table_visible_columns(){
 
-    // return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
-    // 'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
+    return array('voucher_track_number','voucher_number','voucher_date','voucher_cheque_number',
+    'voucher_vendor','voucher_created_date','office_name','voucher_type_name','status_name');
   
   }
 
@@ -397,6 +398,7 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    * @param String $office_bank - Office bank id
    * @param int $cheque_number - Cheque number
    * @return Bool - True is a valid cheque number else false 
+   * @todo This method is decaprecated - To be removed in the future implementations
    */
   function validate_cheque_number(String $office_bank, int $cheque_number):Bool{
 
@@ -489,25 +491,17 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
    */
   function get_approved_unvouched_request_details($office_id){
 
-    // 3 is the approve_item_id for request
-    //$request_last_status_id = $this->get_approveable_item_last_status(3);
+    $max_approval_status_id = $this->general_model->get_max_approval_status_id('request');
 
-    // $this->db->select(array('request_detail_id','request_date','office_name',
-    // 'request_detail_track_number','request_detail_description','request_detail_quantity',
-    // 'request_detail_unit_cost','request_detail_total_cost','expense_account_id',
-    // 'project_allocation_name','status_name'));
-    
-    // $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
-    // $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
-    // $this->db->join('request','request.request_id=request_detail.fk_request_id'); 
-    // $this->db->join('status','status.status_id=request.fk_status_id');
-    // $this->db->join('office','office.office_id=request.fk_office_id'); 
-    
-    // //$conversion_approval_status = $this->conversion_approval_status($office_id);
+    $this->db->select(array('request_detail_id','request_track_number','request_detail_description','request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_name'));
 
-    // //$this->db->where(array('request.fk_status_id'=>$conversion_approval_status,'office.office_id'=>$office_id));
-    // $this->db->where(array('request.fk_status_id'=>61,'request_detail.fk_status_id<>'=>63,'office.office_id'=>$office_id));
-    $this->db->where(array('request_detail_voucher_number'=>0));
+    $this->db->join('expense_account','expense_account.expense_account_id=request_detail.fk_expense_account_id');
+    $this->db->join('project_allocation','project_allocation.project_allocation_id=request_detail.fk_project_allocation_id');
+    $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+    $this->db->join('request','request.request_id=request_detail.fk_request_id'); 
+    $this->db->join('status','status.status_id=request.fk_status_id');
+
+    $this->db->where(array('fk_voucher_id'=>0,'request.fk_status_id'=>$max_approval_status_id));
     return $this->db->get('request_detail')->result_array();
   }
 
@@ -534,6 +528,28 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
       'office'=>$this->config->item('use_context_office')?$this->session->context_offices:$this->session->hierarchy_offices,
       'project_allocation'=>$this->get_office_project_allocation_for_voucher_details()
     );
+  }
+
+  
+  /**
+   * get_count_of_request
+   * @param 
+   * @return Integer
+   * @author: Onduso
+   * @Date: 4/12/2020
+   */
+  function get_count_of_unvouched_request($office_id):int{
+
+    //$office_id = $this->input->post('office_id');
+  
+    $this->read_db->join('request_detail','request.request_id=request_detail.fk_request_id');
+    $this->read_db->where(array('fk_office_id'=>$office_id));
+    $this->read_db->where(array('request_is_fully_vouched'=>0));
+    $this->read_db->where(array('fk_voucher_id'=>0));
+    
+    $unvouched_request=$this->read_db->get('request')->num_rows();
+  
+    return $unvouched_request; 
   }
 
   function get_voucher_type_effect($voucher_type_id){
@@ -570,11 +586,11 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
     }
   }
 
-  function get_office_cash($account_system_id){
+  function get_office_cash($account_system_id, $office_cash_id = 0){
 
     // $this->db->join('bank_branch','bank_branch.bank_branch_id=office_bank.fk_bank_branch_id');
     // $this->db->join('bank','bank.bank_id=bank_branch.fk_bank_id');
-    $result = $this->db->get_where('office_cash',array('fk_account_system_id'=>$account_system_id));
+    $result = $this->db->get_where('office_cash',array('fk_account_system_id'=>$account_system_id,'office_cash_id'=>$office_cash_id));
 
     if($result->num_rows()>0){
       return $result->row();
@@ -595,11 +611,15 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
   }
 
   function list_table_where(){
-
+    
     $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
+
     // Only list vouchers without not yet in the cash journal 
-   
     $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+
+    if(!$this->session->system_admin){
+      $this->db->where_in('office.office_id',array_column($this->session->hierarchy_offices,'office_id'));
+    }
  
   }
 
@@ -616,7 +636,11 @@ class Voucher_model extends MY_Model implements  TableRelationshipInterface
       array('fk_office_id'=>$office_id,'voucher_date>='=>$start_month_date,
       'voucher_date<='=>$end_month_date))->num_rows();
 
-    return  $approved_vouchers == $count_of_month_raised_vouchers ? true : false;
+    return  ($approved_vouchers == $count_of_month_raised_vouchers) && $count_of_month_raised_vouchers > 0 ? true : false;
+  }
+
+  function access_add_form_from_main_menu():bool{
+    return true;
   }
 
 

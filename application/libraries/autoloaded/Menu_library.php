@@ -239,28 +239,25 @@ class Menu_library {
 
       $lib = "";
       $menu_icon = '';
-      foreach ($menus as $menu => $items) {
-        if($this->CI->user_model->check_role_has_permissions($menu,'read')){
-           // Intended to show an icon but didn't work
-          // $lib = $menu.'_library'; 
-          
-          // $this->CI->load->library($lib);
 
-          // if(property_exists($this->CI->$lib,'menu_icon')){
-          //   $menu_icon = $this->CI->$lib->menu_icon;
-          // }
-          if($this->CI->db->get_where('menu',
-          array('menu_derivative_controller'=>ucfirst($menu),'menu_is_active'=>1))->num_rows()>0){
-          $nav .= '
-          <li class="">
-              <a href="'.base_url().strtolower($menu).'/list">
-                  <i class="'.$menu_icon.'"></i>
-                  <span>'.get_phrase(strtolower($items['menu_name'])).'</span>
-              </a>
-          </li>
-          ';
-          }
-        }
+      $all_active_menus_obj = $this->CI->db->get_where('menu',
+          array('menu_is_active'=>1));
+      
+      $menu_derivative_controllers = array_column($all_active_menus_obj->result_array(),'menu_derivative_controller');    
+
+      foreach ($menus as $menu => $items) {
+          if($this->CI->user_model->check_role_has_permissions($menu,'read') && 
+            in_array(ucfirst($menu),$menu_derivative_controllers)){ 
+               //<a href="'.base_url().strtolower($menu).'/'.$this->access_add_form_or_list_from_main_menu($menu).'">
+              $nav .= '
+              <li class="">
+                <a href="'.base_url().strtolower($menu).'/list">
+                      <i class="'.$menu_icon.'"></i>
+                      <span>'.get_phrase(strtolower($items['menu_name'])).'</span>
+                  </a>
+              </li>
+              ';
+          }  
           
       }
 
@@ -276,6 +273,21 @@ class Menu_library {
       }
 
       return $nav;
+    }
+
+    function access_add_form_or_list_from_main_menu($menu_name){
+      
+      $check_if_allowed_to_access_add_from_from_main_menu = $this->CI->grants->access_add_form_from_main_menu($menu_name);
+
+      $add_form = $this->CI->grants->check_if_table_has_detail_listing($menu_name) ? "multi_form_add" : "single_form_add";
+
+      $access_add_form_or_list_from_main_menu = "list";
+
+      if($check_if_allowed_to_access_add_from_from_main_menu){
+        $access_add_form_or_list_from_main_menu = $add_form;
+      }
+
+      return $access_add_form_or_list_from_main_menu;
     }
 
     function create_breadcrumb(){

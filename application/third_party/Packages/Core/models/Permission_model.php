@@ -8,7 +8,7 @@
  *	NKarisa@ke.ci.org
  */
 
-class Permission_model extends MY_Model implements CrudModelInterface, TableRelationshipInterface
+class Permission_model extends MY_Model
 {
   public $table = 'permission'; // you MUST mention the table name
 
@@ -73,12 +73,22 @@ class Permission_model extends MY_Model implements CrudModelInterface, TableRela
         $permission_data['permission_description'] = ucfirst($crud_operation->permission_label_name)." ".str_replace('_',' ',$data_array['table_name']);
         $permission_data['permission_is_active'] = 1;
         $permission_data['fk_permission_label_id'] = $crud_operation->permission_label_id;
-        $permission_data['permission_type'] = 1;
+        $permission_data['permission_type'] = 1;// 1 = Page Access, 2 = Field Access
         $permission_data['permission_field'] = '';
+        $permission_data['permission_is_global'] = 1;
         $permission_data['fk_menu_id'] = $data_array['menu_id'];//$menu_obj->row()->menu_id;
         
         $permission_data_to_insert = $this->grants_model->merge_with_history_fields('permission',$permission_data,false);
-        $this->write_db->insert('permission',$permission_data_to_insert);
+        
+        // Check if the permission exists
+        $permission_count = $this->write_db->get_where('permission',
+        array('fk_menu_id'=>$data_array['menu_id'],
+        'fk_permission_label_id'=>$crud_operation->permission_label_id))->num_rows();
+        
+        if($permission_count === 0){
+          $this->write_db->insert('permission',$permission_data_to_insert);
+        }
+        
       }
     
 

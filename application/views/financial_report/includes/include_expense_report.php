@@ -1,4 +1,7 @@
 <?php 
+
+//print_r($expense_report[3]['expense_accounts']);
+
 $check_sum = array_column($expense_report,'check_sum');
 
 $cnt = 0;
@@ -16,10 +19,10 @@ foreach($expense_report as $income_record){
             <tr>
                 <th><?=get_phrase('expense_account');?></th>
                 <th><?=get_phrase('month_expense');?></th>
-                <th><?=get_phrase('year_to_date_expense');?></th>
-                <th><?=get_phrase('budget_to_date');?></th>
-                <th><?=get_phrase('budget_variance');?></th>
-                <th><?=get_phrase('percent_variance');?></th>
+                <th><?=get_phrase('year_to_date_expense');?> [A]</th>
+                <th><?=get_phrase('budget_to_date');?> [B]</th>
+                <th><?=get_phrase('budget_variance');?> [C = (B - A)]</th>
+                <th><?=get_phrase('percent_variance');?> [(C/B) %]</th>
             </tr>
         </thead>
         <tbody>
@@ -68,7 +71,7 @@ foreach($expense_report as $income_record){
                     $budget_variance_percent = $budget_to_date != 0?round($budget_variance / $budget_to_date,2) * 100:0;
                 ?>
                 <td><?=number_format($budget_variance,2);?></td>
-                <td><?php //echo $budget_variance_percent;?></td>
+                <td><?php echo $budget_variance_percent?$budget_variance_percent:'';?></td>
                 <td>&nbsp;</td>
             </tr>
         </tfoot>

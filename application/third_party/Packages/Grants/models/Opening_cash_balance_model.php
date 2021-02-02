@@ -37,4 +37,27 @@ class Opening_cash_balance_model extends MY_Model{
     }
 
     public function detail_multi_form_add_visible_columns(){}
+
+    function lookup_values(){
+        $lookup_values = parent::lookup_values();
+        
+        if($this->id !== null){
+          
+        //    $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
+        //    array('system_opening_balance_id'=>hash_id($this->id,'decode')))->result_array();
+
+            $this->read_db->join('opening_cash_balance','opening_cash_balance.fk_system_opening_balance_id=system_opening_balance.system_opening_balance_id');
+            $lookup_values['system_opening_balance'] = $this->read_db->get_where('system_opening_balance',
+            array('opening_cash_balance_id'=>hash_id($this->id,'decode')))->result_array();
+
+           $lookup_values['office_bank'] = $this->read_db->get_where('office_bank',
+           array('fk_office_id'=>$lookup_values['system_opening_balance'][0]['fk_office_id']))->result_array();
+
+           $lookup_values['office_cash'] = $this->read_db->get_where('office_cash',
+           array('fk_account_system_id'=>$this->session->user_account_system_id))->result_array();
+
+           return $lookup_values;
+        }
+        
+    }
 }

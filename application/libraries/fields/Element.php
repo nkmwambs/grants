@@ -45,7 +45,7 @@ class Element{
       $panel_head = "<div class='panel-heading'>";
       $panel_head .= "<div class='panel-title'>";
       $panel_head .= "<i class='".$icon."'></i>";
-      $panel_head .= $title;
+      $panel_head .= str_replace('_',' ',$title);
       $panel_head .= "</div>";
       $panel_head .= "</div>";
   
@@ -66,17 +66,21 @@ class Element{
         $label_size = 0;
       }elseif($input_holder_size + $label_size > 12){
         $label_size = 3;
-        $input_holder_size = 9;
+        $input_holder_size = 8;
       }
   
       if($label_size > 0 && $label_name == ''){
         $label_size = 0;
       }
+
+      // $fld = new Fields_base(str_replace(' ','_',$label_name),get_instance()->controller);
+
+      // $mask = $fld->is_field_required() ? "<span class='text-danger'>*</span>" : '';
       
       $form_group = "<div class='form-group'>";
       
       if($label_size > 0){
-        $form_group .= "<label class='control-label col-xs-".$label_size."'>".$label_name."</label>";
+        $form_group .= "<label class='control-label col-xs-".$label_size."'>".$label_name. "</label>";
       }
       
       $form_group .= "<div class='col-xs-".$input_holder_size."'>";

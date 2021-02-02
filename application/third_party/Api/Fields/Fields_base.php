@@ -12,8 +12,12 @@ class Fields_base{
   private $CI = null;
 
   private $default_field_value = null;
+
+  private $is_field_required = true;
+
+  private $is_detail_header = false;
   
-  function __construct($column, $table, $is_header = false){
+  function __construct($column, $table, $is_header = false, $is_detail_header = false){
 
     $this->CI =& get_instance();
 
@@ -23,16 +27,49 @@ class Fields_base{
 
     $this->is_header = $is_header;
 
+    $this->is_detail_header = $is_detail_header;
+
+    // Prevent $this->is_header and  $this->is_detail_header to be true at the same time
+    if($is_header == true && $is_detail_header == true){
+      $this->is_header = true;
+      $this->is_detail_header = false;
+    }
+
     $this->set_default_field_value();
+
+    $this->is_field_required();
   }
 
   function index(){
 
   }
 
+  function is_field_required(){
+
+    //$is_field_required = 1;
+    
+    $all_fields = $this->CI->grants_model->table_fields_metadata($this->table);
+
+    $array_of_columns = array_column($all_fields,'name');
+    $array_of_default = array_column($all_fields,'default');
+
+    $name_default = array_combine($array_of_columns,$array_of_default);
+
+    foreach ($name_default as $field => $default_value) {
+      if($this->column == $field && strlen($default_value) > 0){
+        $this->is_field_required = false;
+        break;
+      }
+    }
+
+    return $this->is_field_required;
+  }
+
   function field_type(){
 
     $all_fields = $this->CI->grants_model->table_fields_metadata($this->table);
+
+    //print_r($all_fields);exit;
 
     $array_of_columns = array_column($all_fields,'name');
     $array_of_types = array_column($all_fields,'type');
@@ -73,6 +110,10 @@ class Fields_base{
 
     }
 
+    // if($this->column == 'fk_fk_role_id'){
+    //   echo $field_type;exit;
+    // }
+
     return $field_type;
 
   }
@@ -87,6 +128,10 @@ class Fields_base{
       $id = $this->column;
       $name = 'header['.$this->column.']';
       $master_class = 'master';
+    }elseif($this->is_detail_header){
+      $id = $this->column;
+      $name = 'detail_header['.$this->table.']['.$this->column.']';
+      $master_class = 'master';
     }
 
     $value = ($value == "" && $this->default_field_value !== 0 ) ? $this->default_field_value : $value;
@@ -98,7 +143,7 @@ class Fields_base{
     
     $library = $this->CI->controller.'_library';
 
-    if(method_exists($this->CI->$library,'default_field_value')){
+    if(method_exists($this->CI->$library,'default_field_value') && count($this->CI->$library->default_field_value()) > 0){
      
       $default_fields_values = $this->CI->$library->default_field_value();
      
@@ -127,7 +172,11 @@ class Fields_base{
 
     $maxlength = $this->column_max_length();
 
-    return '<input id="'.$id.'" maxlength="'.$maxlength.'" required="required" type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    return '<div class="input-group">'.$mask.'<input id="'.$id.'" maxlength="'.$maxlength.'" '.$required.' type="number" value="'.$value.'" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" /></div>';
   }
 
   function text_field($value = ""){
@@ -136,42 +185,63 @@ class Fields_base{
 
     $maxlength = $this->column_max_length();
 
-    return '<input id="'.$id.'" maxlength="'.$maxlength.'" value="'.$value.'" required="required" type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    return '<div class="input-group">'.$mask.'<input id="'.$id.'" maxlength="'.$maxlength.'" value="'.$value.'" '.$required.' type="text" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" /></div>';
   }
 
   function email_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    return '<div class="input-group">'.$mask.'<input id="'.$id.'" value="'.$value.'" '.$required.' type="email" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" /></div>';
   }
 
   function password_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<input id="'.$id.'" value="'.$value.'" required="required" type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    return '<div class="input-group">'.$mask.'<input id="'.$id.'" value="'.$value.'" '.$required.'  type="password" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" /></div>';
   }
 
   function longtext_field($value = ""){
 
     extract($this->input_fields($value));
 
-    return '<textarea id="'.$id.'" required="required" class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" >'.$value.'</textarea>';
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    return '<div class="input-group">'.$mask.'<textarea id="'.$id.'" '.$required.' class="form-control '.$master_class.' input_'.$this->table.' '.$this->column.' " name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" >'.$value.'</textarea></div>';
   }
 
   function date_field($value = ""){
 
     extract($this->input_fields($value));
 
-    $field =  '<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" required="required" readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" />';
-    $field .= "<script>$('.datepicker').datepicker({format:'yyyy-mm-dd'});</script>"; 
+    $value = $value == "0000-00-00" ? '': $value;
+
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    $field =  '<div class="input-group">'.$mask.'<input id="'.$id.'" value="'.$value.'" data-format="yyyy-mm-dd" '.$required.' readonly="readonly" type="text" class="form-control '.$master_class.' datepicker input_'.$this->table.' '.$this->column.'" name="'.$name.'" placeholder="'.get_phrase('enter_'.$this->column).'" /></div>';
     
     return $field;
   }
 
-  function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = ''){
-
+  function select_field($options, $selected_option = 0, $show_only_selected_value = false, $onchange_function_name = '', $multi_select_field = ''){
+    
     if($onchange_function_name == ''){
      $onchange_function_name =  'onchange_'.$this->column;
     } 
@@ -187,12 +257,31 @@ class Fields_base{
     $name = 'detail['.$this->column.'][]';
     $master_class = "detail";
 
+    $multiple = "";
+    $hide_select_label = "";
+
     if($this->is_header){
       $id = $this->column;
       $name = 'header['.$this->column.']';
       $master_class = 'master';
-    }
 
+      if($multi_select_field != "" && 'fk_'.$multi_select_field.'_id' == $this->column){
+        $multiple = "multiple='multiple'";
+        $hide_select_label = "hidden";
+        $name = 'header['.$this->column.'][]';
+      }
+
+    }elseif($this->is_detail_header){
+      $id = $this->column;
+      $name = 'detail_header['.$this->table.']['.$this->column.']';
+      $master_class = 'master';
+
+      if($multi_select_field != "" && 'fk_'.$multi_select_field.'_id' == $this->column){
+        $multiple = "multiple='multiple'";
+        $hide_select_label = "hidden";
+        $name = 'detail_header['.$this->table.']['.$this->column.'][]';
+      }
+    }
 
     $this->set_default_field_value();
    
@@ -200,8 +289,12 @@ class Fields_base{
 
     $select2 = $this->CI->config->item('use_select2_plugin')?'select2':'no-select';
 
-    $select =  "<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' required='required'>
-            <option value='0'>".get_phrase('select_'.$column_placeholder)."</option>";
+    $required = $this->is_field_required ? "required='required'" : '';
+    $mask_asterisk_color = $this->is_field_required ? "red" : "green";
+    $mask = '<span class="input-group-addon"><i style="color:'.$mask_asterisk_color.'" class="fa fa-asterisk"></i></span>';
+
+    $select =  '<div class="input-group">'.$mask."<select onchange='".$onchange_function_name."(this)' id='".$id."' name='".$name."' class='form-control ".$master_class." input_".$this->table." ".$this->column." ".$select2."' $required ".$multiple.">
+            <option class='".$hide_select_label."' value=''>".get_phrase('select_'.$column_placeholder)."</option>";
             
             if(is_array($options) && count($options) > 0){
               foreach ($options as $option_value=>$option_html) {
@@ -218,9 +311,10 @@ class Fields_base{
               }
               
             }
-            
+    
+    $select .= "</select></div>";
 
-    $select .= "</select>";
+    $select .= "<script>function ".$onchange_function_name."(elem){}</script>";
 
     return $select;
   }

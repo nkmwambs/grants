@@ -64,6 +64,7 @@
                  <div class="form-group">
                     <div class="col-xs-12">
                       <?=Widget_base::load('position','position_5');?>
+                      <?=$this->voucher_library->list_project_allocation_without_office_bank_linkage();?>
                     </div>
                   </div>
 

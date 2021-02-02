@@ -1,76 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-/*
-* Copyright (C) 2014 @avenirer [avenir.ro@gmail.com]
-* Everyone is permitted to copy and distribute verbatim or modified copies of this license document,
-* and changing it is allowed as long as the name is changed.
-* DON'T BE A DICK PUBLIC LICENSE TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-*
-***** Do whatever you like with the original work, just don't be a dick.
-***** Being a dick includes - but is not limited to - the following instances:
-********* 1a. Outright copyright infringement - Don't just copy this and change the name.
-********* 1b. Selling the unmodified original with no work done what-so-ever, that's REALLY being a dick.
-********* 1c. Modifying the original work to contain hidden harmful content. That would make you a PROPER dick.
-***** If you become rich through modifications, related works/services, or supporting the original work, share the love. Only a dick would make loads off this work and not buy the original works creator(s) a pint.
-***** Code is provided with no warranty.
-*********** Using somebody else's code and bitching when it goes wrong makes you a DONKEY dick.
-*********** Fix the problem yourself. A non-dick would submit the fix back.
- *
- */
 
-/** how to extend MY_Model:
- *	class User_model extends MY_Model
- *	{
- *      public $table = 'users'; // Set the name of the table for this model.
- *      public $primary_key = 'id'; // Set the primary key
- *      public $fillable = array(); // You can set an array with the fields that can be filled by insert/update
- *      public $protected = array(); // ...Or you can set an array with the fields that cannot be filled by insert/update
- * 		public function __construct()
- * 		{
- *          $this->_database_connection  = group_name or array() | OPTIONAL
- *              Sets the connection preferences (group name) set up in the database.php. If not trset, it will use the
- *              'default' (the $active_group) database connection.
- *          $this->timestamps = TRUE | array('made_at','modified_at','removed_at')
- *              If set to TRUE tells MY_Model that the table has 'created_at','updated_at' (and 'deleted_at' if $this->soft_delete is set to TRUE)
- *              If given an array as parameter, it tells MY_Model, that the first element is a created_at field type, the second element is a updated_at field type (and the third element is a deleted_at field type)
- *          $this->soft_deletes = FALSE;
- *              Enables (TRUE) or disables (FALSE) the "soft delete" on records. Default is FALSE
- *          $this->timestamps_format = 'Y-m-d H:i:s'
- *              You can at any time change the way the timestamp is created (the default is the MySQL standard datetime format) by modifying this variable. You can choose between whatever format is acceptable by the php function date() (default is 'Y-m-d H:i:s'), or 'timestamp' (UNIX timestamp)
- *          $this->return_as = 'object' | 'array'
- *              Allows the model to return the results as object or as array
- *          $this->has_one['phone'] = 'Phone_model' or $this->has_one['phone'] = array('Phone_model','foreign_key','local_key');
- *          $this->has_one['address'] = 'Address_model' or $this->has_one['address'] = array('Address_model','foreign_key','another_local_key');
- *              Allows establishing ONE TO ONE or more ONE TO ONE relationship(s) between models/tables
- *          $this->has_many['posts'] = 'Post_model' or $this->has_many['posts'] = array('Posts_model','foreign_key','another_local_key');
- *              Allows establishing ONE TO MANY or more ONE TO MANY relationship(s) between models/tables
- *          $this->has_many_pivot['posts'] = 'Post_model' or $this->has_many_pivot['posts'] = array('Posts_model','foreign_primary_key','local_primary_key');
- *              Allows establishing MANY TO MANY or more MANY TO MANY relationship(s) between models/tables with the use of a PIVOT TABLE
- *              !ATTENTION: The pivot table name must be composed of the two table names separated by "_" the table names having to to be alphabetically ordered (NOT users_posts, but posts_users).
- *                  Also the pivot table must contain as identifying columns the columns named by convention as follows: table_name_singular + _ + foreign_table_primary_key.
- *                  For example: considering that a post can have multiple authors, a pivot table that connects two tables (users and posts) must be named posts_users and must have post_id and user_id as identifying columns for the posts.id and users.id tables.
- *          $this->cache_driver = 'file'
- *          $this->cache_prefix = 'mm'
- *              If you know you will do some caching of results without the native caching solution, you can at any time use the MY_Model's caching.
- *              By default, MY_Model uses the files to cache result.
- *              If you want to change the way it stores the cache, you can change the $cache_driver property to whatever CodeIgniter cache driver you want to use.
- *              Also, with $cache_prefix, you can prefix the name of the caches. by default any cache made by MY_Model starts with 'mm' + _ + "name chosen for cache"
- *          $this->delete_cache_on_save = FALSE
- *              If you use caching often and you don't want to be forced to delete cache manually, you can enable $this->delete_cache_on_save by setting it to TRUE. If set to TRUE the model will auto-delete all cache related to the model's table whenever you write/update/delete data from that table.
- *          $this->pagination_delimiters = array('<span>','</span>');
- *              If you know you will use the paginate() method, you can change the delimiters between the pages links
- *          $this->pagination_arrows = array('&lt;','&gt;');
- *              You can also change the way the previous and next arrows look like.
- *
- *
- * 			parent::__construct();
- * 		}
- * 	}
- *
- **/
 
 class MY_Model extends CI_Model
 {
-
 
     public function __construct()
     {
@@ -78,24 +10,56 @@ class MY_Model extends CI_Model
         $this->load->database();
     }
 
+    function multi_select_field(){
+      return '';
+    }
+
     function lookup_tables(){
-      $table_name = $this->controller;
-      return $this->_derived_lookup_tables($table_name);
+      //$table_name = $this->controller;
+      //return $this->_derived_lookup_tables($table_name);
+      return list_lookup_tables();
     }
 
     function list_table_where(){
-      $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
-      $filter_where_array = hash_id($this->CI->id,'decode') > 0 && !in_array($table,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
+      // $get_max_approval_status_id = $this->general_model->get_max_approval_status_id(strtolower($this->controller)); 
+      // $filter_where_array = hash_id($this->id,'decode') > 0 && !in_array($this->controller,$this->config->item('table_that_dont_require_history_fields')) ? [$this->controller.'.fk_status_id'=>$get_max_approval_status_id] : [];
       
-      print_r($filter_where_array);exit;
+      // if(count($filter_where_array) > 0){
+      //   $this->db->where($filter_where_array);
+      // }
 
-      if(count($filter_where_array) > 0){
-        $this->db->where($filter_where_array);
-      }
+      $this->_list_table_where_by_account_system();
       
     }
 
-    public function detail_tables(){}
+    function _list_table_where_by_account_system(){
+      $tables_with_account_system_relationship = tables_with_account_system_relationship();
+
+      $lookup_tables = $this->lookup_tables();
+
+      $account_system_table = '';
+
+      foreach($lookup_tables as $lookup_table){
+        if(in_array($lookup_table, $tables_with_account_system_relationship)){
+          $account_system_table = $lookup_table;
+          break;
+        }
+      }
+
+      if(!$this->session->system_admin && $account_system_table !== ''){
+        $this->db->where(array($account_system_table.'.fk_account_system_id'=>$this->session->user_account_system_id));
+      }
+    }
+
+    public function detail_tables(){
+      return list_detail_tables();
+    }
+
+    // Works in the approve method of My_Controller to help in putting on actions in an approval process
+    // E.g. Update a certain table after approval
+    public function post_approve_action(){}
+
+    public function edit_visible_columns(){}
 
     public function master_table_visible_columns(){}
   
@@ -108,6 +72,15 @@ class MY_Model extends CI_Model
     public function detail_list_table_hidden_columns(){}
   
     public function single_form_add_visible_columns(){}
+
+    public function order_list_page():String{return '';}
+
+    public function access_add_form_from_main_menu():bool{return false;}
+
+    // Lists/ Array of detail tables of the current controller that you would like to use their 
+    // single_form_add_visible_columns in the current controller's single form add forms
+
+    public function detail_tables_single_form_add_visible_columns(){}
   
     public function single_form_add_hidden_columns(){}
   
@@ -139,6 +112,61 @@ class MY_Model extends CI_Model
 
     public function currency_fields(){
       return [];
+    }
+
+    function lookup_values(){
+
+      $current_table =  strtolower($this->controller);
+
+      $lookup_tables = $this->grants->lookup_tables($current_table);
+
+      $lookup_values = [];
+
+      foreach($lookup_tables as $lookup_table){
+
+        $this->read_db->select(array($lookup_table.'_id',$lookup_table.'_name'));
+
+        if($lookup_table=='office'){
+            $this->read_db->group_start();
+
+              // Show drop offices that are not readonly i.e. transacting offices
+              if($this->config->item('drop_transacting_offices')){
+                $this->read_db->where(array('office_is_readonly'=>0));
+              }else{
+                $this->read_db->where(array('office_is_readonly'=>1));
+              }
+
+              //This ensure only lowest level offices e.g. center - To be decaprecated in favor of of the previous condition
+                
+                if($this->config->item('drop_only_center') && in_array($current_table,$this->config->item('tables_allowing_drop_only_centers'))){
+
+                  $this->read_db->or_where(array('fk_context_definition_id'=>$this->user_model->get_lowest_office_context()->context_definition_id));
+                }
+
+            $this->read_db->group_end();
+        }
+
+        if(!$this->session->system_admin){
+
+
+        if(strtolower($this->controller) !== 'account_system'){
+          $this->grants->join_tables_with_account_system($lookup_table);
+        }
+         
+        if ($this->db->field_exists($lookup_table.'_is_active', $lookup_table))
+        {
+            $this->read_db->where(array($lookup_table.'_is_active'=>1));
+        }
+          $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+
+        }else{
+          
+          $lookup_values[$lookup_table] = $this->read_db->get($lookup_table)->result_array();
+          
+        }
+      }
+
+      return $lookup_values;
     }
 
     /**

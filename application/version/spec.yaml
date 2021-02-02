@@ -1,6 +1,46 @@
 core:
   tables:
+
+    user_switch:
+
+    account_system_setting:
+      lookup_tables:
+        - account_system
+        - approve_item
+    
+    office_group_association:
+      lookup_tables:
+        - office_group
+        - office
+
+    office_group:
+      lookup_tables:
+        - account_system
+
+    role_group:
+      lookup_tables:
+        - account_system
+
+    permission_template:
+      lookup_tables:
+        - role_group
+        - permission
+
+    attachment:
+      lookup_tables:
+        - approve_item
+    
+    role_group_association:
+      lookup_tables:
+        - role
+        - role_group
+
     context_definition:
+
+    event:
+      lookup_tables:
+        - user
+        - approve_item
 
     language:
 
@@ -51,6 +91,48 @@ core:
 grants:
   
   tables:
+
+    expense_account_office_association:
+      lookup_tables:
+        - office
+        - expense_account
+
+    cheque_injection:
+      lookup_tables:
+        - office_bank
+
+    budget_projection_income_account:
+      lookup_tables:
+        - budget_projection
+        - income_account
+
+    budget_projection:
+      lookup_tables:
+        - budget
+
+    request_type_department:
+      lookup_tables:
+        - request_type
+        - department
+    
+    project_request_type:
+      lookup_tables:
+        - request_type
+        - project
+
+    cash_recipient_account:
+      lookup_tables:
+        - voucher
+        - office_bank
+        - office_cash
+  
+    budget_review_count:
+      lookup_tables:
+        - account_system
+
+    budget_tag:
+      lookup_tables:
+        - account_system
     
     project_income_account:
       lookup_tables:

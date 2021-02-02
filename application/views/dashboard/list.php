@@ -1,10 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+//print_r(array_column($this->session->hierarchy_offices,"office_id"));
+//print_r($this->project_allocation_model->get_office_group_lead_office_id(1));
+
 if ($this->session->system_admin) {
-
-  //print_r($this->session->hierarchy_offices);
-  print_r($this->user_model->get_user_context_association(1));
-  //print_r($this->session->context_definition['context_definition_id']);
-
+  //print_r(count($this->user_model->user_hierarchy_offices(27)));//38, 27
 }
 
 ?>
@@ -23,6 +23,9 @@ if ($this->session->system_admin) {
       <div class='btn btn-default' id='btn_test'>Test</div>
     </div>
   </div> -->
+<?php 
+  //print_r(get_fy('2020-02-01'));
+?>  
 
 <script>
   $("#btn_test").on('click', function() {

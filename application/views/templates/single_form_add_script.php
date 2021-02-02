@@ -5,15 +5,27 @@ $('.form-control').keydown(function(){
 });
 
 $(".save, .save_new").on('click',function(ev){
-  
+
   var elem = $(this);
 
   //Check if all required fields are filled
   var empty_fields_count = 0;
   $('.form-control').each(function(i,el){
-    if($(el).val() == ''){
-      $(el).css('border','1px solid red');
-      empty_fields_count++;
+
+    if($(el).hasClass('select2') && $(el).is('select') ){
+      // To be completed later. Check if select2 is empty
+      if(!$(el).val() && $(el).attr('required')){
+        $(el).closest('div').css('border','1px solid red');
+        empty_fields_count++;
+      }else{
+        $(el).closest('div').removeAttr('style');
+      }
+
+    }else{
+      if($(el).val() == '' && $(el).attr('required')){
+        $(el).css('border','1px solid red');
+        empty_fields_count++;
+      }
     }
   });
 
