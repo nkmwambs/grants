@@ -93,6 +93,28 @@ if(!$financial_report_submitted){
 <?php }?>
 
 <script>
+
+$("#submit_report").on('click',function(ev){
+    var url = "<?=base_url();?>Financial_report/submit_financial_report";
+    var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
+    
+    $.post(url,data,function(response){
+        if(response){
+            if(response != 1){
+                alert(response);
+            }else{
+                alert('MFR Submitted Successful');
+                location.href = document.referrer;
+            }
+                
+            }else{
+                alert(response);
+            }
+    });
+
+    ev.preventDefault();
+});
+
 $(document).ready(function(){
 
     // $(".total_oc").append(" <span class='label label-success'>2</span>");
