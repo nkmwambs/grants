@@ -142,23 +142,6 @@
 
 <script>
 
-$("#submit_report").on('click',function(ev){
-    var url = "<?=base_url();?>Financial_report/submit_financial_report";
-    var data = {'office_id':<?=$office_ids[0];?>,'reporting_month':'<?=$reporting_month;?>'};
-    
-    $.post(url,data,function(response){
-        if(response){
-                alert(response);
-                location.href = document.referrer;
-            }else{
-                alert(response);
-            }
-    });
-
-    ev.preventDefault();
-});
-
-
 
 $("#frm_selected_offices").on('submit',function(ev){
     
