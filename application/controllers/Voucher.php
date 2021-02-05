@@ -22,6 +22,7 @@ class Voucher extends MY_Controller
     $this->load->model('voucher_model');
     $this->load->library('voucher_library');
     $this->load->model('office_group_model');
+    $this->load->model('office_bank_model');
   }
 
   /**
@@ -349,6 +350,10 @@ class Voucher extends MY_Controller
     $voucher_type_account = $voucher_type_effect_and_code->voucher_type_account_code;
 
     $office_accounting_system = $this->office_account_system($office_id);
+
+    if(count($this->office_bank_model->get_active_office_banks($office_id)) > 1 && $voucher_type_account == 'cash'){
+      $response['office_banks']= $this->get_office_banks($office_id);
+    }
     
     if($voucher_type_account == 'cash' || $voucher_type_effect == 'bank_contra' || $voucher_type_effect == 'cash_to_cash_contra'){
       $response['office_cash'] = $this->db->select(array('office_cash_id as item_id','office_cash_name as item_name'))->get_where('office_cash',
@@ -770,7 +775,7 @@ function check_eft_validity(){
         $header['voucher_date'] = $this->input->post('voucher_date');
         $header['voucher_number'] = $voucher_number;//$this->input->post('voucher_number');
         $header['fk_voucher_type_id'] = $this->input->post('fk_voucher_type_id');
-        $header['fk_office_bank_id'] = $this->input->post('fk_office_bank_id') == null?0:$this->input->post('fk_office_bank_id');
+        $header['fk_office_bank_id'] = $this->get_office_bank_id_to_post($this->input->post('fk_office_id'));
         $header['fk_office_cash_id'] = $this->input->post('fk_office_cash_id') == null?0:$this->input->post('fk_office_cash_id');
         $header['voucher_cheque_number'] = $this->input->post('voucher_cheque_number') == null?0:$this->input->post('voucher_cheque_number');
         $header['voucher_vendor'] = $this->input->post('voucher_vendor');
@@ -862,9 +867,18 @@ function check_eft_validity(){
         }else{
           echo "Voucher posted successfully";
         }
-  
-    
+  }
 
+  function get_office_bank_id_to_post($office_id){
+
+    $office_bank_id =  $this->input->post('fk_office_bank_id') == null?0:$this->input->post('fk_office_bank_id');
+    
+    if($office_bank_id == 0){
+      // Get id of active office bank
+      $office_bank_id = $this->office_bank_model->get_active_office_banks($office_id)[0]['office_bank_id'];
+    }
+
+    return $office_bank_id;
   }
 
   function get_remaining_unused_cheque_leaves($office_bank_id){

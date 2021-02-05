@@ -1,5 +1,6 @@
 <?php
     extract($result);
+    //print_r($this->financial_report_model->financial_report_information('8zoLYo3YXb',[23],'2021-01-01'));
 ?>
 <style>
 .header{
