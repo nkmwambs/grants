@@ -733,6 +733,27 @@ class Financial_report_model extends MY_Model{
         return $budget_tag_id;
       }
 
+    //   function get_expense_account_comment($office_ids,$reporting_month){
+           
+    //         $variance_comments_array = [];
+            
+    //         $this->read_db->select(array('fk_income_account_id as income_account_id','fk_expense_account_id as expense_account_id','variance_comment_text'));
+    //         $this->read_db->where_in('budget.fk_office_id',$office_ids);
+    //         $this->read_db->join('budget','budget.budget_id=variance_comment.fk_budget_id');
+    //         $this->read_db->join('expense_account','expense_account.expense_account_id=variance_comment.fk_expense_account_id');
+    //         $variance_comment_obj = $this->read_db->get('variance_comment');
+
+    //         if($variance_comment_obj->num_rows() > 0){
+    //             $variance_comments = $variance_comment_obj->result_array();
+
+    //             foreach($variance_comments as $variance_comment){
+    //                 $variance_comments_array[$variance_comment['income_account_id']][$variance_comment['expense_account_id']] = $variance_comment['variance_comment_text'];
+    //             }
+    //         }
+
+    //         return $variance_comments_array;
+    //   }
+
       function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
         
         $max_approval_status_ids = $this->general_model->get_max_approval_status_id('budget_item');
