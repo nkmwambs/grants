@@ -152,16 +152,16 @@ class Cheque_book_model extends MY_Model{
 
     function get_remaining_unused_cheque_leaves($office_bank_id){
 
-        $max_status = $this->general_model->get_max_approval_status_id('cheque_book');
+        $max_status_ids = $this->general_model->get_max_approval_status_id('cheque_book');
     
         $this->read_db->select(array('voucher_cheque_number'));
         $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
         $used_cheque_leaves_obj = $this->read_db->get('voucher');
         
-    
+        $this->read_db->where_in('cheque_book.fk_status_id',$max_status_ids);
         $this->read_db->select(array('cheque_book_start_serial_number','cheque_book_count_of_leaves'));
-        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id,
-        'cheque_book.fk_status_id'=>$max_status));
+        $this->read_db->where(array('fk_office_bank_id'=>$office_bank_id));
+        //'cheque_book.fk_status_id'=>$max_status));
         $cheque_book = $this->read_db->get('cheque_book');
 
     
@@ -219,7 +219,7 @@ class Cheque_book_model extends MY_Model{
             //if(in_array($cheque_leaf,$opening_outstanding_cheques_used_cheque_leaves)) continue;
             $keyed_cheque_leaves[]['cheque_number'] = $cheque_leaf;
             
-            if($this->config->item("allow_skipping_of_cheque_leaves") || $this->get_cheque_book_account_system_setting('allow_skipping_of_cheque_leaves')) {
+            if(!$this->allow_skipping_of_cheque_leaves()) {
                 break;
             }
           }
@@ -228,6 +228,17 @@ class Cheque_book_model extends MY_Model{
         }
     
         return  $leaves;
+      }
+
+      function allow_skipping_of_cheque_leaves(){
+
+        $is_skipping_of_cheque_leaves_allowed = true;
+
+        if($this->config->item("allow_skipping_of_cheque_leaves") == false || $this->get_cheque_book_account_system_setting('allow_skipping_of_cheque_leaves') == 0){
+            $is_skipping_of_cheque_leaves_allowed = false;
+        }
+
+        return $is_skipping_of_cheque_leaves_allowed;
       }
 
       function get_cheque_book_account_system_setting($setting_key){

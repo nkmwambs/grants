@@ -735,7 +735,7 @@ class Financial_report_model extends MY_Model{
 
       function bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids = [], $office_bank_ids = []){
         
-        $max_approval_status_id = $this->general_model->get_max_approval_status_id('budget_item');
+        $max_approval_status_ids = $this->general_model->get_max_approval_status_id('budget_item');
 
         $financial_year = get_fy($reporting_month);
         $month_number = date('m',strtotime($reporting_month));
@@ -776,7 +776,8 @@ class Financial_report_model extends MY_Model{
             $this->db->where_in('budget_item.fk_project_allocation_id',$get_office_bank_project_allocation);
         }
 
-        $this->db->where(array('budget_item.fk_status_id'=>$max_approval_status_id));
+        //$this->db->where(array('budget_item.fk_status_id'=>$max_approval_status_id));
+        $this->db->where_in('budget_item.fk_status_id',$max_approval_status_ids);
     
         $result = $this->db->get('budget_item_detail');
     

@@ -441,6 +441,53 @@ class Voucher_model extends MY_Model
   }
 
   /**
+   * Get the signitories
+   * 
+   * Gives an array of the voucher signitories
+   * 
+   * @param Int $office - the id office
+   * @return Array - An array
+   * @author LOnduso
+   */
+  function get_voucher_signitories(Int $office):Array{
+
+    $voucher_signatory = array();
+
+    //Get the signitories of a given office of a given accounting system
+    $this->read_db->select(array('voucher_signatory_name'));
+    $this->read_db->join('account_system','account_system.account_system_id=voucher_signatory.fk_account_system_id');
+    $this->read_db->join('office','office.fk_account_system_id=account_system.account_system_id');
+    $this->read_db->where(array('office_id'=>$office,'voucher_signatory_is_active'=>1));
+    $voucher_signatory=$this->read_db->get('voucher_signatory')->result_array();
+
+
+    return $voucher_signatory;
+  }
+
+  /**
+   * Get the get_cheques_for_office
+   * 
+   * Gives an array of the voucher signitories
+   * 
+   * @param Int $office - the id office
+   * @return Array - An array
+   * @author LOnduso
+   */
+  function get_cheques_for_office(Int $office, Int $bank_office_id,Int $cheque_number):Int{
+    
+     
+
+    //Get the cheque numbers for an office for a given bank office
+      $this->read_db->select(array('voucher_cheque_number'));
+       $this->read_db->where(array('fk_office_id'=>$office,'fk_office_bank_id'=>$bank_office_id, 'voucher_cheque_number'=>$cheque_number));
+       $cheque_numbers=$this->read_db->get('voucher')->num_rows();
+
+      return $cheque_numbers;
+  
+  }
+
+
+  /**
    * Get Approveable Item Last Status
    * 
    * Gives the Last Approval Status ID of the item as the set approval workflow
@@ -491,7 +538,7 @@ class Voucher_model extends MY_Model
    */
   function get_approved_unvouched_request_details($office_id){
 
-    $max_approval_status_id = $this->general_model->get_max_approval_status_id('request');
+    $max_approval_status_ids = $this->general_model->get_max_approval_status_id('request');
 
     $this->db->select(array('request_detail_id','request_track_number','request_detail_description','request_detail_quantity','request_detail_unit_cost','request_detail_total_cost','expense_account_name','project_name'));
 
@@ -501,7 +548,9 @@ class Voucher_model extends MY_Model
     $this->db->join('request','request.request_id=request_detail.fk_request_id'); 
     $this->db->join('status','status.status_id=request.fk_status_id');
 
-    $this->db->where(array('fk_voucher_id'=>0,'request.fk_status_id'=>$max_approval_status_id));
+    $this->db->where_in('request.fk_status_id',$max_approval_status_ids);
+
+    $this->db->where(array('fk_voucher_id'=>0));
     return $this->db->get('request_detail')->result_array();
   }
 
@@ -550,6 +599,22 @@ class Voucher_model extends MY_Model
     $unvouched_request=$this->read_db->get('request')->num_rows();
   
     return $unvouched_request; 
+  }
+
+  function check_active_cheque_book_for_office_exist($office_id){
+
+    //select * from cheque_book JOIN office_bank ON (office_bank.office_bank_id=cheque_book.fk_office_bank_id) 
+    //JOIN office ON(office.office_id=office_bank.fk_office_id) where office.office_id=19
+
+    
+    $this->read_db->join('office_bank','office_bank.office_bank_id=cheque_book.fk_office_bank_id');
+    $this->read_db->join('office','office.office_id=office_bank.fk_office_id');
+    $this->read_db->where(array('office.office_id'=>$office_id, 'cheque_book.cheque_book_is_active'=>1));
+    return $this->read_db->get('cheque_book');
+
+   // return ['cheque_bk'=>1];
+
+    //echo json_encode($response);
   }
 
   function get_voucher_type_effect($voucher_type_id){
@@ -612,10 +677,12 @@ class Voucher_model extends MY_Model
 
   function list_table_where(){
     
-    $max_approval_status_id = $this->general_model->get_max_approval_status_id('voucher');
-
+    $max_approval_status_ids = $this->general_model->get_max_approval_status_id('voucher');
+    //print_r($max_approval_status_ids);exit;
     // Only list vouchers without not yet in the cash journal 
-    $this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+    //$this->db->where(array($this->controller.'.fk_status_id<>'=>$max_approval_status_id));
+
+    $this->db->where_not_in($this->controller.'.fk_status_id',$max_approval_status_ids);
 
     if(!$this->session->system_admin){
       $this->db->where_in('office.office_id',array_column($this->session->hierarchy_offices,'office_id'));

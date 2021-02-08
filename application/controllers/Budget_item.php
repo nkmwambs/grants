@@ -15,6 +15,9 @@ class Budget_item extends MY_Controller
   function __construct(){
     parent::__construct();
 
+    $this->load->model('budget_limit_model');
+    $this->load->model('month_model');
+
   }
 
   function index(){}
@@ -34,6 +37,7 @@ class Budget_item extends MY_Controller
     if($this->action == 'multi_form_add' || $this->action == 'edit'){
   
     $result = [];
+    $budget_id = 0;
     
     $this->db->select(array('month_id','month_number','month_name'));
     $this->db->order_by('month_order ASC');
@@ -43,6 +47,7 @@ class Budget_item extends MY_Controller
     $this->db->join('budget','budget.fk_office_id=office.office_id');
     
     if($this->action == 'multi_form_add'){
+      $budget_id = hash_id($this->id,'decode');
       $this->db->where(array('budget_id'=>hash_id($this->id,'decode')));
     }else{
       $this->db->join('budget_item','budget_item.fk_budget_id=budget.budget_id');
@@ -65,13 +70,23 @@ class Budget_item extends MY_Controller
     $this->db->join('project','project.project_id=project_allocation.fk_project_id');
     $project_allocations = $this->db->get('project_allocation')->result_object();
 
-
     $result['project_allocations'] = $project_allocations; 
     $result['expense_accounts'] = $expense_accounts;
     $result['months'] = $months;
     $result['office'] = $office;
+    $result['budget_limit_amount'] = 0;
+    //$result['months_to_freeze'] = $months_to_freeze;
 
     if($this->action == 'edit'){
+      
+      $this->read_db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
+      $this->read_db->where(array('budget_item_id'=>hash_id($this->id,'decode')));
+      $budget_item = $this->read_db->get('budget_item')->row();
+
+      $budget_id = $budget_item->fk_budget_id;
+      
+      $result['budget_limit_amount'] = $this->budget_limit_model->budget_limit_remaining_amount($budget_item->fk_budget_id,$budget_item->fk_income_account_id);
+
       $this->db->join('budget_item','budget_item.budget_item_id=budget_item_detail.fk_budget_item_id');
       $this->db->join('expense_account','expense_account.expense_account_id=budget_item.fk_expense_account_id');
       $this->db->join('month','month.month_id=budget_item_detail.fk_month_id');
@@ -83,13 +98,28 @@ class Budget_item extends MY_Controller
         $result['budget_item_details'][$budget_item_detail['month_number']] = $budget_item_detail;
       }
 
-      //$result['budget_item_details'] = $this->db->get('budget_item_detail')->result_array();
     }
+
+    $this->read_db->where(array('budget_id'=>$budget_id));
+    $this->read_db->join('budget','budget.fk_budget_tag_id=budget_tag.budget_tag_id');
+    $month_id = $this->read_db->get('budget_tag')->row()->fk_month_id;
+
+    $months_to_freeze = $this->month_model->past_months_in_fy($month_id);
+
+    $result['months_to_freeze'] = $months_to_freeze;
 
     return $result;
     }else{
       return parent::result($id = '');
     }
+  }
+
+  function get_budget_limit_remaining_amount($budget_id,$expense_account_id){
+    
+    $this->read_db->where(array('expense_account_id'=>$expense_account_id));
+    $income_account_id = $this->read_db->get('expense_account')->row()->fk_income_account_id;
+
+    echo $this->budget_limit_model->budget_limit_remaining_amount($budget_id,$income_account_id);
   }
 
   function update_budget_item($budget_item_id){

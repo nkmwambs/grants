@@ -34,6 +34,26 @@ class Month_model extends MY_Model{
 
     public function detail_tables(){}
 
+    public function past_months_in_fy($month_id){
+
+        $past_months_in_fy = [];
+
+        $this->read_db->where(array('month_id'=>$month_id));
+        $month_order = $this->read_db->get('month')->row()->month_order;
+
+        $past_month_order = range(1,$month_order - 1);
+        
+        $this->read_db->select(array('month_id'));
+        $this->read_db->where_in('month_order',$past_month_order);
+        $past_months_in_fy_obj = $this->read_db->get('month');
+
+        if($past_months_in_fy_obj->num_rows() > 0){
+            $past_months_in_fy = array_column($past_months_in_fy_obj->result_array(),'month_id');
+        }
+
+        return $past_months_in_fy;
+    }
+
 
     function intialize_table(Array $foreign_keys_values = []){
 

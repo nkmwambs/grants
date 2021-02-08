@@ -10,6 +10,9 @@
 
 <?php 
     //print_r($this->cheque_book_model->get_cheque_book_account_system_setting("allow_skipping_of_cheque_leaves"));
+    //extract($result);
+    //print_r($result);
+
 ?>
 
 
@@ -620,6 +623,28 @@ function populate_select(obj,parent_elem,default_html_text = 'Select an option')
 
     parent_elem.append(option_html);
 }
+//Modified by Onduso on 28/1/2021
+$("#cheque_number").on('change',function(){
+
+    var office_id = $("#office").val().trim();
+    var bank_office_id = $("#bank").val().trim();
+    var cheque_number=$(this).val().trim();
+
+    var url = "<?=base_url();?>Voucher/get_cheques_for_office/" + office_id + "/" + bank_office_id+"/"+cheque_number;
+
+   // alert(url);
+
+    $.get(url,function(response){
+        if(response){
+          alert('The cheque number is already used. Choose another one');
+
+          check_cheque_validity();
+
+        }
+        
+    });
+    
+});
 
 function add_options_to_bank_select(response_office_bank, show_cash_accounts = false){
     if(!show_cash_accounts) $("#cash_account").closest('span').addClass('hidden');
@@ -662,6 +687,25 @@ function get_bank_cash_information(voucherTypeSelect){
         var response_is_transfer_contra = response_objects['is_transfer_contra'];
         var response_is_bank_payment = response_objects['is_bank_payment'];
         var response_is_voucher_type_requires_cheque_referencing = response_objects['voucher_type_requires_cheque_referencing'];
+
+        //Get the active cheque of an office;
+
+        if(response_is_voucher_type_requires_cheque_referencing){
+            var url="<?=base_url();?>Voucher/check_active_cheque_book_for_office_exist/" + office_id;
+            $.get(url, function(check_exist_response){
+
+              //Check if response =false and then redirect to the cheque form
+              if(!check_exist_response){
+                  
+                  alert('No active cheque book & you will be directed to add cheque book form');
+
+                  var redirect_to_add_cheque_book_url="<?=base_url();?>cheque_book/single_form_add";
+
+                 window.location.replace(redirect_to_add_cheque_book_url);
+                  //alert('Yes');
+              }
+            });
+        }
 
         if(response_office_cash.length > 0){
             add_options_to_cash_select(response_office_cash);
@@ -708,8 +752,10 @@ function get_bank_cash_information(voucherTypeSelect){
 function change_voucher_number_field_to_eft_number(response_is_voucher_type_requires_cheque_referencing){
 
 
+
     if(response_is_voucher_type_requires_cheque_referencing == 0){
 
+       
         var cheque_number_div = $("#cheque_number").parent();
    
         cheque_number_div.html('');
@@ -726,6 +772,7 @@ function change_voucher_number_field_to_eft_number(response_is_voucher_type_requ
 
     }else if($('#cheque_number').is('input')){
 
+        
         cheque_number_div.html('');
         cheque_number_div.append($('#secondary_select'));
 

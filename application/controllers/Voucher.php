@@ -23,6 +23,27 @@ class Voucher extends MY_Controller
     $this->load->library('voucher_library');
     $this->load->model('office_group_model');
     $this->load->model('office_bank_model');
+    $this->load->model('voucher_model');
+  }
+
+  /**
+   * get_cheques_for_office
+   * 
+   * This return list of cheques
+   * 
+   * @return Array - Array
+   * @author Onduso
+   */
+  function get_cheques_for_office(Int $office, Int $bank_office_id, Int $cheque_number){
+
+    $cheque_number_exists=false;
+
+    $cheque_numbers=$this->voucher_model->get_cheques_for_office($office,$bank_office_id,$cheque_number);
+    
+    if($cheque_numbers>0){
+     $cheque_number_exists=true;
+    }
+    echo $cheque_number_exists;
   }
 
   /**
@@ -166,6 +187,7 @@ class Voucher extends MY_Controller
 
   // New voucher form methods
 
+  
   function get_transaction_voucher($id){
     
     $raw_result = $this->voucher_model->get_transaction_voucher(hash_id($id,'decode'));
@@ -229,13 +251,18 @@ class Voucher extends MY_Controller
     $table = 'voucher';
     $primary_key = hash_id($this->id,'decode');
 
-    $voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_created_by'])['full_name'];
-    //$voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_last_modified_by'])['full_name'];
 
+    $voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_created_by']);//['full_name'];
+
+    //$voucher_raiser_name = $this->record_raiser_info($raw_result[0]['voucher_last_modified_by'])['full_name'];
+    
     return [
       "header"=>$header,
       "body"=>$body,
-      'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)],'raiser_approver_info'=>['voucher_raiser_name'=>$voucher_raiser_name],
+      "signitories"=>$this->voucher_model->get_voucher_signitories($raw_result[0]['fk_office_id']),
+      'raiser_approver_info'=>[$voucher_raiser_name['full_name']],
+      //'voucher_raised_date'=>$header['voucher_created_date'],
+      'action_labels'=>['show_label_as_button'=>$this->general_model->show_label_as_button($item_status,$logged_role_id,$table,$primary_key)]
       //'chat_messages'=>$this->get_chat_messages($this->controller,$id),
     ];
 
@@ -269,7 +296,7 @@ class Voucher extends MY_Controller
     $user_info['full_name'] = '';
 
     if($user_obj->num_rows() > 0){
-      $user_obj->row()->user_firstname.' '.$user_obj->row()->user_lastname;
+      $user_info['full_name']= $user_obj->row()->user_firstname.' '.$user_obj->row()->user_lastname;
     }
 
     return $user_info;
@@ -294,7 +321,9 @@ class Voucher extends MY_Controller
     //    }    
  
     //   return $result; 
-    }else{
+    }
+ 
+    else{
       return parent::result($id = '');
     }
   }
@@ -333,6 +362,18 @@ class Voucher extends MY_Controller
     $voucher_types = $this->voucher_type_model->get_active_voucher_types($account_system_id,$office_id);
 
     echo json_encode($voucher_types);
+  }
+
+  function check_active_cheque_book_for_office_exist($office_id){
+    $check_exists=false;
+    
+    $office_cheque_exists=$this->voucher_model->check_active_cheque_book_for_office_exist($office_id);
+
+    if($office_cheque_exists->num_rows()>0){
+      $check_exists=true;
+    }
+
+    echo $check_exists;
   }
 
   function check_voucher_type_affects_bank($office_id, $voucher_type_id){

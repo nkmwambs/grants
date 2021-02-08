@@ -92,6 +92,16 @@ grants:
   
   tables:
 
+    budget_limit:
+      lookup_tables:
+        - office
+        - budget_tag
+        - income_account
+
+    voucher_signatory:
+      lookup_tables:
+        - account_system
+
     expense_account_office_association:
       lookup_tables:
         - office
@@ -178,9 +188,6 @@ grants:
     voucher_type_account:     
 
     voucher_type_effect:
-
-    opening_cash_balance:
-      - office 
     
     request_conversion:
       - status

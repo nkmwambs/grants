@@ -6,6 +6,7 @@
 
 <?php 
 //print_r($result);
+//print_r(financial_year_quarter_months(1));
 
 extract($result);
 
@@ -55,6 +56,11 @@ extract($result);
                                 
                                 
                             </select>
+                        </div>
+
+                        <label class='control-label col-xs-2'><?=get_phrase('budget_limit_remaining_amount');?></label>
+                        <div class='col-xs-2'>
+                            <input type="text" class="form-control total_fields" id="budget_limit_amount" readonly="readonly" value="<?=$budget_limit_amount?>"/>
                         </div>
 
                     </div>
@@ -108,7 +114,7 @@ extract($result);
                                     <td><div class='btn btn-danger' id='btn-clear'><?=get_phrase('clear');?></div></td>
                                     
                                     <?php foreach($months as $month){ ?>
-                                        <td><input type='text' id='' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
+                                        <td><input type='text' <?=in_array($month->month_id,$months_to_freeze)?"readonly":'';?> id='' name='fk_month_id[<?=$month->month_id;?>][]' value='0' class='form-control month_spread' /></td>
                                     <?php }?>
                                 
                                 </tr>
@@ -146,6 +152,14 @@ $(".form-control").on('change',function(){
    }
 });
 
+$("#fk_expense_account_id").on('change',function(){
+    var url = "<?=base_url();?>budget_item/get_budget_limit_remaining_amount/<?=hash_id($this->id,'decode');?>/"+$(this).val();
+
+    $.get(url,function(response){
+        $("#budget_limit_amount").val(response);
+    });
+});
+
 $("#fk_project_allocation_id").on('change',function(){
     var project_allocation_id = $(this).val();
     var url = "<?=base_url();?>Budget_item/project_budgetable_expense_accounts/"+project_allocation_id;
@@ -178,7 +192,7 @@ $('.month_spread').focusout(function(){
 });
 
 $('.month_spread').focusin(function(){
-    if($(this).val() == 0){
+    if($(this).val() == 0 && !$(this).attr('readonly')){
         $(this).val('');
     }
 });
@@ -283,7 +297,7 @@ $(".btn-save").on('click',function(){
     save();
 });
 
-$("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").on('keyup',function(){
+$("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").bind('keyup change',function(){
     var qty = $("#budget_item_quantity").val();
     var unit_cost = $("#budget_item_unit_cost").val();
     var often = $("#budget_item_often").val();
@@ -299,9 +313,10 @@ $("#budget_item_quantity, #budget_item_often, #budget_item_unit_cost").on('keyup
 function compute_totals_match(){
     var frequency_compute =  parseFloat($("#frequency_total").val());
     var budget_item_total_cost = parseFloat($("#budget_item_total_cost").val());
+    var budget_limit_amount = parseFloat($("#budget_limit_amount").val());
     var compute_totals_match = false;
 
-    if(frequency_compute == budget_item_total_cost){
+    if((frequency_compute == budget_item_total_cost) && (frequency_compute <= budget_limit_amount)){
         compute_totals_match = true;
         $(".total_fields").removeAttr('style');
     }else{

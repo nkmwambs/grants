@@ -18,6 +18,7 @@ class Journal extends MY_Controller
     $this->load->model('finance_model');
     $this->load->model('voucher_model');
     $this->load->model('financial_report_model');
+    $this->load->model('cheque_book_model');
 
   }
 
@@ -72,8 +73,9 @@ class Journal extends MY_Controller
       'navigation'=>$this->journal_navigation($office_id, $transacting_month),
       'accounts'=>$this->financial_accounts($office_id),
       'month_opening_balance'=>$this->month_opening_bank_cash_balance($office_id,$transacting_month, $office_bank_id),
-      'vouchers'=>$this->journal_records($office_id,$transacting_month,$project_allocation_ids, $office_bank_id)
-     ];
+      'vouchers'=>$this->journal_records($office_id,$transacting_month,$project_allocation_ids, $office_bank_id),
+      'allow_skipping_of_cheque_leaves' => $this->cheque_book_model->allow_skipping_of_cheque_leaves()
+    ];
      
      //print_r($result['month_opening_balance']);exit;
 
