@@ -78,14 +78,30 @@ class Financial_report extends MY_Controller
 
     return ['cash_at_bank'=>$cash_at_bank,'cash_at_hand'=>$cash_at_hand];
   }
+  /**
+   * todo - Find out why office_ids come in duplicates
+   */
 
   function _compute_cash_at_bank($office_ids,$reporting_month,$project_ids = [],$office_bank_ids = []){
+
+    $office_ids = array_unique($office_ids);// Find out why office_ids come in duplicates
+
     $opening_bank_balance = $this->_opening_cash_balance($office_ids,$project_ids,$office_bank_ids)['bank'];
     $bank_income_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'income','bank',$project_ids,$office_bank_ids);//$this->_cash_income_to_date($office_ids,$reporting_month);
     $bank_expenses_to_date = $this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','bank',$project_ids,$office_bank_ids);//$this->_cash_expense_to_date($office_ids,$reporting_month);
     
+    // return json_encode([
+    //   'office_ids'=>$office_ids,
+    //   'reporting_month'=>$reporting_month,
+    //   'transaction_type'=>'expense',
+    //   'voucher_type_account'=>'bank',
+    //   'project_ids'=>$project_ids,
+    //   'office_bank_ids'=>$office_bank_ids,
+    //   'vals'=>$this->financial_report_model->cash_transactions_to_date($office_ids,$reporting_month,'expense','bank',[],[5]),
+    //   'result'=>$opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date .' ['.$opening_bank_balance.' + '.$bank_income_to_date.' - '.$bank_expenses_to_date.']'
+    // ]);
+    //return $opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date .' ['.$opening_bank_balance.' + '.$bank_income_to_date.' - '.$bank_expenses_to_date.']';
     return $opening_bank_balance + $bank_income_to_date - $bank_expenses_to_date;
-    //return $bank_expenses_to_date;
   }
 
 
@@ -329,14 +345,13 @@ class Financial_report extends MY_Controller
   }
   
   function financial_report_information($report_id){
-
-    $additional_information = $this->financial_report_library->financial_report_information($report_id);
     
-    if((isset($_POST['office_ids']) && count($_POST['office_ids']) > 0)){
-      $additional_information = $this->financial_report_library->financial_report_information($report_id, $_POST['office_ids']);
+    $additional_information = $this->financial_report_library->financial_report_information($report_id);
+    //print_r($additional_information);exit;
+   
+    if((isset($_POST['office_ids']) && isset($_POST['reporting_month']) && count($_POST['office_ids']) > 0)){
+      $additional_information = $this->financial_report_library->financial_report_information($report_id, $_POST['office_ids'],$_POST['reporting_month']);
     }
-
-    $offices_ids = array_column($additional_information,'office_id');
 
     $reporting_month = $additional_information[0]['financial_report_month'];
 
@@ -427,7 +442,8 @@ class Financial_report extends MY_Controller
     extract($this->financial_report_information($report_id));
 
     return [
-      //'test'=>[],//$this->test_month_income_opening_balance($office_ids,$reporting_month,$project_ids),
+      //'test1'=>$this->financial_report_information($report_id),
+      //'test'=>[$office_ids,$reporting_month,'expense','bank_contra','bank',$project_ids,$office_bank_ids],
       'month_active_projects'=>$this->get_month_active_projects($office_ids,$reporting_month),
       'allow_mfr_reconciliation'=>($multiple_offices_report || $multiple_projects_report || count($this->get_office_banks($office_ids,$project_ids,$office_bank_ids)) > 1)?false:true,
       'office_banks'=>$this->get_office_banks($office_ids,$project_ids,$office_bank_ids),
@@ -966,7 +982,7 @@ function delete_statement(){
 function submit_financial_report(){
   $post = $this->input->post();
   
-  $message = 'MFR Submitted Successful';
+  $message = 1;//'MFR Submitted Successful';
 
   // Check if the report has reconciled
   $report_reconciled = $this->_check_if_report_has_reconciled($post['office_id'],$post['reporting_month']);
