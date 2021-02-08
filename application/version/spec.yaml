@@ -92,6 +92,12 @@ grants:
   
   tables:
 
+    variance_comment:
+      lookup_tables:
+        - budget
+        - expense_account
+
+
     budget_limit:
       lookup_tables:
         - office
