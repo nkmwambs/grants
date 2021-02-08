@@ -18,6 +18,8 @@ class Financial_report extends MY_Controller
     parent::__construct();
     $this->load->library('financial_report_library');
     $this->load->model('financial_report_model');
+    $this->load->model('variance_comment_model');
+    $this->load->model('budget_model');
   }
 
   function index(){}
@@ -244,10 +246,11 @@ class Financial_report extends MY_Controller
     $month_expense_to_date = $this->financial_report_model->expense_to_date_by_expense_account($office_ids,$reporting_month,$project_ids,$office_bank_ids);
     $budget_to_date = $this->financial_report_model->bugdet_to_date_by_expense_account($office_ids,$reporting_month,$project_ids, $office_bank_ids);
     
-    $budget_variance = $this->_budget_variance_by_expense_account($office_ids,$reporting_month);
-    $budget_variance_percent = $this->_budget_variance_percent_by_expense_account($office_ids,$reporting_month);
     $expense_account_comment = $this->_expense_account_comment($office_ids,$reporting_month);
-    
+
+
+    // $budget_variance = $this->_budget_variance_by_expense_account($office_ids,$reporting_month);
+    // $budget_variance_percent = $this->_budget_variance_percent_by_expense_account($office_ids,$reporting_month);   
     
 
     foreach($income_grouped_expense_accounts as $income_account_id => $income_account){
@@ -261,9 +264,9 @@ class Financial_report extends MY_Controller
         $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['month_expense'] = isset($month_expense[$income_account_id][$expense_account_id])?$month_expense[$income_account_id][$expense_account_id]:0;
         $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['month_expense_to_date'] = isset($month_expense_to_date[$income_account_id][$expense_account_id])?$month_expense_to_date[$income_account_id][$expense_account_id]:0;
         $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_to_date'] = isset($budget_to_date[$income_account_id][$expense_account_id])?$budget_to_date[$income_account_id][$expense_account_id]:0;
-        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance'] = $budget_variance;
-        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance_percent'] = $budget_variance_percent;
-        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['expense_account_comment'] = $expense_account_comment;
+        //$expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance'] = $budget_variance;
+        //$expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_variance_percent'] = $budget_variance_percent;
+        $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['expense_account_comment'] = isset($expense_account_comment[$income_account_id][$expense_account_id])?$expense_account_comment[$income_account_id][$expense_account_id]:'';//$expense_account_comment;
         
         $check_sum += $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['month_expense_to_date'] +  $expense_account_grid[$income_account_id]['expense_accounts'][$expense_account['expense_account_id']]['budget_to_date'];
         
@@ -272,6 +275,22 @@ class Financial_report extends MY_Controller
     }
     
     return $expense_account_grid;
+  }
+
+  function post_expense_account_comment(){
+    echo $this->variance_comment_model->add();
+  }
+
+  function get_expense_account_comment(){
+    
+    $post = $this->input->post();
+
+    $expense_account_id = $post['expense_account_id'];
+    $office_id = $post['office_id'][0];
+    $reporting_month = $post['reporting_month'];
+
+    $budget_id = $this->budget_model->get_budget_id_based_on_month($office_id,$reporting_month);
+    echo $this->variance_comment_model->get_expense_account_comment($expense_account_id,$budget_id);
   }
 
   function _income_grouped_expense_accounts($office_ids){
@@ -303,7 +322,10 @@ class Financial_report extends MY_Controller
   }
 
   function _expense_account_comment($office_ids,$reporting_month){
-    return "Good work";
+    
+    $office_id = $office_ids[0];
+    $budget_id = $this->budget_model->get_budget_id_based_on_month($office_id,$reporting_month);
+    return $this->variance_comment_model->get_all_expense_account_comment($budget_id);
   }
 
 
