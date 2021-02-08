@@ -591,11 +591,12 @@ if(!function_exists('get_fy')){
 	function get_fy($date_string,$override_fy_year_digits_config = false){
 		
 		$CI =& get_instance();
+		$fy_year_digits = $CI->config->item('fy_year_digits');
 		
 		// $start_of_fy_month = $CI->read_db->get_where('month',
 		// array('month_order'=>1))->row()->month_number;//$CI->config->item('start_of_fy_month'); 
 		// $fy_year_reference = $CI->config->item('fy_year_reference');
-		// $fy_year_digits = $CI->config->item('fy_year_digits');
+		
 
 		// $fy_format = ($fy_year_digits == 2 && !$override_fy_year_digits_config)?'y':'Y';
 
@@ -631,7 +632,7 @@ if(!function_exists('get_fy')){
 		// return $fy_year;
 
 		$date_month_number = date('n',strtotime($date_string));
-		$fy = date('Y',strtotime($date_string));
+		$fy = ($fy_year_digits == 4 && !$override_fy_year_digits_config)?date('Y',strtotime($date_string)):date('y',strtotime($date_string));
 
 		$CI->read_db->select(array('month_number'));
 		$CI->read_db->order_by('month_order','ASC');
@@ -653,6 +654,7 @@ if(!function_exists('get_fy')){
 			}
 		}
 
+		
 		return $fy;
 	}
 }
