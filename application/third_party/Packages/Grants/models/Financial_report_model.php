@@ -756,7 +756,7 @@ class Financial_report_model extends MY_Model{
         $this->db->where_in('budget.fk_office_id',$office_ids);
         
         $this->db->where(array('month_order<='=>$month_order));
-        //$this->db->where_in('month_order',$list_of_month_order);
+
         $this->db->where(array('fk_budget_tag_id'=>$get_budget_tag_based_on_month));
 
         $this->db->where(array('budget_year'=>$financial_year));
