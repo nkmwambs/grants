@@ -680,7 +680,7 @@ function get_bank_cash_information(voucherTypeSelect){
     }
 
     checkIfDateIsSelected()?$.post(url,extra_data,function(response){
-        //console.log(response);
+        
         var response_objects = JSON.parse(response);
         var response_office_cash = response_objects['office_cash'];
         var response_office_bank = response_objects['office_banks'];

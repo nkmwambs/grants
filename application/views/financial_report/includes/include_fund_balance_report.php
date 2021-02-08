@@ -1,5 +1,24 @@
 <?php 
-//print_r($result['fund_balance_report']);
+
+//print_r($result['test']);
+
+// $office_ids = [23];
+// $income_account_id = 3;
+// $start_date_of_month = '2020-12-01';
+// $project_ids = []; 
+// $office_bank_ids = [13];
+
+//print_r($this->financial_report_model->_get_account_month_income_test($office_ids,$income_account_id,$start_date_of_month,$project_ids,$office_bank_ids));
+//echo "=================================================================";
+//print_r($this->financial_report_model->_get_income_account_month_expense_test($office_ids,$income_account_id,$start_date_of_month,$project_ids,$office_bank_ids));
+
+// $transaction_type = 'expense';
+// $contra_type = 'bank_contra';
+// $voucher_type_account_code = 'bank';
+// $reporting_month = '2020-12-01';
+
+//print_r($this->financial_report_model->list_oustanding_cheques_and_deposits_test($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids, $office_bank_ids));
+
 extract($result);
 ?>
 <table class="table table-striped" id="fund_balance_table">

@@ -24,8 +24,8 @@ class Financial_report_library extends Grants
 
   function index(){}
 
-  function financial_report_information(String $report_id, Array $offices_ids = []){
-    return $this->CI->financial_report_model->financial_report_information($report_id, $offices_ids);
+  function financial_report_information(String $report_id, Array $offices_ids = [],$reporting_month = ''){
+    return $this->CI->financial_report_model->financial_report_information($report_id, $offices_ids, $reporting_month);
   }
 
   function month_income_account_receipts($office_ids, $start_date_of_month,$project_ids = [],$office_bank_ids = []){

@@ -55,28 +55,22 @@ class Financial_report_model extends MY_Model{
 
     public function detail_multi_form_add_visible_columns(){}
 
-    function financial_report_information(String $id, Array $offices_ids = []){
+    function financial_report_information(String $id, Array $offices_ids = [], $reporting_month = ''){
 
         $report_id = hash_id($id,'decode');
 
         $offices_information = [];
-
-        // $financial_report_month = "";
-        
-        // $financial_report_obj = $this->db->get_where('financial_report',
-        // array('financial_report_id'=>$report_id))->row();
-
-        // $reporting_month = $financial_report_obj->financial_report_month;
-
-        // $office_id = $financial_report_obj->fk_office_id;
-
-        //echo $report_id;exit;
 
         $this->db->select(array('financial_report_month','fk_office_id as office_id','office_name'));
         $this->db->join('office','office.office_id=financial_report.fk_office_id');
 
         if(count($offices_ids) > 0){
             $this->db->where_in('fk_office_id',$offices_ids);
+            
+            if($reporting_month != ''){
+                $this->db->where(array('financial_report_month'=>date('Y-m-01',strtotime($reporting_month))));
+            }
+            
         }else{
             $this->db->where(array('financial_report_id'=>$report_id));
         }
@@ -242,18 +236,19 @@ class Financial_report_model extends MY_Model{
         
         $initial_account_opening_balance = $this->_initial_opening_account_balance($office_ids,$income_account_id,$project_ids,$office_bank_ids);
 
-        $account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids);
+        $account_last_month_income_to_date = $this->_get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month,$project_ids,$office_bank_ids);
 
-        $account_last_month_expense_to_date = $this->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids);
+        $account_last_month_expense_to_date = $this->_get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids,$office_bank_ids);
 
         $account_opening_balance = $initial_account_opening_balance + ($account_last_month_income_to_date - $account_last_month_expense_to_date); 
         
         return $account_opening_balance;
     }
 
-    function _get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids = []){
+    function _get_account_last_month_income_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids = [], $office_bank_ids = []){
 
         $previous_months_income_to_date = 0;
+        $get_office_bank_project_allocation = !empty($project_ids)? $project_ids :$this->get_office_bank_project_allocation($office_bank_ids);
 
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
@@ -267,6 +262,14 @@ class Financial_report_model extends MY_Model{
             $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
         }
 
+        if(!empty($office_bank_ids)){
+                        
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
+        }
+
         $previous_months_income_obj = $this->db->get_where('voucher_detail',
         array('voucher_date<'=>$start_date_of_month,
         'voucher_detail.fk_income_account_id'=>$income_account_id,'voucher_type_effect_code'=>'income'));
@@ -278,9 +281,10 @@ class Financial_report_model extends MY_Model{
         return $previous_months_income_to_date;
     }
 
-    function _get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids = []){
+    function _get_account_last_month_expense_to_date($office_ids,$income_account_id,$start_date_of_month, $project_ids = [], $office_bank_ids = []){
         
         $previous_months_expense_to_date = 0;
+        $get_office_bank_project_allocation = !empty($project_ids)? $project_ids :$this->get_office_bank_project_allocation($office_bank_ids);
 
         $this->db->select_sum('voucher_detail_total_cost');
         $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
@@ -296,6 +300,13 @@ class Financial_report_model extends MY_Model{
 
         $this->db->group_by('voucher_type_effect_code');
         $this->db->where_in('voucher.fk_office_id',$office_ids);
+
+        if(!empty($office_bank_ids)){            
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
+        }
 
         $previous_months_expense_obj = $this->db->get_where('voucher_detail',
         array('voucher_date<'=>$start_date_of_month,
@@ -324,6 +335,7 @@ class Financial_report_model extends MY_Model{
     function _get_account_month_income($office_ids,$income_account_id,$start_date_of_month,$project_ids = [], $office_bank_ids = []){
         //echo $income_account_id;exit;
         $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
+        $get_office_bank_project_allocation = !empty($project_ids)? $project_ids :$this->get_office_bank_project_allocation($office_bank_ids);
 
         $month_income = 0;
 
@@ -341,8 +353,12 @@ class Financial_report_model extends MY_Model{
         }
 
         if(count($office_bank_ids) > 0){
-            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
-            $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
+            // $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            // $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
         }
 
         $month_income_obj = $this->db->get_where('voucher_detail',
@@ -373,7 +389,7 @@ class Financial_report_model extends MY_Model{
 
     function _get_income_account_month_expense($office_ids,$income_account_id,$start_date_of_month,$project_ids = [], $office_bank_ids = []){
         $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
-
+        $get_office_bank_project_allocation = !empty($project_ids)? $project_ids :$this->get_office_bank_project_allocation($office_bank_ids);
         $expense_income = 0;
 
         $this->db->select_sum('voucher_detail_total_cost');
@@ -392,8 +408,12 @@ class Financial_report_model extends MY_Model{
         }
 
         if(count($office_bank_ids) > 0){
-            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
-            $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
+            
+            //$this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
         }
 
         $expense_income_obj = $this->db->get_where('voucher_detail',
@@ -515,7 +535,7 @@ class Financial_report_model extends MY_Model{
 
             $this->db->group_start();
                 $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
-                $this->db->or_where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
             $this->db->group_end();
         } 
 
@@ -604,7 +624,10 @@ class Financial_report_model extends MY_Model{
         }
 
         if(!empty($office_bank_ids)){
-            $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
         }        
     
         $result = $this->db->get('voucher_detail');
@@ -647,7 +670,10 @@ class Financial_report_model extends MY_Model{
         }
 
         if(!empty($office_bank_ids)){
-            $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_start();
+                $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids); 
+                $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+            $this->db->group_end();
         }
     
         $result = $this->db->get('voucher_detail');
@@ -769,18 +795,16 @@ class Financial_report_model extends MY_Model{
       }
 
       function list_oustanding_cheques_and_deposits($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids = [], $office_bank_ids = []){
-        //$office_bank_ids = [];
+
         if(count($project_ids) > 0){
             $this->db->select(array('office_bank.office_bank_id'));
             $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
             $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
-            $this->db->where_in('fk_project_id',$project_ids);
-            //$office_bank_ids = array_column($this->db->get('office_bank')->result_array(),'office_bank_id');
-            
+            $this->db->where_in('fk_project_id',$project_ids);            
         }
 
         if(!empty($office_bank_ids)){
-            $this->db->where_in('office_bank.office_bank_id',$office_bank_ids);
+            $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
         }
         
 
@@ -806,13 +830,6 @@ class Financial_report_model extends MY_Model{
             $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));// bank, cash
         }
        
-        
-        // $this->db->group_start();
-        //     $this->db->where(array('voucher_cleared'=>0,'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))));
-        //     $this->db->or_group_start();
-        //         $this->db->where(array('voucher_cleared'=>1,'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
-        //     $this->db->group_end();
-        // $this->db->group_end();
 
         $this->db->group_start();
             $this->db->where(array('voucher_cleared'=>0,
@@ -833,14 +850,13 @@ class Financial_report_model extends MY_Model{
         $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
         $this->db->join('office_bank','office_bank.office_bank_id=voucher.fk_office_bank_id');
         
-        
         $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
         
         if($transaction_type == 'expense'){
-            $cleared_and_uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month);
+            $cleared_and_uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'uncleared',$office_bank_ids);
             $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$cleared_and_uncleared_opening_outstanding_cheques);
         }else{
-            $cleared_and_uncleared_deposit_in_transit = $this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month);
+            $cleared_and_uncleared_deposit_in_transit = $this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,'uncleared',$office_bank_ids);
             $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$cleared_and_uncleared_deposit_in_transit);
         }
         
@@ -848,7 +864,7 @@ class Financial_report_model extends MY_Model{
         return $list_oustanding_cheques_and_deposit;
       }
 
-    private function get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,$state = 'uncleared'){
+    private function get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,$state = 'uncleared',$office_bank_ids){
         $opening_deposit_in_transits = [];
 
         $this->read_db->select(
@@ -889,6 +905,10 @@ class Financial_report_model extends MY_Model{
 
         }
 
+        if(!empty($office_bank_ids)){
+            $this->read_db->where_in('opening_deposit_transit.fk_office_bank_id',$office_bank_ids);
+        }
+
         $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_deposit_transit.fk_system_opening_balance_id');
         $this->read_db->join('office_bank','office_bank.office_bank_id=opening_deposit_transit.fk_office_bank_id');
         $opening_deposit_in_transits_obj = $this->read_db->get('opening_deposit_transit');
@@ -907,7 +927,7 @@ class Financial_report_model extends MY_Model{
 
     }
 
-      private function get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,$state = 'uncleared'){
+      private function get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,$state = 'uncleared',$office_bank_ids =[]){
         $opening_outstanding_cheques = [];
 
         $this->read_db->select(
@@ -946,6 +966,10 @@ class Financial_report_model extends MY_Model{
                 //$this->read_db->group_end();
            // $this->read_db->group_end();
 
+        }
+
+        if(!empty($office_bank_ids)){
+            $this->read_db->where_in('opening_outstanding_cheque.fk_office_bank_id',$office_bank_ids);
         }
 
         $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_outstanding_cheque.fk_system_opening_balance_id');
@@ -1034,9 +1058,9 @@ class Financial_report_model extends MY_Model{
         $list_cleared_effects = $this->db->get('voucher_detail')->result_array();
 
         if($transaction_type == 'expense'){
-            $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'cleared'));
+            $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'cleared',$office_bank_ids));
         }else{
-            $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,'cleared'));
+            $list_cleared_effects = array_merge($list_cleared_effects,$this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,'cleared',$office_bank_ids));
         }
         
         return $list_cleared_effects;
@@ -1060,5 +1084,201 @@ class Financial_report_model extends MY_Model{
         return $report_is_submitted;
         
       }
+
+
+      function _get_account_month_income_test($office_ids,$income_account_id,$start_date_of_month,$project_ids = [], $office_bank_ids = []){
+        //echo $income_account_id;exit;
+        $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
+
+        $month_income = 0;
+
+        $this->db->select_sum('voucher_detail_total_cost');
+        $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+        $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+        $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+        $this->db->group_by(array('fk_income_account_id'));
+        $this->db->where_in('voucher.fk_office_id',$office_ids);
+
+        $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+
+        if(count($project_ids) > 0){
+            $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+        }
+
+        if(count($office_bank_ids) > 0){
+            $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+            $this->db->where_in('office_bank_project_allocation.fk_office_bank_id',$office_bank_ids);
+        }
+
+        $this->db->where(array('voucher_type_effect_code'=>'income',
+        'fk_income_account_id'=>$income_account_id,'voucher_date>='=>$start_date_of_month,
+        'voucher_date<='=>$last_date_of_month));
+
+        $month_income_obj = $this->db->get_compiled_select('voucher_detail',false);
+        
+        // if($month_income_obj->num_rows() > 0){
+        //     $month_income = $month_income_obj->row()->voucher_detail_total_cost;
+        // }    
+
+        //return $month_income;
+
+        return $month_income_obj;
+
+    }
+
+
+
+    // function _get_income_account_month_expense_test($office_ids,$income_account_id,$start_date_of_month,$project_ids = [], $office_bank_ids = []){
+    //     $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
+
+    //     $expense_income = 0;
+
+    //     $this->db->select_sum('voucher_detail_total_cost');
+    //     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    //     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    //     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    //     $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
+    //     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    //     $this->db->group_by('voucher_type_effect_code');
+    //     $this->db->where_in('voucher.fk_office_id',$office_ids);
+
+    //     $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        
+    //     if(count($project_ids) > 0){
+    //         $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+    //     }
+
+    //     if(count($office_bank_ids) > 0){
+    //         $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+    //         $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+    //     }
+
+    //     $this->db->where(array('voucher_date>='=>$start_date_of_month,'voucher_date<='=>$last_date_of_month,
+    //         'income_account_id'=>$income_account_id,'voucher_type_effect_code'=>'expense'));
+
+    //     $expense_income_obj = $this->db->get_compiled_select('voucher_detail',false);
+
+    //     return $expense_income_obj;
+
+    //     // if($expense_income_obj->num_rows() > 0){
+    //     //     $expense_income = $expense_income_obj->row()->voucher_detail_total_cost;
+    //     // }    
+
+    //     // return $expense_income;
+    // }
+
+
+    // function _get_income_account_month_expense_test($office_ids,$income_account_id,$start_date_of_month,$project_ids = [], $office_bank_ids = []){
+    //     $last_date_of_month = date('Y-m-t',strtotime($start_date_of_month));
+    //     $get_office_bank_project_allocation = !empty($project_ids)? $project_ids :$this->get_office_bank_project_allocation($office_bank_ids);
+    //     $expense_income = 0;
+
+    //     $this->db->select_sum('voucher_detail_total_cost');
+    //     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    //     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    //     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    //     $this->db->join('expense_account','expense_account.expense_account_id=voucher_detail.fk_expense_account_id');
+    //     $this->db->join('income_account','income_account.income_account_id=expense_account.fk_income_account_id');
+    //     $this->db->group_by('voucher_type_effect_code');
+    //     $this->db->where_in('voucher.fk_office_id',$office_ids);
+
+    //     $this->db->join('project_allocation','project_allocation.project_allocation_id=voucher_detail.fk_project_allocation_id');
+        
+    //     if(count($project_ids) > 0){
+    //         $this->db->where_in('project_allocation.fk_project_id',$project_ids);
+    //     }
+
+    //     if(count($office_bank_ids) > 0){
+            
+    //         //$this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_project_allocation_id=project_allocation.project_allocation_id');
+    //         $this->db->group_start();
+    //             $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+    //             $this->db->where_in('voucher_detail.fk_project_allocation_id',$get_office_bank_project_allocation);
+    //         $this->db->group_end();
+    //     }
+
+    //     $this->db->where(array('voucher_date>='=>$start_date_of_month,'voucher_date<='=>$last_date_of_month,
+    //     'income_account_id'=>$income_account_id,'voucher_type_effect_code'=>'expense'));
+    //     $expense_income_obj = $this->db->get_compiled_select('voucher_detail',false);
+
+    //     // if($expense_income_obj->num_rows() > 0){
+    //     //     $expense_income = $expense_income_obj->row()->voucher_detail_total_cost;
+    //     // }    
+
+    //     return $expense_income_obj;
+    // }
+
+    // function list_oustanding_cheques_and_deposits_test($office_ids,$reporting_month, $transaction_type,$contra_type,$voucher_type_account_code,$project_ids = [], $office_bank_ids = []){
+    //     //$office_bank_ids = [];
+    //     if(count($project_ids) > 0){
+    //         $this->db->select(array('office_bank.office_bank_id'));
+    //         $this->db->join('office_bank_project_allocation','office_bank_project_allocation.fk_office_bank_id=office_bank.office_bank_id');
+    //         $this->db->join('project_allocation','project_allocation.project_allocation_id=office_bank_project_allocation.fk_project_allocation_id');
+    //         $this->db->where_in('fk_project_id',$project_ids);
+    //         //$office_bank_ids = array_column($this->db->get('office_bank')->result_array(),'office_bank_id');
+            
+    //     }
+
+    //     if(!empty($office_bank_ids)){
+    //         $this->db->where_in('voucher.fk_office_bank_id',$office_bank_ids);
+    //     }
+        
+
+    //     $list_oustanding_cheques_and_deposit = [];
+        
+    //     $this->db->select_sum('voucher_detail_total_cost');
+    //     $this->db->select(array('voucher_id','voucher_number','voucher_cheque_number',
+    //     'voucher_description','voucher_cleared','office_code','office_name','voucher_date',
+    //     'voucher_cleared','fk_office_bank_id','office_bank_name'));
+        
+    //     $this->db->group_by(array('voucher_id'));
+        
+        
+    //     $this->db->where_in('voucher.fk_office_id',$office_ids);
+        
+    //     if($transaction_type == 'expense'){
+    //         $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);// contra, expense , income
+    //         $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));// bank, cash
+    //     }elseif(($contra_type == 'cash_contra' ||$contra_type = 'bank_contra') && $transaction_type == 'income'){
+    //         $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);
+    //     }else{
+    //         $this->db->where_in('voucher_type_effect_code',[$transaction_type,$contra_type]);// contra, expense , income
+    //         $this->db->where(array('voucher_type_account_code'=>$voucher_type_account_code));// bank, cash
+    //     }
+       
+
+    //     $this->db->group_start();
+    //         $this->db->where(array('voucher_cleared'=>0,
+    //         'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))
+    //         //'voucher_date <='=>date('Y-m-t',strtotime($reporting_month))    
+    //         ));
+    //         $this->db->or_group_start();
+    //             $this->db->where(array('voucher_cleared'=>1,
+    //             'voucher_date <='=>date('Y-m-t',strtotime($reporting_month)),
+    //             'voucher_cleared_month > '=>date('Y-m-t',strtotime($reporting_month))));
+    //         $this->db->group_end();
+    //     $this->db->group_end();
+        
+    //     $this->db->join('voucher','voucher.voucher_id=voucher_detail.fk_voucher_id');
+    //     $this->db->join('office','office.office_id=voucher.fk_office_id');
+    //     $this->db->join('voucher_type','voucher_type.voucher_type_id=voucher.fk_voucher_type_id');
+    //     $this->db->join('voucher_type_effect','voucher_type_effect.voucher_type_effect_id=voucher_type.fk_voucher_type_effect_id');
+    //     $this->db->join('voucher_type_account','voucher_type_account.voucher_type_account_id=voucher_type.fk_voucher_type_account_id');
+    //     $this->db->join('office_bank','office_bank.office_bank_id=voucher.fk_office_bank_id');
+        
+        
+    //     $list_oustanding_cheques_and_deposit = $this->db->get('voucher_detail')->result_array();
+        
+    //     if($transaction_type == 'expense'){
+    //         $cleared_and_uncleared_opening_outstanding_cheques = $this->get_uncleared_and_cleared_opening_outstanding_cheques($office_ids, $reporting_month,'uncleared',$office_bank_ids);
+    //         $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$cleared_and_uncleared_opening_outstanding_cheques);
+    //     }else{
+    //         $cleared_and_uncleared_deposit_in_transit = $this->get_uncleared_and_cleared_deposit_in_transit($office_ids, $reporting_month,'uncleared',$office_bank_ids);
+    //         $list_oustanding_cheques_and_deposit = array_merge($list_oustanding_cheques_and_deposit,$cleared_and_uncleared_deposit_in_transit);
+    //     }
+        
+        
+    //     return $list_oustanding_cheques_and_deposit;
+    //   }
 
 }
