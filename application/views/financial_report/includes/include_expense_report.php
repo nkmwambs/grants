@@ -102,7 +102,8 @@
 <input type="hidden" id="variance_comment_id" value="0"/>
 
 <div id="note_area_holder" class="col-xs-4 hidden">
-    <textarea class="form-control" class="note_area" placeholder="Put your notes here" rows="10"></textarea>
+    <textarea class="form-control" class="note_area" <?=!$this->user_model->check_role_has_permissions(ucfirst($this->controller),'create')?'disabled':'';?>
+    placeholder="Put your notes here" rows="10"></textarea>
 </div>
 
 <script>

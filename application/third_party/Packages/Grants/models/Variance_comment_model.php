@@ -65,38 +65,44 @@ class Variance_comment_model extends MY_Model{
 
         $message = "";
 
-        $this->read_db->where(array('fk_expense_account_id'=>$expense_account_id,'fk_budget_id'=>$budget_id));
-        $variance_comment_obj = $this->read_db->get('variance_comment');
-        
-        $this->write_db->trans_start();
-
-        if($variance_comment_obj->num_rows() == 0){
-
-            $variance_comment_data['fk_budget_id'] = $budget_id;
-            $variance_comment_data['fk_expense_account_id'] = $expense_account_id;
-            $variance_comment_data['variance_comment_text'] = $variance_comment_text;
-
-            $variance_comment_to_insert = $this->grants_model->merge_with_history_fields('variance_comment',$variance_comment_data);
-
-            $this->write_db->insert('variance_comment',$variance_comment_to_insert);
-
-            $message = "Comment created successfully";
-        }else{
-        $data['variance_comment_text'] = $variance_comment_text;
-
-        $this->write_db->where(array('fk_expense_account_id'=>$expense_account_id));
+        if($budget_id > 0){
+            
+            $this->read_db->where(array('fk_expense_account_id'=>$expense_account_id,'fk_budget_id'=>$budget_id));
+            $variance_comment_obj = $this->read_db->get('variance_comment');
+            
+            $this->write_db->trans_start();
     
-        $this->write_db->update('variance_comment',$data);
-
-        $message = "Comment updated successfully";
+            if($variance_comment_obj->num_rows() == 0){
+    
+                $variance_comment_data['fk_budget_id'] = $budget_id;
+                $variance_comment_data['fk_expense_account_id'] = $expense_account_id;
+                $variance_comment_data['variance_comment_text'] = $variance_comment_text;
+    
+                $variance_comment_to_insert = $this->grants_model->merge_with_history_fields('variance_comment',$variance_comment_data);
+    
+                $this->write_db->insert('variance_comment',$variance_comment_to_insert);
+    
+                $message = "Comment created successfully";
+            }else{
+            $data['variance_comment_text'] = $variance_comment_text;
+    
+            $this->write_db->where(array('fk_expense_account_id'=>$expense_account_id));
+        
+            $this->write_db->update('variance_comment',$data);
+    
+            $message = "Comment updated successfully";
+            }
+    
+    
+            $this->write_db->trans_commit();
+    
+            if($this->write_db->trans_status() == false){
+                $message = "Error occurred";
+            }
+        }else{
+            $message = "You don't have an approved budget review for the period";
         }
 
-
-        $this->write_db->trans_commit();
-
-        if($this->write_db->trans_status() == false){
-            $message = "Error occurred";
-        }
 
         return $message;
     }
