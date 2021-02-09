@@ -59,7 +59,7 @@ extract($result);
                     <?=get_phrase('action');?> 
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update') && $require_originator_action){ ?>
+                    <?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update') ){ ?>
                     <li><?=list_table_edit_action($this->controller,$primary_key);?></li>
                     <li class="divider"></li>
                     <?php }?>
@@ -70,7 +70,7 @@ extract($result);
                     <?php if(
                         !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'update') && 
                         !$this->user_model->check_role_has_permissions(ucfirst($this->controller),'delete') 
-                        || !$require_originator_action
+                        
 
                     ){ 
                         echo "<li><a href='#'>".get_phrase('no_action')."</a></li>";
