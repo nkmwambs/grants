@@ -35,4 +35,11 @@ class Voucher_signatory_model extends MY_Model{
     public function detail_tables(){}
 
     public function detail_multi_form_add_visible_columns(){}
+
+    public function list_table_where()
+    {
+        if(!$this->session->system_admin){
+            $this->db->where(array('fk_account_system_id'=>$this->session->user_account_system_id));
+        }
+    }
 }
