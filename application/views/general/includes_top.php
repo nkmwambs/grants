@@ -16,7 +16,8 @@
 		<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 		
 		<!--Bootstrap JS CDNs-->
-		<script src="<?php echo base_url();?>assets/js/bootstrap.js"></script>
+		<!-- <script src="<?php echo base_url();?>assets/js/bootstrap.js"></script> -->
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		
 		<!--Datatables Buttons JS CDNs-->
 		<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
