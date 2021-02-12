@@ -1203,8 +1203,8 @@ function actionCell(){
     return "<td><div class='btn btn-danger action' onclick='removeRow(this);'>Remove Row</div> &nbsp; <span onclick='clearRow(this);' class='fa fa-trash'></span> </td>";
 }
 
-function quantityCell(value = 0){
-    return "<td><input name='voucher_detail_quantity[]' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' /></td>";
+function quantityCell(value = 1){
+    return "<td><input name='voucher_detail_quantity[]' min = '1' type='number' class='form-control required body-input number-fields quantity' onclick='replaceValue(this);' onchange='computeTotalCost(this);' value='" + value + "' /></td>";
 }
 
 function descriptionCell(value = ''){
@@ -1263,7 +1263,7 @@ function saveVoucher(clicked_btn){
     disable_elements_in_hidden_span();
 
 
-    if(!check_required_fields()){
+    if(!check_required_fields()){//quantity
         alert('Empty required fields exists');
     }else{
         $.ajax({
@@ -1305,6 +1305,11 @@ function check_required_fields(){
             $(el).hasClass('required') 
         ){
             //$(el).addClass('validate_error');
+            return_flag = false;
+            $(el).css('border','1px red solid');
+        }
+
+        if($(el).hasClass('quantity') && $(el).val() < 1){
             return_flag = false;
             $(el).css('border','1px red solid');
         }
