@@ -135,6 +135,87 @@ class Office extends MY_Controller
     //echo json_encode($result);
   }
 
+  function result($id = ''){
+      $result = parent::result($id);
+
+      $context_definition_id = $this->session->context_definition['context_definition_id'];
+
+      // $current_context_name = $this->read_db->get_where('context_definition',
+      // array('context_definition_id'=>$context_definition_id))->row()->context_definition_name;//country
+
+      $context_name = $this->read_db->get_where('context_definition',
+      array('context_definition_id'=>$context_definition_id))->row()->context_definition_name;
+
+      $hierarchy_offices = array_column($this->session->hierarchy_offices,'office_id');
+
+      $this->read_db->where_in('fk_office_id',$hierarchy_offices);
+      $current_context_id_array = $this->read_db->get('context_'.$context_name)->result_array();
+      
+      $current_context_ids = array_column($current_context_id_array,'context_'.$context_name.'_id');
+
+    
+      extract($this->office_list_loading_args($context_definition_id,$current_context_ids));
+
+      $result['user_context_definition_id'] = $this->session->context_definition['context_definition_id'];
+      $result['office_order'] = $this->office_order($current_context_name,$current_context_ids,
+      $context_definition_id,$next_context_name);
+
+      return $result;
+  }
+
+  function office_order($current_context_name,$current_context_ids,$context_definition_id,$next_context_name = ""){
+    // Start from cohorts assumming the logged in user is a country office user
+    //print_r($current_context_name);exit;
+    $office_order = [];
+
+    $this->read_db->select(array('context_definition_id','context_definition_name',
+    'office_id','office_name','office_code','context_'.$current_context_name.'_id as reporting_context_id',
+    'context_'.$current_context_name.'_name as reporting_context_name','context_'.$next_context_name.'_id as context_id',
+    'context_'.$next_context_name.'_name as context_name'));
+    $this->read_db->where_in('fk_context_'.$current_context_name.'_id',$current_context_ids);
+    $this->read_db->where(array('office.fk_context_definition_id'=>$context_definition_id));
+    $this->read_db->join('context_'.$next_context_name,'context_'.$next_context_name.'.fk_office_id=office.office_id');
+    $this->read_db->join('context_'.$current_context_name,'context_'.$current_context_name.'.context_'.$current_context_name.'_id=context_'.$next_context_name.'.fk_context_'.$current_context_name.'_id');
+    $this->read_db->join('context_definition','context_definition.context_definition_id=office.fk_context_definition_id');
+    $context_cohort_obj = $this->read_db->get('office');
+
+    if($context_cohort_obj->num_rows() > 0){
+      $office_order = $context_cohort_obj->result_array();
+    }
+
+    return $office_order;
+  }
+
+  function office_list_loading_args($context_definition_id,$current_context_ids){
+
+    $next_context_definition_id = ($context_definition_id - 1)?$context_definition_id - 1:$context_definition_id;
+    
+    $current_context_name = $this->read_db->get_where('context_definition',
+    array('context_definition_id'=>$context_definition_id))->row()->context_definition_name;
+
+    $next_context_name = $this->read_db->get_where('context_definition',
+    array('context_definition_id'=>$next_context_definition_id))->row()->context_definition_name;
+
+    return [
+        'context_definition_id'=>$next_context_definition_id,
+        'current_context_name'=>$current_context_name,
+        'current_context_ids'=>$current_context_ids,
+        'next_context_name'=>$next_context_name
+      ];
+  }
+
+  function get_lower_offices(){
+     $post = $this->input->post();
+
+    extract($this->office_list_loading_args($post['context_definition_id'],$post['context_id']));
+
+    $result['user_context_definition_id'] = $this->session->context_definition['context_definition_id'];
+    $result['office_order'] = $this->office_order($current_context_name,$current_context_ids,$context_definition_id,$next_context_name);
+    
+    echo $this->load->view('office/ajax_list',$result,true);
+    
+  }
+
   static function get_menu_list(){}
 
 }

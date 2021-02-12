@@ -16,6 +16,8 @@ class Budget_model extends MY_Model
 
   function __construct(){
     parent::__construct();
+
+    $this->load->model('budget_tag_model');
   }
 
   function delete($id = null){
@@ -305,5 +307,25 @@ class Budget_model extends MY_Model
 
     return $has_initial_status_budget_items;
   }
+
+  function get_budget_id_based_on_month($office_id,$reporting_month){
+    $budget_tag_id = $this->budget_tag_model->get_budget_tag_id_based_on_reporting_month($office_id,$reporting_month);
+    
+    $budget_id = 0;
+
+    $budget_year = get_fy($reporting_month);
+    
+    $this->read_db->where(array('fk_budget_tag_id'=>$budget_tag_id,
+    'fk_office_id'=>$office_id,'budget_year'=>$budget_year));
+    
+    $budget_id_obj = $this->read_db->get('budget');
+
+    if($budget_id_obj->num_rows() > 0){
+     $budget_id =  $budget_id_obj->row()->budget_id;
+    }
+
+    return $budget_id;
+  }
+
 
 }
