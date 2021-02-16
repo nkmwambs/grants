@@ -907,7 +907,12 @@ function copyRow(){
             }
             
             if(elem.hasClass('number-fields')){
-                elem.val(0);
+                if(elem.hasClass('quantity')){
+                    elem.val(1);
+                }else{
+                    elem.val(0);
+                }
+                
             }else{
                 elem.val("");
             }

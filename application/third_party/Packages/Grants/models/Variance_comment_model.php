@@ -38,9 +38,9 @@ class Variance_comment_model extends MY_Model{
 
     public function detail_multi_form_add_visible_columns(){}
 
-    function get_expense_account_comment($expense_account_id,$budget_id){
+    function get_expense_account_comment($expense_account_id,$budget_id,$report_id){
 
-        $this->read_db->where(array('fk_expense_account_id'=>$expense_account_id,'fk_budget_id'=>$budget_id));
+        $this->read_db->where(array('fk_expense_account_id'=>$expense_account_id,'fk_financial_report_id'=>$report_id,'fk_budget_id'=>$budget_id));
         $variance_comment_obj = $this->read_db->get('variance_comment');
     
         $commment = '';
@@ -60,6 +60,7 @@ class Variance_comment_model extends MY_Model{
         $variance_comment_text = $post['variance_comment_text'];
         $office_id = $post['office_id'][0];
         $reporting_month = $post['reporting_month'];
+        $report_id = $post['report_id'];
 
         $budget_id = $this->budget_model->get_budget_id_based_on_month($office_id,$reporting_month);
 
@@ -67,7 +68,8 @@ class Variance_comment_model extends MY_Model{
 
         if($budget_id > 0){
             
-            $this->read_db->where(array('fk_expense_account_id'=>$expense_account_id,'fk_budget_id'=>$budget_id));
+            $this->read_db->where(array('fk_expense_account_id'=>$expense_account_id,
+            'fk_financial_report_id'=>$report_id,'fk_budget_id'=>$budget_id));
             $variance_comment_obj = $this->read_db->get('variance_comment');
             
             $this->write_db->trans_start();
@@ -75,6 +77,7 @@ class Variance_comment_model extends MY_Model{
             if($variance_comment_obj->num_rows() == 0){
     
                 $variance_comment_data['fk_budget_id'] = $budget_id;
+                $variance_comment_data['fk_financial_report_id'] = $report_id;
                 $variance_comment_data['fk_expense_account_id'] = $expense_account_id;
                 $variance_comment_data['variance_comment_text'] = $variance_comment_text;
     
@@ -86,7 +89,7 @@ class Variance_comment_model extends MY_Model{
             }else{
             $data['variance_comment_text'] = $variance_comment_text;
     
-            $this->write_db->where(array('fk_expense_account_id'=>$expense_account_id));
+            $this->write_db->where(array('fk_expense_account_id'=>$expense_account_id,'fk_financial_report_id'=>$report_id));
         
             $this->write_db->update('variance_comment',$data);
     
@@ -107,12 +110,12 @@ class Variance_comment_model extends MY_Model{
         return $message;
     }
 
-    function get_all_expense_account_comment($budget_id){
+    function get_all_expense_account_comment($budget_id,$report_id){
            
         $variance_comments_array = [];
         
         $this->read_db->select(array('fk_income_account_id as income_account_id','fk_expense_account_id as expense_account_id','variance_comment_text'));
-        $this->read_db->where(['fk_budget_id'=>$budget_id]);
+        $this->read_db->where(['fk_budget_id'=>$budget_id,'fk_financial_report_id'=>$report_id]);
         $this->read_db->join('expense_account','expense_account.expense_account_id=variance_comment.fk_expense_account_id');
         $variance_comment_obj = $this->read_db->get('variance_comment');
 
