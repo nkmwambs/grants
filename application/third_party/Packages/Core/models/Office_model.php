@@ -85,6 +85,18 @@ class Office_model extends MY_Model
     'context_definition_name');
   }
 
+  function edit_visible_columns()
+  {
+    return [
+      'office_name',
+      'office_code',
+      'office_description',
+      'office_start_date',
+      'office_end_date',
+      'office_is_active'
+    ];
+  }
+
   //function detail_list_query(){}
 
   function master_view(){}
