@@ -169,7 +169,7 @@ class Office extends MY_Controller
     $office_order = [];
 
     $this->read_db->select(array('context_definition_id','context_definition_name',
-    'office_id','office_name','office_code','context_'.$current_context_name.'_id as reporting_context_id',
+    'office_id','office_name','office_code','office_start_date','context_'.$current_context_name.'_id as reporting_context_id',
     'context_'.$current_context_name.'_name as reporting_context_name','context_'.$next_context_name.'_id as context_id',
     'context_'.$next_context_name.'_name as context_name'));
     $this->read_db->where_in('fk_context_'.$current_context_name.'_id',$current_context_ids);
