@@ -500,6 +500,10 @@ class Voucher extends MY_Controller
       $this->read_db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
       $this->read_db->join('project','project.project_id=project_income_account.fk_project_id');
       $this->read_db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+
+      // $this->read_db->join('office','project_allocation.fk_office_id=office.office_id');
+      // $this->read_db->join("expense_account_office_association","expense_account_office_association.fk_office_id=office.office_id");
+      
       $this->read_db->select(array('expense_account_id as account_id','expense_account_name as account_name'));
       $accounts = $this->read_db->get('expense_account')->result_array();
     }elseif($voucher_type_effect == 'income'){
