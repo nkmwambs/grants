@@ -288,9 +288,10 @@ class Financial_report extends MY_Controller
     $expense_account_id = $post['expense_account_id'];
     $office_id = $post['office_id'][0];
     $reporting_month = $post['reporting_month'];
+    $report_id = $post['report_id'];
 
     $budget_id = $this->budget_model->get_budget_id_based_on_month($office_id,$reporting_month);
-    echo $this->variance_comment_model->get_expense_account_comment($expense_account_id,$budget_id);
+    echo $this->variance_comment_model->get_expense_account_comment($expense_account_id,$budget_id,$report_id);
   }
 
   function _income_grouped_expense_accounts($office_ids){
@@ -325,7 +326,8 @@ class Financial_report extends MY_Controller
     
     $office_id = $office_ids[0];
     $budget_id = $this->budget_model->get_budget_id_based_on_month($office_id,$reporting_month);
-    return $this->variance_comment_model->get_all_expense_account_comment($budget_id);
+    $report_id = hash_id($this->id,'decode');
+    return $this->variance_comment_model->get_all_expense_account_comment($budget_id, $report_id);
   }
 
 
