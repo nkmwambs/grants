@@ -114,7 +114,7 @@ $(document).on('change','.active_note_area > textarea',function(){
     var url = "<?=base_url();?>Financial_report/post_expense_account_comment";
     var office_id = $("#office_ids").val();
     var reporting_month = '<?=$reporting_month;?>';
-    var report_id = <?=hash_id($this->id,'decode');?>;
+    var report_id = '<?=hash_id($this->id,'decode');?>';
     var data = {'expense_account_id':expense_account_id,'office_id':office_id,'report_id':report_id,'reporting_month':reporting_month,'variance_comment_text':comment};
 
     $.post(url,data,function(response){
@@ -180,7 +180,7 @@ function update_notes_area(row){
     var expense_account_id = $(".is_clicked").first().data('account_id');
     var office_id = $("#office_ids").val();
     var reporting_month = '<?=$reporting_month;?>';
-    var report_id = <?=hash_id($this->id,'decode');?>;
+    var report_id = '<?=hash_id($this->id,'decode');?>';
     var data = {'expense_account_id':expense_account_id,'office_id':office_id,'report_id':report_id,'reporting_month':reporting_month};
 
     var url = "<?=base_url();?>Financial_report/get_expense_account_comment";
