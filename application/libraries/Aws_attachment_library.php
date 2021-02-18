@@ -17,7 +17,7 @@ function __construct(){
     
     $this->CI =& get_instance();
 
-    $this->CI->load->config('aws_attachment');
+    $this->CI->load->config('Aws_attachment');
 
     $this->s3_setup();
 
