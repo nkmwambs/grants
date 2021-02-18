@@ -12,6 +12,7 @@ class Aws_attachment_library{
     private $attachment_table_name = '';
     private $write_db = '';
     private $read_db = '';
+    private $attachment_key_column = '';
 
 function __construct(){
     
@@ -25,6 +26,7 @@ function __construct(){
 
     $this->write_db = $this->CI->config->item('write_db_array_connection_key');
     $this->read_db = $this->CI->config->item('read_db_array_connection_key');
+    $this->attachment_key_column = $this->CI->config->item('attachment_key_column');
 }
     
 function s3_setup(){
@@ -136,30 +138,7 @@ function s3_preassigned_url($object_key){
 
     function upload_files($storeFolder,$additional_attachment_table_insert_data = [], $attachment_where_condition_array = []){
       
-        //$path_array = explode("/",$storeFolder);
-        
-        //$path = [];
-
-        // $approve_item_id = $this->read_db->get_where('approve_item',
-        // array('approve_item_name'=>$path_array[2]))->row()->approve_item_id;
-        
-        //$item_id = $path_array[3];
-
-        // Create require local folders
-        // if(!$this->config->item('upload_files_to_s3')){
-        //   for ($i=0; $i < count($path_array) ; $i++) { 
-        
-        //     array_push($path,$path_array[$i]);
-          
-        //     $modified_path = implode(DS,$path);
-          
-        //     if(!file_exists($modified_path)){
-        //       mkdir($modified_path);
-        //     }
-          
-        //   }
-        // }
-        
+                
         // Uploading of files
         if (!empty($_FILES)) {
 
@@ -168,21 +147,8 @@ function s3_preassigned_url($object_key){
           for($i=0;$i<count($_FILES['file']['name']);$i++){
             $tempFile = $_FILES['file']['tmp_name'][$i];   
             
-            // S3 comes in here
-
-            //if($this->config->item('upload_files_to_s3')){
-             return $this->upload_s3_object($tempFile,$storeFolder, $_FILES['file']['name'][$i]);
-            //}else{
-             // move_uploaded_file($tempFile,str_replace('/',DS,$storeFolder).DS.$_FILES['file']['name'][$i]);
-            //}
-
-            // Insert in Attachment table in DB
-
-            // Check if files exists for the same approve item and record id. Prevent record creation if exists
-
-            // $file_exists = $this->db->get_where('attachment',
-            // array('attachment_name'=>$_FILES['file']['name'][$i],
-            // 'fk_approve_item_id'=>$approve_item_id,'attachment_primary_id'=>$item_id))->num_rows();
+            // S3 comes in here            
+            $this->upload_s3_object($tempFile,$storeFolder, $_FILES['file']['name'][$i]);
 
             $this->CI->{$this->read_db}->where(array('attachment_name'=>$_FILES['file']['name'][$i]));
             $this->CI->{$this->read_db}->where($attachment_where_condition_array);
@@ -190,34 +156,22 @@ function s3_preassigned_url($object_key){
             $file_exists = $this->CI->{$this->read_db}->get($this->attachment_table_name)->num_rows();
 
             if(!$file_exists){
-                //$attachment_data['attachment_track_number'] = $this->grants_model->generate_item_track_number_and_name('attachment')['attachment_track_number'];
+               
                 $attachment_data['attachment_name'] = $_FILES['file']['name'][$i];
                 $attachment_data['attachment_size'] = $_FILES['file']['size'][$i];
                 $attachment_data['attachment_file_type'] = $_FILES['file']['type'][$i];
                 $attachment_data['attachment_url'] = $storeFolder;
-                //$attachment_data['fk_approve_item_id'] = $approve_item_id;
-                //$attachment_data['attachment_primary_id'] = $item_id;
-                //$attachment_data['attachment_is_s3_upload'] = $this->config->item('upload_files_to_s3')?1:0;
-                $attachment_data['attachment_created_date'] = date('Y-m-t');
-                $attachment_data['attachment_created_by'] = $this->session->user_id;
-                $attachment_data['attachment_last_modified_by'] = $this->session->user_id;
-                //$attachment_data['fk_approval_id'] = $this->grants_model->insert_approval_record('attachment');
-                //$attachment_data['fk_status_id'] = $this->grants_model->initial_item_status('attachment');
-
+               
                 if(!empty($additional_attachment_table_insert_data)){
                     $attachment_data = array_merge($attachment_data,$additional_attachment_table_insert_data);
                 }
 
-                //$attachment_data_to_insert = $this->grants_model->merge_with_history_fields('attachment',$attachment_data,false);
-
+                //return $attachment_data;
                 $this->CI->{$this->write_db}->insert('attachment',$attachment_data);
+                //return $attachment_data;
             }
 
-            //foreach($preassigned_urls as $attachment_record){
-              //if(!in_array($_FILES['file']['name'][$i],$attachment_record)){
-                $preassigned_urls[$_FILES['file']['name'][$i]] = $this->attachment_record_with_s3_preassigned_url($attachment_where_condition_array);
-              //}
-            //}
+            $preassigned_urls[$_FILES['file']['name'][$i]] = $this->attachment_record_with_s3_preassigned_url($attachment_where_condition_array);
            
           }
   
@@ -237,8 +191,14 @@ function s3_preassigned_url($object_key){
       function retrieve_file_uploads_info($attachment_where_condition_array):Array{
 
         $files_array = [];
+        
+        //print_r($attachment_where_condition_array);
+        
+        $attachment_keys = $attachment_where_condition_array[$this->attachment_key_column];
+        
+        //print_r($attachment_keys);exit;
 
-        //if(!empty($item_primary_ids)){
+        if(!empty($attachment_keys) || (!is_array($attachment_keys) && $attachment_keys > 0)){
         //   $approve_item_id = $this->read_db->get_where('approve_item',
         //   array('approve_item_name'=>$approve_item_name))->row()->approve_item_id;
 
@@ -251,9 +211,9 @@ function s3_preassigned_url($object_key){
          
             foreach($attachment_where_condition_array as $condition_key => $condition_value){
 
-            if(is_array($condition_value)){
+            if(is_array($condition_value) && !empty($condition_value)){
                 $this->CI->{$this->read_db}->where_in($condition_key,$condition_value);
-            }else{
+            }elseif(!is_array($condition_value)){
                 $this->CI->{$this->read_db}->where([$condition_key=>$condition_value]);
             }
 
@@ -265,8 +225,14 @@ function s3_preassigned_url($object_key){
         //     $this->read_db->where(array('attachment_is_s3_upload'=>0));
         //   }
           
-          $files_array = $this->CI->{$this->read_db}->get($this->attachment_table_name)->result_array();
-        //}
+          $files_array_obj = $this->CI->{$this->read_db}->get($this->attachment_table_name);
+
+          if($files_array_obj->num_rows() > 0){
+                $files_array = $files_array_obj->result_array();
+            }
+
+        }
+
         return $files_array;
       }
 

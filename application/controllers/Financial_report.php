@@ -566,6 +566,8 @@ class Financial_report extends MY_Controller
       $approve_item_id = $this->read_db->get_where('approve_item',
       array('approve_item_name'=>$approve_item_name))->row()->approve_item_id;
 
+      //print_r(array_column($reconciliation_ids,'reconciliation_id'));exit;
+
       $attachment_where_condition_array['fk_approve_item_id'] = $approve_item_id;
       $attachment_where_condition_array['attachment_primary_id'] = array_column($reconciliation_ids,'reconciliation_id');
     

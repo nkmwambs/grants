@@ -57,6 +57,9 @@ class Attachment_model extends MY_Model{
       $additional_attachment_table_insert_data['fk_approve_item_id'] = $approve_item_id;
       $additional_attachment_table_insert_data['attachment_primary_id'] = $item_id;
       $additional_attachment_table_insert_data['attachment_is_s3_upload'] = 1;
+      $additional_attachment_table_insert_data['attachment_created_by'] = $this->session->user_id;
+      $additional_attachment_table_insert_data['attachment_last_modified_by'] = $this->session->user_id;
+      $additional_attachment_table_insert_data['attachment_created_date'] = date('Y-m-t');
       $additional_attachment_table_insert_data['attachment_track_number'] = $this->grants_model->generate_item_track_number_and_name('attachment')['attachment_track_number'];
       $additional_attachment_table_insert_data['fk_approval_id'] = $this->grants_model->insert_approval_record('attachment');
       $additional_attachment_table_insert_data['fk_status_id'] = $this->grants_model->initial_item_status('attachment');
