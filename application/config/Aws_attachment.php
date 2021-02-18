@@ -9,3 +9,4 @@
     $config['attachment_table_name'] = 'attachment';
     $config['write_db_array_connection_key'] = 'write_db';
     $config['read_db_array_connection_key'] = 'read_db';
+    $config['attachment_key_column'] = 'attachment_primary_id'; 
