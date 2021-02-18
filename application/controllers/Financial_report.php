@@ -20,6 +20,7 @@ class Financial_report extends MY_Controller
     $this->load->model('financial_report_model');
     $this->load->model('variance_comment_model');
     $this->load->model('budget_model');
+    $this->load->library('Aws_attachment_library');
   }
 
   function index(){}
@@ -557,8 +558,20 @@ class Financial_report extends MY_Controller
     if($reconciliation_ids_obj->num_rows() > 0){
       $reconciliation_ids = $reconciliation_ids_obj->result_array();
     }
+
+    $attachment_where_condition_array = [];
+
+      $approve_item_name = 'reconciliation';
+
+      $approve_item_id = $this->read_db->get_where('approve_item',
+      array('approve_item_name'=>$approve_item_name))->row()->approve_item_id;
+
+      $attachment_where_condition_array['fk_approve_item_id'] = $approve_item_id;
+      $attachment_where_condition_array['attachment_primary_id'] = array_column($reconciliation_ids,'reconciliation_id');
     
-    return $this->attachment_model->retrieve_file_uploads_info('reconciliation',array_column($reconciliation_ids,'reconciliation_id'));
+      // return $this->Aws_attachment_library->retrieve_file_uploads_info('reconciliation',array_column($reconciliation_ids,'reconciliation_id'));
+    
+      return $this->aws_attachment_library->retrieve_file_uploads_info($attachment_where_condition_array);
   }
 
   function _projects_balance_report($office_ids,$reporting_month, $project_ids = [], $office_bank_ids = []){
