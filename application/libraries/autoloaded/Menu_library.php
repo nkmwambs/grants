@@ -311,4 +311,9 @@ class Menu_library {
         }
 
     }
+
+    function edit_output(){
+      show_error('This feature is under development',500);
+    }
+    
 }
