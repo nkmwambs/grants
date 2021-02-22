@@ -94,4 +94,11 @@ class Opening_outstanding_cheque_model extends MY_Model{
         return $lookup_values;
         
     }
+
+    function list_table_where(){
+        if(!$this->session->system_admin){
+            $office_ids = array_column($this->session->hierarchy_offices,'office_id');
+            $this->db->where_in('system_opening_balance.fk_office_id',$office_ids);
+        }
+      }
 }
