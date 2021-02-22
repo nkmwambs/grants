@@ -48,6 +48,21 @@ class Opening_outstanding_cheque_model extends MY_Model{
             ];
     }
 
+    function list_table_visible_columns()
+    {
+        return [
+            'opening_outstanding_cheque_description',
+            'opening_outstanding_cheque_date',
+            'system_opening_balance_name',
+            'office_bank_name',
+            'opening_outstanding_cheque_number',
+            'opening_outstanding_cheque_amount',
+            'opening_outstanding_cheque_is_cleared',
+            'opening_outstanding_cheque_cleared_date',
+            'opening_outstanding_cheque_created_date'
+        ];
+    }
+
     function edit_visible_columns(){
         return [
                 //'opening_outstanding_cheque_name',

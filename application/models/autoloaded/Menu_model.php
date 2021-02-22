@@ -14,6 +14,10 @@ function detail_tables(){
 }
 
 function get_count_of_menu_items(){
+  if(!$this->session->system_admin){
+    $this->db->where(array('menu_is_active'=>1));
+  }
+  
   return $this->db->get('menu')->num_rows();
 }
 
@@ -32,7 +36,13 @@ function upsert_menu($menus){
         $data['menu_name'] = $menu;
         $data['menu_derivative_controller'] = $menu;
 
-        if($this->write_db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows() == 0){
+        if(!$this->session->system_admin){
+          $this->write_db->where(['menu_is_active'=>1]);
+        }
+
+        $count_of_active_menus = $this->write_db->get_where('menu',array('menu_derivative_controller'=>$menu))->num_rows();
+
+        if( $count_of_active_menus == 0){
             $this->write_db->insert('menu',$data);
 
             $permission_data['menu_id'] = $this->write_db->insert_id();
@@ -102,6 +112,10 @@ function get_id_of_default_menu_item(){
 function upsert_user_menu(){
 
     // Get all menu elements
+    if(!$this->session->system_admin){
+      $this->db->where(['menu_is_active'=>1]);
+    }
+    //$this->db->where(array('menu_is_active'=>1));
     $menu_elements =  $this->db->get('menu')->result_array();
 
     //Array of menu ids
@@ -162,6 +176,10 @@ function get_user_menu_items(){
   $this->db->select(array('menu_name','menu_derivative_controller','menu_user_order_priority_item'));
   $this->db->join('menu','menu.menu_id=menu_user_order.fk_menu_id');
   $this->db->order_by('menu_user_order_level ASC,menu_name');
+  if(!$this->session->system_admin){
+    $this->db->where(['menu_is_active'=>1]);
+  }
+  //$this->db->where(array('menu_is_active'=>1));
   return $this->db->get_where('menu_user_order',
   array('fk_user_id'=>$this->session->user_id,'menu_user_order_is_active'=>1))->result_array();
 
