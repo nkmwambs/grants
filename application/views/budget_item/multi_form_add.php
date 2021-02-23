@@ -31,7 +31,7 @@ extract($result);
 
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
-                            <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
+                            <!-- <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div> -->
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@ extract($result);
                         <div class='col-xs-12 center'>
                             <div class='btn btn-default btn-reset'><?=get_phrase('reset');?></div>
                             <div class='btn btn-default btn-save'><?=get_phrase('save');?></div>
-                            <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div>
+                            <!-- <div class='btn btn-default btn-save-new'><?=get_phrase('save_and_new');?></div> -->
                         </div>
                     </div>                
                     <!--Hidden fields-->
