@@ -29,7 +29,7 @@
 
             if($action_labels['show_label_as_button'] && $this->budget_model->has_initial_status_budget_items(hash_id($this->id,'decode'))){
         ?>
-            <div id='action_btn' data-budget_id = '<?=hash_id($this->id,'decode')?>' data-next_status = '<?=$action_labels['next_approval_status'];?>' class='btn btn-default'><?=$action_labels['status_name'];?></div>
+            <div id='action_btn' data-budget_id = '<?=hash_id($this->id,'decode')?>' data-next_status = '<?=$action_labels['next_approval_status'];?>' class='btn btn-default hidden'><?=$action_labels['status_name'];?></div>
         <?php        
             }else{
         ?>
@@ -46,7 +46,7 @@
 
 </div>
 
-<div class='row'>
+<div class='row hidden'>
     <div class='col-xs-6'>
         <div class='form-group'>
             <label class='control-label col-xs-4'><?=get_phrase('scanned_budget_upload');?></label>
