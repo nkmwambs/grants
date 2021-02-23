@@ -33,7 +33,7 @@
         <?php        
             }else{
         ?>
-            <div class='btn btn-default disabled'><?=$action_labels['status_name'];?></div>
+            <div class='btn btn-default disabled hidden'><?=$action_labels['status_name'];?></div>
         <?php
             }
         ?>
