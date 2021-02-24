@@ -86,27 +86,31 @@ class Budget_model extends MY_Model
     if(!$this->session->system_admin){
       $this->read_db->where_in('office_id',array_column($this->session->hierarchy_offices,'office_id'));
       $lookup_values['office'] = $this->read_db->get('office')->result_array();
+
+      if($this->session->env =='production' || (!$this->config->item('show_all_budget_tags') && !$this->session->env =='production')){
       
-      $current_month = date('n');
+        $current_month = date('n');
 
-      $next_current_quarter_months = financial_year_quarter_months(month_after_adding_size_of_budget_review_period($current_month));
-      
-      $this->read_db->select(array('budget_tag_id','budget_tag_name'));
-        $this->read_db->group_start();
+        $next_current_quarter_months = financial_year_quarter_months(month_after_adding_size_of_budget_review_period($current_month));
+        
+        $this->read_db->select(array('budget_tag_id','budget_tag_name'));
+          $this->read_db->group_start();
 
-        $months_in_quarter_index_offset = $this->config->item('size_in_months_of_a_budget_review_period') - $this->config->item('number_of_month_to_start_budget_review_before_close_of_review_period');
+          $months_in_quarter_index_offset = $this->config->item('size_in_months_of_a_budget_review_period') - $this->config->item('number_of_month_to_start_budget_review_before_close_of_review_period');
 
-        if($months_in_quarter_index_offset < 0){
-          $months_in_quarter_index_offset = $this->config->item('size_in_months_of_a_budget_review_period') - 1;
-        }
+          if($months_in_quarter_index_offset < 0){
+            $months_in_quarter_index_offset = $this->config->item('size_in_months_of_a_budget_review_period') - 1;
+          }
 
-        if(month_after_adding_size_of_budget_review_period($current_month) >= $next_current_quarter_months['months_in_quarter'][$months_in_quarter_index_offset]){
-          $this->read_db->where_in('fk_month_id', $next_current_quarter_months['months_in_quarter']);
-        }
+          if(month_after_adding_size_of_budget_review_period($current_month) >= $next_current_quarter_months['months_in_quarter'][$months_in_quarter_index_offset]){
+            $this->read_db->where_in('fk_month_id', $next_current_quarter_months['months_in_quarter']);
+          }
 
-        $this->read_db->or_where(array('budget_tag_level'=> $next_current_quarter_months['quarter_number'] - 1 == 0?$this->config->item('maximum_review_count'):$next_current_quarter_months['quarter_number'] - 1));
+          $this->read_db->or_where(array('budget_tag_level'=> $next_current_quarter_months['quarter_number'] - 1 == 0?$this->config->item('maximum_review_count'):$next_current_quarter_months['quarter_number'] - 1));
 
-        $this->read_db->group_end();
+          $this->read_db->group_end();
+
+      }
 
       $this->read_db->where(array('fk_account_system_id'=>$this->session->user_account_system_id,'budget_tag_is_active'=>1));
       $lookup_values['budget_tag'] = $this->read_db->get('budget_tag')->result_array();

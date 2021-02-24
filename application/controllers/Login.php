@@ -305,6 +305,11 @@ public $controller;
             
         $this->session->set_userdata('base_currency_id',
             $this->db->get_where('setting',array('type'=>'base_currency_code'))->row()->description);
+
+        $this->read_db->where(array('type'=>'environment'));
+        $environment = $this->read_db->get('setting')->row()->description;
+
+        $this->session->set_userdata('env',$environment);    
             
         /**
          * These are Center Group Hierarchy related sessions

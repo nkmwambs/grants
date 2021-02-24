@@ -61,6 +61,9 @@ class Setting_model extends MY_Model
       [
         'type'=>'base_currency_code','description'=>'1','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
       ],
+      [
+        'type'=>'environment','description'=>'production','setting_created_date'=>date('Y-m-d'),'setting_created_by'=>1,'setting_last_modified_by'=>1
+      ],
 
     ];
 
