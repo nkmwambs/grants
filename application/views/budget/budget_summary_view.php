@@ -20,9 +20,11 @@
     </div> -->
     
     <div class='col-xs-offset-2 col-xs-8 col-xs-offset-2' style='text-align:center;'>
-        <a href="<?=base_url();?>Budget_item/multi_form_add/<?=$this->id;?>/Budget">
-            <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
-        </a>
+        <?php if($is_current_review && $this->user_model->check_role_has_permissions('Budget_item','create')){?>
+            <a href="<?=base_url();?>Budget_item/multi_form_add/<?=$this->id;?>/Budget">
+                <div class='btn btn-default'><?=get_phrase('add_new_budget_item');?></div>
+            </a>
+        <?php }?>
 
         <?php 
             $action_labels = $this->grants->action_labels('budget',hash_id($this->id,'decode'));

@@ -181,7 +181,8 @@ class Budget extends MY_Controller
     if($this->action == 'view'){
       if($segment_budget_view_type == 'summary'){
         $budget_summary = $this->budget_summary_result();
-        $result = array_merge($budget_header,$budget_summary);
+        $is_current_review['is_current_review'] = $this->check_if_current_review();
+        $result = array_merge($budget_header,$budget_summary,$is_current_review);
       }else{
 
         $income_account_id = hash_id($this->uri->segment(5),'decode');
