@@ -2,6 +2,17 @@
 
 $chunk = array_chunk($this->session->user_more_menu,$this->config->item('extra_menu_item_columns'),true);
 ?>
+
+<?php if($this->user_model->check_role_has_permissions(ucfirst($this->controller),'update')){?>
+    <div class="row">
+        <div class="col-xs-12">
+            <a class="btn btn-default" href="<?=base_url();?>menu/list"><?=get_phrase('manage_menus');?></a>
+        </div>
+    </div>
+<hr/>
+
+<?php }?>
+
 <div class='row'>
     <div class='col-xs-12'>
     <table class="table table-bordered">
