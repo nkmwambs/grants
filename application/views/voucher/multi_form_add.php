@@ -895,10 +895,14 @@ function copyRow(){
 
     var original_row = tbl_body.find('tr').clone()[0];
 
+    // var account_cell = original_row.find('account');
+    // account_cell.html("<option value=''><?=get_phrase('select_account');?></option>");
+    // account_cell.addClass('disabled');
+
     tbl_body.append(original_row);
 
-    $.each(tbl_body.find("tr:last").find('input'),function(i,el){
-        let resatable_fields = ['quantity','description','unitcost'];
+    $.each(tbl_body.find("tr:last").find('input, select'),function(i,el){
+        let resatable_fields = ['quantity','description','unitcost','account'];
         var elem = $(el);
 
         resatable_fields.forEach(function(fieldClass,index){
@@ -915,6 +919,11 @@ function copyRow(){
                 
             }else{
                 elem.val("");
+            }
+
+            if(elem.hasClass('account')){
+                elem.html("<option value=''><?=get_phrase('select_account');?></option>");
+                elem.prop('disabled','disabled');
             }
         });
     });
@@ -1305,9 +1314,9 @@ function check_required_fields(){
     $(".required").each(function(i,el){
         if(
             $(el).val() == "" && 
-            !$(el).attr('disabled') && 
-            !$(el).attr('readonly') && 
-            $(el).hasClass('required') 
+            (!$(el).attr('disabled') || !$(el).attr('readonly')) && 
+            $(el).hasClass('required') && 
+            $(el).is(":visible")
         ){
             //$(el).addClass('validate_error');
             return_flag = false;

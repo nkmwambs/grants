@@ -436,8 +436,14 @@ class Voucher extends MY_Controller
         
         // $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."' OR (project_end_date = '0000-00-00' AND project_start_date <= '".$transaction_date."'))";
         $query_condition = "fk_office_id = ".$office_id." AND (project_end_date >= '".$transaction_date."' OR  project_allocation_extended_end_date >= '".$transaction_date."' OR project_end_date = '0000-00-00') AND project_start_date <= '".$transaction_date."'";
+        
+        $this->db->distinct('project_allocation_id');
         $this->db->select(array('project_allocation_id','project_name as project_allocation_name'));
+        
         $this->db->join('project','project.project_id=project_allocation.fk_project_id');
+        $this->db->join('project_income_account','project_income_account.fk_project_id=project.project_id');
+        $this->db->join('income_account','income_account.income_account_id=project_income_account.fk_income_account_id');
+        $this->db->join('expense_account','expense_account.fk_income_account_id=income_account.income_account_id');
 
         if($this->input->post('office_bank_id')){
           $this->db->where(array('fk_office_bank_id'=>$this->input->post('office_bank_id')));
@@ -511,6 +517,7 @@ class Voucher extends MY_Controller
       $this->db->join('project_income_account','project_income_account.fk_income_account_id=income_account.income_account_id');
       $this->db->join('project','project.project_id=project_income_account.fk_project_id');
       $this->db->join('project_allocation','project_allocation.fk_project_id=project.project_id');
+
       $this->db->select(array('income_account_id as account_id','income_account_name as account_name'));
       $accounts = $this->db->get('income_account')->result_array();
     }elseif($voucher_type_effect == 'cash_contra'){
