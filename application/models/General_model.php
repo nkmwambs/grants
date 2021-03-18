@@ -523,6 +523,13 @@ function get_max_approval_status_id(String $approveable_item):Array{
   $this->db->reset_query();
 
   $hierarchy_offices = array_column($this->session->hierarchy_offices,'office_id');
+
+  if(empty($hierarchy_offices)){
+    $message = "Your account is improperly set. Your user context assignment misses a related record in the corrent context user table. Contact the administrator";
+    $message .= "<br/><a href='".base_url()."login/logout'>".get_phrase('log_out')."</a>";
+    show_error($message);
+  }
+
   //Get the maximum status_approval_sequence of an approveable item
   $this->db->join('approval_flow','approval_flow.approval_flow_id=status.fk_approval_flow_id');
   $this->db->join('approve_item','approve_item.approve_item_id=approval_flow.fk_approve_item_id');

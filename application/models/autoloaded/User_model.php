@@ -198,21 +198,7 @@ class User_model extends MY_Model
     * @return Array - Array of context definition
     */
    function get_user_context_definition(int $user_id):Array{
-
-    // $user_context_definition = "";
-
-    // $this->db->select(array('context_definition_id','context_definition_name',
-    // 'context_definition_level','context_definition_is_active'));
-    
-    // $this->db->join('user','user.fk_context_definition_id=context_definition.context_definition_id');
-    // $user_context_definition_obj = $this->db->get_where('context_definition',
-    // array('user_id'=>$user_id));
-
-    // if($user_context_definition_obj->num_rows() > 0){
-    //   $user_context_definition =  $user_context_definition_obj->row_array();
-    // }
-    
-    // return $user_context_definition;
+    //print_r(Extension_base::load('access','get_user_context_definition',$user_id));exit;
     return Extension_base::load('access','get_user_context_definition',$user_id);
   }
 
@@ -284,15 +270,17 @@ class User_model extends MY_Model
       $context_table.'_id','fk_designation_id'));
       
       $this->db->join($context_table,$context_table.'.'.$context_table.'_id='.$context_users_table.'.fk_'.$context_table.'_id');
-      $associations = $this->db->get_where($context_users_table,
-      array('fk_user_id'=>$user_id,$context_users_table.'_is_active'=>1));
+      $this->db->where(array('fk_user_id'=>$user_id,$context_users_table.'_is_active'=>1));
+      $associations = $this->db->get($context_users_table);
 
       if($associations->num_rows()>0){
         $associations_array = $associations->result_array();
       }
       
       return $associations_array; 
+
     }
+
 
     /**
      * Need to update this to work with user_ids as well
@@ -394,7 +382,7 @@ class User_model extends MY_Model
      */
 
     function user_hierarchy_offices($user_id,$show_context = false){
-      $user_hierarchy_offices_ids = [];
+      //$user_hierarchy_offices_ids = [];
       
       $user_context_definition = $this->get_user_context_definition($user_id);
       
@@ -444,7 +432,7 @@ class User_model extends MY_Model
       
       $user_context = $user_context_definition['context_definition_name']; // e.g. country
       $user_context_table = $context_definitions[$user_context]['context_table']; // e.g. context_country
-      $user_context_table_user = $context_definitions[$user_context]['context_user_table']; // e.g. context_country_user
+      //$user_context_table_user = $context_definitions[$user_context]['context_user_table']; // e.g. context_country_user
       
       $user_context_level = $context_definitions[$user_context]['context_definition_level'];//e.g. 1 or 2 ....n    $this->db->get_where('context_definition',array('context_definition_name'=>$user_context))->row()->context_definition_level;
 
@@ -471,7 +459,7 @@ class User_model extends MY_Model
         
 
       $user_hierarchy_offices = array();
-      $office_ids = array();
+      //$office_ids = array();
 
       $cnt = 0;
 
