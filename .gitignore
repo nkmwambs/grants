@@ -63,4 +63,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 .vscode
 
 /application/tests/
+/tests/
 composer.json
