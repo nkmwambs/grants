@@ -63,9 +63,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 .vscode
 
 /application/tests/
-<<<<<<< HEAD
 application/models/Welcome_model.php
-=======
 /tests/
->>>>>>> 26cf6cf6b2f7883f6a667ee58e5a4f44e1312f99
 composer.json
