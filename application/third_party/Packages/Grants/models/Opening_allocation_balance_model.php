@@ -62,12 +62,24 @@ class Opening_allocation_balance_model extends MY_Model{
          $lookup_values = parent::lookup_values();
          
          if($this->id !== null){
-           
-            $system_opening_balance = $this->read_db->get_where('system_opening_balance',
-            array('system_opening_balance_id'=>hash_id($this->id,'decode')))->row();
 
-            $this->read_db->where(array('fk_office_id'=>$system_opening_balance->fk_office_id,
-            'project_end_date<>'=>'0000-00-00'));
+            if($this->action  == 'single_form_add'){
+                // $system_opening_balance = $this->read_db->get_where('system_opening_balance',
+                // array('system_opening_balance_id'=>hash_id($this->id,'decode')))->row();
+                
+                $this->read_db->join('opening_allocation_balance','opening_allocation_balance.fk_project_allocation_id=project_allocation.project_allocation_id');
+                $this->read_db->join('system_opening_balance','system_opening_balance.system_opening_balance_id=opening_allocation_balance.fk_system_opening_balance_id');
+
+                $this->read_db->where(array('system_opening_balance_id'=>hash_id($this->id,'decode'),
+                'project_end_date<>'=>'0000-00-00'));
+
+            }elseif($this->action  == 'edit'){
+                $this->read_db->join('opening_allocation_balance','opening_allocation_balance.fk_project_allocation_id=project_allocation.project_allocation_id');
+                $this->read_db->where(array('opening_allocation_balance_id'=>hash_id($this->id,'decode'),
+                'project_end_date<>'=>'0000-00-00'));
+            }
+           
+            
             
             $this->read_db->group_start();
                 $this->read_db->where(array('project_allocation_extended_end_date>='=>date('Y-m-t')));
