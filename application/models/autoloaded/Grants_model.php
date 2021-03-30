@@ -2005,8 +2005,8 @@ function overwrite_field_value_on_post(Array $post_array, String $insert_table,S
   return $post_array;
 }
 
-function not_exists_sub_query($lookup_table, $association_table){
-  $this->read_db->where('NOT EXISTS (SELECT * FROM '.$association_table.' WHERE '.$association_table.'.fk_'.$lookup_table.'_id='.$lookup_table.'.'.$lookup_table.'_id)', '', FALSE);
+function not_exists_sub_query($lookup_table, $association_table, $string_condition = ''){
+  $this->read_db->where('NOT EXISTS (SELECT * FROM '.$association_table.' WHERE '.$association_table.'.fk_'.$lookup_table.'_id='.$lookup_table.'.'.$lookup_table.'_id '. $string_condition .')', '', FALSE);
 }
 
 
