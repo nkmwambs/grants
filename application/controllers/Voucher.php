@@ -498,7 +498,8 @@ class Voucher extends MY_Controller
       $is_office_group_lead = $this->office_group_model->check_if_office_is_office_group_lead($this->input->post('office_id'));
 
       if(!$is_office_group_lead){
-        $this->grants_model->not_exists_sub_query('expense_account','expense_account_office_association');
+        $string_condition = 'AND expense_account_office_association_is_active = 1';
+        $this->grants_model->not_exists_sub_query('expense_account','expense_account_office_association',$string_condition);
       }
 
       $this->read_db->where(array('project_allocation_id'=>$project_allocation_id,'expense_account_is_active'=>1));
