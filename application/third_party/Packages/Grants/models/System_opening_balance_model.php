@@ -10,9 +10,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	NKarisa@ke.ci.org
  */
 
-class System_opening_balance_model extends MY_Model{
+class System_opening_balance_model extends MY_Model
+{
 
-    public $table = 'system_opening_balance'; 
+    public $table = 'system_opening_balance';
     public $dependant_table = '';
     public $name_field = 'system_opening_balance_name';
     public $create_date_field = "system_opening_balance_created_date";
@@ -20,22 +21,27 @@ class System_opening_balance_model extends MY_Model{
     public $last_modified_date_field = "system_opening_balance_last_modified_date";
     public $last_modified_by_field = "system_opening_balance_last_modified_by";
     public $deleted_at_field = "system_opening_balance_deleted_at";
-    
-    function __construct(){
+
+    function __construct()
+    {
         parent::__construct();
         $this->load->database();
     }
 
-    function index(){}
+    function index()
+    {
+    }
 
-    public function lookup_tables(){
+    public function lookup_tables()
+    {
         return array('office');
     }
 
-    function show_add_button(){
-        if(!$this->session->system_admin){
+    function show_add_button()
+    {
+        if (!$this->session->system_admin) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -44,22 +50,23 @@ class System_opening_balance_model extends MY_Model{
     //     return ['opening_fund_balance','opening_cash_balance','opening_bank_balance','opening_allocation_balance','opening_outstanding_cheque','opening_deposit_transit'];
     // }
 
-    public function detail_multi_form_add_visible_columns(){}
-
-    function single_form_add_visible_columns(){
-        return ['system_opening_balance_name','month','office_name'];
+    public function detail_multi_form_add_visible_columns()
+    {
     }
 
-    function list_table_where(){
-        if(!$this->session->system_admin){
-        
-            if($this->config->item('tables_with_account_system_relationship')){
-                $this->db->where(array('fk_context_definition_id'=>1));
-            }
+    function single_form_add_visible_columns()
+    {
+        return ['system_opening_balance_name', 'month', 'office_name'];
+    }
 
-            return $this->db->where(array('office.fk_account_system_id'=>$this->session->user_account_system_id));
+    function list_table_where()
+    {
+        if (!$this->session->system_admin) {
+
+            $hierarchy_offices = array_column($this->session->hierarchy_offices, 'office_id');
+            $this->db->where_in('fk_office_id', $hierarchy_offices);
+            $this->db->where(array('office.office_is_readonly' => 0));
+            return $this->db->where(array('office.fk_account_system_id' => $this->session->user_account_system_id));
         }
     }
-
-    
 }
